@@ -15,7 +15,6 @@ dist/
 .env.*
 !.env.example
 
-DaysYet.xcodeproj/
 *.xcworkspace/xcuserdata/
 *.xcodeproj/xcuserdata/
 *.xcuserstate

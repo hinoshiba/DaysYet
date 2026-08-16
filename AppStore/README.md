@@ -10,14 +10,16 @@ screenshots/<locale>/       Accepted App Store device-class images
 review/                     Review notes and questionnaire answers
 ```
 
-Before submission:
+Before submission (after the tagged Xcode Cloud archive finishes):
 
-1. Run `./Scripts/check-compliance.sh --release`.
-2. Confirm every statement matches the selected build; never advertise an unimplemented feature.
+1. Confirm the tag version, Xcode Cloud build number, commit, and selected App Store Connect build all match.
+2. Confirm every statement matches the selected Cloud build; never advertise an unimplemented feature.
 3. Set App Store Connect Primary Language to **Japanese** and add **English (U.S.)**.
-4. Leave the optional App Review contact name, phone, and email fields blank, matching the accepted Youyaku listing. The public support contact remains `support@hinoshiba.com`.
+4. Leave the optional App Review contact name, phone, and email fields blank unless the current submission requires them. The public support contact remains `support@hinoshiba.com`.
 5. Confirm Pricing and Availability, App Privacy, Age Rating, Content Rights, DSA trader status, export compliance, and release settings in App Store Connect.
 6. Upload the screenshots from both device-class folders for each locale.
+
+The release workflow runs `./Scripts/check-compliance.sh --release` before its Archive action. It creates an App Store-eligible candidate in Xcode Cloud; selecting that build and submitting it to App Review remain explicit App Store Connect actions.
 
 `release_notes.txt` is intentionally empty while `initial_release: true`; App Store Connect does not accept What’s New text for the first version.
 

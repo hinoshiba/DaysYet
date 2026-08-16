@@ -44,7 +44,7 @@
 ./build.sh test
 ```
 
-`project.yml`がXcodeプロジェクト設定の正本です。生成される`DaysYet.xcodeproj`はコミットしません。署名チームは各開発者のXcode設定で指定してください。
+`project.yml`がXcodeプロジェクト設定の正本です。Xcode Cloudが常にproductとshared schemeを検出できるよう、生成される`DaysYet.xcodeproj`もコミットします。`project.yml`を変更したら`xcodegen generate`を実行し、両方を同じ変更に含めてください。開発用の署名は自動管理され、App Store向けarchiveはXcode Cloudだけで作成します。
 
 ## Repository layout
 
@@ -67,7 +67,7 @@ App Storeのprimary languageは日本語、追加localizationはEnglish (U.S.)�
 - [Contributing](CONTRIBUTING.md)
 - [Security](SECURITY.md)
 - [Dependency policy](docs/DEPENDENCY_POLICY.md)
-- [Release procedure](docs/RELEASING.md)
+- [Xcode Cloud release procedure](docs/RELEASING.md)
 
 依存、素材、フォント、SDK、データセットを追加する変更は、NOTICE、資産・データ台帳、プライバシーへの影響も同時に更新してください。
 

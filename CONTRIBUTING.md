@@ -17,7 +17,10 @@ Thank you for helping improve this project.
 4. Add tests for date boundaries, storage migrations, and Widget configuration behavior.
 5. Run `./Scripts/check-compliance.sh` and `./build.sh test` before submitting.
 
-`project.yml` is the source of truth. Do not commit the generated `DaysYet.xcodeproj`.
+`project.yml` is the project-configuration source of truth. The generated
+`DaysYet.xcodeproj` and shared scheme are committed so Xcode Cloud can always
+discover the product. Run `xcodegen generate` after changing `project.yml` and
+commit both; pull-request CI rejects a stale generated project.
 
 ## License and provenance
 
