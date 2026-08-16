@@ -48,7 +48,7 @@ struct WidgetStudioView: View {
             Text(L10n.text("時間は、まだある。\n今日を選ぶ。", "There is time yet.\nChoose today."))
                 .font(.system(.largeTitle, design: .rounded, weight: .bold))
                 .tracking(-0.7)
-            Text(L10n.text("ウィジェットに置く3本を整えます。変更はすぐ反映されます。", "Choose the three bars for your widget. Changes sync automatically."))
+            Text(L10n.text("選んだ内容はウィジェットに反映されます。更新時刻はiOSが調整します。", "Your choices appear in the widget; refresh timing is controlled by iOS."))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
