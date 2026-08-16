@@ -1,7 +1,7 @@
 # Submission checklist
 
 - [ ] App Store Connect Primary Language is Japanese; English (U.S.) localization is added.
-- [ ] Bundle ID `daysyet.hinoshiba.com`, Widget ID `daysyet.hinoshiba.com.widget`, and App Group `group.daysyet.hinoshiba.com` are registered to the signing team.
+- [ ] Bundle ID `com.hinoshiba.daysyet`, Widget ID `com.hinoshiba.daysyet.widget`, and App Group `group.com.hinoshiba.daysyet` are registered to the signing team.
 - [ ] Version/build match `project.yml` and `AppStore/configuration.yml`.
 - [ ] A validated build with the Widget extension and 1024 × 1024 app icon is selected.
 - [ ] Japanese and English metadata match the build and pass length limits.
@@ -11,7 +11,7 @@
 - [ ] The seller identity required for each sales region is configured in App Store Connect, and every public support contact uses `support@hinoshiba.com`.
 - [ ] `release_notes.txt` remains empty and What’s New is not submitted for this first version.
 - [ ] App Privacy, Age Rating, Content Rights, export compliance, DSA status, Pricing and Availability, and release settings are complete.
-- [ ] App Review contact uses `support@hinoshiba.com`; the legal name and phone are entered privately in App Store Connect.
+- [ ] The optional App Review contact name, phone, and email fields are blank, matching the accepted Youyaku listing.
 - [ ] Review Notes explain Widget setup, no-login access, on-device storage, and the healthy-age disclaimer.
 - [ ] VoiceOver, Larger Text, Dark Interface, Differentiate Without Color, Sufficient Contrast, and Reduced Motion claims are made only after every common task is verified.
 - [ ] Internal TestFlight passes onboarding, editing, reset, Japanese/English, Small/Medium Widgets, per-Widget overrides, date boundaries, timezone changes, restart, and stale/empty states.

@@ -1,7 +1,7 @@
 import Foundation
 
 enum ProfileRepository {
-    static let appGroupIdentifier = "group.daysyet.hinoshiba.com"
+    static let appGroupIdentifier = "group.com.hinoshiba.daysyet"
     private static let profileKey = "user-profile-v1"
 
     static func load() -> UserProfile {

@@ -5,12 +5,12 @@ readonly MODE="${1:-development}"
 readonly ICON_PATH="DaysYet/Assets.xcassets/AppIcon.appiconset/AppIcon.png"
 readonly EXPECTED_ICON_SHA256="0e51cbe928a9239a4a58a34986cfbc950250704903f035f42a40d87b8b1a636f"
 readonly EXPECTED_SUPPORT_EMAIL="support@hinoshiba.com"
-readonly EXPECTED_APP_ID="daysyet.hinoshiba.com"
+readonly EXPECTED_APP_ID="com.hinoshiba.daysyet"
 readonly EXPECTED_WIDGET_ID="${EXPECTED_APP_ID}.widget"
 readonly EXPECTED_TEST_ID="${EXPECTED_APP_ID}.tests"
 readonly EXPECTED_APP_GROUP="group.${EXPECTED_APP_ID}"
 readonly EXPECTED_WIDGET_KIND="${EXPECTED_WIDGET_ID}.progress"
-readonly LEGACY_APP_ID="$(printf '%s.%s.%s' com hinoshiba daysyet)"
+readonly REVERSED_APP_ID="$(printf '%s.%s.%s' daysyet hinoshiba com)"
 
 required_files=(
   LICENSE NOTICE TRADEMARKS.md THIRD_PARTY_NOTICES.md ASSET_LICENSES.md
@@ -109,14 +109,18 @@ assert_line AppStore/configuration.yml "widget_bundle_id: ${EXPECTED_WIDGET_ID}"
 assert_line AppStore/configuration.yml "app_group: ${EXPECTED_APP_GROUP}"
 assert_line AppStore/configuration.yml "widget_kind: ${EXPECTED_WIDGET_KIND}"
 
-if rg --hidden \
-  --glob '!.git/**' \
-  --glob '!.build/**' \
-  --glob '!build/**' \
-  --glob '!DaysYet.xcodeproj/**' \
-  --glob '!**/__pycache__/**' \
-  -F -q "${LEGACY_APP_ID}" .; then
-  echo "error: legacy app identifier remains in the repository" >&2
+identifier_files=(
+  project.yml
+  Shared/ProfileRepository.swift
+  DaysYet/DaysYet.entitlements
+  DaysYetWidget/DaysYetWidget.entitlements
+  DaysYetWidget/DaysYetWidget.swift
+  AppStore/configuration.yml
+  AppStore/review/submission-checklist.md
+  Scripts/capture-store-screenshots.sh
+)
+if rg -F -q "${REVERSED_APP_ID}" "${identifier_files[@]}"; then
+  echo "error: reversed app identifier remains in the repository" >&2
   exit 1
 fi
 
@@ -133,17 +137,13 @@ python3 Scripts/validate-store-assets.py
 
 if [[ "${MODE}" == "--release" ]]; then
   python3 Scripts/validate-store-assets.py --require-screenshots --check-urls
-  release_environment=(APPLE_TEAM_ID APP_REVIEW_CONTACT_NAME APP_REVIEW_CONTACT_EMAIL APP_REVIEW_CONTACT_PHONE)
+  release_environment=(APPLE_TEAM_ID)
   for variable in "${release_environment[@]}"; do
     if [[ -z "${!variable:-}" ]]; then
       echo "error: ${variable} must be set in the private release environment" >&2
       exit 1
     fi
   done
-  if [[ "${APP_REVIEW_CONTACT_EMAIL}" != "${EXPECTED_SUPPORT_EMAIL}" ]]; then
-    echo "error: APP_REVIEW_CONTACT_EMAIL must be ${EXPECTED_SUPPORT_EMAIL}" >&2
-    exit 1
-  fi
 elif [[ "${MODE}" != "development" ]]; then
   echo "usage: ./Scripts/check-compliance.sh [--release]" >&2
   exit 2

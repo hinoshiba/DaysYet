@@ -15,7 +15,7 @@ Before submission:
 1. Run `./Scripts/check-compliance.sh --release`.
 2. Confirm every statement matches the selected build; never advertise an unimplemented feature.
 3. Set App Store Connect Primary Language to **Japanese** and add **English (U.S.)**.
-4. Use `support@hinoshiba.com` as the monitored review-contact email. Enter the review contact’s legal name and phone directly in App Store Connect; do not commit those private details here.
+4. Leave the optional App Review contact name, phone, and email fields blank, matching the accepted Youyaku listing. The public support contact remains `support@hinoshiba.com`.
 5. Confirm Pricing and Availability, App Privacy, Age Rating, Content Rights, DSA trader status, export compliance, and release settings in App Store Connect.
 6. Upload the screenshots from both device-class folders for each locale.
 

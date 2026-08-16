@@ -2,6 +2,7 @@
 .build/
 build/
 DerivedData/
+dist/
 *.xcarchive
 *.ipa
 *.dSYM

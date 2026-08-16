@@ -204,10 +204,10 @@ def validate_metadata() -> None:
                 fail(f"{locale}/{filename} must be empty for the first App Store version")
 
     for expected in (
-        "primary_locale: ja", "bundle_id: daysyet.hinoshiba.com",
-        "widget_bundle_id: daysyet.hinoshiba.com.widget",
-        "app_group: group.daysyet.hinoshiba.com",
-        "widget_kind: daysyet.hinoshiba.com.widget.progress",
+        "primary_locale: ja", "bundle_id: com.hinoshiba.daysyet",
+        "widget_bundle_id: com.hinoshiba.daysyet.widget",
+        "app_group: group.com.hinoshiba.daysyet",
+        "widget_kind: com.hinoshiba.daysyet.widget.progress",
     ):
         if expected not in configuration_lines:
             fail(f"AppStore/configuration.yml is missing: {expected}")

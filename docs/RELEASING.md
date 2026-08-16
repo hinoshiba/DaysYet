@@ -1,6 +1,6 @@
 # Release procedure
 
-This document covers reproducible engineering steps. The public support and App Review email is `support@hinoshiba.com`; App Store agreements, tax and banking setup, rights clearance, and private review-contact details such as legal name and phone are maintained in the relevant private operator systems.
+This document covers reproducible engineering steps. The public support email is `support@hinoshiba.com`. The optional App Review contact fields are intentionally left blank, matching the accepted setup of the existing Youyaku listing. App Store agreements, tax and banking setup, and rights clearance are maintained in the relevant private operator systems.
 
 ## Version and verification
 
