@@ -44,5 +44,15 @@ jobs:
       - name: Validate Store screenshots
         run: python3 Scripts/validate-store-assets.py --require-screenshots
 
+      - name: Verify generated Xcode project
+        run: |
+          set -euo pipefail
+          xcodegen generate
+          generated_state=$(git status --porcelain=v1 --untracked-files=all)
+          if [ -n "${generated_state}" ]; then
+            git status --short --untracked-files=all
+            exit 1
+          fi
+
       - name: Build and test app plus Widget
         run: ./build.sh test

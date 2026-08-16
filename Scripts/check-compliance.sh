@@ -5,6 +5,7 @@ readonly MODE="${1:-development}"
 readonly ICON_PATH="DaysYet/Assets.xcassets/AppIcon.appiconset/AppIcon.png"
 readonly EXPECTED_ICON_SHA256="0e51cbe928a9239a4a58a34986cfbc950250704903f035f42a40d87b8b1a636f"
 readonly EXPECTED_SUPPORT_EMAIL="support@hinoshiba.com"
+readonly EXPECTED_TEAM_ID="94HVVWXLK3"
 readonly EXPECTED_APP_ID="com.hinoshiba.daysyet"
 readonly EXPECTED_WIDGET_ID="${EXPECTED_APP_ID}.widget"
 readonly EXPECTED_TEST_ID="${EXPECTED_APP_ID}.tests"
@@ -23,11 +24,22 @@ required_files=(
   DaysYetWidget/ja.lproj/InfoPlist.strings DaysYetWidget/en.lproj/InfoPlist.strings
   DaysYet/PrivacyInfo.xcprivacy DaysYetWidget/PrivacyInfo.xcprivacy
   DaysYet/DaysYet.entitlements DaysYetWidget/DaysYetWidget.entitlements
+  DaysYet.xcodeproj/project.pbxproj
+  DaysYet.xcodeproj/xcshareddata/xcschemes/DaysYet.xcscheme
+  ci_scripts/ci_pre_xcodebuild.sh
 )
 
 for required_file in "${required_files[@]}"; do
   if [[ ! -f "${required_file}" ]]; then
     echo "error: missing required file: ${required_file}" >&2
+    exit 1
+  fi
+done
+
+/bin/sh -n ci_scripts/*.sh
+for cloud_script in ci_scripts/*.sh; do
+  if [[ ! -x "${cloud_script}" ]]; then
+    echo "error: Xcode Cloud script is not executable: ${cloud_script}" >&2
     exit 1
   fi
 done
@@ -71,8 +83,8 @@ while IFS= read -r public_doc; do
   fi
 done < <(find docs -type f | sort)
 
-if rg -i -q \
-  '\b(TODO|TBD|FIXME)\b|placeholder|provisional|draft|公開準備中|daysyet\.dev|DaysYet Dev' \
+if /usr/bin/grep -E -i -R -I -q -- \
+  '(^|[^[:alnum:]_])(TODO|TBD|FIXME)([^[:alnum:]_]|$)|placeholder|provisional|draft|公開準備中|daysyet\.dev|DaysYet Dev' \
   README.md PRIVACY.md SECURITY.md TRADEMARKS.md docs AppStore http_dist; then
   echo "error: release placeholder or development identity remains in public content" >&2
   exit 1
@@ -97,6 +109,8 @@ fi
 
 assert_contains project.yml 'developmentLanguage: ja'
 assert_line project.yml "bundleIdPrefix: ${EXPECTED_APP_ID}"
+assert_line project.yml "VERSIONING_SYSTEM: apple-generic"
+assert_line project.yml "DEVELOPMENT_TEAM: \"${EXPECTED_TEAM_ID}\""
 assert_line project.yml "PRODUCT_BUNDLE_IDENTIFIER: ${EXPECTED_APP_ID}"
 assert_line project.yml "PRODUCT_BUNDLE_IDENTIFIER: ${EXPECTED_WIDGET_ID}"
 assert_line project.yml "PRODUCT_BUNDLE_IDENTIFIER: ${EXPECTED_TEST_ID}"
@@ -119,7 +133,7 @@ identifier_files=(
   AppStore/review/submission-checklist.md
   Scripts/capture-store-screenshots.sh
 )
-if rg -F -q "${REVERSED_APP_ID}" "${identifier_files[@]}"; then
+if /usr/bin/grep -F -q -- "${REVERSED_APP_ID}" "${identifier_files[@]}"; then
   echo "error: reversed app identifier remains in the repository" >&2
   exit 1
 fi
@@ -137,13 +151,6 @@ python3 Scripts/validate-store-assets.py
 
 if [[ "${MODE}" == "--release" ]]; then
   python3 Scripts/validate-store-assets.py --require-screenshots --check-urls
-  release_environment=(APPLE_TEAM_ID)
-  for variable in "${release_environment[@]}"; do
-    if [[ -z "${!variable:-}" ]]; then
-      echo "error: ${variable} must be set in the private release environment" >&2
-      exit 1
-    fi
-  done
 elif [[ "${MODE}" != "development" ]]; then
   echo "usage: ./Scripts/check-compliance.sh [--release]" >&2
   exit 2

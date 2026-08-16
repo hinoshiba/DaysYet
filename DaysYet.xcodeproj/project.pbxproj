@@ -1,0 +1,741 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		00F25F2FAC04A2CB5FAE3266 /* DaysYetWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA369AB53C5EA2EB4743187 /* DaysYetWidget.swift */; };
+		03487D18EDC2D9D94757A09D /* DATA_SOURCES.md in Resources */ = {isa = PBXBuildFile; fileRef = 4F043AFA52F194DBD59AF711 /* DATA_SOURCES.md */; };
+		11CE4CE5C819962411E0E55D /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 785E00C0D2C2EA34EB0A2AA4 /* UserProfile.swift */; };
+		13B2D4AAC9C730D98D6D82BF /* L10n.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CD64EF0BE487E467E8EE54 /* L10n.swift */; };
+		173E528C30D166D165D41436 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 80602A41F91F2981A51EBE0E /* LICENSE */; };
+		2DCBD464C37F81B7F4FC236D /* ProfileRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D4529A3EAFCABF61CBA729D /* ProfileRepository.swift */; };
+		35AC664734EEEB4F383A996F /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA91CAA558C93AA58DF6FEB8 /* ProgressBar.swift */; };
+		431EC325BD13055C51A21AF7 /* DaysYetWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6947F66D3D5B82E52FFDE992 /* DaysYetWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		457E6915E9DD0A4DA516C1D8 /* WidgetPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00AAA44E592AAC3BF808D773 /* WidgetPreview.swift */; };
+		4916B55AAAB4AA35C6D34D37 /* ProfileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B04E98B81C6EE39699985B09 /* ProfileStore.swift */; };
+		4E58729CFFB84CB4C1BA1E4E /* ProfileRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D4529A3EAFCABF61CBA729D /* ProfileRepository.swift */; };
+		4EDDD820E2F065C84EB6B5B8 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5077CE484DDB9FA8448530A /* RootView.swift */; };
+		512CFBE061B7440C1ED28ED5 /* THIRD_PARTY_NOTICES.md in Resources */ = {isa = PBXBuildFile; fileRef = 37680AC2C679AD7E5923DC15 /* THIRD_PARTY_NOTICES.md */; };
+		567336EF98496F222B1AB276 /* TimeMetric.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787BB50AE053C559748C39E4 /* TimeMetric.swift */; };
+		5E8645B190857C3DCBBA3076 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969922BBF414097227DF1A0E /* OnboardingView.swift */; };
+		6588473D3F42BFD5BF6AF326 /* WidgetStudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B76A90071D066FB56C71C5EC /* WidgetStudioView.swift */; };
+		7403B0F82A146A7AFB2A3415 /* DaysYetTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40CE81B58E035A5129E7D2E /* DaysYetTheme.swift */; };
+		7D3F68DAD83CACE73A3660BB /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F18863FE1366766444715E8 /* SettingsView.swift */; };
+		80282C52FEDFF23801AAEA57 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 343F8E3BCF1BFAEAEBD45A97 /* Assets.xcassets */; };
+		85EABD42E7FC7E7ADDCA3C2B /* TimeMetric.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787BB50AE053C559748C39E4 /* TimeMetric.swift */; };
+		9021D64237A8C956A22F7E6C /* WidgetConfigurationIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F496778F27954462FC180E9 /* WidgetConfigurationIntent.swift */; };
+		A0FA6DE40F146A27740D1A54 /* ASSET_LICENSES.md in Resources */ = {isa = PBXBuildFile; fileRef = 7533C992E89912E1A026E4C4 /* ASSET_LICENSES.md */; };
+		A3DD38AC667FA2A651C26431 /* DaysYetApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B2991E7A8BFF58FEDD422CF /* DaysYetApp.swift */; };
+		A8D788E8B5582322DD48F6A7 /* L10n.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CD64EF0BE487E467E8EE54 /* L10n.swift */; };
+		B488AE222EA19AF5F4AA42DC /* TimeLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2218EE8FA923E98D18516D4 /* TimeLibraryView.swift */; };
+		B5DAF61685AE2120FC34313D /* TimeProgressCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 091F1E00C9DBA9A030F1A29D /* TimeProgressCalculatorTests.swift */; };
+		B66DE5162B94257F7742A20D /* NOTICE in Resources */ = {isa = PBXBuildFile; fileRef = 58FE27717C77D4B7907182C9 /* NOTICE */; };
+		B89D0FFBAA65FDE3315CFE58 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B8EF889B5F766FA4E4E1F328 /* Localizable.xcstrings */; };
+		B99D9E3C09AB918414346C08 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 71388ED2AE6C8DC3C059BFA2 /* PrivacyInfo.xcprivacy */; };
+		CAF47E6D83B6357A740FED03 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B8EF889B5F766FA4E4E1F328 /* Localizable.xcstrings */; };
+		CC2239801EBE676781A15316 /* DaysYetWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A688870A80B2CCC93B72C9B /* DaysYetWidgetBundle.swift */; };
+		EAA338EF8B8FFEA8B25247EC /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 7FFE29BF02B4BBBAAF4BC232 /* PrivacyInfo.xcprivacy */; };
+		F571C748BB95F074FBA354F9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7789B3FE1FCF7E665C59E506 /* InfoPlist.strings */; };
+		F818F4E6F2B38B114678BF36 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A9F151DF177251D2B0EC2871 /* InfoPlist.strings */; };
+		FB226A76DFBF9E8165F7AD29 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 785E00C0D2C2EA34EB0A2AA4 /* UserProfile.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		8304CC63603B7E5DD29E53F6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7B2BC7D121AD88D1A05765C6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 05749A4A6B0F0D6B3CE39C34;
+			remoteInfo = DaysYet;
+		};
+		A340DD18A8D50FD9FF7BEDEF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7B2BC7D121AD88D1A05765C6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = D0267B263E8450E155F6EA6C;
+			remoteInfo = DaysYetWidget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E63B2705DE4CB68C6B6975A0 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				431EC325BD13055C51A21AF7 /* DaysYetWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		00AAA44E592AAC3BF808D773 /* WidgetPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetPreview.swift; sourceTree = "<group>"; };
+		036F8BD9D4F1B7467842B3A4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		091F1E00C9DBA9A030F1A29D /* TimeProgressCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeProgressCalculatorTests.swift; sourceTree = "<group>"; };
+		115989BAB479742C1F5196E8 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1A688870A80B2CCC93B72C9B /* DaysYetWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysYetWidgetBundle.swift; sourceTree = "<group>"; };
+		1F496778F27954462FC180E9 /* WidgetConfigurationIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetConfigurationIntent.swift; sourceTree = "<group>"; };
+		343F8E3BCF1BFAEAEBD45A97 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		37680AC2C679AD7E5923DC15 /* THIRD_PARTY_NOTICES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = THIRD_PARTY_NOTICES.md; sourceTree = "<group>"; };
+		42CD64EF0BE487E467E8EE54 /* L10n.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = L10n.swift; sourceTree = "<group>"; };
+		4F043AFA52F194DBD59AF711 /* DATA_SOURCES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = DATA_SOURCES.md; sourceTree = "<group>"; };
+		4F18863FE1366766444715E8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		58FE27717C77D4B7907182C9 /* NOTICE */ = {isa = PBXFileReference; path = NOTICE; sourceTree = "<group>"; };
+		5B2E5AC365670A90ADF4A2A1 /* DaysYet.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DaysYet.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6947F66D3D5B82E52FFDE992 /* DaysYetWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = DaysYetWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		71388ED2AE6C8DC3C059BFA2 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		7533C992E89912E1A026E4C4 /* ASSET_LICENSES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ASSET_LICENSES.md; sourceTree = "<group>"; };
+		785E00C0D2C2EA34EB0A2AA4 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		787BB50AE053C559748C39E4 /* TimeMetric.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeMetric.swift; sourceTree = "<group>"; };
+		7B2991E7A8BFF58FEDD422CF /* DaysYetApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysYetApp.swift; sourceTree = "<group>"; };
+		7FFE29BF02B4BBBAAF4BC232 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		80602A41F91F2981A51EBE0E /* LICENSE */ = {isa = PBXFileReference; path = LICENSE; sourceTree = "<group>"; };
+		8D4529A3EAFCABF61CBA729D /* ProfileRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileRepository.swift; sourceTree = "<group>"; };
+		969922BBF414097227DF1A0E /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		A40CE81B58E035A5129E7D2E /* DaysYetTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysYetTheme.swift; sourceTree = "<group>"; };
+		A5077CE484DDB9FA8448530A /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		A9E1151ACD8A1E94DF04D3A0 /* DaysYetTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = DaysYetTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B04E98B81C6EE39699985B09 /* ProfileStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileStore.swift; sourceTree = "<group>"; };
+		B76A90071D066FB56C71C5EC /* WidgetStudioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetStudioView.swift; sourceTree = "<group>"; };
+		B76F2990B7B59DF8981C5A3A /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B8EF889B5F766FA4E4E1F328 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		BEA369AB53C5EA2EB4743187 /* DaysYetWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysYetWidget.swift; sourceTree = "<group>"; };
+		C10B69E5DF938A33AEEC9B9A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CA91CAA558C93AA58DF6FEB8 /* ProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBar.swift; sourceTree = "<group>"; };
+		F2218EE8FA923E98D18516D4 /* TimeLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLibraryView.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXGroup section */
+		01A74EAD58527D66A4D5B6BA /* DaysYetTests */ = {
+			isa = PBXGroup;
+			children = (
+				091F1E00C9DBA9A030F1A29D /* TimeProgressCalculatorTests.swift */,
+			);
+			path = DaysYetTests;
+			sourceTree = "<group>";
+		};
+		0424A4ABE21AC089992E9D64 /* Design */ = {
+			isa = PBXGroup;
+			children = (
+				A40CE81B58E035A5129E7D2E /* DaysYetTheme.swift */,
+			);
+			path = Design;
+			sourceTree = "<group>";
+		};
+		2F06D0F57EA534874E9D027D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5B2E5AC365670A90ADF4A2A1 /* DaysYet.app */,
+				A9E1151ACD8A1E94DF04D3A0 /* DaysYetTests.xctest */,
+				6947F66D3D5B82E52FFDE992 /* DaysYetWidget.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3559CE5BFA225CC29EFDD4BA = {
+			isa = PBXGroup;
+			children = (
+				7533C992E89912E1A026E4C4 /* ASSET_LICENSES.md */,
+				4F043AFA52F194DBD59AF711 /* DATA_SOURCES.md */,
+				80602A41F91F2981A51EBE0E /* LICENSE */,
+				58FE27717C77D4B7907182C9 /* NOTICE */,
+				37680AC2C679AD7E5923DC15 /* THIRD_PARTY_NOTICES.md */,
+				EB1E8B1F92D96FDC55948FFC /* DaysYet */,
+				01A74EAD58527D66A4D5B6BA /* DaysYetTests */,
+				9FC2643860A178CB1AF832B2 /* DaysYetWidget */,
+				FA52699628EA4AB321357425 /* Shared */,
+				2F06D0F57EA534874E9D027D /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		4F9A05FD99DDB903E9025546 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				969922BBF414097227DF1A0E /* OnboardingView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		81BC46FD371CDE9ED4AED07F /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				CA91CAA558C93AA58DF6FEB8 /* ProgressBar.swift */,
+				F2218EE8FA923E98D18516D4 /* TimeLibraryView.swift */,
+				00AAA44E592AAC3BF808D773 /* WidgetPreview.swift */,
+				B76A90071D066FB56C71C5EC /* WidgetStudioView.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		8FC5994D9597A43258DFF78A /* Features */ = {
+			isa = PBXGroup;
+			children = (
+				81BC46FD371CDE9ED4AED07F /* Home */,
+				4F9A05FD99DDB903E9025546 /* Onboarding */,
+				F120B5E052E950E617E4B2AC /* Settings */,
+			);
+			path = Features;
+			sourceTree = "<group>";
+		};
+		9FC2643860A178CB1AF832B2 /* DaysYetWidget */ = {
+			isa = PBXGroup;
+			children = (
+				BEA369AB53C5EA2EB4743187 /* DaysYetWidget.swift */,
+				1A688870A80B2CCC93B72C9B /* DaysYetWidgetBundle.swift */,
+				7FFE29BF02B4BBBAAF4BC232 /* PrivacyInfo.xcprivacy */,
+				1F496778F27954462FC180E9 /* WidgetConfigurationIntent.swift */,
+				7789B3FE1FCF7E665C59E506 /* InfoPlist.strings */,
+			);
+			path = DaysYetWidget;
+			sourceTree = "<group>";
+		};
+		A3B49BA7711A79DB01BF1ED6 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				7B2991E7A8BFF58FEDD422CF /* DaysYetApp.swift */,
+				B04E98B81C6EE39699985B09 /* ProfileStore.swift */,
+				A5077CE484DDB9FA8448530A /* RootView.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		EB1E8B1F92D96FDC55948FFC /* DaysYet */ = {
+			isa = PBXGroup;
+			children = (
+				343F8E3BCF1BFAEAEBD45A97 /* Assets.xcassets */,
+				71388ED2AE6C8DC3C059BFA2 /* PrivacyInfo.xcprivacy */,
+				A3B49BA7711A79DB01BF1ED6 /* App */,
+				0424A4ABE21AC089992E9D64 /* Design */,
+				8FC5994D9597A43258DFF78A /* Features */,
+				A9F151DF177251D2B0EC2871 /* InfoPlist.strings */,
+			);
+			path = DaysYet;
+			sourceTree = "<group>";
+		};
+		F120B5E052E950E617E4B2AC /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				4F18863FE1366766444715E8 /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		FA52699628EA4AB321357425 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				42CD64EF0BE487E467E8EE54 /* L10n.swift */,
+				B8EF889B5F766FA4E4E1F328 /* Localizable.xcstrings */,
+				8D4529A3EAFCABF61CBA729D /* ProfileRepository.swift */,
+				787BB50AE053C559748C39E4 /* TimeMetric.swift */,
+				785E00C0D2C2EA34EB0A2AA4 /* UserProfile.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		05749A4A6B0F0D6B3CE39C34 /* DaysYet */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A9C78A752E950A39C717BAFA /* Build configuration list for PBXNativeTarget "DaysYet" */;
+			buildPhases = (
+				CBBEF835296F4359FE958F0C /* Sources */,
+				3189BAA99784EEEE4CED992C /* Resources */,
+				E63B2705DE4CB68C6B6975A0 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				C6FC57C116F65CDDD2AB6BC8 /* PBXTargetDependency */,
+			);
+			name = DaysYet;
+			packageProductDependencies = (
+			);
+			productName = DaysYet;
+			productReference = 5B2E5AC365670A90ADF4A2A1 /* DaysYet.app */;
+			productType = "com.apple.product-type.application";
+		};
+		D0267B263E8450E155F6EA6C /* DaysYetWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 619A58A4069E5C0BDDA361ED /* Build configuration list for PBXNativeTarget "DaysYetWidget" */;
+			buildPhases = (
+				16A9B29B0EBA4973D665FD70 /* Sources */,
+				776328637A90DAF25D763622 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DaysYetWidget;
+			packageProductDependencies = (
+			);
+			productName = DaysYetWidget;
+			productReference = 6947F66D3D5B82E52FFDE992 /* DaysYetWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		FD641515D8C275796D5F6C2C /* DaysYetTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 458908EE3D76C7905894DF7E /* Build configuration list for PBXNativeTarget "DaysYetTests" */;
+			buildPhases = (
+				E31D3080116A8A1A41119F12 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3DEFE04C8A5E95B682C89052 /* PBXTargetDependency */,
+			);
+			name = DaysYetTests;
+			packageProductDependencies = (
+			);
+			productName = DaysYetTests;
+			productReference = A9E1151ACD8A1E94DF04D3A0 /* DaysYetTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		7B2BC7D121AD88D1A05765C6 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					05749A4A6B0F0D6B3CE39C34 = {
+						DevelopmentTeam = 94HVVWXLK3;
+						ProvisioningStyle = Automatic;
+					};
+					D0267B263E8450E155F6EA6C = {
+						DevelopmentTeam = 94HVVWXLK3;
+						ProvisioningStyle = Automatic;
+					};
+					FD641515D8C275796D5F6C2C = {
+						DevelopmentTeam = 94HVVWXLK3;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = AE34289370AF154504D227A2 /* Build configuration list for PBXProject "DaysYet" */;
+			developmentRegion = ja;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+				ja,
+			);
+			mainGroup = 3559CE5BFA225CC29EFDD4BA;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 2F06D0F57EA534874E9D027D /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				05749A4A6B0F0D6B3CE39C34 /* DaysYet */,
+				FD641515D8C275796D5F6C2C /* DaysYetTests */,
+				D0267B263E8450E155F6EA6C /* DaysYetWidget */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3189BAA99784EEEE4CED992C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A0FA6DE40F146A27740D1A54 /* ASSET_LICENSES.md in Resources */,
+				80282C52FEDFF23801AAEA57 /* Assets.xcassets in Resources */,
+				03487D18EDC2D9D94757A09D /* DATA_SOURCES.md in Resources */,
+				F818F4E6F2B38B114678BF36 /* InfoPlist.strings in Resources */,
+				173E528C30D166D165D41436 /* LICENSE in Resources */,
+				B89D0FFBAA65FDE3315CFE58 /* Localizable.xcstrings in Resources */,
+				B66DE5162B94257F7742A20D /* NOTICE in Resources */,
+				B99D9E3C09AB918414346C08 /* PrivacyInfo.xcprivacy in Resources */,
+				512CFBE061B7440C1ED28ED5 /* THIRD_PARTY_NOTICES.md in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		776328637A90DAF25D763622 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F571C748BB95F074FBA354F9 /* InfoPlist.strings in Resources */,
+				CAF47E6D83B6357A740FED03 /* Localizable.xcstrings in Resources */,
+				EAA338EF8B8FFEA8B25247EC /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		16A9B29B0EBA4973D665FD70 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				00F25F2FAC04A2CB5FAE3266 /* DaysYetWidget.swift in Sources */,
+				CC2239801EBE676781A15316 /* DaysYetWidgetBundle.swift in Sources */,
+				A8D788E8B5582322DD48F6A7 /* L10n.swift in Sources */,
+				4E58729CFFB84CB4C1BA1E4E /* ProfileRepository.swift in Sources */,
+				85EABD42E7FC7E7ADDCA3C2B /* TimeMetric.swift in Sources */,
+				FB226A76DFBF9E8165F7AD29 /* UserProfile.swift in Sources */,
+				9021D64237A8C956A22F7E6C /* WidgetConfigurationIntent.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CBBEF835296F4359FE958F0C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A3DD38AC667FA2A651C26431 /* DaysYetApp.swift in Sources */,
+				7403B0F82A146A7AFB2A3415 /* DaysYetTheme.swift in Sources */,
+				13B2D4AAC9C730D98D6D82BF /* L10n.swift in Sources */,
+				5E8645B190857C3DCBBA3076 /* OnboardingView.swift in Sources */,
+				2DCBD464C37F81B7F4FC236D /* ProfileRepository.swift in Sources */,
+				4916B55AAAB4AA35C6D34D37 /* ProfileStore.swift in Sources */,
+				35AC664734EEEB4F383A996F /* ProgressBar.swift in Sources */,
+				4EDDD820E2F065C84EB6B5B8 /* RootView.swift in Sources */,
+				7D3F68DAD83CACE73A3660BB /* SettingsView.swift in Sources */,
+				B488AE222EA19AF5F4AA42DC /* TimeLibraryView.swift in Sources */,
+				567336EF98496F222B1AB276 /* TimeMetric.swift in Sources */,
+				11CE4CE5C819962411E0E55D /* UserProfile.swift in Sources */,
+				457E6915E9DD0A4DA516C1D8 /* WidgetPreview.swift in Sources */,
+				6588473D3F42BFD5BF6AF326 /* WidgetStudioView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E31D3080116A8A1A41119F12 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B5DAF61685AE2120FC34313D /* TimeProgressCalculatorTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		3DEFE04C8A5E95B682C89052 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 05749A4A6B0F0D6B3CE39C34 /* DaysYet */;
+			targetProxy = 8304CC63603B7E5DD29E53F6 /* PBXContainerItemProxy */;
+		};
+		C6FC57C116F65CDDD2AB6BC8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = D0267B263E8450E155F6EA6C /* DaysYetWidget */;
+			targetProxy = A340DD18A8D50FD9FF7BEDEF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		7789B3FE1FCF7E665C59E506 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				036F8BD9D4F1B7467842B3A4 /* en */,
+				115989BAB479742C1F5196E8 /* ja */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		A9F151DF177251D2B0EC2871 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C10B69E5DF938A33AEEC9B9A /* en */,
+				B76F2990B7B59DF8981C5A3A /* ja */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		0F721804770E90F36CC38B49 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = DaysYetWidget/DaysYetWidget.entitlements;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = DaysYetWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.widget;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1C51D6EDE719E71491819B6F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = DaysYet/DaysYet.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = DaysYet/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		2B9D58309B28CAD1A698B2C4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 94HVVWXLK3;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.10;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Debug;
+		};
+		437F4599F44234234E3ECEF7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = DaysYetWidget/DaysYetWidget.entitlements;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = DaysYetWidget/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.widget;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		58556FFA2CCF8B3476FFD69A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 94HVVWXLK3;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 0.1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.10;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+			};
+			name = Release;
+		};
+		7A177C80D4586E8BFF9F2E48 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = DaysYet/DaysYet.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = DaysYet/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		DF12D9AB337B27B5A3C5CC53 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DaysYet.app/DaysYet";
+			};
+			name = Debug;
+		};
+		E3B0DEB278A91964BA2C3F00 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DaysYet.app/DaysYet";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		458908EE3D76C7905894DF7E /* Build configuration list for PBXNativeTarget "DaysYetTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				DF12D9AB337B27B5A3C5CC53 /* Debug */,
+				E3B0DEB278A91964BA2C3F00 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		619A58A4069E5C0BDDA361ED /* Build configuration list for PBXNativeTarget "DaysYetWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0F721804770E90F36CC38B49 /* Debug */,
+				437F4599F44234234E3ECEF7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		A9C78A752E950A39C717BAFA /* Build configuration list for PBXNativeTarget "DaysYet" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7A177C80D4586E8BFF9F2E48 /* Debug */,
+				1C51D6EDE719E71491819B6F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		AE34289370AF154504D227A2 /* Build configuration list for PBXProject "DaysYet" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2B9D58309B28CAD1A698B2C4 /* Debug */,
+				58556FFA2CCF8B3476FFD69A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 7B2BC7D121AD88D1A05765C6 /* Project object */;
+}
