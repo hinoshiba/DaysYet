@@ -1,0 +1,48 @@
+name: iOS CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-test:
+    runs-on: macos-15
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+
+      - name: Install pinned XcodeGen
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --silent --show-error \
+            https://github.com/yonaskolb/XcodeGen/releases/download/2.45.4/xcodegen.zip \
+            --output "${RUNNER_TEMP}/xcodegen.zip"
+          echo "090ec29491aad50aec10631bf6e62253fed733c50f3aab0f5ffc86bc170bdbef  ${RUNNER_TEMP}/xcodegen.zip" \
+            | shasum -a 256 --check
+          unzip -q "${RUNNER_TEMP}/xcodegen.zip" -d "${RUNNER_TEMP}"
+          echo "${RUNNER_TEMP}/xcodegen/bin" >> "${GITHUB_PATH}"
+
+      - name: Tool versions
+        run: |
+          xcodebuild -version
+          swift --version
+          xcodegen --version
+
+      - name: Compliance checks
+        run: ./Scripts/check-compliance.sh
+
+      - name: Validate Store screenshots
+        run: python3 Scripts/validate-store-assets.py --require-screenshots
+
+      - name: Build and test app plus Widget
+        run: ./build.sh test

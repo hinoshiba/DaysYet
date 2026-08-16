@@ -1,0 +1,15 @@
+DaysYet lets you view three different timelines in a single widget.
+
+THREE TIMELINES AT A GLANCE
+Choose from this week, this month, this year, a healthy-age goal you set, and a milestone date. Use the three selected in the app, or configure a different combination for each widget.
+
+TIME LEFT, PERCENTAGE, OR DATE
+Switch the displayed value between time left, percentage left, and the target date and time. Small and Medium Home Screen widgets are supported.
+
+JAPANESE AND ENGLISH
+Use the app, widget, and widget configuration in Japanese or English.
+
+ON DEVICE BY DESIGN
+No account is required. Your birth date and configured dates remain in the on-device area shared by the app and widget and are not sent to the developer. DaysYet contains no advertising or analytics SDKs. You can delete all saved data from Settings at any time.
+
+The healthy-age goal is a personal planning marker you choose. It is not a statistic, medical advice, diagnosis, or a prediction of your health or lifespan.

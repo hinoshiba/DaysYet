@@ -1,0 +1,60 @@
+name: Bug report
+description: Report a reproducible problem without sharing personal dates.
+title: "[Bug]: "
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: "Replace real birth dates and health details with fictional test values."
+  - type: input
+    id: version
+    attributes:
+      label: App version / build
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Device and iOS/iPadOS version
+      placeholder: "iPhone 17 Pro, iOS 26.5"
+    validations:
+      required: true
+  - type: dropdown
+    id: widget_family
+    attributes:
+      label: Widget context
+      options:
+        - Not Widget-related
+        - Home Screen small
+        - Home Screen medium
+  - type: input
+    id: locale
+    attributes:
+      label: Language, calendar, and timezone
+      placeholder: "Japanese, Gregorian, Asia/Tokyo"
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Use fictional replacement dates.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Privacy check
+      options:
+        - label: I removed personal dates, health details, credentials, and signing material.
+          required: true

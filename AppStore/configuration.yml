@@ -1,0 +1,21 @@
+app_name: DaysYet
+platform: ios
+primary_locale: ja
+additional_locales:
+  - en-US
+sku: daysyet-ios
+bundle_id: com.hinoshiba.daysyet
+widget_bundle_id: com.hinoshiba.daysyet.widget
+app_group: group.com.hinoshiba.daysyet
+widget_kind: com.hinoshiba.daysyet.widget.progress
+version: 0.1.0
+build: 1
+initial_release: true
+minimum_os: "17.0"
+device_families:
+  - iPhone
+  - iPad
+primary_category: PRODUCTIVITY
+secondary_category: LIFESTYLE
+standard_eula: true
+copyright: "2026 hinoshiba"

@@ -1,0 +1,126 @@
+{
+  "sourceLanguage" : "ja",
+  "strings" : {
+    "metric.healthy_age_goal" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Healthy-age goal" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "健康でいたい年齢" } }
+      }
+    },
+    "metric.milestone" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Milestone" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "大切な日" } }
+      }
+    },
+    "metric.month" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "This month" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "今月" } }
+      }
+    },
+    "metric.week" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "This week" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "今週" } }
+      }
+    },
+    "metric.year" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "This year" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "今年" } }
+      }
+    },
+    "widget.configuration.description" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Choose the three timelines shown in this widget." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ウィジェットに表示する3本の時間を選びます。" } }
+      }
+    },
+    "widget.configuration.first_metric" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "First timeline" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "1本目" } }
+      }
+    },
+    "widget.configuration.follows_app" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Use the three selected in the app" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "アプリで選んだ3本を使う" } }
+      }
+    },
+    "widget.configuration.second_metric" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Second timeline" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "2本目" } }
+      }
+    },
+    "widget.configuration.third_metric" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Third timeline" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "3本目" } }
+      }
+    },
+    "widget.configuration.title" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "DaysYet — Three timelines" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "DaysYet — 3つの時間" } }
+      }
+    },
+    "widget.configuration.value_style" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Value display" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "値の表示" } }
+      }
+    },
+    "widget.gallery.description" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Show three timelines selected from the calendar, a healthy-age goal, and a milestone." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "暦、健康でいたい年齢、目標日から選んだ3本を表示します。" } }
+      }
+    },
+    "widget.gallery.title" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "DaysYet — Three timelines" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "DaysYet — 3つの時間" } }
+      }
+    },
+    "widget.metric.type" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Timeline" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "表示する時間" } }
+      }
+    },
+    "widget.value_style.app_setting" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "App setting" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "アプリの設定" } }
+      }
+    },
+    "widget.value_style.percentage" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Percentage" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "割合" } }
+      }
+    },
+    "widget.value_style.remaining" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Time left" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "残り時間" } }
+      }
+    },
+    "widget.value_style.target_date" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Target date" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "終了日時" } }
+      }
+    },
+    "widget.value_style.type" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Value display" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "値の表示" } }
+      }
+    }
+  },
+  "version" : "1.0"
+}

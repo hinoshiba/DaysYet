@@ -1,0 +1,27 @@
+name: Feature request
+description: Propose one focused improvement.
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What user problem should this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed experience
+    validations:
+      required: true
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Review flags
+      options:
+        - label: This may add networking, analytics, an SDK, or cloud storage.
+        - label: This may add health claims or data.
+        - label: This may add a dependency, font, image, sound, or dataset.
+        - label: This may affect naming, branding, payment, or App Store metadata.
