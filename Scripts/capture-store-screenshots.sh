@@ -4,7 +4,7 @@ set -euo pipefail
 readonly REPOSITORY_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 readonly DERIVED_DATA="${REPOSITORY_ROOT}/.build/AppStoreScreenshots"
 readonly APP_PATH="${DAYSYET_SCREENSHOT_APP_PATH:-${DERIVED_DATA}/Build/Products/Debug-iphonesimulator/DaysYet.app}"
-readonly BUNDLE_ID="com.hinoshiba.daysyet"
+readonly BUNDLE_ID="daysyet.hinoshiba.com"
 
 if ! command -v magick >/dev/null 2>&1; then
   echo "error: ImageMagick is required to remove the simulator PNG alpha channel" >&2

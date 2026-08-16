@@ -12,4 +12,4 @@ Participants are expected to:
 
 Maintainers may edit or remove contributions and restrict participation when behavior threatens people, project safety, legal compliance, or productive collaboration. Enforcement decisions should be proportionate, documented privately, and avoid exposing reporters.
 
-Report conduct concerns through the repository’s private security/reporting channel until a dedicated monitored contact is published. Public retaliation against a reporter is not permitted.
+Report conduct concerns privately to [support@hinoshiba.com](mailto:support@hinoshiba.com). Do not include unrelated personal, health, credential, or secret information. Public retaliation against a reporter is not permitted.

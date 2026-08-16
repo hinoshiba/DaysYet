@@ -1,14 +1,206 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f3ea" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0c0e18" media="(prefers-color-scheme: dark)">
   <title>DaysYet — Three timelines, one glance</title>
-  <meta name="description" content="Choose three timelines and see time left, percentage left, or a target date in an iPhone and iPad widget.">
-  <link rel="canonical" href="https://www.hinoshiba.com/DaysYet/en/"><link rel="alternate" hreflang="ja" href="https://www.hinoshiba.com/DaysYet/"><link rel="alternate" hreflang="en" href="https://www.hinoshiba.com/DaysYet/en/"><link rel="alternate" hreflang="x-default" href="https://www.hinoshiba.com/DaysYet/"><link rel="stylesheet" href="../assets/site.css">
+  <meta name="description" content="Choose three timelines and see time left, percentage left, or a target date in an iPhone and iPad widget. Explore features, privacy, help, and terms on one page.">
+  <link rel="canonical" href="https://daysyet.hinoshiba.com/en/">
+  <link rel="alternate" hreflang="ja" href="https://daysyet.hinoshiba.com/">
+  <link rel="alternate" hreflang="en" href="https://daysyet.hinoshiba.com/en/">
+  <link rel="alternate" hreflang="x-default" href="https://daysyet.hinoshiba.com/">
+  <link rel="icon" href="../favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/apple-touch-icon.png">
+  <link rel="stylesheet" href="../assets/site.css">
 </head>
-<body><div class="shell"><header><a class="wordmark" href="./">DAYSYET</a><nav><a href="#features">Features</a><a href="./privacy/">Privacy</a><a href="./support/">Support</a><a class="lang" lang="ja" href="../">日本語</a></nav></header><main>
-  <div class="hero"><div><div class="eyebrow">Three timelines · One glance</div><h1>There is<br>time yet.</h1><p class="lead">Week, month, year, and personal milestones. Keep the three that matter in one quiet widget.</p><div class="actions"><a class="button" href="https://github.com/hinoshiba/DaysYet">Source code</a><a class="button secondary" href="./support/">Support</a></div></div><div class="widget" aria-label="Example DaysYet widget"><div class="widget-head"><span>DAYSYET</span><span>◌</span></div><div class="metric"><div class="metric-label"><span>This month</span><span>16d left</span></div><div class="track"><span class="fill coral"></span></div></div><div class="metric"><div class="metric-label"><span>This year</span><span>38% left</span></div><div class="track"><span class="fill amber"></span></div></div><div class="metric"><div class="metric-label"><span>A milestone</span><span>Until 8/16/31</span></div><div class="track"><span class="fill violet"></span></div></div></div></div>
-  <section id="features"><div class="eyebrow">Features</div><h2>Three bars. A clearer sense of time.</h2><p class="section-lead">Bring calendar periods and personal goals together. Choose timelines and values for the app or override them per widget.</p><div class="grid"><article class="card"><h3>Choose three</h3><p>Pick from this week, month, year, a healthy-age goal, and a milestone.</p></article><article class="card"><h3>Relative or absolute</h3><p>Switch between time left, percentage left, and target date and time.</p></article><article class="card"><h3>On device</h3><p>No account, ads, analytics SDKs, or transmission of your entered dates.</p></article></div></section>
-  <section><div class="eyebrow">Open source</div><h2>Inspect the code and the data flow.</h2><p class="section-lead">The app source is available under Apache License 2.0, with build instructions, dependency records, Privacy Manifests, and an on-device data map.</p><div class="actions"><a class="button secondary" href="https://github.com/hinoshiba/DaysYet">View on GitHub</a><a class="button secondary" href="./accessibility/">Accessibility</a></div></section>
-  </main><footer><span>© 2026 hinoshiba</span><span class="footer-links"><a href="./privacy/">Privacy</a><a href="./terms/">Terms</a><a href="./support/">Support</a><a href="https://github.com/hinoshiba/DaysYet">GitHub</a></span></footer></div></body>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="shell">
+    <header class="site-header">
+      <a class="wordmark" href="#top" aria-label="DaysYet home">DAYSYET</a>
+      <nav aria-label="Main navigation">
+        <a href="#features">Features</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#support">Support</a>
+        <a class="lang" lang="ja" hreflang="ja" href="../" data-language-base="../">日本語</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <div class="eyebrow">Three timelines · One glance</div>
+          <h1 id="hero-title">There is<br>time yet.</h1>
+          <p class="lead">Week, month, year, and personal milestones. Choose the three that matter and see your time in one quiet widget.</p>
+          <div class="actions">
+            <a class="button" href="#examples">See it in action</a>
+            <a class="button secondary" href="https://github.com/hinoshiba/DaysYet">Source code</a>
+          </div>
+          <ul class="hero-facts" aria-label="DaysYet highlights">
+            <li>iPhone / iPad</li>
+            <li>English / 日本語</li>
+            <li>On-device data only</li>
+          </ul>
+        </div>
+        <figure class="hero-figure">
+          <div class="screen-frame hero-screen">
+            <img src="../assets/screenshots/en/01-widget-time-left.webp" width="660" height="1434" fetchpriority="high" alt="DaysYet Widget screen showing time left for This month, This year, and A milestone as three progress bars.">
+          </div>
+          <figcaption><span aria-hidden="true"></span>Preview your three timelines as you choose them</figcaption>
+        </figure>
+      </section>
+
+      <nav class="section-nav" aria-label="On this page">
+        <span>What you will find here</span>
+        <a href="#examples">Screens</a>
+        <a href="#features">Features and setup</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#accessibility">Accessibility</a>
+        <a href="#support">Support</a>
+        <a href="#terms">Terms</a>
+      </nav>
+
+      <section id="examples" aria-labelledby="examples-title">
+        <div class="section-heading">
+          <div class="eyebrow">See it in action</div>
+          <h2 id="examples-title">Choose. Switch.<br>See it at a glance.</h2>
+          <p class="section-lead">The controls are simple. Pick the timelines and value style you want, and the preview reflects exactly what your widget will show.</p>
+        </div>
+        <div class="sample-grid">
+          <figure class="sample-card">
+            <div class="screen-frame">
+              <img src="../assets/screenshots/en/02-widget-target-date.webp" width="660" height="1434" loading="lazy" decoding="async" alt="DaysYet Widget screen showing the same three timelines as target dates instead of time left.">
+            </div>
+            <figcaption>
+              <span class="sample-number">01</span>
+              <div><h3>Change how values read</h3><p>Choose time left, percentage left, or target date and time. Use a date for a deadline or time left for everyday perspective.</p></div>
+            </figcaption>
+          </figure>
+          <figure class="sample-card">
+            <div class="screen-frame">
+              <img src="../assets/screenshots/en/03-time-library.webp" width="660" height="1434" loading="lazy" decoding="async" alt="DaysYet Time Library listing this week, month, year, a healthy-age goal, and a milestone with time left and progress bars.">
+            </div>
+            <figcaption>
+              <span class="sample-number">02</span>
+              <div><h3>See now from several distances</h3><p>Review everything from this week to a personal milestone. Choose the three for your widget from this library.</p></div>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section id="features" aria-labelledby="features-title">
+        <div class="section-heading">
+          <div class="eyebrow">Features</div>
+          <h2 id="features-title">Three bars. A clearer sense of time.</h2>
+          <p class="section-lead">Bring calendar periods and personal goals together. Choose timelines and values for the app, or override them per widget.</p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card"><span aria-hidden="true">01</span><h3>Choose three</h3><p>Pick what matters now from this week, month, year, a healthy-age goal, and a personal milestone.</p></article>
+          <article class="feature-card"><span aria-hidden="true">02</span><h3>Set each widget</h3><p>Use the three selected in the app, or override the timelines and value style for one particular widget.</p></article>
+          <article class="feature-card"><span aria-hidden="true">03</span><h3>Small and Medium</h3><p>Choose the size that fits your Home Screen. Text and progress tracks work together, so meaning never depends on color alone.</p></article>
+        </div>
+        <section class="steps" aria-labelledby="steps-title">
+          <div class="steps-copy"><div class="eyebrow">Three steps</div><h3 id="steps-title">Set up in three steps.</h3></div>
+          <ol>
+            <li><span>1</span><div><strong>Choose timelines</strong><p>Arrange the three you want on the app’s Widget tab.</p></div></li>
+            <li><span>2</span><div><strong>Choose a value</strong><p>Select Time Left, %, or Date for the perspective you need.</p></div></li>
+            <li><span>3</span><div><strong>Add to Home Screen</strong><p>Add a DaysYet widget and your choices appear there.</p></div></li>
+          </ol>
+        </section>
+      </section>
+
+      <section id="privacy" class="policy-section" aria-labelledby="privacy-title">
+        <div class="section-heading">
+          <div class="eyebrow">Privacy · Last updated 2026-08-16</div>
+          <h2 id="privacy-title">Your entries stay<br>on this device.</h2>
+        </div>
+        <div class="privacy-intro">
+          <div>
+            <p class="notice"><strong>In short:</strong> DaysYet does not collect or transmit user data and contains no tracking, advertising, analytics, or third-party SDKs. Your entries stay on device.</p>
+            <p class="section-lead">You can review the privacy summary in Settings and delete all saved data at any time.</p>
+          </div>
+          <figure class="privacy-figure">
+            <div class="screen-frame">
+              <img src="../assets/screenshots/en/04-privacy-settings.webp" width="660" height="1434" loading="lazy" decoding="async" alt="DaysYet Settings screen stating that entered dates stay on device and that the app uses no analytics SDKs or ads.">
+            </div>
+            <figcaption>The privacy summary is available inside the app.</figcaption>
+          </figure>
+        </div>
+        <div class="policy-grid">
+          <article><h3>1. Data stored and purpose</h3><p>DaysYet stores the birth date, healthy-age goal, milestone name and date, widget selections, and value-display style entered or selected by the user. The data is used only to calculate and display timelines in the app and widget.</p></article>
+          <article><h3>2. Storage and sharing</h3><p>The data stays in the on-device App Group container shared by the DaysYet app and its Widget Extension. It is not sent to the developer, a server, cloud service, analytics or advertising provider, or any other third party. DaysYet does not create accounts.</p><p>A Home Screen widget may be visible to anyone who can view the device.</p></article>
+          <article><h3>3. Tracking, advertising, and analytics</h3><p>DaysYet does not track users, show advertising, perform behavioral analytics, or include third-party SDKs. Apple may process App Store and operating-system information under Apple’s own privacy policy.</p></article>
+          <article><h3>4. Health-related information</h3><p>The healthy-age goal is a personal planning marker chosen by the user. DaysYet does not access HealthKit and does not provide medical advice, diagnosis, health measurement, treatment, or a lifespan prediction. No external health-statistics dataset is bundled.</p></article>
+          <article><h3>5. Deletion and retention</h3><p>Users can immediately remove saved data with “Delete all data” in Settings. App Group data after app deletion is managed by the operating system. Because the developer does not receive or retain user data from the app, there is no developer-side app record to delete.</p></article>
+          <article><h3>6. External links and changes</h3><p>The system browser opens only when the user taps a source-code, Privacy, or Support link. Before adding networking, cloud sync, crash analytics, server-side purchase validation, HealthKit, or a third-party SDK, the project will update this policy, its Privacy Manifests, and App Store privacy answers.</p></article>
+          <article class="wide"><h3>7. Information shared when contacting us</h3><p>Contact us at <a href="mailto:support@hinoshiba.com">support@hinoshiba.com</a>. If you choose to email us, your sender address and message are used to reply and provide necessary support. Do not send personal dates, health information, credentials, or private keys. To report a vulnerability, do not include details in the email; ask for a secure reporting channel.</p></article>
+        </div>
+      </section>
+
+      <section id="accessibility" class="band-section" aria-labelledby="accessibility-title">
+        <div><div class="eyebrow">Accessibility</div><h2 id="accessibility-title">Clear at a glance<br>and aloud.</h2></div>
+        <div class="band-copy">
+          <p>DaysYet is designed with VoiceOver, Dynamic Type, Dark Interface, contrast settings, and labels that do not rely on color alone.</p>
+          <p>Each bar exposes its title, time left, percentage, and target date as one meaningful spoken element. Visual information combines text with a progress track.</p>
+          <p>If a task is inaccessible or could be improved, <a href="#support">contact us</a> with the device, OS, assistive feature, and reproduction steps. Do not include personal dates.</p>
+        </div>
+      </section>
+
+      <section id="support" aria-labelledby="support-title">
+        <div class="section-heading">
+          <div class="eyebrow">Support</div>
+          <h2 id="support-title">We’re here to help.</h2>
+          <p class="section-lead">Start with the frequently asked questions. If the issue continues, contact support@hinoshiba.com.</p>
+        </div>
+        <div class="contact-grid">
+          <article class="contact-card"><div class="contact-icon" aria-hidden="true">?</div><div><h3>Bugs and questions</h3><p>Include the device and OS version, reproduction steps, and expected result. Replace personal dates with fictional values.</p><a href="mailto:support@hinoshiba.com?subject=DaysYet%20Support">support@hinoshiba.com <span aria-hidden="true">→</span></a></div></article>
+          <article class="contact-card"><div class="contact-icon" aria-hidden="true">!</div><div><h3>Security</h3><p>Include “Security” in the subject and ask for a secure reporting channel without including details. Do not send credentials or private keys.</p><a href="mailto:support@hinoshiba.com?subject=%5BSecurity%5D%20DaysYet">support@hinoshiba.com <span aria-hidden="true">→</span></a></div></article>
+        </div>
+        <div class="faq">
+          <h3>Frequently asked questions</h3>
+          <details open><summary>Add the widget</summary><p>Touch and hold an empty area of the Home Screen, choose Edit, and add a Widget. Search for DaysYet, then choose Small or Medium.</p></details>
+          <details><summary>Change the three timelines</summary><p>Select three timelines on the app’s Widget tab. To override one widget, touch and hold it, choose Edit Widget, disable “Use the three selected in the app,” and select its timelines.</p></details>
+          <details><summary>The widget is not updating</summary><p>Open DaysYet once and save the settings again, then confirm the widget remains on the Home Screen. The operating system schedules widget refreshes, so values do not update every second. If the problem continues, email <a href="mailto:support@hinoshiba.com?subject=DaysYet%20Support">support@hinoshiba.com</a> with the device, OS, and app version.</p></details>
+          <details><summary>Delete data</summary><p>Choose “Delete all data” from the Settings tab. Data entered in DaysYet is not stored on a developer server.</p></details>
+        </div>
+      </section>
+
+      <section id="terms" class="terms-section" aria-labelledby="terms-title">
+        <div class="section-heading">
+          <div class="eyebrow">Terms · Effective 2026-08-16</div>
+          <h2 id="terms-title">Terms of Use</h2>
+          <p class="section-lead">Apple’s <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Standard Licensed Application End User License Agreement</a> governs use of DaysYet. The following is additional product information and does not replace that agreement.</p>
+        </div>
+        <div class="terms-grid">
+          <article><h3>Purpose</h3><p>DaysYet is a personal information tool that displays time progress and goals chosen by the user. Its output is not a guarantee, advice, diagnosis, medical service, or prediction of future events.</p></article>
+          <article><h3>User responsibility</h3><p>You are responsible for your entries, where you place a visible widget, and decisions based on the displayed information. Confirm important deadlines with authoritative sources.</p></article>
+          <article><h3>Availability and changes</h3><p>Refresh timing and display can vary with the operating system, WidgetKit, and device settings. To the extent permitted by applicable law, continuous availability, completeness, and fitness for a particular purpose are not guaranteed. Features may change or end for security, legal, or quality reasons.</p></article>
+          <article><h3>Open source and brand</h3><p>The source code is available under Apache License 2.0. The DaysYet name, logo, app icon, and Store materials are not licensed under Apache-2.0. See the <a href="https://github.com/hinoshiba/DaysYet">public repository</a> for details.</p></article>
+          <article class="wide"><h3>Contact</h3><p>For product questions, email <a href="mailto:support@hinoshiba.com">support@hinoshiba.com</a> without including personal dates.</p></article>
+        </div>
+      </section>
+
+      <section id="source" class="source-section" aria-labelledby="source-title">
+        <div><div class="eyebrow">Open source</div><h2 id="source-title">Inspect the code<br>and the data flow.</h2></div>
+        <div><p>The app source is available under Apache License 2.0, with build instructions, dependency records, Privacy Manifests, and an on-device data map.</p><div class="actions"><a class="button" href="https://github.com/hinoshiba/DaysYet">View on GitHub</a><a class="button secondary" href="mailto:support@hinoshiba.com?subject=DaysYet%20Support">Contact support</a></div></div>
+      </section>
+    </main>
+
+    <footer>
+      <span>Operator: hinoshiba · © 2026</span>
+      <span class="footer-links"><a href="#privacy">Privacy</a><a href="#terms">Terms</a><a href="#support">Support</a><a href="mailto:support@hinoshiba.com">support@hinoshiba.com</a><a href="https://github.com/hinoshiba/DaysYet">GitHub</a></span>
+    </footer>
+  </div>
+  <script>
+    (() => {
+      const languageSwitch = document.querySelector("[data-language-base]");
+      const syncLanguageLink = () => languageSwitch.setAttribute("href", `${languageSwitch.dataset.languageBase}${window.location.hash}`);
+      window.addEventListener("hashchange", syncLanguageLink);
+      syncLanguageLink();
+    })();
+  </script>
+</body>
 </html>

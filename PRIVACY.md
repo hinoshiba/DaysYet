@@ -24,7 +24,7 @@ DaysYetは追跡、行動分析、広告、第三者SDKを使用しません。A
 
 ### 削除と保持期間
 
-設定画面の「すべてのデータを消去」で保存情報を直ちに削除できます。アプリ削除時のApp GroupデータはOSが管理します。開発者側には利用者データを保存しないため、開発者へ削除請求を行う対象はありません。
+設定画面の「すべてのデータを消去」で保存情報を直ちに削除できます。アプリ削除時のApp GroupデータはOSが管理します。開発者はアプリから利用者データを受信・保存しないため、開発者へ削除請求を行う対象はありません。
 
 ### 外部リンクと変更
 
@@ -32,7 +32,7 @@ DaysYetは追跡、行動分析、広告、第三者SDKを使用しません。A
 
 ### お問い合わせ
 
-公開の問い合わせ窓口は[GitHub Issues](https://github.com/hinoshiba/DaysYet/issues/new/choose)です。Issueの利用時は、GitHubがアカウント情報と投稿内容を[GitHub General Privacy Statement](https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement)に基づいて処理し、通常は公開します。個人の日付は書かず、訂正・削除はGitHub上で編集、削除、またはリポジトリ管理者へ依頼してください。脆弱性や秘密情報は公開Issueへ投稿せず、[Security Policy](SECURITY.md)に従ってください。
+お問い合わせ先は[support@hinoshiba.com](mailto:support@hinoshiba.com)です。利用者が任意にメールを送信した場合、送信元メールアドレスと本文を、返信および必要なサポート対応のために利用します。個人の日付、健康情報、認証情報、秘密鍵は送らないでください。脆弱性を報告する場合は、[Security Policy](SECURITY.md)に従い、メール本文に詳細を含めず、安全な報告経路を依頼してください。
 
 ## English
 
@@ -56,7 +56,7 @@ The healthy-age goal is a personal planning marker chosen by the user. DaysYet d
 
 ### Deletion and retention
 
-Users can immediately remove saved data with “Delete all data” in Settings. App Group data after app deletion is managed by the operating system. Because the developer does not receive or retain this data, there is no developer-side user record to delete.
+Users can immediately remove saved data with “Delete all data” in Settings. App Group data after app deletion is managed by the operating system. Because the developer does not receive or retain user data from the app, there is no developer-side app record to delete.
 
 ### External links and changes
 
@@ -64,4 +64,4 @@ The system browser opens only when the user taps a source-code, Privacy, or Supp
 
 ### Contact
 
-Use [GitHub Issues](https://github.com/hinoshiba/DaysYet/issues/new/choose) for public support. When you use Issues, GitHub processes your account information and post under the [GitHub General Privacy Statement](https://docs.github.com/site-policy/privacy-policies/github-general-privacy-statement), and the post is normally public. Do not include personal dates. You can edit or delete your post on GitHub, or ask the repository maintainers for help. Do not post vulnerabilities or secrets in a public issue; follow the [Security Policy](SECURITY.md) instead.
+Contact us at [support@hinoshiba.com](mailto:support@hinoshiba.com). If you choose to email us, your sender address and message are used to reply and provide necessary support. Do not send personal dates, health information, credentials, or private keys. To report a vulnerability, follow the [Security Policy](SECURITY.md): do not include vulnerability details in the email and ask for a secure reporting channel.

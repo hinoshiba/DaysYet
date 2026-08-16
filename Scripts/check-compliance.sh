@@ -4,6 +4,13 @@ set -euo pipefail
 readonly MODE="${1:-development}"
 readonly ICON_PATH="DaysYet/Assets.xcassets/AppIcon.appiconset/AppIcon.png"
 readonly EXPECTED_ICON_SHA256="0e51cbe928a9239a4a58a34986cfbc950250704903f035f42a40d87b8b1a636f"
+readonly EXPECTED_SUPPORT_EMAIL="support@hinoshiba.com"
+readonly EXPECTED_APP_ID="daysyet.hinoshiba.com"
+readonly EXPECTED_WIDGET_ID="${EXPECTED_APP_ID}.widget"
+readonly EXPECTED_TEST_ID="${EXPECTED_APP_ID}.tests"
+readonly EXPECTED_APP_GROUP="group.${EXPECTED_APP_ID}"
+readonly EXPECTED_WIDGET_KIND="${EXPECTED_WIDGET_ID}.progress"
+readonly LEGACY_APP_ID="$(printf '%s.%s.%s' com hinoshiba daysyet)"
 
 required_files=(
   LICENSE NOTICE TRADEMARKS.md THIRD_PARTY_NOTICES.md ASSET_LICENSES.md
@@ -11,9 +18,6 @@ required_files=(
   docs/DEPENDENCY_POLICY.md docs/PRIVACY_DATA_MAP.md docs/RELEASING.md
   AppStore/configuration.yml AppStore/README.md AppStore/review/notes-en.txt
   http_dist/.nojekyll http_dist/index.html http_dist/en/index.html
-  http_dist/privacy/index.html http_dist/en/privacy/index.html
-  http_dist/terms/index.html http_dist/en/terms/index.html
-  http_dist/support/index.html http_dist/en/support/index.html
   Shared/Localizable.xcstrings
   DaysYet/ja.lproj/InfoPlist.strings DaysYet/en.lproj/InfoPlist.strings
   DaysYetWidget/ja.lproj/InfoPlist.strings DaysYetWidget/en.lproj/InfoPlist.strings
@@ -33,6 +37,24 @@ assert_contains() {
   local expected="$2"
   if ! grep -F -q "${expected}" "${file}"; then
     echo "error: expected value is missing from ${file}: ${expected}" >&2
+    exit 1
+  fi
+}
+
+assert_line() {
+  local file="$1"
+  local expected="$2"
+  if ! awk -v expected="${expected}" '
+    {
+      line = $0
+      sub(/^[[:space:]]*/, "", line)
+      if (line == expected) {
+        found = 1
+      }
+    }
+    END { exit found ? 0 : 1 }
+  ' "${file}"; then
+    echo "error: expected line is missing from ${file}: ${expected}" >&2
     exit 1
   fi
 }
@@ -74,12 +96,38 @@ if find . -name Package.resolved -o -name Podfile.lock -o -name Cartfile.resolve
 fi
 
 assert_contains project.yml 'developmentLanguage: ja'
-assert_contains project.yml 'PRODUCT_BUNDLE_IDENTIFIER: com.hinoshiba.daysyet'
-assert_contains project.yml 'PRODUCT_BUNDLE_IDENTIFIER: com.hinoshiba.daysyet.widget'
-assert_contains Shared/ProfileRepository.swift 'group.com.hinoshiba.daysyet'
-assert_contains DaysYet/DaysYet.entitlements 'group.com.hinoshiba.daysyet'
-assert_contains DaysYetWidget/DaysYetWidget.entitlements 'group.com.hinoshiba.daysyet'
-assert_contains DaysYetWidget/DaysYetWidget.swift 'com.hinoshiba.daysyet.widget.progress'
+assert_line project.yml "bundleIdPrefix: ${EXPECTED_APP_ID}"
+assert_line project.yml "PRODUCT_BUNDLE_IDENTIFIER: ${EXPECTED_APP_ID}"
+assert_line project.yml "PRODUCT_BUNDLE_IDENTIFIER: ${EXPECTED_WIDGET_ID}"
+assert_line project.yml "PRODUCT_BUNDLE_IDENTIFIER: ${EXPECTED_TEST_ID}"
+assert_contains Shared/ProfileRepository.swift "${EXPECTED_APP_GROUP}"
+assert_contains DaysYet/DaysYet.entitlements "${EXPECTED_APP_GROUP}"
+assert_contains DaysYetWidget/DaysYetWidget.entitlements "${EXPECTED_APP_GROUP}"
+assert_contains DaysYetWidget/DaysYetWidget.swift "${EXPECTED_WIDGET_KIND}"
+assert_line AppStore/configuration.yml "bundle_id: ${EXPECTED_APP_ID}"
+assert_line AppStore/configuration.yml "widget_bundle_id: ${EXPECTED_WIDGET_ID}"
+assert_line AppStore/configuration.yml "app_group: ${EXPECTED_APP_GROUP}"
+assert_line AppStore/configuration.yml "widget_kind: ${EXPECTED_WIDGET_KIND}"
+
+if rg --hidden \
+  --glob '!.git/**' \
+  --glob '!.build/**' \
+  --glob '!build/**' \
+  --glob '!DaysYet.xcodeproj/**' \
+  --glob '!**/__pycache__/**' \
+  -F -q "${LEGACY_APP_ID}" .; then
+  echo "error: legacy app identifier remains in the repository" >&2
+  exit 1
+fi
+
+public_contact_files=(
+  README.md PRIVACY.md SECURITY.md CODE_OF_CONDUCT.md
+  docs/RELEASING.md AppStore/README.md AppStore/review/submission-checklist.md
+  http_dist/index.html http_dist/en/index.html
+)
+for public_contact_file in "${public_contact_files[@]}"; do
+  assert_contains "${public_contact_file}" "${EXPECTED_SUPPORT_EMAIL}"
+done
 
 python3 Scripts/validate-store-assets.py
 
@@ -92,6 +140,10 @@ if [[ "${MODE}" == "--release" ]]; then
       exit 1
     fi
   done
+  if [[ "${APP_REVIEW_CONTACT_EMAIL}" != "${EXPECTED_SUPPORT_EMAIL}" ]]; then
+    echo "error: APP_REVIEW_CONTACT_EMAIL must be ${EXPECTED_SUPPORT_EMAIL}" >&2
+    exit 1
+  fi
 elif [[ "${MODE}" != "development" ]]; then
   echo "usage: ./Scripts/check-compliance.sh [--release]" >&2
   exit 2
