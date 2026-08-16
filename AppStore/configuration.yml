@@ -8,8 +8,8 @@ bundle_id: com.hinoshiba.daysyet
 widget_bundle_id: com.hinoshiba.daysyet.widget
 app_group: group.com.hinoshiba.daysyet
 widget_kind: com.hinoshiba.daysyet.widget.progress
-version: 0.1.0
-build: 1
+version: 0.1.1
+build: 2
 initial_release: true
 minimum_os: "17.0"
 device_families:
