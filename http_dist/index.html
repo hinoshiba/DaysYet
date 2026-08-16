@@ -3,26 +3,204 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f3ea" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0c0e18" media="(prefers-color-scheme: dark)">
   <title>DaysYet — 3本のバーで時間をひと目に</title>
-  <meta name="description" content="今週、今月、今年、人生の目標から3つを選び、残り時間・割合・日時をウィジェットで見渡すiPhone / iPadアプリ。">
-  <link rel="canonical" href="https://www.hinoshiba.com/DaysYet/">
-  <link rel="alternate" hreflang="ja" href="https://www.hinoshiba.com/DaysYet/">
-  <link rel="alternate" hreflang="en" href="https://www.hinoshiba.com/DaysYet/en/">
-  <link rel="alternate" hreflang="x-default" href="https://www.hinoshiba.com/DaysYet/">
+  <meta name="description" content="今週、今月、今年、人生の目標から3つを選び、残り時間・割合・日時をウィジェットで見渡すiPhone / iPadアプリ。機能、使い方、プライバシー、サポートを紹介します。">
+  <link rel="canonical" href="https://daysyet.hinoshiba.com/">
+  <link rel="alternate" hreflang="ja" href="https://daysyet.hinoshiba.com/">
+  <link rel="alternate" hreflang="en" href="https://daysyet.hinoshiba.com/en/">
+  <link rel="alternate" hreflang="x-default" href="https://daysyet.hinoshiba.com/">
+  <link rel="icon" href="./favicon.ico" sizes="any">
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png">
   <link rel="stylesheet" href="./assets/site.css">
 </head>
 <body>
+  <a class="skip-link" href="#main">本文へ移動</a>
   <div class="shell">
-    <header><a class="wordmark" href="./">DAYSYET</a><nav><a href="#features">機能</a><a href="./privacy/">プライバシー</a><a href="./support/">サポート</a><a class="lang" lang="en" href="./en/">EN</a></nav></header>
-    <main>
-      <div class="hero">
-        <div><div class="eyebrow">Three timelines · One glance</div><h1>時間は、<br>まだある。</h1><p class="lead">今週、今月、今年、人生の目標。大切な3本だけを、静かなウィジェットで見渡せます。</p><div class="actions"><a class="button" href="https://github.com/hinoshiba/DaysYet">ソースコード</a><a class="button secondary" href="./support/">サポート</a></div></div>
-        <div class="widget" aria-label="DaysYetウィジェットの表示例"><div class="widget-head"><span>DAYSYET</span><span>◌</span></div><div class="metric"><div class="metric-label"><span>今月</span><span>あと16日</span></div><div class="track"><span class="fill coral"></span></div></div><div class="metric"><div class="metric-label"><span>今年</span><span>残り38%</span></div><div class="track"><span class="fill amber"></span></div></div><div class="metric"><div class="metric-label"><span>大切な節目</span><span>2031/8/16まで</span></div><div class="track"><span class="fill violet"></span></div></div></div>
-      </div>
-      <section id="features"><div class="eyebrow">Features</div><h2>3本だから、迷わず見渡せる。</h2><p class="section-lead">暦と自分の目標を1つに。表示する時間と値は、アプリ全体でもウィジェットごとでも選べます。</p><div class="grid"><article class="card"><h3>選べる3本</h3><p>今週・今月・今年・健康でいたい年齢・大切な日から選択。</p></article><article class="card"><h3>絶対値にも割合にも</h3><p>残り時間、残り割合、終了日時を用途に合わせて切り替え。</p></article><article class="card"><h3>端末内だけ</h3><p>アカウント、広告、分析SDK、入力データの外部送信はありません。</p></article></div></section>
-      <section><div class="eyebrow">Open source</div><h2>コードも、データの流れも公開。</h2><p class="section-lead">アプリ本体はApache License 2.0で公開しています。ビルド手順、依存台帳、Privacy Manifest、データの保存範囲を確認できます。</p><div class="actions"><a class="button secondary" href="https://github.com/hinoshiba/DaysYet">GitHubで見る</a><a class="button secondary" href="./accessibility/">アクセシビリティ</a></div></section>
+    <header class="site-header">
+      <a class="wordmark" href="#top" aria-label="DaysYet トップ">DAYSYET</a>
+      <nav aria-label="主なナビゲーション">
+        <a href="#features">機能</a>
+        <a href="#privacy">プライバシー</a>
+        <a href="#support">サポート</a>
+        <a class="lang" lang="en" hreflang="en" href="./en/" data-language-base="./en/">EN</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <div class="eyebrow">Three timelines · One glance</div>
+          <h1 id="hero-title">時間は、<br>まだある。</h1>
+          <p class="lead">今週、今月、今年、人生の目標。大切な3本だけを選び、静かなウィジェットで、いまの時間を見渡せます。</p>
+          <div class="actions">
+            <a class="button" href="#examples">画面で見る</a>
+            <a class="button secondary" href="https://github.com/hinoshiba/DaysYet">ソースコード</a>
+          </div>
+          <ul class="hero-facts" aria-label="DaysYetの特徴">
+            <li>iPhone / iPad</li>
+            <li>日本語 / English</li>
+            <li>データは端末内だけ</li>
+          </ul>
+        </div>
+        <figure class="hero-figure">
+          <div class="screen-frame hero-screen">
+            <img src="./assets/screenshots/ja/01-widget-time-left.webp" width="660" height="1434" fetchpriority="high" alt="DaysYetのウィジェット設定画面。今月、今年、大切な節目の残り時間が3本のバーで表示されている。">
+          </div>
+          <figcaption><span aria-hidden="true"></span>選んだ3本を、その場でプレビュー</figcaption>
+        </figure>
+      </section>
+
+      <nav class="section-nav" aria-label="このページの内容">
+        <span>このページで分かること</span>
+        <a href="#examples">画面例</a>
+        <a href="#features">機能と使い方</a>
+        <a href="#privacy">プライバシー</a>
+        <a href="#accessibility">アクセシビリティ</a>
+        <a href="#support">サポート</a>
+        <a href="#terms">利用条件</a>
+      </nav>
+
+      <section id="examples" aria-labelledby="examples-title">
+        <div class="section-heading">
+          <div class="eyebrow">See it in action</div>
+          <h2 id="examples-title">選ぶ。切り替える。<br>あとは、ひと目で。</h2>
+          <p class="section-lead">画面の操作はシンプルです。見たい時間と値の表し方を選ぶと、ウィジェットの3本へそのまま反映されます。</p>
+        </div>
+        <div class="sample-grid">
+          <figure class="sample-card">
+            <div class="screen-frame">
+              <img src="./assets/screenshots/ja/02-widget-target-date.webp" width="660" height="1434" loading="lazy" decoding="async" alt="同じ3つの時間を、残り時間ではなく目標日時で表示したDaysYetのウィジェット設定画面。">
+            </div>
+            <figcaption>
+              <span class="sample-number">01</span>
+              <div><h3>値の見せ方を切り替える</h3><p>残り時間、残り割合、終了日時から選択。予定には日時、日々の意識には残り時間など、目的に合わせられます。</p></div>
+            </figcaption>
+          </figure>
+          <figure class="sample-card">
+            <div class="screen-frame">
+              <img src="./assets/screenshots/ja/03-time-library.webp" width="660" height="1434" loading="lazy" decoding="async" alt="今週、今月、今年、健康でいたい年齢、大切な節目を、残り時間と進捗バーで並べた時間一覧。">
+            </div>
+            <figcaption>
+              <span class="sample-number">02</span>
+              <div><h3>いまを、いくつもの距離から見る</h3><p>今週から人生の目標までを一覧で確認。ウィジェットに置く3本は、ここから選べます。</p></div>
+            </figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section id="features" aria-labelledby="features-title">
+        <div class="section-heading">
+          <div class="eyebrow">Features</div>
+          <h2 id="features-title">3本だから、迷わず見渡せる。</h2>
+          <p class="section-lead">暦と自分の目標を1つに。表示する時間と値は、アプリ全体でもウィジェットごとでも選べます。</p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card"><span aria-hidden="true">01</span><h3>選べる3本</h3><p>今週・今月・今年・健康でいたい年齢・大切な日から、いま大切な3つを選択できます。</p></article>
+          <article class="feature-card"><span aria-hidden="true">02</span><h3>ウィジェットごとに設定</h3><p>アプリで選んだ3本を使うほか、特定のウィジェットだけ内容や表示形式を上書きできます。</p></article>
+          <article class="feature-card"><span aria-hidden="true">03</span><h3>小・中サイズに対応</h3><p>ホーム画面に合わせてSmallまたはMediumを選択。文字とバーを併用し、色だけに頼らず伝えます。</p></article>
+        </div>
+        <section class="steps" aria-labelledby="steps-title">
+          <div class="steps-copy"><div class="eyebrow">Three steps</div><h3 id="steps-title">始め方も、3ステップ。</h3></div>
+          <ol>
+            <li><span>1</span><div><strong>時間を選ぶ</strong><p>アプリの「ウィジェット」タブで、表示したい3本を並べます。</p></div></li>
+            <li><span>2</span><div><strong>値を選ぶ</strong><p>残り・%・日時から、いま見たい表現を選びます。</p></div></li>
+            <li><span>3</span><div><strong>ホーム画面へ</strong><p>DaysYetウィジェットを追加すると、選択した内容が表示されます。</p></div></li>
+          </ol>
+        </section>
+      </section>
+
+      <section id="privacy" class="policy-section" aria-labelledby="privacy-title">
+        <div class="section-heading">
+          <div class="eyebrow">Privacy · 最終更新 2026-08-16</div>
+          <h2 id="privacy-title">入力した情報は、<br>この端末だけに。</h2>
+        </div>
+        <div class="privacy-intro">
+          <div>
+            <p class="notice"><strong>要点:</strong> DaysYetは利用者データを収集・送信せず、追跡、広告、分析SDKを使用しません。入力した情報は端末内だけに保存されます。</p>
+            <p class="section-lead">設定画面から保存内容を確認し、いつでもすべてのデータを消去できます。</p>
+          </div>
+          <figure class="privacy-figure">
+            <div class="screen-frame">
+              <img src="./assets/screenshots/ja/04-privacy-settings.webp" width="660" height="1434" loading="lazy" decoding="async" alt="入力した日付は送信されず、分析SDKや広告を使わないことを示すDaysYetの設定画面。">
+            </div>
+            <figcaption>プライバシー設定もアプリ内から確認できます。</figcaption>
+          </figure>
+        </div>
+        <div class="policy-grid">
+          <article><h3>1. 保存する情報と目的</h3><p>生年月日、健康でいたい年齢、目標名、目標日時、ウィジェットに表示する項目と表示形式を保存します。これらは時間の計算、アプリ画面、ウィジェット表示にだけ使います。</p></article>
+          <article><h3>2. 保存場所と共有範囲</h3><p>AppleのApp Group機能を使い、端末内でアプリとWidget Extensionが共有する専用領域へ保存します。開発者のサーバー、クラウド、分析・広告事業者、その他第三者へ送信せず、アカウントも作成しません。</p><p>ホーム画面のウィジェットは、端末を見ることのできる人の目に触れる場合があります。</p></article>
+          <article><h3>3. 追跡・広告・分析</h3><p>追跡、行動分析、広告、第三者SDKを使用しません。AppleがApp StoreやOSの提供に伴って処理する情報には、Appleのプライバシーポリシーが適用されます。</p></article>
+          <article><h3>4. 健康に関する情報</h3><p>「健康でいたい年齢」は利用者自身が決める計画上の目標です。HealthKitへアクセスせず、医学的診断、健康測定、治療、実際の寿命予測を行いません。外部の健康統計データも同梱していません。</p></article>
+          <article><h3>5. 削除と保持期間</h3><p>設定画面の「すべてのデータを消去」で保存情報を直ちに削除できます。アプリ削除後のApp GroupデータはOSが管理します。開発者はアプリから利用者データを受信・保存しないため、開発者へ削除請求を行う対象はありません。</p></article>
+          <article><h3>6. 外部リンクと変更</h3><p>利用者がソースコード、プライバシー、サポートへのリンクをタップした場合に限り、システムブラウザが開きます。外部通信、クラウド同期、クラッシュ解析、購入検証サーバー、HealthKit、第三者SDKなどを追加する場合は、この方針、Privacy Manifest、App Store Privacy回答を事前に更新します。</p></article>
+          <article class="wide"><h3>7. お問い合わせ時の情報</h3><p>お問い合わせ先は<a href="mailto:support@hinoshiba.com">support@hinoshiba.com</a>です。利用者が任意にメールを送信した場合、送信元メールアドレスと本文を、返信および必要なサポート対応のために利用します。個人の日付、健康情報、認証情報、秘密鍵は送らないでください。脆弱性を報告する場合は、メール本文に詳細を含めず、安全な報告経路を依頼してください。</p></article>
+        </div>
+      </section>
+
+      <section id="accessibility" class="band-section" aria-labelledby="accessibility-title">
+        <div><div class="eyebrow">Accessibility</div><h2 id="accessibility-title">ひと目にも、<br>読み上げにも。</h2></div>
+        <div class="band-copy">
+          <p>DaysYetは、VoiceOver、Dynamic Type、Dark Interface、コントラスト設定、色だけに依存しないラベルを考慮して設計しています。</p>
+          <p>各バーはタイトル、残り時間、割合、目標日時を一つの意味ある要素として読み上げます。視覚表示ではテキストとバーを併用します。</p>
+          <p>利用できない操作や改善点がある場合は、端末、OS、利用している支援機能、再現手順を添えて<a href="#support">お知らせください</a>。個人の日付は送らないでください。</p>
+        </div>
+      </section>
+
+      <section id="support" aria-labelledby="support-title">
+        <div class="section-heading">
+          <div class="eyebrow">Support</div>
+          <h2 id="support-title">困ったときに。</h2>
+          <p class="section-lead">まずはよくある質問をご確認ください。解決しない場合は、support@hinoshiba.comへお問い合わせください。</p>
+        </div>
+        <div class="contact-grid">
+          <article class="contact-card"><div class="contact-icon" aria-hidden="true">?</div><div><h3>不具合・質問</h3><p>端末やOSのバージョン、再現手順、期待した表示を添えてください。個人の日付は架空の値に置き換えてください。</p><a href="mailto:support@hinoshiba.com?subject=DaysYet%20Support">support@hinoshiba.com <span aria-hidden="true">→</span></a></div></article>
+          <article class="contact-card"><div class="contact-icon" aria-hidden="true">!</div><div><h3>セキュリティ</h3><p>件名に「Security」と記載し、詳細を含めず安全な報告経路をご依頼ください。認証情報や秘密鍵は送らないでください。</p><a href="mailto:support@hinoshiba.com?subject=%5BSecurity%5D%20DaysYet">support@hinoshiba.com <span aria-hidden="true">→</span></a></div></article>
+        </div>
+        <div class="faq">
+          <h3>よくある質問</h3>
+          <details open><summary>ウィジェットを追加する</summary><p>ホーム画面の空いている場所を長押しし、「編集」からウィジェットを追加します。DaysYetを検索し、小または中サイズを選んでください。</p></details>
+          <details><summary>表示する3本を変える</summary><p>アプリのウィジェットタブで3本を選ぶと、変更がウィジェットへ反映されます。特定のウィジェットだけ変える場合は、そのウィジェットを長押しして「ウィジェットを編集」を開き、「アプリで選んだ3本を使う」をオフにします。</p></details>
+          <details><summary>表示が更新されない</summary><p>一度DaysYetを開いて設定を保存し直し、ウィジェットが追加されていることを確認してください。OSが更新時刻を調整するため、常に秒単位で更新されるものではありません。改善しない場合は端末・OS・アプリバージョンを添えて<a href="mailto:support@hinoshiba.com?subject=DaysYet%20Support">support@hinoshiba.com</a>へお問い合わせください。</p></details>
+          <details><summary>データを消去する</summary><p>DaysYetの設定タブから「すべてのデータを消去」を選びます。DaysYetに入力したデータは開発者のサーバーに保存されません。</p></details>
+        </div>
+      </section>
+
+      <section id="terms" class="terms-section" aria-labelledby="terms-title">
+        <div class="section-heading">
+          <div class="eyebrow">Terms · 発効日 2026-08-16</div>
+          <h2 id="terms-title">利用条件</h2>
+          <p class="section-lead">DaysYetの利用にはAppleの<a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">標準使用許諾契約</a>が適用されます。以下は製品に関する追加情報であり、その契約を置き換えるものではありません。</p>
+        </div>
+        <div class="terms-grid">
+          <article><h3>目的</h3><p>DaysYetは、時間の進捗と利用者自身が設定した目標を表示する個人向け情報ツールです。表示は保証、助言、診断、医療行為、または将来の出来事の予測ではありません。</p></article>
+          <article><h3>利用者の責任</h3><p>入力内容、ウィジェットを見える場所へ置くこと、表示された情報に基づく判断は利用者の責任です。重要な期限は公式情報や一次資料でも確認してください。</p></article>
+          <article><h3>可用性と変更</h3><p>OS、WidgetKit、端末設定などにより更新時刻や表示が変わることがあります。適用法で認められる範囲で、機能の継続、完全性、特定目的への適合を保証しません。セキュリティ、法令、品質のために機能を変更・終了する場合があります。</p></article>
+          <article><h3>OSSとブランド</h3><p>ソースコードにはApache License 2.0が適用されます。DaysYetの名称、ロゴ、App Icon、Store素材は同ライセンスの対象外です。詳細は<a href="https://github.com/hinoshiba/DaysYet">公開リポジトリ</a>をご覧ください。</p></article>
+          <article class="wide"><h3>お問い合わせ</h3><p>製品についてのご質問は、個人の日付を含めずに<a href="mailto:support@hinoshiba.com">support@hinoshiba.com</a>へお送りください。</p></article>
+        </div>
+      </section>
+
+      <section id="source" class="source-section" aria-labelledby="source-title">
+        <div><div class="eyebrow">Open source</div><h2 id="source-title">コードも、<br>データの流れも公開。</h2></div>
+        <div><p>アプリ本体はApache License 2.0で公開しています。ビルド手順、依存台帳、Privacy Manifest、端末内でのデータ保存範囲を確認できます。</p><div class="actions"><a class="button" href="https://github.com/hinoshiba/DaysYet">GitHubで見る</a><a class="button secondary" href="mailto:support@hinoshiba.com?subject=DaysYet%20Support">お問い合わせ</a></div></div>
+      </section>
     </main>
-    <footer><span>© 2026 hinoshiba</span><span class="footer-links"><a href="./privacy/">Privacy</a><a href="./terms/">Terms</a><a href="./support/">Support</a><a href="https://github.com/hinoshiba/DaysYet">GitHub</a></span></footer>
+
+    <footer>
+      <span>Operator: hinoshiba · © 2026</span>
+      <span class="footer-links"><a href="#privacy">Privacy</a><a href="#terms">Terms</a><a href="#support">Support</a><a href="mailto:support@hinoshiba.com">support@hinoshiba.com</a><a href="https://github.com/hinoshiba/DaysYet">GitHub</a></span>
+    </footer>
   </div>
+  <script>
+    (() => {
+      const languageSwitch = document.querySelector("[data-language-base]");
+      const syncLanguageLink = () => languageSwitch.setAttribute("href", `${languageSwitch.dataset.languageBase}${window.location.hash}`);
+      window.addEventListener("hashchange", syncLanguageLink);
+      syncLanguageLink();
+    })();
+  </script>
 </body>
 </html>

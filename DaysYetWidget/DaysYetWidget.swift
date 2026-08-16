@@ -170,7 +170,7 @@ private enum WidgetPalette {
 }
 
 struct DaysYetWidget: Widget {
-    let kind = "com.hinoshiba.daysyet.widget.progress"
+    let kind = "daysyet.hinoshiba.com.widget.progress"
 
     var body: some WidgetConfiguration {
         AppIntentConfiguration(

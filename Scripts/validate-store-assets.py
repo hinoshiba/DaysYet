@@ -7,7 +7,7 @@ import struct
 import sys
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import unquote, urlsplit
 from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -26,30 +26,76 @@ def read(path: Path) -> str:
     return path.read_text(encoding="utf-8").strip()
 
 
-class LinkParser(HTMLParser):
+class PageParser(HTMLParser):
     def __init__(self) -> None:
         super().__init__()
         self.links: list[str] = []
+        self.images: list[tuple[str | None, str | None]] = []
+        self.anchors: set[str] = set()
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
-        if tag not in {"a", "link"}:
-            return
-        for key, value in attrs:
-            if key == "href" and value:
-                self.links.append(value)
+        attributes = dict(attrs)
+        anchor = attributes.get("id")
+        if anchor:
+            self.anchors.add(anchor)
+        if tag in {"a", "link"}:
+            href = attributes.get("href")
+            if href:
+                self.links.append(href)
+        if tag == "img":
+            self.images.append((attributes.get("src"), attributes.get("alt")))
+
+
+def local_target(page: Path, path: str) -> Path:
+    decoded = unquote(path)
+    target = SITE / decoded.lstrip("/") if decoded.startswith("/") else page.parent / decoded
+    target = target.resolve()
+    if decoded.endswith("/"):
+        target /= "index.html"
+    try:
+        target.relative_to(SITE.resolve())
+    except ValueError:
+        fail(f"local reference escapes http_dist in {page.relative_to(SITE)}: {path}")
+    return target
 
 
 def validate_site() -> None:
-    required_pages = [
-        "index.html", "en/index.html", "privacy/index.html", "en/privacy/index.html",
-        "terms/index.html", "en/terms/index.html", "support/index.html", "en/support/index.html",
-        "accessibility/index.html", "en/accessibility/index.html",
-    ]
+    required_pages = {"index.html": "ja", "en/index.html": "en"}
+    actual_pages = {path.relative_to(SITE).as_posix() for path in SITE.rglob("*.html")}
+    if actual_pages != set(required_pages):
+        missing = sorted(set(required_pages) - actual_pages)
+        unexpected = sorted(actual_pages - set(required_pages))
+        details = []
+        if missing:
+            details.append(f"missing: {', '.join(missing)}")
+        if unexpected:
+            details.append(f"unexpected: {', '.join(unexpected)}")
+        fail(f"http_dist must contain exactly index.html and en/index.html ({'; '.join(details)})")
+
+    required_anchors = {"examples", "features", "privacy", "terms", "support", "accessibility"}
+    screenshot_names = {
+        "01-widget-time-left.webp", "02-widget-target-date.webp",
+        "03-time-library.webp", "04-privacy-settings.webp",
+    }
+    expected_images = {
+        "index.html": {f"./assets/screenshots/ja/{name}" for name in screenshot_names},
+        "en/index.html": {f"../assets/screenshots/en/{name}" for name in screenshot_names},
+    }
+    expected_canonicals = {
+        "index.html": "https://daysyet.hinoshiba.com/",
+        "en/index.html": "https://daysyet.hinoshiba.com/en/",
+    }
+    expected_icons = {
+        "index.html": {"./favicon.ico", "./assets/favicon-32.png", "./assets/apple-touch-icon.png"},
+        "en/index.html": {"../favicon.ico", "../assets/favicon-32.png", "../assets/apple-touch-icon.png"},
+    }
+    support_mailto = "mailto:support@hinoshiba.com"
     forbidden = ["PLACEHOLDER", "TODO", "TBD", "Provisional brand", "Terms · Draft", "公開準備中"]
-    for relative in required_pages:
+    parsed_pages: dict[Path, PageParser] = {}
+    for relative, language in required_pages.items():
         page = SITE / relative
         content = read(page)
-        expected_lang = 'lang="en"' if relative.startswith("en/") else 'lang="ja"'
+        expected_lang = f'lang="{language}"'
         if expected_lang not in content:
             fail(f"incorrect or missing html language: http_dist/{relative}")
         for marker in forbidden:
@@ -57,23 +103,55 @@ def validate_site() -> None:
                 fail(f"release placeholder in http_dist/{relative}: {marker}")
         if 'hreflang="ja"' not in content or 'hreflang="en"' not in content:
             fail(f"missing ja/en alternate links: http_dist/{relative}")
+        expected_canonical = f'rel="canonical" href="{expected_canonicals[relative]}"'
+        if expected_canonical not in content:
+            fail(f"incorrect canonical URL in http_dist/{relative}")
 
-        parser = LinkParser()
+        parser = PageParser()
         parser.feed(content)
+        parsed_pages[page.resolve()] = parser
+        missing_anchors = sorted(required_anchors - parser.anchors)
+        if missing_anchors:
+            fail(f"missing required anchors in http_dist/{relative}: {', '.join(missing_anchors)}")
+        image_sources = {src for src, _ in parser.images if src}
+        missing_images = sorted(expected_images[relative] - image_sources)
+        if missing_images:
+            fail(f"missing required screenshots in http_dist/{relative}: {', '.join(missing_images)}")
+        missing_icons = sorted(expected_icons[relative] - set(parser.links))
+        if missing_icons:
+            fail(f"missing required web icons in http_dist/{relative}: {', '.join(missing_icons)}")
+        if support_mailto not in parser.links:
+            fail(f"missing support email link in http_dist/{relative}: {support_mailto}")
+        if any("github.com/hinoshiba/DaysYet/issues/new/choose" in link for link in parser.links):
+            fail(f"customer support must use {support_mailto} in http_dist/{relative}")
+
+    for relative in required_pages:
+        page = SITE / relative
+        parser = parsed_pages[page.resolve()]
         for href in parser.links:
             parts = urlsplit(href)
-            if parts.scheme or parts.netloc or href.startswith("#"):
+            if parts.scheme or parts.netloc:
                 continue
-            path = parts.path
-            if not path:
-                continue
-            target = (page.parent / path).resolve()
-            if path.endswith("/"):
-                target /= "index.html"
-            if SITE.resolve() not in target.parents and target != SITE.resolve():
-                fail(f"local link escapes http_dist in {relative}: {href}")
+            target = page.resolve() if not parts.path else local_target(page, parts.path)
             if not target.exists():
                 fail(f"broken local link in {relative}: {href}")
+            if parts.fragment and target.suffix == ".html":
+                target_parser = parsed_pages.get(target)
+                anchor = unquote(parts.fragment)
+                if target_parser is None or anchor not in target_parser.anchors:
+                    fail(f"broken local anchor in {relative}: {href}")
+
+        for src, alt in parser.images:
+            if not src:
+                fail(f"image is missing src in http_dist/{relative}")
+            if alt is None or not alt.strip():
+                fail(f"image is missing descriptive alt text in http_dist/{relative}: {src}")
+            parts = urlsplit(src)
+            if parts.scheme or parts.netloc:
+                continue
+            target = local_target(page, parts.path)
+            if not target.is_file():
+                fail(f"broken local image in {relative}: {src}")
 
 
 def validate_catalog() -> None:
@@ -105,6 +183,7 @@ def validate_metadata() -> None:
         "support_url.txt", "marketing_url.txt", "privacy_url.txt", "accessibility_url.txt"
     ]
     configuration = read(STORE / "configuration.yml")
+    configuration_lines = {line.strip() for line in configuration.splitlines()}
     initial_release = "initial_release: true" in configuration
     for locale in ("ja", "en-US"):
         directory = STORE / "metadata" / locale
@@ -125,11 +204,12 @@ def validate_metadata() -> None:
                 fail(f"{locale}/{filename} must be empty for the first App Store version")
 
     for expected in (
-        "primary_locale: ja", "bundle_id: com.hinoshiba.daysyet",
-        "widget_bundle_id: com.hinoshiba.daysyet.widget",
-        "app_group: group.com.hinoshiba.daysyet",
+        "primary_locale: ja", "bundle_id: daysyet.hinoshiba.com",
+        "widget_bundle_id: daysyet.hinoshiba.com.widget",
+        "app_group: group.daysyet.hinoshiba.com",
+        "widget_kind: daysyet.hinoshiba.com.widget.progress",
     ):
-        if expected not in configuration:
+        if expected not in configuration_lines:
             fail(f"AppStore/configuration.yml is missing: {expected}")
 
 

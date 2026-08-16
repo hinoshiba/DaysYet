@@ -110,8 +110,13 @@ private struct PrivacyView: View {
 
 private enum ProjectLinks {
     static let sourceCode = URL(string: "https://github.com/hinoshiba/DaysYet")!
-    static let privacyPolicy = URL(string: "https://www.hinoshiba.com/DaysYet/privacy/")!
-    static let support = URL(string: "https://www.hinoshiba.com/DaysYet/support/")!
+    static let privacyPolicy = localizedPageURL(fragment: "privacy")
+    static let support = localizedPageURL(fragment: "support")
+
+    private static func localizedPageURL(fragment: String) -> URL {
+        let languagePath = L10n.isJapanese ? "" : "en/"
+        return URL(string: "https://daysyet.hinoshiba.com/\(languagePath)#\(fragment)")!
+    }
 }
 
 private struct LicenseView: View {

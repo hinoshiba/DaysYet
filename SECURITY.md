@@ -8,7 +8,7 @@ Security fixes are provided for the latest release and the current `main` branch
 
 Use the repository Security tab and select **Report a vulnerability** to send a private report. Do not disclose a vulnerability, privacy leak, signing secret, or personal date in a public issue.
 
-If private vulnerability reporting is unavailable, open a public issue containing only a request for a private contact channel. Do not include security details in that issue.
+If private vulnerability reporting is unavailable, email [support@hinoshiba.com](mailto:support@hinoshiba.com) with `[Security] DaysYet` in the subject and ask for a secure reporting channel. Do not include vulnerability details, secrets, credentials, or personal information in that email.
 
 Please include:
 

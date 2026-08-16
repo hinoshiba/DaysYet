@@ -22,11 +22,14 @@
 
 入力した日付とウィジェット設定は、アプリとWidget Extensionだけが共有する端末内のApp Group領域へ保存します。詳しくは[プライバシーポリシー](PRIVACY.md)と[データマップ](docs/PRIVACY_DATA_MAP.md)をご覧ください。
 
-公開ページ:
+公開サイトは日本語とEnglishの各1ページです。各案内へページ内リンクで直接移動できます。
 
-- [Product](https://www.hinoshiba.com/DaysYet/)
-- [Privacy](https://www.hinoshiba.com/DaysYet/privacy/)
-- [Support](https://www.hinoshiba.com/DaysYet/support/)
+- [日本語 Product](https://daysyet.hinoshiba.com/) / [English Product](https://daysyet.hinoshiba.com/en/)
+- [Privacy](https://daysyet.hinoshiba.com/#privacy) / [English](https://daysyet.hinoshiba.com/en/#privacy)
+- [Terms](https://daysyet.hinoshiba.com/#terms) / [English](https://daysyet.hinoshiba.com/en/#terms)
+- [Support](https://daysyet.hinoshiba.com/#support) / [English](https://daysyet.hinoshiba.com/en/#support)
+- [Accessibility](https://daysyet.hinoshiba.com/#accessibility) / [English](https://daysyet.hinoshiba.com/en/#accessibility)
+- Contact: [support@hinoshiba.com](mailto:support@hinoshiba.com)
 
 ## Build
 
