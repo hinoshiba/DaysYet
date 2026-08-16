@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-if [[ $# -ne 2 || ! "$1" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ || ! "$2" =~ ^[1-9][0-9]*$ ]]; then
+if [[ $# -ne 2 || ! "$1" =~ ^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)$ || ! "$2" =~ ^[1-9][0-9]*$ ]]; then
   echo "usage: ./Scripts/bump-version.sh <marketing-version> <build-number>" >&2
   exit 2
 fi

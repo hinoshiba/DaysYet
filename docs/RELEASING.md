@@ -62,9 +62,9 @@ checkout and runs the release compliance checks.
 
 In App Store Connect, open DaysYet > Xcode Cloud > Settings > Build Number and
 set **Next Build Number** above the highest build already uploaded for the
-current marketing version. The repository currently records build `1`; if
-`0.1.0 (1)` already exists in App Store Connect, the first Cloud build must use
-at least `2`.
+current marketing version. Start at or above `CURRENT_PROJECT_VERSION` in
+`project.yml`, and always use a value greater than any existing App Store
+Connect build for that marketing version.
 
 ## Protect release authority
 
