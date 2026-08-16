@@ -46,12 +46,21 @@ capture() {
   local apple_locale="$3"
   local output_directory="$4"
   local language_argument="(${locale})"
+  local simulator_user_id="501"
 
   mkdir -p "${output_directory}"
   xcrun simctl boot "${simulator_id}" 2>/dev/null || true
   if [[ "${DAYSYET_SCREENSHOT_SKIP_BOOTSTATUS:-0}" != "1" ]]; then
     xcrun simctl bootstatus "${simulator_id}" -b
   fi
+  if [[ "${locale}" == "ja" ]]; then
+    xcrun simctl spawn "${simulator_id}" defaults write NSGlobalDomain AppleLanguages -array 'ja-JP' 'en-JP'
+  else
+    xcrun simctl spawn "${simulator_id}" defaults write NSGlobalDomain AppleLanguages -array 'en-US' 'ja-JP'
+  fi
+  xcrun simctl spawn "${simulator_id}" defaults write NSGlobalDomain AppleLocale "${apple_locale}"
+  xcrun simctl spawn "${simulator_id}" launchctl kickstart -k "user/${simulator_user_id}/com.apple.SpringBoard"
+  sleep 10
   xcrun simctl ui "${simulator_id}" appearance light
   xcrun simctl status_bar "${simulator_id}" override \
     --time 9:41 \
@@ -92,6 +101,15 @@ capture "${IPHONE_ID}" ja ja_JP "${REPOSITORY_ROOT}/AppStore/screenshots/ja/ipho
 capture "${IPHONE_ID}" en en_US "${REPOSITORY_ROOT}/AppStore/screenshots/en-US/iphone-6.9"
 capture "${IPAD_ID}" ja ja_JP "${REPOSITORY_ROOT}/AppStore/screenshots/ja/ipad-13"
 capture "${IPAD_ID}" en en_US "${REPOSITORY_ROOT}/AppStore/screenshots/en-US/ipad-13"
+
+for simulator_id in "${IPHONE_ID}" "${IPAD_ID}"; do
+  simulator_user_id="501"
+  xcrun simctl spawn "${simulator_id}" defaults write NSGlobalDomain AppleLanguages -array 'ja-JP' 'en-JP'
+  xcrun simctl spawn "${simulator_id}" defaults write NSGlobalDomain AppleLocale 'ja_JP'
+  xcrun simctl status_bar "${simulator_id}" clear
+  xcrun simctl spawn "${simulator_id}" launchctl kickstart -k "user/${simulator_user_id}/com.apple.SpringBoard"
+done
+sleep 10
 
 python3 Scripts/validate-store-assets.py --require-screenshots
 echo "App Store screenshots captured and validated."
