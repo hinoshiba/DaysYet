@@ -1,7 +1,8 @@
 # Submission checklist
 
 - [ ] App Store Connect Primary Language is Japanese; English (U.S.) localization is added.
-- [ ] Bundle ID `daysyet.hinoshiba.com`, Widget ID `daysyet.hinoshiba.com.widget`, and App Group `group.daysyet.hinoshiba.com` are registered to the signing team.
+- [ ] Bundle ID `com.hinoshiba.daysyet`, Widget ID `com.hinoshiba.daysyet.widget`, and App Group `group.com.hinoshiba.daysyet` are registered to the signing team.
+- [ ] The Team-managed distribution signing identity is resolved from an authorized Keychain or private release system outside the checkout; no signing material or identity output is present in the repository or public logs.
 - [ ] Version/build match `project.yml` and `AppStore/configuration.yml`.
 - [ ] A validated build with the Widget extension and 1024 × 1024 app icon is selected.
 - [ ] Japanese and English metadata match the build and pass length limits.

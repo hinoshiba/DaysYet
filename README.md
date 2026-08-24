@@ -46,6 +46,8 @@
 
 `project.yml`がXcodeプロジェクト設定の正本です。生成される`DaysYet.xcodeproj`はコミットしません。署名チームは各開発者のXcode設定で指定してください。
 
+同じApple Developer Teamのアプリでは、Teamが承認・管理する既存の配布署名identityを使用します。証明書・秘密鍵・Provisioning Profile・Keychain・署名済み成果物は、この公開リポジトリ内へ一時的にも置かず、承認済みKeychainまたは非公開リリース環境からBuild時に解決します。
+
 ## Repository layout
 
 ```text
@@ -65,6 +67,7 @@ App Storeのprimary languageは日本語、追加localizationはEnglish (U.S.)�
 ## Contributing and releases
 
 - [Contributing](CONTRIBUTING.md)
+- [Repository rules](AGENTS.md)
 - [Security](SECURITY.md)
 - [Dependency policy](docs/DEPENDENCY_POLICY.md)
 - [Release procedure](docs/RELEASING.md)

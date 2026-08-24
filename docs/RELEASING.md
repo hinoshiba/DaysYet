@@ -17,6 +17,14 @@ This document covers reproducible engineering steps. The public support and App 
 5. Confirm the metadata and screenshots under `AppStore/` match the exact release build.
 6. Before the first release, enable GitHub Pages with **GitHub Actions** as its source and enable Private Vulnerability Reporting in the repository settings. Confirm the Japanese page at `https://daysyet.hinoshiba.com/` and the English page at `https://daysyet.hinoshiba.com/en/` return HTTP 200 without a redirect; verify each page's `#privacy`, `#terms`, `#support`, and `#accessibility` section link and its `mailto:support@hinoshiba.com` contact.
 
+## Signing assets
+
+Applications released by the same Apple Developer Team reuse the Team-managed approved distribution signing identity; do not create an application-specific distribution private key. The certificate type must match the platform and distribution channel. This iOS App Store release uses the App Store distribution identity selected by Xcode or the private release system. A Developer ID Application identity is for macOS software distributed outside the Mac App Store, not for this release. See Apple's [certificate overview](https://developer.apple.com/help/account/certificates/certificates-overview).
+
+Resolve signing material only from an authorized macOS Keychain or private release system outside the checkout. Do not export it into this working tree, create a repository signing directory, or paste identity names, fingerprints, Team IDs, personal details, Keychain paths, or identity-discovery output into source, public logs, issues, pull requests, or release notes. Public CI remains unsigned.
+
+If exposure is suspected, stop the release and use the private security process. Revoke or rotate the affected credential before signing another build; deleting a file in a later commit is not remediation for material already present in Git history.
+
 ## Archive and TestFlight
 
 1. In Xcode, select a generic iOS device and Product → Archive.

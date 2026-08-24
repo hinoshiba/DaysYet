@@ -13,6 +13,10 @@ from urllib.request import Request, urlopen
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "http_dist"
 STORE = ROOT / "AppStore"
+APP_BUNDLE_ID = "com.hinoshiba.daysyet"
+WIDGET_BUNDLE_ID = f"{APP_BUNDLE_ID}.widget"
+APP_GROUP_ID = f"group.{APP_BUNDLE_ID}"
+WIDGET_KIND = f"{WIDGET_BUNDLE_ID}.progress"
 
 
 def fail(message: str) -> None:
@@ -204,10 +208,10 @@ def validate_metadata() -> None:
                 fail(f"{locale}/{filename} must be empty for the first App Store version")
 
     for expected in (
-        "primary_locale: ja", "bundle_id: daysyet.hinoshiba.com",
-        "widget_bundle_id: daysyet.hinoshiba.com.widget",
-        "app_group: group.daysyet.hinoshiba.com",
-        "widget_kind: daysyet.hinoshiba.com.widget.progress",
+        "primary_locale: ja", f"bundle_id: {APP_BUNDLE_ID}",
+        f"widget_bundle_id: {WIDGET_BUNDLE_ID}",
+        f"app_group: {APP_GROUP_ID}",
+        f"widget_kind: {WIDGET_KIND}",
     ):
         if expected not in configuration_lines:
             fail(f"AppStore/configuration.yml is missing: {expected}")

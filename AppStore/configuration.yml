@@ -4,10 +4,10 @@ primary_locale: ja
 additional_locales:
   - en-US
 sku: daysyet-ios
-bundle_id: daysyet.hinoshiba.com
-widget_bundle_id: daysyet.hinoshiba.com.widget
-app_group: group.daysyet.hinoshiba.com
-widget_kind: daysyet.hinoshiba.com.widget.progress
+bundle_id: com.hinoshiba.daysyet
+widget_bundle_id: com.hinoshiba.daysyet.widget
+app_group: group.com.hinoshiba.daysyet
+widget_kind: com.hinoshiba.daysyet.widget.progress
 version: 0.1.0
 build: 1
 initial_release: true

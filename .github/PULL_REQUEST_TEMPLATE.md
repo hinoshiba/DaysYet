@@ -14,6 +14,7 @@
 - [ ] No new data flow, SDK, dependency, font, media, dataset, health claim, or brand asset
 - [ ] Or: applicable Privacy Manifest, policy, NOTICE/register, SBOM plan, and source evidence are updated
 - [ ] No competitor code, copy, UI, screenshots, or unverified assets were copied
+- [ ] No signing identity, private key, certificate, profile, Keychain, signed export, or identity-discovery output is included
 
 ## Screenshots
 
