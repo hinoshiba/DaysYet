@@ -10,7 +10,7 @@ app_group: group.com.hinoshiba.daysyet
 widget_kind: com.hinoshiba.daysyet.widget.progress
 version: 0.1.1
 build: 2
-initial_release: true
+initial_release: false
 minimum_os: "17.0"
 device_families:
   - iPhone

@@ -11,7 +11,7 @@
 - [ ] Once the public App Store product URL exists, the site hero links to that exact listing and the Smart App Banner uses its confirmed numeric app ID; no unconfirmed listing URL is published.
 - [ ] Private Vulnerability Reporting is enabled and its private reports are actively monitored.
 - [ ] The seller identity required for each sales region is configured in App Store Connect, and every public support contact uses `support@hinoshiba.com`.
-- [ ] `release_notes.txt` remains empty and What’s New is not submitted for this first version.
+- [ ] Japanese and English `release_notes.txt` describe only changes included in the selected update build.
 - [ ] App Privacy, Age Rating, Content Rights, export compliance, DSA status, Pricing and Availability, and release settings are complete.
 - [ ] The optional App Review contact name, phone, and email fields follow the current DaysYet submission requirements; otherwise they remain blank.
 - [ ] Review Notes explain Widget setup, no-login access, on-device storage, and the healthy-age disclaimer.
