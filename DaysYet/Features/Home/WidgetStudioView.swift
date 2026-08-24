@@ -2,11 +2,13 @@ import SwiftUI
 
 struct WidgetStudioView: View {
     @EnvironmentObject private var store: ProfileStore
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var showWidgetGuide = false
 
     var body: some View {
         ZStack {
-            DaysYetBackground()
+            DaysYetBackground(theme: store.profile.widgetTheme)
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
                     header
@@ -15,7 +17,14 @@ struct WidgetStudioView: View {
                         .aspectRatio(2.05, contentMode: .fit)
                         .accessibilityLabel(L10n.text("ウィジェットプレビュー", "Widget preview"))
 
-                    valueStyleEditor
+                    displayModeEditor
+
+                    if store.profile.widgetDisplayMode == .progressBars {
+                        valueStyleEditor
+                            .transition(.opacity.combined(with: .move(edge: .top)))
+                    }
+
+                    themeEditor
 
                     metricEditor
 
@@ -42,6 +51,63 @@ struct WidgetStudioView: View {
         }
     }
 
+    private var displayModeEditor: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            EyebrowLabel(text: L10n.text("表示モード", "Display mode"))
+            Picker(
+                L10n.text("表示モード", "Display mode"),
+                selection: Binding(
+                    get: { store.profile.widgetDisplayMode },
+                    set: { mode in
+                        withAnimation(reduceMotion ? nil : .snappy) {
+                            store.update { $0.widgetDisplayMode = mode }
+                        }
+                    }
+                )
+            ) {
+                ForEach(WidgetDisplayMode.allCases) { mode in
+                    Text(mode.shortTitle)
+                        .tag(mode)
+                        .accessibilityLabel(mode.title)
+                }
+            }
+            .pickerStyle(.segmented)
+        }
+    }
+
+    private var themeEditor: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 4) {
+                EyebrowLabel(text: L10n.text("テーマ", "Theme"))
+                Text(L10n.text("気分やホーム画面に合う色を選べます。", "Choose colors that feel right at a glance."))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
+            LazyVGrid(columns: themeColumns, spacing: 12) {
+                ForEach(WidgetTheme.allCases) { theme in
+                    Button {
+                        withAnimation(reduceMotion ? nil : .snappy) {
+                            store.update { $0.widgetTheme = theme }
+                        }
+                    } label: {
+                        ThemeChoiceCard(theme: theme, isSelected: store.profile.widgetTheme == theme)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(theme.title)
+                    .accessibilityHint(theme.subtitle)
+                    .accessibilityAddTraits(store.profile.widgetTheme == theme ? .isSelected : [])
+                }
+            }
+        }
+    }
+
+    private var themeColumns: [GridItem] {
+        dynamicTypeSize.isAccessibilitySize
+            ? [GridItem(.flexible())]
+            : [GridItem(.flexible()), GridItem(.flexible())]
+    }
+
     private var header: some View {
         VStack(alignment: .leading, spacing: 6) {
             EyebrowLabel(text: L10n.text("DaysYet · 3つの時間", "DaysYet · Three timelines"))
@@ -62,7 +128,7 @@ struct WidgetStudioView: View {
                 Menu {
                     ForEach(MetricKind.allCases) { candidate in
                         Button {
-                            withAnimation(.snappy) {
+                            withAnimation(reduceMotion ? nil : .snappy) {
                                 store.setDashboardMetric(candidate, at: index)
                             }
                         } label: {
@@ -94,9 +160,9 @@ struct WidgetStudioView: View {
 
     private var valueStyleEditor: some View {
         VStack(alignment: .leading, spacing: 10) {
-            EyebrowLabel(text: L10n.text("値の表示", "Value display"))
+            EyebrowLabel(text: L10n.text("バーの値", "Progress bar value"))
             Picker(
-                L10n.text("値の表示", "Value display"),
+                L10n.text("バーの値", "Progress bar value"),
                 selection: Binding(
                     get: { store.profile.dashboardValueStyle },
                     set: { style in store.update { $0.dashboardValueStyle = style } }
@@ -111,6 +177,55 @@ struct WidgetStudioView: View {
         }
     }
 
+}
+
+private struct ThemeChoiceCard: View {
+    let theme: WidgetTheme
+    let isSelected: Bool
+
+    private var palette: WidgetThemePalette { theme.palette }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            ZStack(alignment: .topTrailing) {
+                VStack(spacing: 6) {
+                    ForEach(Array(MetricKind.allCases.prefix(3)), id: \.self) { metric in
+                        Capsule()
+                            .fill(LinearGradient(colors: palette.colors(for: metric), startPoint: .leading, endPoint: .trailing))
+                            .frame(height: 5)
+                    }
+                }
+                .padding(12)
+                .frame(maxWidth: .infinity, minHeight: 54)
+                .background(palette.background, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+
+                if isSelected {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.title3)
+                        .foregroundStyle(palette.accent)
+                        .background(.thinMaterial, in: Circle())
+                        .padding(7)
+                }
+            }
+
+            VStack(alignment: .leading, spacing: 3) {
+                Text(theme.title)
+                    .font(.subheadline.weight(.semibold))
+                Text(theme.subtitle)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+        .padding(10)
+        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 19, style: .continuous))
+        .overlay {
+            RoundedRectangle(cornerRadius: 19, style: .continuous)
+                .stroke(isSelected ? palette.accent : .primary.opacity(0.06), lineWidth: isSelected ? 2 : 1)
+        }
+        .contentShape(RoundedRectangle(cornerRadius: 19, style: .continuous))
+    }
 }
 
 private struct WidgetGuideView: View {

@@ -21,6 +21,11 @@ final class ProfileStore: ObservableObject {
             ) ?? screenshotProfile.birthDate
             screenshotProfile.healthyLifeYears = 82
             screenshotProfile.customTargetName = L10n.text("大切な節目", "A milestone")
+            screenshotProfile.customTargetStartDate = calendar.date(
+                byAdding: .year,
+                value: -1,
+                to: .now
+            ) ?? screenshotProfile.customTargetStartDate
             screenshotProfile.customTargetDate = calendar.date(
                 byAdding: .year,
                 value: 5,
@@ -30,6 +35,14 @@ final class ProfileStore: ObservableObject {
             screenshotProfile.dashboardValueStyle = arguments.contains("--screenshot-target-date")
                 ? .targetDate
                 : arguments.contains("--screenshot-percentage") ? .percentage : .remaining
+            screenshotProfile.widgetDisplayMode = arguments.contains("--screenshot-time-and-percentage")
+                ? .countdownWithPercentage
+                : arguments.contains("--screenshot-countdown") ? .countdown : .progressBars
+            screenshotProfile.widgetTheme = arguments.contains("--screenshot-quiet-forest")
+                ? .quietForest
+                : arguments.contains("--screenshot-soft-dawn")
+                    ? .softDawn
+                    : arguments.contains("--screenshot-calm-sea") ? .calmSea : .vividNight
             screenshotProfile.isConfigured = true
             self.profile = screenshotProfile
         } else if arguments.contains("--skip-onboarding") {
@@ -48,6 +61,14 @@ final class ProfileStore: ObservableObject {
         var updated = profile
         mutation(&updated)
         updated.dashboardMetrics = updated.normalizedDashboardMetrics
+        // The UI intentionally exposes a start date, not a hidden start time.
+        updated.customTargetStartDate = Calendar.autoupdatingCurrent.startOfDay(
+            for: updated.customTargetStartDate
+        )
+        let minimumTarget = updated.customTargetStartDate.addingTimeInterval(60)
+        if updated.customTargetDate < minimumTarget {
+            updated.customTargetDate = minimumTarget
+        }
         profile = updated
         persist()
     }
@@ -67,12 +88,14 @@ final class ProfileStore: ObservableObject {
         birthDate: Date,
         healthyLifeYears: Double,
         customTargetName: String,
+        customTargetStartDate: Date,
         customTargetDate: Date
     ) {
         update {
             $0.birthDate = birthDate
             $0.healthyLifeYears = healthyLifeYears
             $0.customTargetName = customTargetName
+            $0.customTargetStartDate = customTargetStartDate
             $0.customTargetDate = customTargetDate
             $0.dashboardMetrics = [.month, .year, .healthyLife]
             $0.isConfigured = true

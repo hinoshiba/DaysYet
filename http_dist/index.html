@@ -5,8 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f7f3ea" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0c0e18" media="(prefers-color-scheme: dark)">
-  <title>DaysYet — 3本のバーで時間をひと目に</title>
-  <meta name="description" content="今週、今月、今年、人生の目標から3つを選び、残り時間・割合・日時をウィジェットで見渡すiPhone / iPadアプリ。機能、使い方、プライバシー、サポートを紹介します。">
+  <title>DaysYet — 3つの時間を、ひと目に</title>
+  <meta name="description" content="大切な3つの時間を、カウントダウン、時間・割合・バーの複合表示、プログレスバーから選んで見渡せるiPhone / iPadウィジェット。目標の起算日と4つのテーマにも対応します。">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="DaysYet">
+  <meta property="og:title" content="DaysYet — 3つの時間を、ひと目に">
+  <meta property="og:description" content="時間だけ、時間・割合・バー、バーだけ。大切な3つの時間と4つのテーマを選べるiPhone / iPadウィジェット。">
+  <meta property="og:url" content="https://daysyet.hinoshiba.com/">
+  <meta property="og:image" content="https://daysyet.hinoshiba.com/assets/screenshots/ja/02-widget-target-date.webp">
+  <meta property="og:image:width" content="660">
+  <meta property="og:image:height" content="1434">
+  <meta property="og:image:alt" content="残り時間、割合、進捗バーを同時表示するDaysYetのウィジェット設定画面">
+  <meta property="og:locale" content="ja_JP">
+  <meta property="og:locale:alternate" content="en_US">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="DaysYet — 3つの時間を、ひと目に">
+  <meta name="twitter:description" content="時間だけ、時間・割合・バー、バーだけ。大切な3つの時間を、好きな色で。">
+  <meta name="twitter:image" content="https://daysyet.hinoshiba.com/assets/screenshots/ja/02-widget-target-date.webp">
+  <meta name="twitter:image:alt" content="残り時間、割合、進捗バーを同時表示するDaysYetのウィジェット設定画面">
   <link rel="canonical" href="https://daysyet.hinoshiba.com/">
   <link rel="alternate" hreflang="ja" href="https://daysyet.hinoshiba.com/">
   <link rel="alternate" hreflang="en" href="https://daysyet.hinoshiba.com/en/">
@@ -34,13 +50,14 @@
         <div class="hero-copy">
           <div class="eyebrow">Three timelines · One glance</div>
           <h1 id="hero-title">時間は、<br>まだある。</h1>
-          <p class="lead">今週、今月、今年、人生の目標。大切な3本だけを選び、静かなウィジェットで、いまの時間を見渡せます。</p>
+          <p class="lead">今週、今月、今年、人生の目標。大切な3つを選び、時間だけ、時間・割合・バーを一緒に、またはバーだけで、いまを静かに見渡せます。</p>
           <div class="actions">
             <a class="button" href="#examples">画面で見る</a>
             <a class="button secondary" href="https://github.com/hinoshiba/DaysYet">ソースコード</a>
           </div>
           <ul class="hero-facts" aria-label="DaysYetの特徴">
             <li>iPhone / iPad</li>
+            <li>3つの表示 / 4テーマ</li>
             <li>日本語 / English</li>
             <li>データは端末内だけ</li>
           </ul>
@@ -67,16 +84,16 @@
         <div class="section-heading">
           <div class="eyebrow">See it in action</div>
           <h2 id="examples-title">選ぶ。切り替える。<br>あとは、ひと目で。</h2>
-          <p class="section-lead">画面の操作はシンプルです。見たい時間と値の表し方を選ぶと、ウィジェットの3本へそのまま反映されます。</p>
+          <p class="section-lead">画面の操作はシンプルです。見たい3つの時間、表示モード、テーマを選ぶと、プレビューへそのまま反映されます。バー表示では右側の値も選べます。</p>
         </div>
         <div class="sample-grid">
           <figure class="sample-card">
             <div class="screen-frame">
-              <img src="./assets/screenshots/ja/02-widget-target-date.webp" width="660" height="1434" loading="lazy" decoding="async" alt="同じ3つの時間を、残り時間ではなく目標日時で表示したDaysYetのウィジェット設定画面。">
+              <img src="./assets/screenshots/ja/02-widget-target-date.webp" width="660" height="1434" loading="lazy" decoding="async" alt="落ち着いたフォレストテーマで、3つの残り時間、割合、バーを同時表示したDaysYetのウィジェット設定画面。">
             </div>
             <figcaption>
               <span class="sample-number">01</span>
-              <div><h3>値の見せ方を切り替える</h3><p>残り時間、残り割合、終了日時から選択。予定には日時、日々の意識には残り時間など、目的に合わせられます。</p></div>
+              <div><h3>時間も、割合も、バーも。</h3><p>大きな残り時間に割合と進捗バーを添えて、3つを同時に確認。時間だけ、バーだけの表示にも切り替えられます。</p></div>
             </figcaption>
           </figure>
           <figure class="sample-card">
@@ -94,19 +111,19 @@
       <section id="features" aria-labelledby="features-title">
         <div class="section-heading">
           <div class="eyebrow">Features</div>
-          <h2 id="features-title">3本だから、迷わず見渡せる。</h2>
-          <p class="section-lead">暦と自分の目標を1つに。表示する時間と値は、アプリ全体でもウィジェットごとでも選べます。</p>
+          <h2 id="features-title">3つの時間だから、迷わず見渡せる。</h2>
+          <p class="section-lead">暦と自分の目標を1つに。表示する時間、モード、値、テーマは、アプリ全体でもウィジェットごとでも選べます。</p>
         </div>
         <div class="feature-grid">
-          <article class="feature-card"><span aria-hidden="true">01</span><h3>選べる3本</h3><p>今週・今月・今年・健康でいたい年齢・大切な日から、いま大切な3つを選択できます。</p></article>
-          <article class="feature-card"><span aria-hidden="true">02</span><h3>ウィジェットごとに設定</h3><p>アプリで選んだ3本を使うほか、特定のウィジェットだけ内容や表示形式を上書きできます。</p></article>
-          <article class="feature-card"><span aria-hidden="true">03</span><h3>小・中サイズに対応</h3><p>ホーム画面に合わせてSmallまたはMediumを選択。文字とバーを併用し、色だけに頼らず伝えます。</p></article>
+          <article class="feature-card"><span aria-hidden="true">01</span><h3>選べる3つの時間</h3><p>今週・今月・今年・健康でいたい年齢・大切な日から選択。大切な日には、起算日と目標日時を設定できます。</p></article>
+          <article class="feature-card"><span aria-hidden="true">02</span><h3>3つの表示と4テーマ</h3><p>時間だけ、時間・割合・バーの複合表示、バーだけを切り替え、鮮やかな夜や穏やかな森・朝・海から色を選べます。</p></article>
+          <article class="feature-card"><span aria-hidden="true">03</span><h3>ウィジェットごとに設定</h3><p>SmallとMediumに対応。特定のウィジェットだけ内容、表示、テーマを上書きできます。</p></article>
         </div>
         <section class="steps" aria-labelledby="steps-title">
           <div class="steps-copy"><div class="eyebrow">Three steps</div><h3 id="steps-title">始め方も、3ステップ。</h3></div>
           <ol>
             <li><span>1</span><div><strong>時間を選ぶ</strong><p>アプリの「ウィジェット」タブで、表示したい3本を並べます。</p></div></li>
-            <li><span>2</span><div><strong>値を選ぶ</strong><p>残り・%・日時から、いま見たい表現を選びます。</p></div></li>
+            <li><span>2</span><div><strong>見せ方を選ぶ</strong><p>3つのレイアウトと4つのテーマから、心地よい組み合わせを選びます。</p></div></li>
             <li><span>3</span><div><strong>ホーム画面へ</strong><p>DaysYetウィジェットを追加すると、選択した内容が表示されます。</p></div></li>
           </ol>
         </section>
@@ -114,7 +131,7 @@
 
       <section id="privacy" class="policy-section" aria-labelledby="privacy-title">
         <div class="section-heading">
-          <div class="eyebrow">Privacy · 最終更新 2026-08-16</div>
+          <div class="eyebrow">Privacy · 最終更新 2026-08-24</div>
           <h2 id="privacy-title">入力した情報は、<br>この端末だけに。</h2>
         </div>
         <div class="privacy-intro">
@@ -130,7 +147,7 @@
           </figure>
         </div>
         <div class="policy-grid">
-          <article><h3>1. 保存する情報と目的</h3><p>生年月日、健康でいたい年齢、目標名、目標日時、ウィジェットに表示する項目と表示形式を保存します。これらは時間の計算、アプリ画面、ウィジェット表示にだけ使います。</p></article>
+          <article><h3>1. 保存する情報と目的</h3><p>生年月日、健康でいたい年齢、目標名、目標の起算日と目標日時、ウィジェットの項目、表示モード、値の形式、テーマを保存します。これらは時間の計算、アプリ画面、ウィジェット表示にだけ使います。</p></article>
           <article><h3>2. 保存場所と共有範囲</h3><p>AppleのApp Group機能を使い、端末内でアプリとWidget Extensionが共有する専用領域へ保存します。開発者のサーバー、クラウド、分析・広告事業者、その他第三者へ送信せず、アカウントも作成しません。</p><p>ホーム画面のウィジェットは、端末を見ることのできる人の目に触れる場合があります。</p></article>
           <article><h3>3. 追跡・広告・分析</h3><p>追跡、行動分析、広告、第三者SDKを使用しません。AppleがApp StoreやOSの提供に伴って処理する情報には、Appleのプライバシーポリシーが適用されます。</p></article>
           <article><h3>4. 健康に関する情報</h3><p>「健康でいたい年齢」は利用者自身が決める計画上の目標です。HealthKitへアクセスせず、医学的診断、健康測定、治療、実際の寿命予測を行いません。外部の健康統計データも同梱していません。</p></article>
@@ -144,7 +161,7 @@
         <div><div class="eyebrow">Accessibility</div><h2 id="accessibility-title">ひと目にも、<br>読み上げにも。</h2></div>
         <div class="band-copy">
           <p>DaysYetは、VoiceOver、Dynamic Type、Dark Interface、コントラスト設定、色だけに依存しないラベルを考慮して設計しています。</p>
-          <p>各バーはタイトル、残り時間、割合、目標日時を一つの意味ある要素として読み上げます。視覚表示ではテキストとバーを併用します。</p>
+          <p>各表示はタイトル、残り時間、割合、目標日時を一つの意味ある要素として読み上げます。視覚表示にも常にテキストを残し、色だけに頼りません。</p>
           <p>利用できない操作や改善点がある場合は、端末、OS、利用している支援機能、再現手順を添えて<a href="#support">お知らせください</a>。個人の日付は送らないでください。</p>
         </div>
       </section>
@@ -163,6 +180,8 @@
           <h3>よくある質問</h3>
           <details open><summary>ウィジェットを追加する</summary><p>ホーム画面の空いている場所を長押しし、「編集」からウィジェットを追加します。DaysYetを検索し、小または中サイズを選んでください。</p></details>
           <details><summary>表示する3本を変える</summary><p>アプリのウィジェットタブで3本を選ぶと、変更がウィジェットへ反映されます。特定のウィジェットだけ変える場合は、そのウィジェットを長押しして「ウィジェットを編集」を開き、「アプリで選んだ3本を使う」をオフにします。</p></details>
+          <details><summary>表示モードやテーマを変える</summary><p>アプリのウィジェットタブで「時間」「時間＋％」「バー」から選び、4つのテーマを切り替えられます。「時間＋％」では、各行に残り時間、割合、進捗バーを一緒に表示します。特定のウィジェットだけ別の表示や色にする場合は、ホーム画面から「ウィジェットを編集」を開いて上書きできます。</p></details>
+          <details><summary>大切な日の起算日を変える</summary><p>アプリの「時間」タブから「人生の基準を編集」を開き、「大切な日」で起算日と目標日時を設定します。起算日を100%として、目標日時までの残り割合を計算します。</p></details>
           <details><summary>表示が更新されない</summary><p>一度DaysYetを開いて設定を保存し直し、ウィジェットが追加されていることを確認してください。OSが更新時刻を調整するため、常に秒単位で更新されるものではありません。改善しない場合は端末・OS・アプリバージョンを添えて<a href="mailto:support@hinoshiba.com?subject=DaysYet%20Support">support@hinoshiba.com</a>へお問い合わせください。</p></details>
           <details><summary>データを消去する</summary><p>DaysYetの設定タブから「すべてのデータを消去」を選びます。DaysYetに入力したデータは開発者のサーバーに保存されません。</p></details>
         </div>

@@ -25,6 +25,6 @@ The release workflow runs `./Scripts/check-compliance.sh --release` before its A
 
 Generate fresh screenshots with `./Scripts/capture-store-screenshots.sh`. The optional capture workflow requires ImageMagick 7. If CoreSimulator is usable but `simctl bootstatus` is stalled by an OS migrator, set `DAYSYET_SCREENSHOT_SKIP_BOOTSTATUS=1` only after confirming the simulator Home Screen is responsive.
 
-The four images in each locale/device folder show: (1) time left, (2) absolute target date and time, (3) the timeline library, and (4) on-device privacy and OSS information. All sample dates are fictional.
+The four images in each locale/device folder show: (1) progress bars, (2) time left with percentage and bars, (3) the timeline library, and (4) on-device privacy and OSS information. All sample dates are fictional.
 
 The 1024 × 1024 App Store icon is embedded in the build at `DaysYet/Assets.xcassets/AppIcon.appiconset/AppIcon.png`; it is not uploaded as a separate metadata file.

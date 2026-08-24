@@ -39,6 +39,72 @@ enum MetricKind: String, Codable, CaseIterable, Identifiable, Sendable {
     }
 }
 
+enum WidgetDisplayMode: String, Codable, CaseIterable, Identifiable, Sendable {
+    case countdown
+    case countdownWithPercentage
+    case progressBars
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .countdown: L10n.text("カウントダウン", "Countdown")
+        case .countdownWithPercentage: L10n.text("時間＋割合＋バー", "Time + percent + bar")
+        case .progressBars: L10n.text("プログレスバー", "Progress bars")
+        }
+    }
+
+    var shortTitle: String {
+        switch self {
+        case .countdown: L10n.text("時間", "Time")
+        case .countdownWithPercentage: L10n.text("時間＋％", "Time + %")
+        case .progressBars: L10n.text("バー", "Bars")
+        }
+    }
+
+    var symbolName: String {
+        switch self {
+        case .countdown: "timer"
+        case .countdownWithPercentage: "percent"
+        case .progressBars: "chart.bar.fill"
+        }
+    }
+
+    var showsLiveCountdown: Bool {
+        switch self {
+        case .countdown, .countdownWithPercentage: true
+        case .progressBars: false
+        }
+    }
+}
+
+enum WidgetTheme: String, Codable, CaseIterable, Identifiable, Sendable {
+    case vividNight
+    case quietForest
+    case softDawn
+    case calmSea
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .vividNight: L10n.text("夜の彩り", "Vivid Night")
+        case .quietForest: L10n.text("静かな森", "Quiet Forest")
+        case .softDawn: L10n.text("やわらかな朝", "Soft Dawn")
+        case .calmSea: L10n.text("凪の海", "Calm Sea")
+        }
+    }
+
+    var subtitle: String {
+        switch self {
+        case .vividNight: L10n.text("深い夜に、鮮やかな光", "Bright color against a deep night")
+        case .quietForest: L10n.text("セージと木漏れ日の静けさ", "Soft sage and filtered light")
+        case .softDawn: L10n.text("朝焼けのような温もり", "The gentle warmth of daybreak")
+        case .calmSea: L10n.text("呼吸がほどける青", "Restful, open shades of blue")
+        }
+    }
+}
+
 enum MetricValueStyle: String, Codable, CaseIterable, Identifiable, Sendable {
     case remaining
     case percentage
@@ -108,15 +174,92 @@ enum WidgetValueStyleOption: String, AppEnum, CaseIterable {
     }
 }
 
+enum WidgetDisplayModeOption: String, AppEnum, CaseIterable {
+    case appSetting
+    case countdown
+    case countdownWithPercentage
+    case progressBars
+
+    static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "widget.display_mode.type")
+    static let caseDisplayRepresentations: [WidgetDisplayModeOption: DisplayRepresentation] = [
+        .appSetting: "widget.option.app_setting",
+        .countdown: "widget.display_mode.countdown",
+        .countdownWithPercentage: "widget.display_mode.countdown_with_percentage",
+        .progressBars: "widget.display_mode.progress_bars"
+    ]
+
+    func resolved(profileMode: WidgetDisplayMode) -> WidgetDisplayMode {
+        switch self {
+        case .appSetting: profileMode
+        case .countdown: .countdown
+        case .countdownWithPercentage: .countdownWithPercentage
+        case .progressBars: .progressBars
+        }
+    }
+}
+
+enum WidgetThemeOption: String, AppEnum, CaseIterable {
+    case appSetting
+    case vividNight
+    case quietForest
+    case softDawn
+    case calmSea
+
+    static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "widget.theme.type")
+    static let caseDisplayRepresentations: [WidgetThemeOption: DisplayRepresentation] = [
+        .appSetting: "widget.option.app_setting",
+        .vividNight: "widget.theme.vivid_night",
+        .quietForest: "widget.theme.quiet_forest",
+        .softDawn: "widget.theme.soft_dawn",
+        .calmSea: "widget.theme.calm_sea"
+    ]
+
+    func resolved(profileTheme: WidgetTheme) -> WidgetTheme {
+        switch self {
+        case .appSetting: profileTheme
+        case .vividNight: .vividNight
+        case .quietForest: .quietForest
+        case .softDawn: .softDawn
+        case .calmSea: .calmSea
+        }
+    }
+}
+
+struct CountdownComponent: Equatable, Sendable {
+    let value: Int
+    let unit: String
+
+    var text: String { "\(value)\(unit)" }
+}
+
+struct CountdownPresentation: Equatable, Sendable {
+    let prefix: String
+    let components: [CountdownComponent]
+    let suffix: String
+    let terminalText: String?
+
+    var plainText: String {
+        if let terminalText { return terminalText }
+        return ([prefix] + components.map(\.text) + [suffix])
+            .filter { !$0.isEmpty }
+            .joined(separator: " ")
+    }
+
+    var compactText: String {
+        terminalText ?? components.map(\.text).joined()
+    }
+}
+
 struct MetricSnapshot: Identifiable, Equatable, Sendable {
     let kind: MetricKind
     let title: String
     let context: String
-    let remainingText: String
+    let countdown: CountdownPresentation
     let remainingFraction: Double
     let targetDate: Date
 
     var id: String { kind.rawValue }
+    var remainingText: String { countdown.plainText }
     var percentageText: String { String(format: "%.1f%%", remainingFraction * 100) }
 
     var percentageRemainingText: String {
@@ -166,10 +309,14 @@ struct MetricSnapshot: Identifiable, Equatable, Sendable {
     }
 
     private var compactRemainingText: String {
-        remainingText
-            .replacingOccurrences(of: "あと ", with: "")
-            .replacingOccurrences(of: " left", with: "")
-            .replacingOccurrences(of: " ", with: "")
+        if remainingFraction == 0 {
+            switch kind {
+            case .healthyLife: return L10n.text("目安超過", "Past target")
+            case .customLife: return L10n.text("到達", "Reached")
+            default: return L10n.text("更新中", "Updating")
+            }
+        }
+        return countdown.compactText
     }
 }
 
@@ -189,7 +336,7 @@ enum TimeProgressCalculator {
             kind: kind,
             title: kind == .customLife ? nonEmpty(profile.customTargetName, fallback: kind.title) : kind.title,
             context: context(for: kind, profile: profile, target: interval.end, calendar: calendar),
-            remainingText: remainingText(
+            countdown: countdownPresentation(
                 for: kind,
                 now: now,
                 target: interval.end,
@@ -217,7 +364,7 @@ enum TimeProgressCalculator {
             let target = targetDate(from: profile.birthDate, years: profile.healthyLifeYears, calendar: calendar)
             return DateInterval(start: profile.birthDate, end: max(target, profile.birthDate.addingTimeInterval(1)))
         case .customLife:
-            let start = min(profile.birthDate, now)
+            let start = profile.customTargetStartDate
             return DateInterval(start: start, end: max(profile.customTargetDate, start.addingTimeInterval(1)))
         }
     }
@@ -246,42 +393,52 @@ enum TimeProgressCalculator {
         }
     }
 
-    private static func remainingText(
+    private static func countdownPresentation(
         for kind: MetricKind,
         now: Date,
         target: Date,
         calendar: Calendar
-    ) -> String {
+    ) -> CountdownPresentation {
         if now >= target {
+            let terminalText: String
             switch kind {
             case .healthyLife:
-                return L10n.text("設定した目安を超えています", "Beyond your set target")
+                terminalText = L10n.text("設定した目安を超えています", "Beyond your set target")
             case .customLife:
-                return L10n.text("ここまで歩みました", "Milestone reached")
+                terminalText = L10n.text("ここまで歩みました", "Milestone reached")
             default:
-                return L10n.text("次の期間へ更新中", "Updating period")
+                terminalText = L10n.text("次の期間へ更新中", "Updating period")
             }
+            return CountdownPresentation(prefix: "", components: [], suffix: "", terminalText: terminalText)
         }
 
         let seconds = max(target.timeIntervalSince(now), 0)
         let approximateDays = Int(seconds / (24 * 60 * 60))
+        let prefix = L10n.text("あと", "")
+        let suffix = L10n.text("", "left")
+        let components: [CountdownComponent]
 
         if approximateDays >= 730 {
-            let components = calendar.dateComponents([.year, .month], from: now, to: target)
-            let years = max(components.year ?? 0, 0)
-            let months = max(components.month ?? 0, 0)
-            return L10n.text("あと \(years)年 \(months)か月", "\(years)y \(months)mo left")
+            let values = calendar.dateComponents([.year, .month], from: now, to: target)
+            components = [
+                CountdownComponent(value: max(values.year ?? 0, 0), unit: L10n.text("年", "y")),
+                CountdownComponent(value: max(values.month ?? 0, 0), unit: L10n.text("か月", "mo"))
+            ]
+        } else if approximateDays > 0 {
+            let values = calendar.dateComponents([.day, .hour], from: now, to: target)
+            components = [
+                CountdownComponent(value: max(values.day ?? 0, 0), unit: L10n.text("日", "d")),
+                CountdownComponent(value: max(values.hour ?? 0, 0), unit: L10n.text("時間", "h"))
+            ]
+        } else {
+            let values = calendar.dateComponents([.hour, .minute], from: now, to: target)
+            components = [
+                CountdownComponent(value: max(values.hour ?? 0, 0), unit: L10n.text("時間", "h")),
+                CountdownComponent(value: max(values.minute ?? 0, 0), unit: L10n.text("分", "m"))
+            ]
         }
-        if approximateDays > 0 {
-            let components = calendar.dateComponents([.day, .hour], from: now, to: target)
-            let days = max(components.day ?? 0, 0)
-            let hours = max(components.hour ?? 0, 0)
-            return L10n.text("あと \(days)日 \(hours)時間", "\(days)d \(hours)h left")
-        }
-        let components = calendar.dateComponents([.hour, .minute], from: now, to: target)
-        let hours = max(components.hour ?? 0, 0)
-        let minutes = max(components.minute ?? 0, 0)
-        return L10n.text("あと \(hours)時間 \(minutes)分", "\(hours)h \(minutes)m left")
+
+        return CountdownPresentation(prefix: prefix, components: components, suffix: suffix, terminalText: nil)
     }
 
     private static func formattedAge(_ value: Double) -> String {

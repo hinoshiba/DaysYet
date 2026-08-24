@@ -36,9 +36,13 @@
 		B66DE5162B94257F7742A20D /* NOTICE in Resources */ = {isa = PBXBuildFile; fileRef = 58FE27717C77D4B7907182C9 /* NOTICE */; };
 		B89D0FFBAA65FDE3315CFE58 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B8EF889B5F766FA4E4E1F328 /* Localizable.xcstrings */; };
 		B99D9E3C09AB918414346C08 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 71388ED2AE6C8DC3C059BFA2 /* PrivacyInfo.xcprivacy */; };
+		C56317008E96E1CC6CBEEAA8 /* CountdownValueLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0618C16198637FB983104639 /* CountdownValueLabel.swift */; };
 		CAF47E6D83B6357A740FED03 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B8EF889B5F766FA4E4E1F328 /* Localizable.xcstrings */; };
 		CC2239801EBE676781A15316 /* DaysYetWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A688870A80B2CCC93B72C9B /* DaysYetWidgetBundle.swift */; };
+		DBF3257F4C9FB8F300DC21C0 /* CountdownValueLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0618C16198637FB983104639 /* CountdownValueLabel.swift */; };
+		DFAB566A99FE9D4C3B9DF254 /* WidgetThemePalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223C8EC7373FA0756EAB7C3B /* WidgetThemePalette.swift */; };
 		EAA338EF8B8FFEA8B25247EC /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 7FFE29BF02B4BBBAAF4BC232 /* PrivacyInfo.xcprivacy */; };
+		EF5AEE0C2965F4F18F9B096F /* WidgetThemePalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223C8EC7373FA0756EAB7C3B /* WidgetThemePalette.swift */; };
 		F571C748BB95F074FBA354F9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7789B3FE1FCF7E665C59E506 /* InfoPlist.strings */; };
 		F818F4E6F2B38B114678BF36 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A9F151DF177251D2B0EC2871 /* InfoPlist.strings */; };
 		FB226A76DFBF9E8165F7AD29 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 785E00C0D2C2EA34EB0A2AA4 /* UserProfile.swift */; };
@@ -78,10 +82,12 @@
 /* Begin PBXFileReference section */
 		00AAA44E592AAC3BF808D773 /* WidgetPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetPreview.swift; sourceTree = "<group>"; };
 		036F8BD9D4F1B7467842B3A4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		0618C16198637FB983104639 /* CountdownValueLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownValueLabel.swift; sourceTree = "<group>"; };
 		091F1E00C9DBA9A030F1A29D /* TimeProgressCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeProgressCalculatorTests.swift; sourceTree = "<group>"; };
 		115989BAB479742C1F5196E8 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1A688870A80B2CCC93B72C9B /* DaysYetWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysYetWidgetBundle.swift; sourceTree = "<group>"; };
 		1F496778F27954462FC180E9 /* WidgetConfigurationIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetConfigurationIntent.swift; sourceTree = "<group>"; };
+		223C8EC7373FA0756EAB7C3B /* WidgetThemePalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetThemePalette.swift; sourceTree = "<group>"; };
 		343F8E3BCF1BFAEAEBD45A97 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		37680AC2C679AD7E5923DC15 /* THIRD_PARTY_NOTICES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = THIRD_PARTY_NOTICES.md; sourceTree = "<group>"; };
 		42CD64EF0BE487E467E8EE54 /* L10n.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = L10n.swift; sourceTree = "<group>"; };
@@ -230,11 +236,13 @@
 		FA52699628EA4AB321357425 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
+				0618C16198637FB983104639 /* CountdownValueLabel.swift */,
 				42CD64EF0BE487E467E8EE54 /* L10n.swift */,
 				B8EF889B5F766FA4E4E1F328 /* Localizable.xcstrings */,
 				8D4529A3EAFCABF61CBA729D /* ProfileRepository.swift */,
 				787BB50AE053C559748C39E4 /* TimeMetric.swift */,
 				785E00C0D2C2EA34EB0A2AA4 /* UserProfile.swift */,
+				223C8EC7373FA0756EAB7C3B /* WidgetThemePalette.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -377,6 +385,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DBF3257F4C9FB8F300DC21C0 /* CountdownValueLabel.swift in Sources */,
 				00F25F2FAC04A2CB5FAE3266 /* DaysYetWidget.swift in Sources */,
 				CC2239801EBE676781A15316 /* DaysYetWidgetBundle.swift in Sources */,
 				A8D788E8B5582322DD48F6A7 /* L10n.swift in Sources */,
@@ -384,6 +393,7 @@
 				85EABD42E7FC7E7ADDCA3C2B /* TimeMetric.swift in Sources */,
 				FB226A76DFBF9E8165F7AD29 /* UserProfile.swift in Sources */,
 				9021D64237A8C956A22F7E6C /* WidgetConfigurationIntent.swift in Sources */,
+				DFAB566A99FE9D4C3B9DF254 /* WidgetThemePalette.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -391,6 +401,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C56317008E96E1CC6CBEEAA8 /* CountdownValueLabel.swift in Sources */,
 				A3DD38AC667FA2A651C26431 /* DaysYetApp.swift in Sources */,
 				7403B0F82A146A7AFB2A3415 /* DaysYetTheme.swift in Sources */,
 				13B2D4AAC9C730D98D6D82BF /* L10n.swift in Sources */,
@@ -405,6 +416,7 @@
 				11CE4CE5C819962411E0E55D /* UserProfile.swift in Sources */,
 				457E6915E9DD0A4DA516C1D8 /* WidgetPreview.swift in Sources */,
 				6588473D3F42BFD5BF6AF326 /* WidgetStudioView.swift in Sources */,
+				EF5AEE0C2965F4F18F9B096F /* WidgetThemePalette.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

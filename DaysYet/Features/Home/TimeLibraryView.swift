@@ -5,7 +5,7 @@ struct TimeLibraryView: View {
 
     var body: some View {
         ZStack {
-            DaysYetBackground()
+            DaysYetBackground(theme: store.profile.widgetTheme)
             TimelineView(.periodic(from: .now, by: 60)) { context in
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 14) {
@@ -36,7 +36,8 @@ struct TimeLibraryView: View {
                                     profile: store.profile,
                                     now: context.date
                                 ),
-                                valueStyle: store.profile.dashboardValueStyle
+                                valueStyle: store.profile.dashboardValueStyle,
+                                theme: store.profile.widgetTheme
                             )
                         }
 
@@ -75,14 +76,27 @@ struct ProfileEditorView: View {
                 }
             }
 
-            Section(L10n.text("大切な日", "Milestone")) {
+            Section {
                 TextField(L10n.text("名前", "Name"), text: binding(\.customTargetName))
                 DatePicker(
-                    L10n.text("日時", "Date and time"),
+                    L10n.text("起算日", "Start date"),
+                    selection: milestoneStartDateBinding,
+                    in: earliestMilestoneDate ... latestStartDate,
+                    displayedComponents: .date
+                )
+                DatePicker(
+                    L10n.text("目標日時", "Target date and time"),
                     selection: binding(\.customTargetDate),
-                    in: Date.now ... latestTargetDate,
+                    in: minimumTargetDate ... latestTargetDate,
                     displayedComponents: [.date, .hourAndMinute]
                 )
+            } header: {
+                Text(L10n.text("大切な日", "Milestone"))
+            } footer: {
+                Text(L10n.text(
+                    "起算日を100%として、目標日時までの残り割合を計算します。",
+                    "Progress starts at 100% on the start date and counts down toward the target."
+                ))
             }
 
             Section {
@@ -106,6 +120,34 @@ struct ProfileEditorView: View {
 
     private var earliestBirthDate: Date {
         Calendar.current.date(from: DateComponents(year: 1900, month: 1, day: 1)) ?? .distantPast
+    }
+
+    private var earliestMilestoneDate: Date { earliestBirthDate }
+
+    private var latestStartDate: Date {
+        latestTargetDate.addingTimeInterval(-60)
+    }
+
+    private var minimumTargetDate: Date {
+        store.profile.customTargetStartDate.addingTimeInterval(60)
+    }
+
+    private var milestoneStartDateBinding: Binding<Date> {
+        Binding(
+            get: { store.profile.customTargetStartDate },
+            set: { newValue in
+                store.update { profile in
+                    let startDate = Calendar.autoupdatingCurrent.startOfDay(for: newValue)
+                    profile.customTargetStartDate = startDate
+                    let minimumTarget = startDate.addingTimeInterval(60)
+                    if profile.customTargetDate < minimumTarget {
+                        let suggestedTarget = Calendar.current.date(byAdding: .year, value: 1, to: startDate)
+                            ?? minimumTarget
+                        profile.customTargetDate = min(suggestedTarget, latestTargetDate)
+                    }
+                }
+            }
+        )
     }
 
     private var latestTargetDate: Date {

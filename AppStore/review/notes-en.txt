@@ -2,10 +2,10 @@ DaysYet requires no account or sign-in and has no server-backed features.
 
 To review the Widget:
 1. Launch the app and complete the three-step onboarding.
-2. Choose three timelines and a value style on the Widget tab.
+2. On the Widget tab, choose three timelines, one of three display layouts, and one of four themes. In Bars mode, the right-side value can be time left, percentage left, or the target date and time.
 3. Add a Small or Medium DaysYet Widget from the Home Screen Widget gallery.
-4. To test per-Widget overrides, touch and hold the Widget, choose Edit Widget, disable “Use the three selected in the app,” and select three timelines plus a value style.
+4. To test per-Widget overrides, touch and hold the Widget, choose Edit Widget, disable “Use the three selected in the app,” and select timelines, display layout, value style, and theme.
 
-The app stores the birth date, user-chosen healthy-age goal, milestone, and Widget preferences only in its on-device App Group container shared with the Widget extension. It makes no application-initiated network requests and includes no analytics, advertising, or third-party runtime SDKs. Public source, Privacy, and Support links open in the system browser only after a user tap.
+The milestone supports user-selected start and target dates. The app stores the birth date, user-chosen healthy-age goal, milestone name and dates, and Widget preferences only in its on-device App Group container shared with the Widget extension. It makes no application-initiated network requests and includes no analytics, advertising, or third-party runtime SDKs. Public source, Privacy, and Support links open in the system browser only after a user tap.
 
 “Healthy-age goal” is a personal planning marker entered by the user. It is not based on a health dataset and is not medical advice, diagnosis, health measurement, or a prediction of lifespan.

@@ -4,13 +4,14 @@ struct ProgressBar: View {
     let fraction: Double
     let colors: [Color]
     var height: CGFloat = 8
+    var trackColor: Color = .primary.opacity(0.09)
 
     var body: some View {
         GeometryReader { geometry in
             let width = max(geometry.size.width * min(max(fraction, 0), 1), height)
             ZStack(alignment: .leading) {
                 Capsule()
-                    .fill(.primary.opacity(0.09))
+                    .fill(trackColor)
                 Capsule()
                     .fill(LinearGradient(colors: colors, startPoint: .leading, endPoint: .trailing))
                     .frame(width: width)
@@ -25,6 +26,7 @@ struct ProgressBar: View {
 struct MetricCard: View {
     let snapshot: MetricSnapshot
     let valueStyle: MetricValueStyle
+    var theme: WidgetTheme = .vividNight
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -43,7 +45,7 @@ struct MetricCard: View {
 
             ProgressBar(
                 fraction: snapshot.remainingFraction,
-                colors: DaysYetTheme.colors(for: snapshot.kind)
+                colors: DaysYetTheme.colors(for: snapshot.kind, theme: theme)
             )
 
             Text(snapshot.secondarySummary(excluding: valueStyle))

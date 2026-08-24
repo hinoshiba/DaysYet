@@ -4,8 +4,8 @@
 |---|---|---|---|---|---|
 | Birth date | User input | Life-target calculation | App Group `UserDefaults` | App + Widget only | Settings → Delete all data |
 | Healthy-age goal | User input | Personal planning progress | App Group `UserDefaults` | App + Widget only | Same |
-| Milestone title/date | User input | Custom progress | App Group `UserDefaults` | App + Widget only | Same |
-| Three selected metrics and value style | User choice | App and Widget rendering | App Group + Widget configuration managed by iOS | App + Widget + iOS configuration UI | Edit Widget / reset app |
+| Milestone title/start date/target date | User input | Custom progress and countdown | App Group `UserDefaults` | App + Widget only | Same |
+| Three selected metrics, display mode, value style, and theme | User choice | App and Widget rendering | App Group + Widget configuration managed by iOS | App + Widget + iOS configuration UI | Edit Widget / reset app |
 
 ## Network paths
 

@@ -32,6 +32,7 @@ class PageParser(HTMLParser):
         self.links: list[str] = []
         self.images: list[tuple[str | None, str | None]] = []
         self.anchors: set[str] = set()
+        self.metadata: dict[str, str] = {}
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         attributes = dict(attrs)
@@ -44,6 +45,11 @@ class PageParser(HTMLParser):
                 self.links.append(href)
         if tag == "img":
             self.images.append((attributes.get("src"), attributes.get("alt")))
+        if tag == "meta":
+            key = attributes.get("property") or attributes.get("name")
+            value = attributes.get("content")
+            if key and value:
+                self.metadata[key] = value
 
 
 def local_target(page: Path, path: str) -> Path:
@@ -85,6 +91,16 @@ def validate_site() -> None:
         "index.html": "https://daysyet.hinoshiba.com/",
         "en/index.html": "https://daysyet.hinoshiba.com/en/",
     }
+    expected_social = {
+        "index.html": {
+            "locale": "ja_JP",
+            "image": "https://daysyet.hinoshiba.com/assets/screenshots/ja/02-widget-target-date.webp",
+        },
+        "en/index.html": {
+            "locale": "en_US",
+            "image": "https://daysyet.hinoshiba.com/assets/screenshots/en/02-widget-target-date.webp",
+        },
+    }
     expected_icons = {
         "index.html": {"./favicon.ico", "./assets/favicon-32.png", "./assets/apple-touch-icon.png"},
         "en/index.html": {"../favicon.ico", "../assets/favicon-32.png", "../assets/apple-touch-icon.png"},
@@ -110,6 +126,25 @@ def validate_site() -> None:
         parser = PageParser()
         parser.feed(content)
         parsed_pages[page.resolve()] = parser
+        required_metadata = {
+            "description", "og:type", "og:site_name", "og:title", "og:description",
+            "og:url", "og:image", "og:image:alt", "og:locale",
+            "twitter:card", "twitter:title", "twitter:description", "twitter:image",
+            "twitter:image:alt",
+        }
+        missing_metadata = sorted(required_metadata - parser.metadata.keys())
+        if missing_metadata:
+            fail(f"missing social/search metadata in http_dist/{relative}: {', '.join(missing_metadata)}")
+        if parser.metadata["og:url"] != expected_canonicals[relative]:
+            fail(f"incorrect Open Graph URL in http_dist/{relative}: {parser.metadata['og:url']}")
+        if parser.metadata["og:locale"] != expected_social[relative]["locale"]:
+            fail(f"incorrect Open Graph locale in http_dist/{relative}: {parser.metadata['og:locale']}")
+        if parser.metadata["og:image"] != expected_social[relative]["image"]:
+            fail(f"incorrect Open Graph image in http_dist/{relative}: {parser.metadata['og:image']}")
+        if parser.metadata["twitter:image"] != expected_social[relative]["image"]:
+            fail(f"incorrect Twitter image in http_dist/{relative}: {parser.metadata['twitter:image']}")
+        if parser.metadata["twitter:card"] not in {"summary", "summary_large_image"}:
+            fail(f"unsupported Twitter card in http_dist/{relative}: {parser.metadata['twitter:card']}")
         missing_anchors = sorted(required_anchors - parser.anchors)
         if missing_anchors:
             fail(f"missing required anchors in http_dist/{relative}: {', '.join(missing_anchors)}")

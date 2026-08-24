@@ -84,14 +84,16 @@ capture() {
       -AppleLocale "${apple_locale}" \
       --screenshot-mode \
       "$@" >/dev/null
-    sleep 2
+    # Debug builds can need an extra moment on their first launch before the
+    # SwiftUI hierarchy is visible; avoid capturing a transient blank frame.
+    sleep 4
     xcrun simctl io "${simulator_id}" screenshot --type=png "${screenshot_path}"
     magick "${screenshot_path}" -background black -alpha remove -alpha off "PNG24:${flattened_path}"
     mv "${flattened_path}" "${screenshot_path}"
   }
 
   take_shot "01-widget-time-left.png"
-  take_shot "02-widget-target-date.png" --screenshot-target-date
+  take_shot "02-widget-target-date.png" --screenshot-time-and-percentage --screenshot-quiet-forest
   take_shot "03-time-library.png" --screenshot-times
   take_shot "04-privacy-settings.png" --screenshot-settings
   xcrun simctl status_bar "${simulator_id}" clear

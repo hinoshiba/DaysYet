@@ -8,7 +8,7 @@ struct DaysYetApp: App {
         WindowGroup {
             RootView()
                 .environmentObject(store)
-                .tint(DaysYetTheme.coral)
+                .tint(store.profile.widgetTheme.palette.accent)
         }
     }
 }

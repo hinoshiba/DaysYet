@@ -9,4 +9,4 @@ For the current release build:
 - HealthKit access: **None**
 - Application-initiated networking: **None**
 
-Birth date, target age, milestone, and Widget choices are processed only on device in the App Group shared by the app and Widget. Re-audit the answers against the archive and Xcode privacy report before every submission.
+Birth date, target age, milestone start and target dates, and Widget display choices are processed only on device in the App Group shared by the app and Widget. Re-audit the answers against the archive and Xcode privacy report before every submission.

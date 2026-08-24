@@ -8,6 +8,7 @@
 - [ ] Japanese and English metadata match the build and pass length limits.
 - [ ] All four locale/device screenshot folders contain 1–10 current images.
 - [ ] GitHub Pages uses GitHub Actions as its source; the Japanese and English single-page sites return HTTP 200 without redirects, and their Product, Privacy, Support, Terms, and Accessibility section links work.
+- [ ] Once the public App Store product URL exists, the site hero links to that exact listing and the Smart App Banner uses its confirmed numeric app ID; no unconfirmed listing URL is published.
 - [ ] Private Vulnerability Reporting is enabled and its private reports are actively monitored.
 - [ ] The seller identity required for each sales region is configured in App Store Connect, and every public support contact uses `support@hinoshiba.com`.
 - [ ] `release_notes.txt` remains empty and What’s New is not submitted for this first version.

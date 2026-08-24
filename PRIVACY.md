@@ -1,12 +1,12 @@
 # Privacy Policy / プライバシーポリシー
 
-最終更新 / Last updated: 2026-08-16
+最終更新 / Last updated: 2026-08-24
 
 ## 日本語
 
 ### 保存する情報と目的
 
-DaysYetは、利用者が入力した生年月日、健康でいたい年齢、目標名、目標日時、ウィジェットに表示する項目と表示形式を保存します。これらは時間の計算、アプリ画面、ウィジェット表示にだけ使います。
+DaysYetは、利用者が入力した生年月日、健康でいたい年齢、目標名、目標の起算日と目標日時、ウィジェットに表示する項目、表示モード、値の形式、テーマを保存します。これらは時間の計算、アプリ画面、ウィジェット表示にだけ使います。
 
 ### 保存場所と共有範囲
 
@@ -38,7 +38,7 @@ DaysYetは追跡、行動分析、広告、第三者SDKを使用しません。A
 
 ### Data stored and purpose
 
-DaysYet stores the birth date, healthy-age goal, milestone name and date, widget selections, and value-display style entered or selected by the user. The data is used only to calculate and display timelines in the app and widget.
+DaysYet stores the birth date, healthy-age goal, milestone name, start and target dates, widget selections, display mode, value-display style, and theme entered or selected by the user. The data is used only to calculate and display timelines in the app and widget.
 
 ### Storage and sharing
 

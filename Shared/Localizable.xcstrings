@@ -33,8 +33,14 @@
     },
     "widget.configuration.description" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Choose the three timelines shown in this widget." } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ウィジェットに表示する3本の時間を選びます。" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Choose timelines, display mode, values, and colors for this widget." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "時間、表示モード、値、色をこのウィジェット用に選びます。" } }
+      }
+    },
+    "widget.configuration.display_mode" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Display mode" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "表示モード" } }
       }
     },
     "widget.configuration.first_metric" : {
@@ -61,6 +67,12 @@
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "3本目" } }
       }
     },
+    "widget.configuration.theme" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Theme" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "テーマ" } }
+      }
+    },
     "widget.configuration.title" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "DaysYet — Three timelines" } },
@@ -69,14 +81,14 @@
     },
     "widget.configuration.value_style" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Value display" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "値の表示" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Progress bar value" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "バーの値" } }
       }
     },
     "widget.gallery.description" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Show three timelines selected from the calendar, a healthy-age goal, and a milestone." } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "暦、健康でいたい年齢、目標日から選んだ3本を表示します。" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "See three timelines in three layouts and colors that suit you." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "選んだ3つの時間を、3つのレイアウトと好みの色で表示します。" } }
       }
     },
     "widget.gallery.title" : {
@@ -89,6 +101,66 @@
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Timeline" } },
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "表示する時間" } }
+      }
+    },
+    "widget.display_mode.countdown" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Countdown" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "カウントダウン" } }
+      }
+    },
+    "widget.display_mode.countdown_with_percentage" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Time + percent + bar" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "時間＋割合＋バー" } }
+      }
+    },
+    "widget.display_mode.progress_bars" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Progress bars" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "プログレスバー" } }
+      }
+    },
+    "widget.display_mode.type" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Display mode" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "表示モード" } }
+      }
+    },
+    "widget.option.app_setting" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "App setting" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "アプリの設定" } }
+      }
+    },
+    "widget.theme.calm_sea" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Calm Sea" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "凪の海" } }
+      }
+    },
+    "widget.theme.quiet_forest" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Quiet Forest" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "静かな森" } }
+      }
+    },
+    "widget.theme.soft_dawn" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Soft Dawn" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "やわらかな朝" } }
+      }
+    },
+    "widget.theme.type" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Theme" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "テーマ" } }
+      }
+    },
+    "widget.theme.vivid_night" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Vivid Night" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "夜の彩り" } }
       }
     },
     "widget.value_style.app_setting" : {

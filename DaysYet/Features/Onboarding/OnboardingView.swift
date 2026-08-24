@@ -6,11 +6,12 @@ struct OnboardingView: View {
     @State private var birthDate = UserProfile.initial.birthDate
     @State private var healthyLifeYears = UserProfile.initial.healthyLifeYears
     @State private var customTargetName = UserProfile.initial.customTargetName
+    @State private var customTargetStartDate = UserProfile.initial.customTargetStartDate
     @State private var customTargetDate = UserProfile.initial.customTargetDate
 
     var body: some View {
         ZStack {
-            DaysYetBackground()
+            DaysYetBackground(theme: store.profile.widgetTheme)
             VStack(spacing: 0) {
                 HStack(spacing: 8) {
                     ForEach(0..<3, id: \.self) { index in
@@ -40,6 +41,9 @@ struct OnboardingView: View {
             birthDate = store.profile.birthDate
             healthyLifeYears = store.profile.healthyLifeYears
             customTargetName = store.profile.customTargetName
+            customTargetStartDate = Calendar.autoupdatingCurrent.startOfDay(
+                for: store.profile.customTargetStartDate
+            )
             customTargetDate = store.profile.customTargetDate
         }
     }
@@ -103,9 +107,15 @@ struct OnboardingView: View {
                     VStack(alignment: .leading, spacing: 12) {
                         TextField(L10n.text("節目の名前", "Milestone name"), text: $customTargetName)
                         DatePicker(
-                            L10n.text("日時", "Date and time"),
+                            L10n.text("起算日", "Start date"),
+                            selection: milestoneStartDateBinding,
+                            in: earliestMilestoneDate ... latestStartDate,
+                            displayedComponents: .date
+                        )
+                        DatePicker(
+                            L10n.text("目標日時", "Target date and time"),
                             selection: $customTargetDate,
-                            in: Date.now ... latestTargetDate,
+                            in: minimumTargetDate ... latestTargetDate,
                             displayedComponents: [.date, .hourAndMinute]
                         )
                     }
@@ -166,6 +176,7 @@ struct OnboardingView: View {
                         birthDate: birthDate,
                         healthyLifeYears: healthyLifeYears,
                         customTargetName: customTargetName,
+                        customTargetStartDate: customTargetStartDate,
                         customTargetDate: customTargetDate
                     )
                 }
@@ -184,6 +195,7 @@ struct OnboardingView: View {
         profile.birthDate = birthDate
         profile.healthyLifeYears = healthyLifeYears
         profile.customTargetName = customTargetName
+        profile.customTargetStartDate = customTargetStartDate
         profile.customTargetDate = customTargetDate
         profile.dashboardMetrics = [.month, .year, .healthyLife]
         return profile
@@ -191,6 +203,30 @@ struct OnboardingView: View {
 
     private var earliestBirthDate: Date {
         Calendar.current.date(from: DateComponents(year: 1900, month: 1, day: 1)) ?? .distantPast
+    }
+
+    private var earliestMilestoneDate: Date { earliestBirthDate }
+
+    private var latestStartDate: Date {
+        latestTargetDate.addingTimeInterval(-60)
+    }
+
+    private var minimumTargetDate: Date {
+        customTargetStartDate.addingTimeInterval(60)
+    }
+
+    private var milestoneStartDateBinding: Binding<Date> {
+        Binding(
+            get: { customTargetStartDate },
+            set: { newValue in
+                customTargetStartDate = Calendar.autoupdatingCurrent.startOfDay(for: newValue)
+                if customTargetDate < minimumTargetDate {
+                    let suggestedTarget = Calendar.current.date(byAdding: .year, value: 1, to: customTargetStartDate)
+                        ?? minimumTargetDate
+                    customTargetDate = min(suggestedTarget, latestTargetDate)
+                }
+            }
+        )
     }
 
     private var latestTargetDate: Date {

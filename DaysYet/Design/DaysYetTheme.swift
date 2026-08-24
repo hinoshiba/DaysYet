@@ -7,25 +7,33 @@ enum DaysYetTheme {
     static let amber = Color(red: 1.0, green: 0.68, blue: 0.16)
     static let lime = Color(red: 0.76, green: 0.88, blue: 0.19)
 
-    static func colors(for kind: MetricKind) -> [Color] {
-        switch kind {
-        case .week: [Color(red: 0.38, green: 0.78, blue: 0.95), Color(red: 0.26, green: 0.56, blue: 0.94)]
-        case .month: [coral, Color(red: 1.0, green: 0.57, blue: 0.32)]
-        case .year: [amber, Color(red: 1.0, green: 0.82, blue: 0.26)]
-        case .healthyLife: [lime, Color(red: 0.42, green: 0.78, blue: 0.39)]
-        case .customLife: [Color(red: 0.69, green: 0.48, blue: 0.98), Color(red: 0.95, green: 0.42, blue: 0.76)]
+    static func colors(for kind: MetricKind, theme: WidgetTheme = .vividNight) -> [Color] {
+        theme.palette.colors(for: kind)
+    }
+
+    static func appBackground(for theme: WidgetTheme, colorScheme: ColorScheme) -> Color {
+        switch (theme, colorScheme) {
+        case (.vividNight, .dark): ink
+        case (.vividNight, _): paper
+        case (.quietForest, .dark): Color(red: 0.055, green: 0.10, blue: 0.075)
+        case (.quietForest, _): Color(red: 0.94, green: 0.96, blue: 0.92)
+        case (.softDawn, .dark): Color(red: 0.13, green: 0.075, blue: 0.085)
+        case (.softDawn, _): Color(red: 0.98, green: 0.95, blue: 0.91)
+        case (.calmSea, .dark): Color(red: 0.045, green: 0.095, blue: 0.12)
+        case (.calmSea, _): Color(red: 0.93, green: 0.97, blue: 0.98)
         }
     }
 }
 
 struct DaysYetBackground: View {
     @Environment(\.colorScheme) private var colorScheme
+    var theme: WidgetTheme = .vividNight
 
     var body: some View {
         ZStack {
-            (colorScheme == .dark ? DaysYetTheme.ink : DaysYetTheme.paper)
+            DaysYetTheme.appBackground(for: theme, colorScheme: colorScheme)
             RadialGradient(
-                colors: [DaysYetTheme.coral.opacity(colorScheme == .dark ? 0.14 : 0.08), .clear],
+                colors: [theme.palette.accent.opacity(colorScheme == .dark ? 0.14 : 0.08), .clear],
                 center: .topTrailing,
                 startRadius: 10,
                 endRadius: 430
