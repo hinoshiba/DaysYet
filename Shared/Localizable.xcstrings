@@ -97,6 +97,48 @@
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "DaysYet — 3つの時間" } }
       }
     },
+    "widget.lock_screen.configuration.description" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Choose the timeline shown on the Lock Screen." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ロック画面に表示する時間を選びます。" } }
+      }
+    },
+    "widget.lock_screen.configuration.metric" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Timeline" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "表示する時間" } }
+      }
+    },
+    "widget.lock_screen.configuration.title" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "DaysYet — Lock Screen" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "DaysYet — ロック画面" } }
+      }
+    },
+    "widget.lock_screen.gallery.description" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Keep one timeline and its progress at a glance on the Lock Screen." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "選んだ1つの時間と進み具合をロック画面で確認できます。" } }
+      }
+    },
+    "widget.lock_screen.gallery.title" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "DaysYet — Lock Screen" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "DaysYet — ロック画面" } }
+      }
+    },
+    "widget.lock_screen.metric.app_selection" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "First selected in app" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "アプリで選んだ1本目" } }
+      }
+    },
+    "widget.lock_screen.metric.type" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Lock Screen timeline" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ロック画面の時間" } }
+      }
+    },
     "widget.metric.type" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Timeline" } },

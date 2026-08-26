@@ -1,10 +1,15 @@
 DaysYet requires no account or sign-in and has no server-backed features.
 
-To review the Widget:
+To review the Home Screen Widget:
 1. Launch the app and complete the three-step onboarding.
 2. On the Widget tab, choose three timelines, one of three display layouts, and one of four themes. In Bars mode, progress fills from left to right and the right-side value can be time left, elapsed percentage, or the target date and time.
 3. Add a Small or Medium DaysYet Widget from the Home Screen Widget gallery.
 4. To test per-Widget overrides, touch and hold the Widget, choose Edit Widget, disable “Use the three selected in the app,” and select timelines, display layout, value style, and theme.
+
+To review the Lock Screen Widget:
+1. Touch and hold the Lock Screen, tap Customize, choose Lock Screen, and tap a Widget area.
+2. Add “DaysYet — Lock Screen” in any supported family: Inline, Circular, or Rectangular.
+3. While customizing the Lock Screen, tap the added Widget to choose the single timeline it displays. By default, it uses the first timeline selected in the app.
 
 The milestone supports user-selected start and target dates. The app stores the birth date, user-chosen healthy-age goal, milestone name and dates, and Widget preferences only in its on-device App Group container shared with the Widget extension. It makes no application-initiated network requests and includes no analytics, advertising, or third-party runtime SDKs. Public source, Privacy, and Support links open in the system browser only after a user tap.
 

@@ -1,1 +1,1 @@
-countdown,progress,hours,lifespan,year,month,deadline,calendar,remaining,life clock
+countdown,progress,hours,lifespan,year,month,deadline,calendar,remaining,life clock,lock screen

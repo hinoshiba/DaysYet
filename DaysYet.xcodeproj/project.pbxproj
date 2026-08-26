@@ -44,6 +44,7 @@
 		EAA338EF8B8FFEA8B25247EC /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 7FFE29BF02B4BBBAAF4BC232 /* PrivacyInfo.xcprivacy */; };
 		EF5AEE0C2965F4F18F9B096F /* WidgetThemePalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223C8EC7373FA0756EAB7C3B /* WidgetThemePalette.swift */; };
 		F571C748BB95F074FBA354F9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7789B3FE1FCF7E665C59E506 /* InfoPlist.strings */; };
+		F75BC1455EB0CA7AD67AEAEE /* DaysYetLockScreenWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B4316388958D185FAD4CCF /* DaysYetLockScreenWidget.swift */; };
 		F818F4E6F2B38B114678BF36 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A9F151DF177251D2B0EC2871 /* InfoPlist.strings */; };
 		FB226A76DFBF9E8165F7AD29 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 785E00C0D2C2EA34EB0A2AA4 /* UserProfile.swift */; };
 /* End PBXBuildFile section */
@@ -115,6 +116,7 @@
 		BEA369AB53C5EA2EB4743187 /* DaysYetWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysYetWidget.swift; sourceTree = "<group>"; };
 		C10B69E5DF938A33AEEC9B9A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CA91CAA558C93AA58DF6FEB8 /* ProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBar.swift; sourceTree = "<group>"; };
+		D0B4316388958D185FAD4CCF /* DaysYetLockScreenWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysYetLockScreenWidget.swift; sourceTree = "<group>"; };
 		F2218EE8FA923E98D18516D4 /* TimeLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLibraryView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -193,6 +195,7 @@
 		9FC2643860A178CB1AF832B2 /* DaysYetWidget */ = {
 			isa = PBXGroup;
 			children = (
+				D0B4316388958D185FAD4CCF /* DaysYetLockScreenWidget.swift */,
 				BEA369AB53C5EA2EB4743187 /* DaysYetWidget.swift */,
 				1A688870A80B2CCC93B72C9B /* DaysYetWidgetBundle.swift */,
 				7FFE29BF02B4BBBAAF4BC232 /* PrivacyInfo.xcprivacy */,
@@ -386,6 +389,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DBF3257F4C9FB8F300DC21C0 /* CountdownValueLabel.swift in Sources */,
+				F75BC1455EB0CA7AD67AEAEE /* DaysYetLockScreenWidget.swift in Sources */,
 				00F25F2FAC04A2CB5FAE3266 /* DaysYetWidget.swift in Sources */,
 				CC2239801EBE676781A15316 /* DaysYetWidgetBundle.swift in Sources */,
 				A8D788E8B5582322DD48F6A7 /* L10n.swift in Sources */,

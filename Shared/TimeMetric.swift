@@ -150,6 +150,46 @@ enum WidgetMetricOption: String, AppEnum, CaseIterable {
     }
 }
 
+enum LockScreenMetricOption: String, AppEnum, CaseIterable {
+    case appSelection
+    case week
+    case month
+    case year
+    case healthyLife
+    case customLife
+
+    static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "widget.lock_screen.metric.type")
+    static let caseDisplayRepresentations: [LockScreenMetricOption: DisplayRepresentation] = [
+        .appSelection: "widget.lock_screen.metric.app_selection",
+        .week: "metric.week",
+        .month: "metric.month",
+        .year: "metric.year",
+        .healthyLife: "metric.healthy_age_goal",
+        .customLife: "metric.milestone"
+    ]
+
+    func resolved(profile: UserProfile) -> MetricKind {
+        if !profile.isConfigured, self == .healthyLife || self == .customLife {
+            return profile.normalizedDashboardMetrics.first ?? .month
+        }
+
+        switch self {
+        case .appSelection:
+            return profile.normalizedDashboardMetrics.first ?? .month
+        case .week:
+            return .week
+        case .month:
+            return .month
+        case .year:
+            return .year
+        case .healthyLife:
+            return .healthyLife
+        case .customLife:
+            return .customLife
+        }
+    }
+}
+
 enum WidgetValueStyleOption: String, AppEnum, CaseIterable {
     case appSetting
     case remaining

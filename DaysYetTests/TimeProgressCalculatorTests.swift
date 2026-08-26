@@ -235,6 +235,26 @@ final class TimeProgressCalculatorTests: XCTestCase {
         XCTAssertEqual(WidgetValueStyleOption.targetDate.resolved(profileStyle: .percentage), .targetDate)
     }
 
+    func testLockScreenMetricUsesFirstAppSelectionOrExplicitOverride() {
+        var profile = UserProfile.initial
+        profile.isConfigured = true
+        profile.dashboardMetrics = [.year, .week, .month]
+
+        XCTAssertEqual(LockScreenMetricOption.appSelection.resolved(profile: profile), .year)
+        XCTAssertEqual(LockScreenMetricOption.week.resolved(profile: profile), .week)
+        XCTAssertEqual(LockScreenMetricOption.month.resolved(profile: profile), .month)
+        XCTAssertEqual(LockScreenMetricOption.year.resolved(profile: profile), .year)
+        XCTAssertEqual(LockScreenMetricOption.healthyLife.resolved(profile: profile), .healthyLife)
+        XCTAssertEqual(LockScreenMetricOption.customLife.resolved(profile: profile), .customLife)
+    }
+
+    func testLockScreenMetricDoesNotExposePlaceholderPersonalTargetsBeforeOnboarding() {
+        let profile = UserProfile.initial
+
+        XCTAssertEqual(LockScreenMetricOption.healthyLife.resolved(profile: profile), .week)
+        XCTAssertEqual(LockScreenMetricOption.customLife.resolved(profile: profile), .week)
+    }
+
     func testWidgetDisplayModeOverrideResolution() {
         XCTAssertEqual(WidgetDisplayModeOption.appSetting.resolved(profileMode: .countdown), .countdown)
         XCTAssertEqual(

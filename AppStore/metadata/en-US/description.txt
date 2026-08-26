@@ -1,4 +1,4 @@
-DaysYet lets you view three different timelines in a single widget.
+DaysYet lets you view three different timelines on your Home Screen and one selected timeline on your Lock Screen.
 
 THREE TIMELINES AT A GLANCE
 Choose from this week, this month, this year, a healthy-age goal you set, and a milestone date with its own start date. Use the three selected in the app, or configure a different combination for each widget.
@@ -9,7 +9,7 @@ Switch between a large time-left countdown, a combined view of time left, elapse
 FOUR THOUGHTFUL THEMES
 Alongside the vivid dark original, choose calmer palettes inspired by a quiet forest, soft dawn, or calm sea. Follow the app setting or give each widget its own look.
 
-Small and Medium Home Screen widgets are supported.
+Small and Medium Home Screen widgets are supported, along with Inline, Circular, and Rectangular Lock Screen widgets. Choose one timeline to show on the Lock Screen.
 
 JAPANESE AND ENGLISH
 Use the app, widget, and widget configuration in Japanese or English.

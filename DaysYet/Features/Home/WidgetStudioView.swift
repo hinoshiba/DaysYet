@@ -31,7 +31,7 @@ struct WidgetStudioView: View {
                     Button {
                         showWidgetGuide = true
                     } label: {
-                        Label(L10n.text("追加方法を見る", "How to add the widget"), systemImage: "plus.square.on.square")
+                        Label(L10n.text("追加方法を見る", "How to add widgets"), systemImage: "plus.square.on.square")
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 14)
                     }
@@ -240,20 +240,38 @@ private struct WidgetGuideView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading, spacing: 24) {
-                guideRow("1", L10n.text("ホーム画面を長押し", "Touch and hold the Home Screen"), "hand.tap")
-                guideRow("2", L10n.text("編集 → ウィジェットを追加", "Choose Edit → Add Widget"), "plus.square")
-                guideRow("3", L10n.text("DaysYetを検索して追加", "Search for DaysYet and add it"), "magnifyingglass")
-                Spacer()
+            ScrollView {
+                VStack(alignment: .leading, spacing: 28) {
+                    VStack(alignment: .leading, spacing: 16) {
+                        guideHeading(L10n.text("ホーム画面", "Home Screen"), "apps.iphone")
+                        guideRow("1", L10n.text("ホーム画面を長押し", "Touch and hold the Home Screen"), "hand.tap")
+                        guideRow("2", L10n.text("編集 → ウィジェットを追加", "Choose Edit → Add Widget"), "plus.square")
+                        guideRow("3", L10n.text("DaysYetを検索して追加", "Search for DaysYet and add it"), "magnifyingglass")
+                    }
+
+                    Divider()
+
+                    VStack(alignment: .leading, spacing: 16) {
+                        guideHeading(L10n.text("ロック画面", "Lock Screen"), "lock.rectangle")
+                        guideRow("1", L10n.text("ロック画面を長押ししてカスタマイズ", "Touch and hold the Lock Screen, then choose Customize"), "hand.tap")
+                        guideRow("2", L10n.text("ロック画面を選び、ウィジェット欄をタップ", "Choose Lock Screen, then tap the widget area"), "rectangle.dashed")
+                        guideRow("3", L10n.text("DaysYetの形と表示する時間を選ぶ", "Choose a DaysYet shape and timeline"), "timer")
+                    }
+                }
+                .padding(24)
             }
-            .padding(24)
-            .navigationTitle(L10n.text("ウィジェットを追加", "Add the Widget"))
+            .navigationTitle(L10n.text("ウィジェットを追加", "Add Widgets"))
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(L10n.text("完了", "Done")) { dismiss() }
                 }
             }
         }
+    }
+
+    private func guideHeading(_ title: String, _ symbol: String) -> some View {
+        Label(title, systemImage: symbol)
+            .font(.title3.bold())
     }
 
     private func guideRow(_ number: String, _ title: String, _ symbol: String) -> some View {
