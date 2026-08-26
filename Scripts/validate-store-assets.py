@@ -91,6 +91,10 @@ def validate_site() -> None:
         "index.html": "https://daysyet.hinoshiba.com/",
         "en/index.html": "https://daysyet.hinoshiba.com/en/",
     }
+    expected_app_store_links = {
+        "index.html": "https://apps.apple.com/jp/app/daysyet-%E6%AE%8B%E3%82%8A%E6%99%82%E9%96%93%E3%82%A6%E3%82%A3%E3%82%B8%E3%82%A7%E3%83%83%E3%83%88/id6802000765",
+        "en/index.html": "https://apps.apple.com/us/app/daysyet-time-left-widget/id6802000765",
+    }
     expected_social = {
         "index.html": {
             "locale": "ja_JP",
@@ -127,7 +131,7 @@ def validate_site() -> None:
         parser.feed(content)
         parsed_pages[page.resolve()] = parser
         required_metadata = {
-            "description", "og:type", "og:site_name", "og:title", "og:description",
+            "description", "apple-itunes-app", "og:type", "og:site_name", "og:title", "og:description",
             "og:url", "og:image", "og:image:alt", "og:locale",
             "twitter:card", "twitter:title", "twitter:description", "twitter:image",
             "twitter:image:alt",
@@ -145,6 +149,10 @@ def validate_site() -> None:
             fail(f"incorrect Twitter image in http_dist/{relative}: {parser.metadata['twitter:image']}")
         if parser.metadata["twitter:card"] not in {"summary", "summary_large_image"}:
             fail(f"unsupported Twitter card in http_dist/{relative}: {parser.metadata['twitter:card']}")
+        if parser.metadata["apple-itunes-app"] != "app-id=6802000765":
+            fail(f"incorrect Smart App Banner ID in http_dist/{relative}")
+        if expected_app_store_links[relative] not in parser.links:
+            fail(f"missing App Store product link in http_dist/{relative}")
         missing_anchors = sorted(required_anchors - parser.anchors)
         if missing_anchors:
             fail(f"missing required anchors in http_dist/{relative}: {', '.join(missing_anchors)}")
@@ -239,7 +247,8 @@ def validate_metadata() -> None:
                 fail(f"{locale}/{filename} must be empty for the first App Store version")
 
     for expected in (
-        "primary_locale: ja", "bundle_id: com.hinoshiba.daysyet",
+        "primary_locale: ja", "app_store_id: 6802000765",
+        "bundle_id: com.hinoshiba.daysyet",
         "widget_bundle_id: com.hinoshiba.daysyet.widget",
         "app_group: group.com.hinoshiba.daysyet",
         "widget_kind: com.hinoshiba.daysyet.widget.progress",

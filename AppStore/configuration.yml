@@ -4,13 +4,14 @@ primary_locale: ja
 additional_locales:
   - en-US
 sku: daysyet-ios
+app_store_id: 6802000765
 bundle_id: com.hinoshiba.daysyet
 widget_bundle_id: com.hinoshiba.daysyet.widget
 app_group: group.com.hinoshiba.daysyet
 widget_kind: com.hinoshiba.daysyet.widget.progress
-version: 0.1.1
-build: 2
-initial_release: true
+version: 0.1.2
+build: 3
+initial_release: false
 minimum_os: "17.0"
 device_families:
   - iPhone

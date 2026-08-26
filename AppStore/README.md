@@ -21,7 +21,7 @@ Before submission (after the tagged Xcode Cloud archive finishes):
 
 The release workflow runs `./Scripts/check-compliance.sh --release` before its Archive action. It creates an App Store-eligible candidate in Xcode Cloud; selecting that build and submitting it to App Review remain explicit App Store Connect actions.
 
-`release_notes.txt` is intentionally empty while `initial_release: true`; App Store Connect does not accept What’s New text for the first version.
+`release_notes.txt` contains the localized What’s New text for updates. Keep it empty only while `initial_release: true`, because App Store Connect does not accept What’s New text for the first version.
 
 Generate fresh screenshots with `./Scripts/capture-store-screenshots.sh`. The optional capture workflow requires ImageMagick 7. If CoreSimulator is usable but `simctl bootstatus` is stalled by an OS migrator, set `DAYSYET_SCREENSHOT_SKIP_BOOTSTATUS=1` only after confirming the simulator Home Screen is responsive.
 
