@@ -252,6 +252,7 @@ def validate_metadata() -> None:
         "widget_bundle_id: com.hinoshiba.daysyet.widget",
         "app_group: group.com.hinoshiba.daysyet",
         "widget_kind: com.hinoshiba.daysyet.widget.progress",
+        "lock_screen_widget_kind: com.hinoshiba.daysyet.widget.lock-screen",
     ):
         if expected not in configuration_lines:
             fail(f"AppStore/configuration.yml is missing: {expected}")

@@ -1,1 +1,1 @@
-Progress bars now fill from left to right as time passes, and percentages consistently show elapsed progress. Onboarding also makes the optional milestone easier to skip and add later.
+Added Lock Screen widgets in Inline, Circular, and Rectangular styles, with one configurable timeline. Progress bars now fill from left to right as time passes, percentages consistently show elapsed progress, and onboarding makes the optional milestone easier to skip and add later.
