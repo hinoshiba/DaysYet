@@ -9,8 +9,9 @@ bundle_id: com.hinoshiba.daysyet
 widget_bundle_id: com.hinoshiba.daysyet.widget
 app_group: group.com.hinoshiba.daysyet
 widget_kind: com.hinoshiba.daysyet.widget.progress
+lock_screen_widget_kind: com.hinoshiba.daysyet.widget.lock-screen
 version: 0.1.2
-build: 3
+build: 4
 initial_release: false
 minimum_os: "17.0"
 device_families:
