@@ -12,7 +12,7 @@ DaysYetは、利用者が入力した生年月日、健康でいたい年齢、�
 
 情報はAppleのApp Group機能を使い、端末内でDaysYetアプリとWidget Extensionが共有する専用領域へ保存します。開発者のサーバー、クラウド、分析サービス、広告事業者、その他第三者へ送信しません。アカウントは作成しません。
 
-ウィジェットをホーム画面に置くと、選択したタイトル、残り期間、割合、終了日時が端末を見ることのできる人の目に触れる場合があります。
+ウィジェットをホーム画面に置くと、選択したタイトル、残り期間、経過割合、終了日時が端末を見ることのできる人の目に触れる場合があります。
 
 ### 追跡・広告・分析
 
@@ -44,7 +44,7 @@ DaysYet stores the birth date, healthy-age goal, milestone name, start and targe
 
 The data stays in the on-device App Group container shared by the DaysYet app and its widget extension. It is not sent to the developer, a server, cloud service, analytics provider, advertising provider, or any other third party. DaysYet does not create user accounts.
 
-If a widget is placed on the Home Screen, its title, time left, percentage, or target date may be visible to anyone who can view the device.
+If a widget is placed on the Home Screen, its title, time left, elapsed percentage, or target date may be visible to anyone who can view the device.
 
 ### Tracking, advertising, and analytics
 

@@ -111,8 +111,8 @@
     },
     "widget.display_mode.countdown_with_percentage" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Time + percent + bar" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "時間＋割合＋バー" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Time + elapsed % + bar" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "時間＋経過割合＋バー" } }
       }
     },
     "widget.display_mode.progress_bars" : {
@@ -171,8 +171,8 @@
     },
     "widget.value_style.percentage" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Percentage" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "割合" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Elapsed percentage" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "経過割合" } }
       }
     },
     "widget.value_style.remaining" : {

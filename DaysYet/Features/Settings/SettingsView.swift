@@ -61,7 +61,7 @@ struct SettingsView: View {
             } header: {
                 Text(L10n.text("このアプリについて", "About"))
             } footer: {
-                Text(L10n.text("時間は、まだある。今日を選ぶ。", "There is time yet. Choose today."))
+                Text(L10n.text("時間を、積み重ねる。今日を選ぶ。", "Every day adds up. Choose today."))
             }
         }
         .navigationTitle(L10n.text("設定", "Settings"))

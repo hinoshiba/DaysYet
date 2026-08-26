@@ -299,13 +299,15 @@ private struct WidgetMetricRow: View {
 
     private func metricProgressBar(height: CGFloat) -> some View {
         GeometryReader { geometry in
-            let width = max(geometry.size.width * snapshot.remainingFraction, height)
+            let width = geometry.size.width * snapshot.elapsedFraction
             ZStack(alignment: .leading) {
                 Capsule().fill(trackStyle)
-                Capsule()
-                    .fill(barStyle)
-                    .frame(width: width)
-                    .widgetAccentable()
+                if width > 0 {
+                    Capsule()
+                        .fill(barStyle)
+                        .frame(width: width)
+                        .widgetAccentable()
+                }
             }
         }
         .frame(height: height)

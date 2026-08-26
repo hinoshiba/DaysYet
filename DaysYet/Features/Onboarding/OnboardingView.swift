@@ -8,6 +8,7 @@ struct OnboardingView: View {
     @State private var customTargetName = UserProfile.initial.customTargetName
     @State private var customTargetStartDate = UserProfile.initial.customTargetStartDate
     @State private var customTargetDate = UserProfile.initial.customTargetDate
+    @State private var showsMilestoneSetup = false
 
     var body: some View {
         ZStack {
@@ -55,7 +56,7 @@ struct OnboardingView: View {
                 .frame(width: 180, height: 180)
             VStack(spacing: 12) {
                 EyebrowLabel(text: "DAYSYET")
-                Text(L10n.text("時間は、まだある。\n今日を選ぶ。", "There is time yet.\nChoose today."))
+                Text(L10n.text("時間を、積み重ねる。\n今日を選ぶ。", "Every day adds up.\nChoose today."))
                     .font(.system(size: 38, weight: .bold, design: .rounded))
                     .multilineTextAlignment(.center)
                     .tracking(-0.8)
@@ -104,20 +105,33 @@ struct OnboardingView: View {
 
                     Divider().padding(.leading, 16)
 
-                    VStack(alignment: .leading, spacing: 12) {
-                        TextField(L10n.text("節目の名前", "Milestone name"), text: $customTargetName)
-                        DatePicker(
-                            L10n.text("起算日", "Start date"),
-                            selection: milestoneStartDateBinding,
-                            in: earliestMilestoneDate ... latestStartDate,
-                            displayedComponents: .date
-                        )
-                        DatePicker(
-                            L10n.text("目標日時", "Target date and time"),
-                            selection: $customTargetDate,
-                            in: minimumTargetDate ... latestTargetDate,
-                            displayedComponents: [.date, .hourAndMinute]
-                        )
+                    DisclosureGroup(isExpanded: $showsMilestoneSetup) {
+                        VStack(alignment: .leading, spacing: 12) {
+                            TextField(L10n.text("節目の名前", "Milestone name"), text: $customTargetName)
+                            DatePicker(
+                                L10n.text("起算日", "Start date"),
+                                selection: milestoneStartDateBinding,
+                                in: earliestMilestoneDate ... latestStartDate,
+                                displayedComponents: .date
+                            )
+                            DatePicker(
+                                L10n.text("目標日時", "Target date and time"),
+                                selection: $customTargetDate,
+                                in: minimumTargetDate ... latestTargetDate,
+                                displayedComponents: [.date, .hourAndMinute]
+                            )
+                        }
+                        .padding(.top, 12)
+                    } label: {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(L10n.text("大切な日（任意）", "Milestone (optional)"))
+                            Text(L10n.text(
+                                "設定しなくても始められます。後から「時間」で追加できます。",
+                                "You can get started without one and add it later from Times."
+                            ))
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        }
                     }
                     .padding(16)
                 }

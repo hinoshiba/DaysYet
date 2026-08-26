@@ -94,8 +94,8 @@ struct ProfileEditorView: View {
                 Text(L10n.text("大切な日", "Milestone"))
             } footer: {
                 Text(L10n.text(
-                    "起算日を100%として、目標日時までの残り割合を計算します。",
-                    "Progress starts at 100% on the start date and counts down toward the target."
+                    "起算日を0%として、目標日時に100%となる経過割合を計算します。",
+                    "Progress starts at 0% on the start date and reaches 100% at the target."
                 ))
             }
 

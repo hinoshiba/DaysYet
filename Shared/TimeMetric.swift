@@ -49,7 +49,7 @@ enum WidgetDisplayMode: String, Codable, CaseIterable, Identifiable, Sendable {
     var title: String {
         switch self {
         case .countdown: L10n.text("カウントダウン", "Countdown")
-        case .countdownWithPercentage: L10n.text("時間＋割合＋バー", "Time + percent + bar")
+        case .countdownWithPercentage: L10n.text("時間＋経過割合＋バー", "Time + elapsed % + bar")
         case .progressBars: L10n.text("プログレスバー", "Progress bars")
         }
     }
@@ -115,7 +115,7 @@ enum MetricValueStyle: String, Codable, CaseIterable, Identifiable, Sendable {
     var title: String {
         switch self {
         case .remaining: L10n.text("残り時間", "Time left")
-        case .percentage: L10n.text("割合", "Percent")
+        case .percentage: L10n.text("経過割合", "Elapsed percentage")
         case .targetDate: L10n.text("終了日時", "End date")
         }
     }
@@ -255,15 +255,15 @@ struct MetricSnapshot: Identifiable, Equatable, Sendable {
     let title: String
     let context: String
     let countdown: CountdownPresentation
-    let remainingFraction: Double
+    let elapsedFraction: Double
     let targetDate: Date
 
     var id: String { kind.rawValue }
     var remainingText: String { countdown.plainText }
-    var percentageText: String { String(format: "%.1f%%", remainingFraction * 100) }
+    var percentageText: String { String(format: "%.1f%%", elapsedFraction * 100) }
 
-    var percentageRemainingText: String {
-        L10n.text("残り\(percentageText)", "\(percentageText) left")
+    var percentageElapsedText: String {
+        L10n.text("\(percentageText)経過", "\(percentageText) elapsed")
     }
 
     func valueText(style: MetricValueStyle, compact: Bool = false) -> String {
@@ -271,7 +271,7 @@ struct MetricSnapshot: Identifiable, Equatable, Sendable {
         case .remaining:
             compact ? compactRemainingText : remainingText
         case .percentage:
-            percentageRemainingText
+            percentageElapsedText
         case .targetDate:
             targetDateText(compact: compact)
         }
@@ -296,20 +296,20 @@ struct MetricSnapshot: Identifiable, Equatable, Sendable {
     func secondarySummary(excluding style: MetricValueStyle) -> String {
         switch style {
         case .remaining:
-            "\(percentageRemainingText) · \(targetDateText())"
+            "\(percentageElapsedText) · \(targetDateText())"
         case .percentage:
             "\(remainingText) · \(targetDateText())"
         case .targetDate:
-            "\(remainingText) · \(percentageRemainingText)"
+            "\(remainingText) · \(percentageElapsedText)"
         }
     }
 
     var accessibilitySummary: String {
-        "\(title)。\(remainingText)。\(percentageRemainingText)。\(targetDateText())。"
+        "\(title)。\(remainingText)。\(percentageElapsedText)。\(targetDateText())。"
     }
 
     private var compactRemainingText: String {
-        if remainingFraction == 0 {
+        if countdown.terminalText != nil {
             switch kind {
             case .healthyLife: return L10n.text("目安超過", "Past target")
             case .customLife: return L10n.text("到達", "Reached")
@@ -329,8 +329,8 @@ enum TimeProgressCalculator {
     ) -> MetricSnapshot {
         let interval = dateInterval(for: kind, profile: profile, now: now, calendar: calendar)
         let total = max(interval.end.timeIntervalSince(interval.start), 1)
-        let remaining = max(interval.end.timeIntervalSince(now), 0)
-        let fraction = min(max(remaining / total, 0), 1)
+        let elapsed = max(now.timeIntervalSince(interval.start), 0)
+        let fraction = min(max(elapsed / total, 0), 1)
 
         return MetricSnapshot(
             kind: kind,
@@ -342,7 +342,7 @@ enum TimeProgressCalculator {
                 target: interval.end,
                 calendar: calendar
             ),
-            remainingFraction: fraction,
+            elapsedFraction: fraction,
             targetDate: interval.end
         )
     }

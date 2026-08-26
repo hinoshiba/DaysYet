@@ -111,7 +111,7 @@ struct WidgetStudioView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 6) {
             EyebrowLabel(text: L10n.text("DaysYet · 3つの時間", "DaysYet · Three timelines"))
-            Text(L10n.text("時間は、まだある。\n今日を選ぶ。", "There is time yet.\nChoose today."))
+            Text(L10n.text("時間を、積み重ねる。\n今日を選ぶ。", "Every day adds up.\nChoose today."))
                 .font(.system(.largeTitle, design: .rounded, weight: .bold))
                 .tracking(-0.7)
             Text(L10n.text("選んだ内容はウィジェットに反映されます。更新時刻はiOSが調整します。", "Your choices appear in the widget; refresh timing is controlled by iOS."))
@@ -174,6 +174,13 @@ struct WidgetStudioView: View {
             }
             .pickerStyle(.segmented)
             .accessibilityHint(L10n.text("3本すべての右側に表示する値を選びます", "Chooses the value shown at the right of all three bars"))
+
+            Text(L10n.text(
+                "バーは経過時間を左から表示します。ここでは右側の値だけを選べます。",
+                "Bars always show elapsed time from left to right; this only changes the value on the right."
+            ))
+            .font(.caption)
+            .foregroundStyle(.secondary)
         }
     }
 

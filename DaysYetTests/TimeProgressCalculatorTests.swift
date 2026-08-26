@@ -23,7 +23,7 @@ final class TimeProgressCalculatorTests: XCTestCase {
         XCTAssertEqual(interval.duration, 29 * 24 * 60 * 60, accuracy: 0.5)
     }
 
-    func testYearFractionAtLeapYearMidpoint() throws {
+    func testYearElapsedFractionAtLeapYearMidpoint() throws {
         let now = try XCTUnwrap(calendar.date(from: DateComponents(year: 2024, month: 7, day: 2)))
         let snapshot = TimeProgressCalculator.snapshot(
             for: .year,
@@ -32,10 +32,10 @@ final class TimeProgressCalculatorTests: XCTestCase {
             calendar: calendar
         )
 
-        XCTAssertEqual(snapshot.remainingFraction, 0.5, accuracy: 0.002)
+        XCTAssertEqual(snapshot.elapsedFraction, 0.5, accuracy: 0.002)
     }
 
-    func testPastHealthyTargetClampsToZero() throws {
+    func testPastHealthyTargetClampsElapsedProgressToOne() throws {
         var profile = UserProfile.initial
         profile.birthDate = try XCTUnwrap(calendar.date(from: DateComponents(year: 1900, month: 1, day: 1)))
         profile.healthyLifeYears = 50
@@ -48,8 +48,25 @@ final class TimeProgressCalculatorTests: XCTestCase {
             calendar: calendar
         )
 
-        XCTAssertEqual(snapshot.remainingFraction, 0)
+        XCTAssertEqual(snapshot.elapsedFraction, 1)
         XCTAssertFalse(snapshot.remainingText.contains("-"))
+    }
+
+    func testHealthyTargetIsFullyElapsedAtConfiguredAge() throws {
+        var profile = UserProfile.initial
+        profile.birthDate = try XCTUnwrap(calendar.date(from: DateComponents(year: 1950, month: 1, day: 1)))
+        profile.healthyLifeYears = 75
+        let target = try XCTUnwrap(calendar.date(from: DateComponents(year: 2025, month: 1, day: 1)))
+
+        let snapshot = TimeProgressCalculator.snapshot(
+            for: .healthyLife,
+            profile: profile,
+            now: target,
+            calendar: calendar
+        )
+
+        XCTAssertEqual(snapshot.elapsedFraction, 1)
+        XCTAssertEqual(snapshot.percentageText, "100.0%")
     }
 
     func testDashboardAlwaysReturnsThreeUniqueMetrics() {
@@ -169,7 +186,7 @@ final class TimeProgressCalculatorTests: XCTestCase {
         XCTAssertEqual(decoded.widgetTheme, .vividNight)
     }
 
-    func testSnapshotSupportsPercentageRemainingAndEndDateValues() throws {
+    func testSnapshotSupportsElapsedPercentageRemainingTimeAndEndDateValues() throws {
         let now = try XCTUnwrap(calendar.date(from: DateComponents(year: 2026, month: 8, day: 15, hour: 12)))
         let snapshot = TimeProgressCalculator.snapshot(
             for: .month,
@@ -301,9 +318,9 @@ final class TimeProgressCalculatorTests: XCTestCase {
 
         XCTAssertEqual(interval.start, start)
         XCTAssertEqual(interval.end, target)
-        XCTAssertEqual(beforeSnapshot.remainingFraction, 1)
-        XCTAssertEqual(midpointSnapshot.remainingFraction, 0.5, accuracy: 0.000_001)
-        XCTAssertEqual(afterSnapshot.remainingFraction, 0)
+        XCTAssertEqual(beforeSnapshot.elapsedFraction, 0)
+        XCTAssertEqual(midpointSnapshot.elapsedFraction, 0.5, accuracy: 0.000_001)
+        XCTAssertEqual(afterSnapshot.elapsedFraction, 1)
     }
 
     func testCustomTargetWithStartAtOrAfterTargetRemainsFinite() throws {
@@ -330,8 +347,8 @@ final class TimeProgressCalculatorTests: XCTestCase {
 
             XCTAssertEqual(interval.start, start)
             XCTAssertEqual(interval.duration, 1, accuracy: 0.000_001)
-            XCTAssertTrue(snapshot.remainingFraction.isFinite)
-            XCTAssertEqual(snapshot.remainingFraction, 1)
+            XCTAssertTrue(snapshot.elapsedFraction.isFinite)
+            XCTAssertEqual(snapshot.elapsedFraction, 0)
         }
     }
 
@@ -370,7 +387,7 @@ final class TimeProgressCalculatorTests: XCTestCase {
             calendar: calendar
         )
 
-        XCTAssertEqual(snapshot.remainingFraction, 0)
+        XCTAssertEqual(snapshot.elapsedFraction, 1)
         XCTAssertFalse(snapshot.remainingText.contains("-"))
     }
 }

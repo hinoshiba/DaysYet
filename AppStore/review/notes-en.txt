@@ -2,7 +2,7 @@ DaysYet requires no account or sign-in and has no server-backed features.
 
 To review the Widget:
 1. Launch the app and complete the three-step onboarding.
-2. On the Widget tab, choose three timelines, one of three display layouts, and one of four themes. In Bars mode, the right-side value can be time left, percentage left, or the target date and time.
+2. On the Widget tab, choose three timelines, one of three display layouts, and one of four themes. In Bars mode, progress fills from left to right and the right-side value can be time left, elapsed percentage, or the target date and time.
 3. Add a Small or Medium DaysYet Widget from the Home Screen Widget gallery.
 4. To test per-Widget overrides, touch and hold the Widget, choose Edit Widget, disable “Use the three selected in the app,” and select timelines, display layout, value style, and theme.
 
