@@ -202,7 +202,7 @@ enum MacWidgetSurface {
                      topCameraInset: CGFloat = 0, topNotchWidth: CGFloat = 0) -> CGPath {
         let path = CGMutablePath()
         guard size.width > 0, size.height > 0 else { return path }
-        let factor = MacWidgetPlacement.clampedScale(scale)
+        let factor = CGFloat(MacWidgetPlacement.clampedScale(scale))
         if edge == .top {
             let inset = topCameraInset.isFinite ? min(max(topCameraInset, 0), size.height) : 0
             let notchWidth = topNotchWidth.isFinite ? max(topNotchWidth, 0) : 0

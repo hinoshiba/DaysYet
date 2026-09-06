@@ -14,7 +14,7 @@
 - [x] App Store Connect processing succeeded; Mac build 0.1.2 (3) is attached to version 0.1.2 and saved.
 - [x] Japanese and English Mac descriptions, promotional text, and Mac-specific keywords are saved in App Store Connect. The top-level `metadata/` remains iPhone / iPad copy.
 - [ ] Review the saved Mac copy against the attached candidate and screenshots before submission, keeping shared names, subtitles, and URLs unchanged.
-- [ ] For any later iPhone / iPad update, screenshots are refreshed for both languages and both device classes, replacing old version/label content. This is separate from the Mac addition.
+- [x] iOS 0.1.3 (5) screenshots are refreshed and visually reviewed for both languages and both device classes: five images per set, including the Work hours / week-start editor.
 - [x] Japanese and English (U.S.) each have three 1280 × 800 RGB screenshots under `macos/screenshots/<locale>/`, attached to their correct App Store Connect localizations. Settings and expanded side/top widgets come from the official archive; captured pixels are preserved at 1:1 on white canvases, without resampling or generated app UI.
 - [x] The Mac website update was deployed from commit `a61d44918b989af74ef0044df4251a386351e8a6`. [Pages deployment succeeded](https://github.com/hinoshiba/DaysYet/actions/runs/34011053964); Japanese and English pages and CSS returned HTTP 200 with hashes matching the public commit. Mac preparation, the interactive preview, and independent local Mac storage are reflected on the live site.
 - [ ] Any public store link uses the confirmed listing for that platform. An unconfirmed Mac listing is not published.
