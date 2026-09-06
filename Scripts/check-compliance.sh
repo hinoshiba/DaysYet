@@ -5,7 +5,6 @@ readonly MODE="${1:-development}"
 readonly ICON_PATH="DaysYet/Assets.xcassets/AppIcon.appiconset/AppIcon.png"
 readonly EXPECTED_ICON_SHA256="0e51cbe928a9239a4a58a34986cfbc950250704903f035f42a40d87b8b1a636f"
 readonly EXPECTED_SUPPORT_EMAIL="support@hinoshiba.com"
-readonly EXPECTED_TEAM_ID="94HVVWXLK3"
 readonly EXPECTED_APP_ID="com.hinoshiba.daysyet"
 readonly EXPECTED_WIDGET_ID="${EXPECTED_APP_ID}.widget"
 readonly EXPECTED_TEST_ID="${EXPECTED_APP_ID}.tests"
@@ -26,7 +25,6 @@ required_files=(
   DaysYet/DaysYet.entitlements DaysYetWidget/DaysYetWidget.entitlements
   DaysYet.xcodeproj/project.pbxproj
   DaysYet.xcodeproj/xcshareddata/xcschemes/DaysYet.xcscheme
-  ci_scripts/ci_pre_xcodebuild.sh
 )
 
 for required_file in "${required_files[@]}"; do
@@ -36,13 +34,7 @@ for required_file in "${required_files[@]}"; do
   fi
 done
 
-/bin/sh -n ci_scripts/*.sh
-for cloud_script in ci_scripts/*.sh; do
-  if [[ ! -x "${cloud_script}" ]]; then
-    echo "error: Xcode Cloud script is not executable: ${cloud_script}" >&2
-    exit 1
-  fi
-done
+bash -n build.sh Scripts/*.sh
 
 assert_contains() {
   local file="$1"
@@ -110,7 +102,6 @@ fi
 assert_contains project.yml 'developmentLanguage: ja'
 assert_line project.yml "bundleIdPrefix: ${EXPECTED_APP_ID}"
 assert_line project.yml "VERSIONING_SYSTEM: apple-generic"
-assert_line project.yml "DEVELOPMENT_TEAM: \"${EXPECTED_TEAM_ID}\""
 assert_line project.yml "PRODUCT_BUNDLE_IDENTIFIER: ${EXPECTED_APP_ID}"
 assert_line project.yml "PRODUCT_BUNDLE_IDENTIFIER: ${EXPECTED_WIDGET_ID}"
 assert_line project.yml "PRODUCT_BUNDLE_IDENTIFIER: ${EXPECTED_TEST_ID}"

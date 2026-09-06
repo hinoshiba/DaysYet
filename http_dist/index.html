@@ -6,12 +6,12 @@
   <meta name="apple-itunes-app" content="app-id=6802000765">
   <meta name="theme-color" content="#f7f3ea" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#0c0e18" media="(prefers-color-scheme: dark)">
-  <title>DaysYet — 3つの時間を、ひと目に</title>
-  <meta name="description" content="ホーム画面では大切な3つの時間を、残り時間、経過割合、プログレスバーで表示。ロック画面では選んだ1つをInline、Circular、Rectangularで確認できるiPhone / iPadウィジェットです。">
+  <title>DaysYet — 人生のTokenを、大切なことへ。</title>
+  <meta name="description" content="人生のTokenを、大切なことへ。iPhone / iPadのウィジェットとMacの画面端で、残り時間と経過をひと目に。Mac版はmacOS 14以降向けに、Mac App Storeでの提供を準備しています。">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="DaysYet">
-  <meta property="og:title" content="DaysYet — 3つの時間を、ひと目に">
-  <meta property="og:description" content="ホーム画面に3つ、ロック画面に1つ。大切な時間の残りと進み具合を確認できるiPhone / iPadウィジェット。">
+  <meta property="og:title" content="DaysYet — 人生のTokenを、大切なことへ。">
+  <meta property="og:description" content="人生のTokenを、大切なことへ。iPhone / iPadとMacで、今週・今月・今年や目標までの残り時間と経過を表示。Mac版はMac App Storeでの提供を準備しています。">
   <meta property="og:url" content="https://daysyet.hinoshiba.com/">
   <meta property="og:image" content="https://daysyet.hinoshiba.com/assets/screenshots/ja/02-widget-target-date.webp">
   <meta property="og:image:width" content="660">
@@ -20,8 +20,8 @@
   <meta property="og:locale" content="ja_JP">
   <meta property="og:locale:alternate" content="en_US">
   <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="DaysYet — 3つの時間を、ひと目に">
-  <meta name="twitter:description" content="ホーム画面に3つ、ロック画面に1つ。大切な時間の残りと進み具合を、ひと目で。">
+  <meta name="twitter:title" content="DaysYet — 人生のTokenを、大切なことへ。">
+  <meta name="twitter:description" content="人生のTokenを、大切なことへ。iPhone / iPadとMacで、今週・今月・今年や目標までの残り時間と経過を表示。Mac版はMac App Storeでの提供を準備しています。">
   <meta name="twitter:image" content="https://daysyet.hinoshiba.com/assets/screenshots/ja/02-widget-target-date.webp">
   <meta name="twitter:image:alt" content="残り時間、経過割合、左から積み重なる進捗バーを同時表示するDaysYetのウィジェット設定画面">
   <link rel="canonical" href="https://daysyet.hinoshiba.com/">
@@ -36,28 +36,35 @@
 <body>
   <a class="skip-link" href="#main">本文へ移動</a>
   <div class="shell">
-    <header class="site-header">
+    <header class="site-header" data-menu-open="false">
       <a class="wordmark" href="#top" aria-label="DaysYet トップ">DAYSYET</a>
-      <nav aria-label="主なナビゲーション">
-        <a href="#features">機能</a>
+      <nav id="site-navigation" class="site-navigation" aria-label="主なナビゲーション">
+        <a href="#mac">Mac版</a>
+        <a href="#examples">画面例</a>
+        <a href="#features">機能と使い方</a>
         <a href="#privacy">プライバシー</a>
+        <a href="#accessibility">アクセシビリティ</a>
         <a href="#support">サポート</a>
-        <a class="lang" lang="en" hreflang="en" href="./en/" data-language-base="./en/">EN</a>
+        <a href="#terms">利用条件</a>
       </nav>
+      <div class="header-actions">
+        <a class="lang" lang="en" hreflang="en" href="./en/" data-language-base="./en/">EN</a>
+        <button class="nav-toggle" type="button" aria-controls="site-navigation" aria-expanded="false"><span>メニュー</span><svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true" focusable="false"><path d="m3 4.5 3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      </div>
     </header>
 
     <main id="main">
       <section class="hero" id="top" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <div class="eyebrow">Three timelines · One glance</div>
-          <h1 id="hero-title">時間を、<br>積み重ねる。</h1>
-          <p class="lead">今週、今月、今年、人生の目標。ホーム画面では大切な3つを、残り時間と経過割合で静かに見渡せます。ロック画面には、選んだ1つを置けます。</p>
+          <div class="eyebrow">Your time · Your tokens</div>
+          <h1 id="hero-title" class="token-headline">人生のTokenを、<br>大切なことへ。</h1>
+          <p class="lead">iPhone / iPadのウィジェットとMacの画面端で、今週・今月・今年や人生の目標までの残り時間と経過をひと目に。限りある時間を見渡して、大切なことに使うきっかけに。</p>
           <div class="actions">
-            <a class="button" href="https://apps.apple.com/jp/app/daysyet-%E6%AE%8B%E3%82%8A%E6%99%82%E9%96%93%E3%82%A6%E3%82%A3%E3%82%B8%E3%82%A7%E3%83%83%E3%83%88/id6802000765">App Storeで見る</a>
-            <a class="button secondary" href="#examples">画面で見る</a>
+            <a class="button" href="https://apps.apple.com/jp/app/daysyet-%E6%AE%8B%E3%82%8A%E6%99%82%E9%96%93%E3%82%A6%E3%82%A3%E3%82%B8%E3%82%A7%E3%83%83%E3%83%88/id6802000765">iPhone / iPadのApp Store</a>
+            <a class="button secondary" href="#mac">Mac版を見る</a>
           </div>
           <ul class="hero-facts" aria-label="DaysYetの特徴">
-            <li>iPhone / iPad</li>
+            <li>iPhone / iPad / Mac（提供準備中）</li>
             <li>3つの表示 / 4テーマ</li>
             <li>日本語 / English</li>
             <li>データは端末内だけ</li>
@@ -71,19 +78,49 @@
         </figure>
       </section>
 
-      <nav class="section-nav" aria-label="このページの内容">
-        <span>このページで分かること</span>
-        <a href="#examples">画面例</a>
-        <a href="#features">機能と使い方</a>
-        <a href="#privacy">プライバシー</a>
-        <a href="#accessibility">アクセシビリティ</a>
-        <a href="#support">サポート</a>
-        <a href="#terms">利用条件</a>
-      </nav>
+      <section id="mac" class="mac-section" aria-labelledby="mac-title">
+        <div class="mac-heading">
+          <div class="section-heading">
+            <div class="eyebrow">DaysYet for Mac</div>
+            <h2 id="mac-title">作業のそばに、<br>時間の目印を。</h2>
+            <p class="section-lead">画面端につながる、細い黒のパネル。左右では中央に割合を表示する円形メーター、上端ではカメラ下の細い3本のバーで、時間の進み具合を静かに見渡せます。項目にポインタを合わせると、小さな詳細表示が広がります。左右では選んだサークルの高さに合わせて、詳細と黒いパネルの膨らみが上下に移動します。</p>
+          </div>
+          <div class="mac-availability"><span class="platform-tag">macOS 14以降</span><p>Mac版はMac App Storeでの提供を準備しています。下の動作プレビューで、配置や表示を試せます。</p><a class="button secondary" href="#mac-preview-settings">動作プレビューを試す <span aria-hidden="true">↓</span></a></div>
+        </div>
+        <figure class="mac-preview">
+          <div class="mac-preview-settings" id="mac-preview-settings" data-mac-settings role="region" aria-labelledby="mac-preview-settings-title">
+            <h3 id="mac-preview-settings-title">プレビュー設定</h3>
+            <div class="mac-position-controls" role="group" aria-label="Macプレビューの設定"><span>表示位置</span><button type="button" data-mac-position="left" aria-pressed="false">左</button><button type="button" data-mac-position="top" aria-pressed="true">上</button><button type="button" data-mac-position="right" aria-pressed="false">右</button><span class="mac-size-control"><label for="mac-preview-size">サイズ</label><input id="mac-preview-size" data-mac-size type="range" min="80" max="150" step="5" value="100" aria-valuetext="100%"><output for="mac-preview-size" data-mac-size-output>100%</output></span><span class="mac-select-control"><label for="mac-preview-mode">詳細の表示</label><select id="mac-preview-mode" data-mac-mode><option value="countdown">カウントダウン</option><option value="countdownWithPercentage" selected>時間＋経過割合＋バー</option><option value="progressBars">プログレスバー</option></select></span><span class="mac-select-control mac-value-control" data-mac-value-control hidden><label for="mac-preview-value">値</label><select id="mac-preview-value" data-mac-value-style><option value="remaining">残り時間</option><option value="percentage">経過割合</option><option value="targetDate">終了日時</option></select></span><span class="mac-keep-control"><input id="mac-preview-keep" data-mac-keep type="checkbox"><label for="mac-preview-keep">詳細を開いたままにする</label></span></div>
+            <p data-mac-settings-status data-settings-message="プレビュー設定を開きました。表示位置・サイズ・詳細を変更できます。" role="status">ウィジェット本体をダブルクリックすると、この設定へ移動します。</p>
+          </div>
+          <div class="mac-desktop" data-mac-desktop data-position="top" role="group" aria-label="Mac版の動作イメージ">
+            <div class="mac-menubar" aria-hidden="true"><span><b>Finder</b><span class="mac-menu-item">ファイル</span><span class="mac-menu-item">表示</span></span><span>9月5日（土）12:00</span></div>
+            <div class="mac-camera" aria-hidden="true"></div>
+            <div class="mac-desktop-copy" aria-hidden="true"><span>Make room for today.</span><p>いまに、<br>余白を。</p></div>
+            <div class="mac-notch" data-mac-preview data-position="top" data-expanded="false" data-mode="countdownWithPercentage">
+              <button class="mac-camera-trigger" data-mac-camera-trigger type="button" aria-label="プレビュー設定を開く" aria-describedby="mac-preview-description" aria-controls="mac-preview-settings" data-active="false"></button>
+              <svg class="mac-surface" data-mac-surface viewBox="0 0 280 106" preserveAspectRatio="none" aria-hidden="true"><path data-mac-contour d="M35 0 H245 C233 0 233 16 233 32 V36 Q233 40 229 40 H51 Q47 40 47 36 V32 C47 16 47 0 35 0 Z"/></svg>
+              <div class="mac-detail" id="mac-preview-detail" data-mac-detail aria-hidden="true"><div class="mac-detail-content" data-mac-detail-content data-changing="false"><div class="mac-detail-header"><span class="mac-detail-name" data-mac-name>今週</span><span class="mac-detail-percentage" data-mac-percentage>79%</span></div><span class="mac-countdown" data-mac-countdown><span data-mac-days>1</span><small>日</small><span data-mac-hours>12</span><small>時間</small></span><span class="mac-selected-value" data-mac-value hidden></span><div class="mac-detail-progress" data-mac-progress role="progressbar" aria-label="経過割合" aria-valuemin="0" aria-valuemax="100" aria-valuenow="79"><span></span></div></div></div>
+              <div class="mac-rail" data-mac-rail>
+                <button class="mac-metric" type="button" data-mac-metric="0" data-percentage="79" data-target="2026/9/7" data-name="今週" data-days="1" data-hours="12" data-color="#ef9868" style="--metric-color: #ef9868; --progress: 79%" aria-label="今週、経過79%、残り1日12時間、プレビュー設定を開く" aria-describedby="mac-preview-description" aria-controls="mac-preview-settings" data-active="false"><span class="mac-top-progress" aria-hidden="true"></span><span class="mac-ring" aria-hidden="true"><strong class="mac-ring-value">79<small>%</small></strong></span></button>
+                <button class="mac-metric" type="button" data-mac-metric="1" data-percentage="15" data-target="2026/10/1" data-name="今月" data-days="25" data-hours="12" data-color="#a6d391" style="--metric-color: #a6d391; --progress: 15%" aria-label="今月、経過15%、残り25日12時間、プレビュー設定を開く" aria-describedby="mac-preview-description" aria-controls="mac-preview-settings" data-active="false"><span class="mac-top-progress" aria-hidden="true"></span><span class="mac-ring" aria-hidden="true"><strong class="mac-ring-value">15<small>%</small></strong></span></button>
+                <button class="mac-metric" type="button" data-mac-metric="2" data-percentage="68" data-target="2027/1/1" data-name="今年" data-days="117" data-hours="12" data-color="#eed47d" style="--metric-color: #eed47d; --progress: 68%" aria-label="今年、経過68%、残り117日12時間、プレビュー設定を開く" aria-describedby="mac-preview-description" aria-controls="mac-preview-settings" data-active="false"><span class="mac-top-progress" aria-hidden="true"></span><span class="mac-ring" aria-hidden="true"><strong class="mac-ring-value">68<small>%</small></strong></span></button>
+              </div>
+            </div>
+          </div>
+          <p id="mac-preview-description" class="visually-hidden">表示例: 今週79%、今月15%、今年68%。それぞれの項目を選ぶと、同じ黒い面に選んだ表示モードで詳細を表示します。</p>
+          <figcaption>Mac版のブラウザプレビュー。左右では本体を上下にドラッグできます。ホバーやTabキーで詳細を表示し、Escで閉じます。本体をダブルクリックすると上のプレビュー設定へ移動し、位置・サイズ・詳細の表示を変更できます。数値は例示です。</figcaption>
+        </figure>
+        <div class="mac-benefits">
+          <article><h3>必要なとき、もう少し詳しく</h3><p>カウントダウン、時間＋経過割合＋バー、プログレスバーの3つから詳細の表示モードを選べます。バー表示の値は、残り時間・経過割合・終了日時から選択。左右では詳細とパネルの膨らみが、選んだサークルの高さへ移動します。4テーマに対応し、設定で詳細を開いたままにできます。</p></article>
+          <article><h3>自分の画面に合わせて</h3><p>左右の端と上端から配置を選べます。上端ではMacのカメラ部分に沿って表示し、カメラのないディスプレイでは上端中央に表示します。左右の配置では、本体を上下にドラッグして位置を調整できます。設定画面からの調整にも対応しています。サイズは80〜150%で調整でき、サークルと文字も一緒に変わります。上端のバーの帯と線の太さも、サイズに合わせて変わります。本体をダブルクリックして設定を開き、表示・非表示も変更できます。</p></article>
+          <article><h3>Macの中だけに保存</h3><p>今週・今月・今年は起動してすぐ表示。「勤務時間」を選ぶと毎日の終業までを確認でき、開始・終了時刻も設定できます。データはMac内に保存され、他の端末との同期はありません。</p></article>
+        </div>
+      </section>
 
       <section id="examples" aria-labelledby="examples-title">
         <div class="section-heading">
-          <div class="eyebrow">See it in action</div>
+          <div class="eyebrow">DaysYet for iPhone / iPad</div>
           <h2 id="examples-title">選ぶ。切り替える。<br>あとは、ひと目で。</h2>
           <p class="section-lead">画面の操作はシンプルです。見たい3つの時間、表示モード、テーマを選ぶと、ホーム画面ウィジェットのプレビューへそのまま反映されます。バー表示では右側の値も選べます。</p>
         </div>
@@ -111,7 +148,7 @@
 
       <section id="features" aria-labelledby="features-title">
         <div class="section-heading">
-          <div class="eyebrow">Features</div>
+          <div class="eyebrow">iPhone / iPad features</div>
           <h2 id="features-title">3つの時間だから、迷わず見渡せる。</h2>
           <p class="section-lead">暦と自分の目標をホーム画面とロック画面へ。ホーム画面の時間、モード、値、テーマは、アプリ全体でもウィジェットごとでも選べます。</p>
         </div>
@@ -132,12 +169,12 @@
 
       <section id="privacy" class="policy-section" aria-labelledby="privacy-title">
         <div class="section-heading">
-          <div class="eyebrow">Privacy · 最終更新 2026-08-26</div>
+          <div class="eyebrow">Privacy · 最終更新 2026-09-06</div>
           <h2 id="privacy-title">入力した情報は、<br>この端末だけに。</h2>
         </div>
         <div class="privacy-intro">
           <div>
-            <p class="notice"><strong>要点:</strong> DaysYetは利用者データを収集・送信せず、追跡、広告、分析SDKを使用しません。入力した情報は端末内だけに保存されます。</p>
+            <p class="notice"><strong>要点:</strong> DaysYetは利用者データを収集・送信せず、追跡、広告、分析SDKを使用しません。入力した情報は端末内だけに保存されます。この方針は、提供準備中のMac版にも適用します。</p>
             <p class="section-lead">設定画面から保存内容を確認し、いつでもすべてのデータを消去できます。</p>
           </div>
           <figure class="privacy-figure">
@@ -148,11 +185,11 @@
           </figure>
         </div>
         <div class="policy-grid">
-          <article><h3>1. 保存する情報と目的</h3><p>生年月日、健康でいたい年齢、目標名、目標の起算日と目標日時、ウィジェットの項目、表示モード、値の形式、テーマを保存します。これらは時間の計算、アプリ画面、ウィジェット表示にだけ使います。</p></article>
-          <article><h3>2. 保存場所と共有範囲</h3><p>AppleのApp Group機能を使い、端末内でアプリとWidget Extensionが共有する専用領域へ保存します。開発者のサーバー、クラウド、分析・広告事業者、その他第三者へ送信せず、アカウントも作成しません。</p><p>ホーム画面またはロック画面のウィジェットは、端末を見ることのできる人の目に触れる場合があります。ロック画面では、端末がロックされている間も表示される場合があります。</p></article>
+          <article><h3>1. 保存する情報と目的</h3><p>生年月日、健康でいたい年齢、目標名、目標の起算日と目標日時、毎日の勤務開始・終了時刻、週の始まりの設定、ウィジェットの項目、表示モード、値の形式、テーマを保存します。「勤務時間」の表示は任意で、勤務時刻は端末の現地時刻に基づく計算に使います。Mac版は常駐パネルの表示・非表示、表示先ディスプレイ、画面端の配置と位置、サークル・文字を含むサイズ、詳細を開いたままにする設定も保存します。時間の計算とアプリ・ウィジェット・常駐パネルの表示にだけ使います。</p></article>
+          <article><h3>2. 保存場所と共有範囲</h3><p>iPhone / iPad版はアプリとWidget Extensionが共有する端末内のApp Group領域に、Mac版はMacアプリ専用のサンドボックス内に保存します。端末間での同期はありません。開発者のサーバー、クラウド、分析・広告事業者、その他第三者へ送信せず、アカウントも作成しません。</p><p>ホーム画面・ロック画面のウィジェットやMacの常駐パネルは、端末を見ることのできる人の目に触れる場合があります。ロック画面では、端末がロックされている間も表示される場合があります。</p></article>
           <article><h3>3. 追跡・広告・分析</h3><p>追跡、行動分析、広告、第三者SDKを使用しません。AppleがApp StoreやOSの提供に伴って処理する情報には、Appleのプライバシーポリシーが適用されます。</p></article>
           <article><h3>4. 健康に関する情報</h3><p>「健康でいたい年齢」は利用者自身が決める計画上の目標です。HealthKitへアクセスせず、医学的診断、健康測定、治療、実際の寿命予測を行いません。外部の健康統計データも同梱していません。</p></article>
-          <article><h3>5. 削除と保持期間</h3><p>設定画面の「すべてのデータを消去」で保存情報を直ちに削除できます。アプリ削除後のApp GroupデータはOSが管理します。開発者はアプリから利用者データを受信・保存しないため、開発者へ削除請求を行う対象はありません。</p></article>
+          <article><h3>5. 削除と保持期間</h3><p>設定画面の「すべてのデータを消去」で、その端末の保存情報を直ちに削除できます。Mac版では常駐パネルの配置とサイズの設定も初期状態へ戻ります。他の端末のデータには影響しません。アプリ削除後に残る端末内データはOSが管理します。開発者は利用者データを受信・保存しないため、開発者へ削除請求を行う対象はありません。</p></article>
           <article><h3>6. 外部リンクと変更</h3><p>利用者がソースコード、プライバシー、サポートへのリンクをタップした場合に限り、システムブラウザが開きます。外部通信、クラウド同期、クラッシュ解析、購入検証サーバー、HealthKit、第三者SDKなどを追加する場合は、この方針、Privacy Manifest、App Store Privacy回答を事前に更新します。</p></article>
           <article class="wide"><h3>7. お問い合わせ時の情報</h3><p>お問い合わせ先は<a href="mailto:support@hinoshiba.com">support@hinoshiba.com</a>です。利用者が任意にメールを送信した場合、送信元メールアドレスと本文を、返信および必要なサポート対応のために利用します。個人の日付、健康情報、認証情報、秘密鍵は送らないでください。脆弱性を報告する場合は、メール本文に詳細を含めず、安全な報告経路を依頼してください。</p></article>
         </div>
@@ -161,7 +198,7 @@
       <section id="accessibility" class="band-section" aria-labelledby="accessibility-title">
         <div><div class="eyebrow">Accessibility</div><h2 id="accessibility-title">ひと目にも、<br>読み上げにも。</h2></div>
         <div class="band-copy">
-          <p>DaysYetは、VoiceOver、Dynamic Type、Dark Interface、コントラスト設定、色だけに依存しないラベルを考慮して設計しています。</p>
+          <p>DaysYetはVoiceOverと、色だけに依存しないラベル・数値を考慮して設計しています。iPhone / iPadではDynamic Type、Dark Interface、コントラスト設定にも対応しています。</p>
           <p>各表示はタイトル、残り時間、経過割合、目標日時を一つの意味ある要素として読み上げます。視覚表示にも常にテキストを残し、色だけに頼りません。</p>
           <p>利用できない操作や改善点がある場合は、端末、OS、利用している支援機能、再現手順を添えて<a href="#support">お知らせください</a>。個人の日付は送らないでください。</p>
         </div>
@@ -179,20 +216,26 @@
         </div>
         <div class="faq">
           <h3>よくある質問</h3>
+          <details><summary>Mac版を始める</summary><p>Mac版はmacOS 14以降に対応し、Mac App Storeでの提供を準備しています。公開前の動作は<a href="#mac-preview-settings">このページのプレビュー</a>で試せます。Mac版ではDaysYetを起動すると、今週・今月・今年が画面の右端に表示されます。設定画面を閉じても常駐表示は続きます。本体をダブルクリックすると設定が開きます。macOSのウィジェットギャラリーから追加する操作は不要です。</p></details>
+          <details><summary>Macで配置・表示内容を変える</summary><p>ウィジェット本体をダブルクリックして設定を開き、表示する3つの時間、詳細の表示モード、プログレスバー表示時の値（残り時間・経過割合・終了日時）、テーマ、表示先ディスプレイ、左右または上端の配置、左右配置時の上下位置、サイズ（80〜150%、標準100%）を選びます。サイズに合わせてサークルと文字も変わります。項目にポインタを合わせると詳細が開きます。左右では選んだサークルの高さに合わせて、詳細と黒いパネルの膨らみが上下に移動します。上端ではバーやそのすぐ上にポインタを合わせて項目を切り替えられます。それより上のカメラ部分では、現在の項目の詳細が開きます。バーの帯と線の太さもサイズに合わせて変わります。本体のダブルクリックは設定を開きます。「詳細を開いたままにする」も設定で選べます。通常はポインタを外すと詳細が閉じます。「詳細を開いたままにする」を選んだ場合は、設定でオフにして閉じます。表示・非表示と終了は設定から操作できます。非表示にした場合は、DaysYetをもう一度起動すると設定が開き、表示を戻せます。</p></details>
+          <details><summary>Macの常駐表示が見つからない</summary><p>DaysYetをもう一度起動して設定を開き、常駐表示を有効にしてください。表示先ディスプレイと配置も設定で確認できます。改善しない場合は、MacとmacOSのバージョン、接続しているディスプレイ、再現手順を添えてお問い合わせください。</p></details>
+          <details><summary>Mac版で週の始まりを変える</summary><p>提供準備中のMac版では「設定 → 時間 → 週の始まり」から変更できます。初期状態は端末のカレンダー設定に従い、現在使われる曜日も表示します。日曜〜土曜のいずれかを指定すると、その曜日の現地時刻0:00から翌週の同じ曜日0:00までを「今週」として計算します。変更はMac版の残り時間・経過割合・終了日時に反映されます。</p></details>
+          <details><summary>Mac版で毎日の勤務時間を設定する</summary><p>提供準備中のMac版で開始・終了時刻を設定し、表示する項目から「勤務時間」を選びます。初期値は9:00〜18:00で、端末の現地時刻で毎日繰り返します。日中の勤務では開始前に「開始前」、勤務中に残り時間、終了後に「勤務終了」を表示します。22:00〜翌6:00のような勤務にも対応し、開始と終了が同じ時刻の場合は24時間として扱います。勤務時刻は端末内だけに保存され、他の端末には同期されません。</p></details>
+          <details><summary>iPhone・iPad・Mac間で同期する</summary><p>端末間の同期機能はありません。表示する時間や目標日は各端末で設定します。データの消去も操作した端末だけに反映されます。</p></details>
           <details open><summary>ウィジェットを追加する</summary><p>ホーム画面では空いている場所を長押しし、「編集」からDaysYetを検索してSmallまたはMediumを追加します。ロック画面では画面を長押しし、「カスタマイズ」からロック画面のウィジェット領域をタップしてDaysYetを追加します。Inline、Circular、Rectangularから選べます。</p></details>
           <details><summary>表示する時間を変える</summary><p>アプリのウィジェットタブで3本を選ぶと、変更がホーム画面ウィジェットへ反映されます。特定のホーム画面ウィジェットだけ変える場合は、そのウィジェットを長押しして「ウィジェットを編集」を開き、「アプリで選んだ3本を使う」をオフにします。ロック画面で表示する1本は、ロック画面のカスタマイズ中にウィジェットをタップして選べます。</p></details>
           <details><summary>表示モードやテーマを変える</summary><p>ホーム画面では、アプリのウィジェットタブで「時間」「時間＋％」「バー」から選び、4つのテーマを切り替えられます。「時間＋％」では、各行に残り時間、経過割合、左から伸びる進捗バーを一緒に表示します。特定のウィジェットだけ別の表示や色にする場合は、ホーム画面から「ウィジェットを編集」を開いて上書きできます。</p></details>
           <details><summary>大切な日の起算日を変える</summary><p>アプリの「時間」タブから「人生の基準を編集」を開き、「大切な日」で起算日と目標日時を設定します。起算日を0%として、目標日時に100%となる経過割合を計算します。</p></details>
           <details><summary>表示が更新されない</summary><p>一度DaysYetを開いて設定を保存し直し、ウィジェットがホーム画面またはロック画面に追加されていることを確認してください。OSが更新時刻を調整するため、常に秒単位で更新されるものではありません。改善しない場合は端末・OS・アプリバージョンを添えて<a href="mailto:support@hinoshiba.com?subject=DaysYet%20Support">support@hinoshiba.com</a>へお問い合わせください。</p></details>
-          <details><summary>データを消去する</summary><p>DaysYetの設定タブから「すべてのデータを消去」を選びます。DaysYetに入力したデータは開発者のサーバーに保存されません。</p></details>
+          <details><summary>データを消去する</summary><p>iPhone / iPadでは設定タブ、Macではウィジェット本体のダブルクリックで開く設定画面で「すべてのデータを消去」を選びます。Macでは常駐パネルの配置とサイズの設定も初期状態へ戻ります。他の端末には影響しません。入力したデータは開発者のサーバーに保存されません。</p></details>
         </div>
       </section>
 
       <section id="terms" class="terms-section" aria-labelledby="terms-title">
         <div class="section-heading">
-          <div class="eyebrow">Terms · 発効日 2026-08-16</div>
+          <div class="eyebrow">Terms · 発効日 2026-09-05</div>
           <h2 id="terms-title">利用条件</h2>
-          <p class="section-lead">DaysYetの利用にはAppleの<a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">標準使用許諾契約</a>が適用されます。以下は製品に関する追加情報であり、その契約を置き換えるものではありません。</p>
+          <p class="section-lead">App Storeで提供するDaysYetにはAppleの<a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">標準使用許諾契約</a>が適用されます。ソースコードからのビルドにはリポジトリに記載するライセンスが適用されます。以下は製品に関する追加情報です。</p>
         </div>
         <div class="terms-grid">
           <article><h3>目的</h3><p>DaysYetは、時間の進捗と利用者自身が設定した目標を表示する個人向け情報ツールです。表示は保証、助言、診断、医療行為、または将来の出来事の予測ではありません。</p></article>
@@ -205,7 +248,7 @@
 
       <section id="source" class="source-section" aria-labelledby="source-title">
         <div><div class="eyebrow">Open source</div><h2 id="source-title">コードも、<br>データの流れも公開。</h2></div>
-        <div><p>アプリ本体はApache License 2.0で公開しています。ビルド手順、依存台帳、Privacy Manifest、端末内でのデータ保存範囲を確認できます。</p><div class="actions"><a class="button" href="https://github.com/hinoshiba/DaysYet">GitHubで見る</a><a class="button secondary" href="mailto:support@hinoshiba.com?subject=DaysYet%20Support">お問い合わせ</a></div></div>
+        <div><p>iPhone / iPad版のアプリ本体はApache License 2.0で公開しています。ビルド手順、依存台帳、Privacy Manifest、端末内でのデータ保存範囲を確認できます。</p><div class="actions"><a class="button" href="https://github.com/hinoshiba/DaysYet">GitHubで見る</a><a class="button secondary" href="mailto:support@hinoshiba.com?subject=DaysYet%20Support">お問い合わせ</a></div></div>
       </section>
     </main>
 
@@ -216,10 +259,440 @@
   </div>
   <script>
     (() => {
+      const header = document.querySelector('.site-header');
+      const toggle = header.querySelector('.nav-toggle');
+      const compact = window.matchMedia('(max-width: 1024px)');
+      const setMenuOpen = (open) => {
+        const isOpen = compact.matches && open;
+        header.dataset.menuOpen = String(isOpen);
+        toggle.setAttribute('aria-expanded', String(isOpen));
+      };
+      toggle.addEventListener('click', () => setMenuOpen(header.dataset.menuOpen !== 'true'));
+      header.addEventListener('click', (event) => {
+        if (event.target.closest('a')) setMenuOpen(false);
+      });
+      document.addEventListener('click', (event) => {
+        if (!header.contains(event.target)) setMenuOpen(false);
+      });
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape' && header.dataset.menuOpen === 'true') {
+          setMenuOpen(false);
+          toggle.focus();
+          event.preventDefault();
+        }
+      });
+      compact.addEventListener('change', () => setMenuOpen(false));
+      setMenuOpen(false);
+      document.documentElement.classList.add('has-js');
+    })();
+  </script>
+  <script>
+    (() => {
       const languageSwitch = document.querySelector("[data-language-base]");
       const syncLanguageLink = () => languageSwitch.setAttribute("href", `${languageSwitch.dataset.languageBase}${window.location.hash}`);
       window.addEventListener("hashchange", syncLanguageLink);
       syncLanguageLink();
+
+      const preview = document.querySelector('[data-mac-preview]');
+      const desktop = document.querySelector('[data-mac-desktop]');
+      const surface = document.querySelector('[data-mac-surface]');
+      const contour = document.querySelector('[data-mac-contour]');
+      const detail = document.querySelector('[data-mac-detail]');
+      const detailContent = document.querySelector('[data-mac-detail-content]');
+      const sizeControl = document.querySelector('[data-mac-size]');
+      const sizeOutput = document.querySelector('[data-mac-size-output]');
+      const modeControl = document.querySelector('[data-mac-mode]');
+      const valueControl = document.querySelector('[data-mac-value-style]');
+      const valueGroup = document.querySelector('[data-mac-value-control]');
+      const cameraTrigger = document.querySelector('[data-mac-camera-trigger]');
+      const previewRail = document.querySelector('[data-mac-rail]');
+      const previewSettings = document.querySelector('[data-mac-settings]');
+      const settingsStatus = document.querySelector('[data-mac-settings-status]');
+      const keepControl = document.querySelector('[data-mac-keep]');
+      const metricButtons = [...document.querySelectorAll('[data-mac-metric]')];
+      const positionButtons = [...document.querySelectorAll('[data-mac-position]')];
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      let position = 'top';
+      let mode = 'countdownWithPercentage';
+      let valueStyle = 'remaining';
+      let hoverSuppressed = false;
+      let scale = 1;
+      let selected = 0;
+      let cameraPointerIndex = null;
+      let selectionPosition = 0;
+      let selectionFrame = 0;
+      let keepOpen = false;
+      let expanded = false;
+      let hovered = false;
+      let progress = 0;
+      let frame = 0;
+      let showTimer = 0;
+      let hideTimer = 0;
+      let contentTimer = 0;
+      let sidePosition = 0.5;
+      let drag = null;
+      let suppressClickUntil = 0;
+
+      class SideCurve {
+        constructor(start, control1, control2, end) {
+          this.start = start; this.control1 = control1; this.control2 = control2; this.end = end;
+        }
+        split(t) {
+          const mix = (a, b) => a.map((value, index) => value + (b[index] - value) * t);
+          const a = mix(this.start, this.control1), b = mix(this.control1, this.control2), c = mix(this.control2, this.end);
+          const d = mix(a, b), e = mix(b, c), point = mix(d, e);
+          return [new SideCurve(this.start, a, d, point), new SideCurve(point, e, c, this.end)];
+        }
+        position(t) {
+          const [left, right] = this.split(t), point = left.end;
+          const tangent = t < 1 ? right.control1.map((value, index) => value - point[index])
+            : point.map((value, index) => value - left.control2[index]);
+          return { point, tangent };
+        }
+        parameter(y) {
+          if (y <= this.start[1]) return 0;
+          if (y >= this.end[1]) return 1;
+          let lower = 0, upper = 1;
+          for (let step = 0; step < 36; step++) {
+            const middle = (lower + upper) / 2;
+            if (this.position(middle).point[1] < y) lower = middle;
+            else upper = middle;
+          }
+          return (lower + upper) / 2;
+        }
+        portion(lower, upper) {
+          const prefix = this.split(upper)[0];
+          return lower > 0 && upper > 0 ? prefix.split(lower / upper)[1] : prefix;
+        }
+        static tangentControl(start, direction, length, maxHorizontal) {
+          const magnitude = Math.hypot(...direction);
+          if (magnitude === 0) return start;
+          const unit = direction.map(value => value / magnitude);
+          const distance = unit[0] > 0 ? Math.min(length, Math.max(maxHorizontal, 0) / unit[0]) : length;
+          return start.map((value, index) => value + unit[index] * distance);
+        }
+      }
+      const sideRail = [
+        new SideCurve([0, 0], [0, 15.08], [12, 18.56], [28.98, 18.56]),
+        new SideCurve([29, 18.56], [42, 18.56], [46, 26.97], [46, 40.6]),
+        new SideCurve([46, 40.6], [46, 106], [46, 106], [46, 171.4]),
+        new SideCurve([46, 171.4], [46, 185.03], [42, 193.44], [29, 193.44]),
+        new SideCurve([28.98, 193.44], [12, 193.44], [0, 196.92], [0, 212])
+      ];
+      const sideContour = () => {
+        const commands = ['M204 0'];
+        const anchor = point => `${204 - point[0]} ${point[1]}`;
+        const line = point => commands.push(`L${anchor(point)}`);
+        const curve = (control1, control2, end) => commands.push(`C${anchor(control1)} ${anchor(control2)} ${anchor(end)}`);
+        const railPosition = y => {
+          const segment = sideRail.find(item => item.end[1] >= y) || sideRail[sideRail.length - 1];
+          return segment.position(segment.parameter(y));
+        };
+        const appendRail = (lower, upper) => {
+          sideRail.forEach(item => {
+            if (item.end[1] <= lower || item.start[1] >= upper) return;
+            const segment = item.portion(item.parameter(Math.max(lower, item.start[1])), item.parameter(Math.min(upper, item.end[1])));
+            line(segment.start);
+            curve(segment.control1, segment.control2, segment.end);
+          });
+        };
+        if (progress > 0) {
+          const width = 46 + 158 * progress;
+          const center = 56 + 50 * selectionPosition;
+          const top = center - 40 * progress, bottom = center + 40 * progress;
+          const join = 14 * progress, corner = 26 * progress;
+          const upper = railPosition(top - join), lower = railPosition(bottom + join);
+          const upperDepth = railPosition(top).point[0] + join;
+          const lowerDepth = railPosition(bottom).point[0] + join;
+          appendRail(0, top - join);
+          const upperControl2 = [upperDepth - 9 * progress, top];
+          const upperControl1 = SideCurve.tangentControl(upper.point, upper.tangent, 9 * progress, upperControl2[0] - upper.point[0]);
+          curve(upperControl1, upperControl2, [upperDepth, top]);
+          line([width - corner, top]);
+          curve([width - 9 * progress, top], [width, top + 9 * progress], [width, top + corner]);
+          line([width, bottom - corner]);
+          curve([width, bottom - 9 * progress], [width - 9 * progress, bottom], [width - corner, bottom]);
+          line([lowerDepth, bottom]);
+          const lowerControl1 = [lowerDepth - 9 * progress, bottom];
+          const lowerControl2 = SideCurve.tangentControl(lower.point, lower.tangent.map(value => -value), 9 * progress, lowerControl1[0] - lower.point[0]);
+          curve(lowerControl1, lowerControl2, lower.point);
+          appendRail(bottom + join, 212);
+        } else appendRail(0, 212);
+        commands.push('Z');
+        return commands.join(' ');
+      };
+
+      const draw = () => {
+        preview.style.setProperty('--side-detail-top', `${30 + 50 * selectionPosition}px`);
+        if (position === 'top') {
+          const canvasWidth = 280 * scale;
+          const capWidth = Math.max(174 * scale, 186 + 24 * scale);
+          const width = capWidth + (canvasWidth - capWidth) * progress;
+          const height = 32 + (8 + 66 * progress) * scale;
+          const inset = (canvasWidth - width) / 2;
+          const shoulder = 12 * scale;
+          const radius = Math.min(18 * scale, (height - 32) / 2);
+          const transition = Math.min(24 * scale, (height - 32) / 2);
+          const stemLeft = (width - capWidth) / 2;
+          const stemRight = stemLeft + capWidth;
+          contour.setAttribute('transform', `translate(${inset} 0)`);
+          contour.setAttribute('d', `M${stemLeft} 0 H${stemRight} C${stemRight - shoulder} 0 ${stemRight - shoulder} 16 ${stemRight - shoulder} 32 C${stemRight - shoulder} ${32 + transition * .7} ${width - shoulder} ${32 + transition * .1} ${width - shoulder} ${32 + transition} V${height - radius} Q${width - shoulder} ${height} ${width - shoulder - radius} ${height} H${shoulder + radius} Q${shoulder} ${height} ${shoulder} ${height - radius} V${32 + transition} C${shoulder} ${32 + transition * .1} ${stemLeft + shoulder} ${32 + transition * .7} ${stemLeft + shoulder} 32 C${stemLeft + shoulder} 16 ${stemLeft + shoulder} 0 ${stemLeft} 0 Z`);
+        } else {
+          contour.setAttribute('transform', position === 'left' ? 'translate(204 0) scale(-1 1)' : '');
+          contour.setAttribute('d', sideContour());
+        }
+      };
+
+      const sideBounds = () => {
+        const halfHeight = 106 * scale;
+        const lower = 44 + halfHeight;
+        const upper = Math.max(lower, desktop.clientHeight - 12 - halfHeight);
+        return { lower, travel: upper - lower };
+      };
+      const positionSide = () => {
+        const bounds = sideBounds();
+        preview.style.setProperty('--side-center', `${bounds.lower + bounds.travel * sidePosition}px`);
+      };
+      const resize = () => {
+        preview.style.setProperty('--demo-scale', String(scale));
+        preview.style.setProperty('--top-cap-width', `${Math.max(174 * scale, 186 + 24 * scale)}px`);
+        preview.style.setProperty('--top-width', `${280 * scale}px`);
+        preview.style.setProperty('--top-height', `${32 + 74 * scale}px`);
+        surface.setAttribute('viewBox', position === 'top' ? `0 0 ${280 * scale} ${32 + 74 * scale}` : '0 0 204 212');
+        positionSide();
+        draw();
+      };
+
+      const animate = () => {
+        cancelAnimationFrame(frame);
+        const fromProgress = progress;
+        const toProgress = expanded ? 1 : 0;
+        if (reducedMotion.matches || fromProgress === toProgress) {
+          progress = toProgress;
+          draw();
+          return;
+        }
+        const duration = expanded ? 240 : 180;
+        const start = performance.now();
+        const tick = (now) => {
+          const time = Math.min(1, (now - start) / duration);
+          const eased = 1 - Math.pow(1 - time, 3);
+          progress = fromProgress + (toProgress - fromProgress) * eased;
+          draw();
+          if (time < 1) frame = requestAnimationFrame(tick);
+        };
+        frame = requestAnimationFrame(tick);
+      };
+
+      const followSelection = (animated = false) => {
+        cancelAnimationFrame(selectionFrame);
+        const fromPosition = selectionPosition;
+        const toPosition = selected;
+        if (position === 'top' || !animated || reducedMotion.matches || fromPosition === toPosition) {
+          selectionPosition = toPosition;
+          draw();
+          return;
+        }
+        const start = performance.now();
+        const tick = (now) => {
+          const time = Math.min(1, (now - start) / 180);
+          const eased = 1 - Math.pow(1 - time, 3);
+          selectionPosition = fromPosition + (toPosition - fromPosition) * eased;
+          draw();
+          if (time < 1) selectionFrame = requestAnimationFrame(tick);
+        };
+        selectionFrame = requestAnimationFrame(tick);
+      };
+
+      const renderContent = () => {
+        const metric = metricButtons[selected];
+        document.querySelector('[data-mac-name]').textContent = metric.dataset.name;
+        document.querySelector('[data-mac-days]').textContent = metric.dataset.days;
+        document.querySelector('[data-mac-hours]').textContent = metric.dataset.hours;
+        detail.style.setProperty('--detail-accent', metric.dataset.color);
+        detail.style.setProperty('--detail-progress', `${metric.dataset.percentage}%`);
+        const percentage = document.querySelector('[data-mac-percentage]');
+        percentage.textContent = `${metric.dataset.percentage}%`;
+        percentage.hidden = mode !== 'countdownWithPercentage';
+        const bar = document.querySelector('[data-mac-progress]');
+        bar.hidden = mode === 'countdown';
+        bar.setAttribute('aria-valuenow', metric.dataset.percentage);
+        const alternateValue = mode === 'progressBars' && valueStyle !== 'remaining';
+        document.querySelector('[data-mac-countdown]').hidden = alternateValue;
+        const value = document.querySelector('[data-mac-value]');
+        value.hidden = !alternateValue;
+        value.dataset.format = valueStyle;
+        value.textContent = valueStyle === 'targetDate' ? metric.dataset.target : `${metric.dataset.percentage}%`;
+        preview.dataset.mode = mode;
+        valueGroup.hidden = mode !== 'progressBars';
+        detailContent.dataset.changing = 'false';
+      };
+      const update = (changeContent = false, changeSurface = true) => {
+        preview.dataset.expanded = String(expanded);
+        clearTimeout(contentTimer);
+        if (changeContent && !reducedMotion.matches) {
+          detailContent.dataset.changing = 'true';
+          contentTimer = setTimeout(renderContent, 60);
+        } else renderContent();
+        detail.setAttribute('aria-hidden', String(!expanded));
+        cameraTrigger.dataset.active = String(expanded);
+        metricButtons.forEach((button, index) => {
+          button.dataset.active = String(expanded && selected === index);
+        });
+        if (changeSurface) animate();
+      };
+
+      const cancelTimers = () => { clearTimeout(showTimer); clearTimeout(hideTimer); };
+      const close = (explicit = false) => {
+        cancelTimers();
+        hoverSuppressed = explicit && hovered;
+        keepOpen = false;
+        keepControl.checked = false;
+        expanded = false;
+        update();
+      };
+      const select = (index) => {
+        cancelTimers();
+        const changeContent = expanded && selected !== index;
+        const changeSurface = !expanded;
+        selected = index;
+        if (changeContent || changeSurface) followSelection(changeContent);
+        expanded = true;
+        update(changeContent, changeSurface);
+      };
+      metricButtons.forEach((button, index) => {
+        button.addEventListener('pointerenter', () => {
+          if (drag) return;
+          cancelTimers();
+          if (!hoverSuppressed) showTimer = setTimeout(() => select(index), expanded ? 80 : 160);
+        });
+        button.addEventListener('focus', () => { if (!drag) select(index); });
+      });
+      const cameraPointerMoved = (event) => {
+        if (position !== 'top' || hoverSuppressed) return;
+        const bars = previewRail.getBoundingClientRect();
+        const upper = Math.max(preview.getBoundingClientRect().top, bars.top - 16);
+        const aboveBars = event.clientY >= upper && event.clientY < bars.top
+          && event.clientX >= bars.left && event.clientX < bars.right;
+        const index = aboveBars ? Math.min(Math.floor((event.clientX - bars.left) / bars.width * 3), 2) : selected;
+        if (cameraPointerIndex === index) return;
+        cameraPointerIndex = index;
+        cancelTimers();
+        if (!expanded || selected !== index) showTimer = setTimeout(() => select(index), expanded ? 80 : 160);
+      };
+      cameraTrigger.addEventListener('pointerenter', cameraPointerMoved);
+      cameraTrigger.addEventListener('pointermove', cameraPointerMoved);
+      cameraTrigger.addEventListener('pointerleave', () => { cameraPointerIndex = null; clearTimeout(showTimer); });
+      cameraTrigger.addEventListener('focus', () => select(selected));
+      const openPreviewSettings = () => {
+        cancelTimers();
+        previewSettings.dataset.opened = 'true';
+        settingsStatus.textContent = settingsStatus.dataset.settingsMessage;
+        previewSettings.scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'nearest' });
+        modeControl.focus({ preventScroll: true });
+      };
+      preview.addEventListener('pointerdown', (event) => {
+        if (position === 'top' || event.button !== 0 || !event.isPrimary) return;
+        cancelTimers();
+        drag = { id: event.pointerId, startY: event.clientY, startPosition: sidePosition, moved: false };
+        preview.setPointerCapture(event.pointerId);
+        event.preventDefault();
+      });
+      preview.addEventListener('pointermove', (event) => {
+        if (!drag || event.pointerId !== drag.id) return;
+        const delta = event.clientY - drag.startY;
+        if (!drag.moved && Math.abs(delta) < 5) return;
+        drag.moved = true;
+        preview.dataset.dragging = 'true';
+        cancelTimers();
+        const bounds = sideBounds();
+        sidePosition = bounds.travel > 0 ? Math.max(0, Math.min(1, drag.startPosition + delta / bounds.travel)) : 0.5;
+        positionSide();
+        event.preventDefault();
+      });
+      const finishDrag = (event) => {
+        if (!drag || event.pointerId !== drag.id) return;
+        if (drag.moved) {
+          suppressClickUntil = performance.now() + 500;
+          event.preventDefault();
+        }
+        const pointerId = drag.id;
+        drag = null;
+        preview.dataset.dragging = 'false';
+        if (preview.hasPointerCapture(pointerId)) preview.releasePointerCapture(pointerId);
+        const target = document.elementFromPoint(event.clientX, event.clientY);
+        hovered = Boolean(target && preview.contains(target));
+        const metric = target && target.closest('[data-mac-metric]');
+        if (hovered && metric && !hoverSuppressed) {
+          showTimer = setTimeout(() => select(Number(metric.dataset.macMetric)), 160);
+        } else if (!hovered && !keepOpen) hideTimer = setTimeout(close, 180);
+      };
+      preview.addEventListener('pointerup', finishDrag);
+      preview.addEventListener('pointercancel', finishDrag);
+      preview.addEventListener('lostpointercapture', finishDrag);
+      preview.addEventListener('dblclick', (event) => {
+        if (performance.now() < suppressClickUntil) { event.preventDefault(); return; }
+        openPreviewSettings();
+      });
+      preview.addEventListener('click', (event) => {
+        if (event.detail === 0) openPreviewSettings();
+      });
+      preview.addEventListener('contextmenu', (event) => event.preventDefault());
+      preview.addEventListener('pointerenter', () => { if (!drag) { hovered = true; clearTimeout(hideTimer); } });
+      preview.addEventListener('pointerleave', () => {
+        if (drag) return;
+        hovered = false;
+        hoverSuppressed = false;
+        clearTimeout(showTimer);
+        if (!keepOpen && !preview.contains(document.activeElement)) hideTimer = setTimeout(close, 180);
+      });
+      preview.addEventListener('focusout', (event) => {
+        if (!preview.contains(event.relatedTarget) && !hovered && !keepOpen) close();
+      });
+      preview.addEventListener('keydown', (event) => { if (event.key === 'Escape') close(true); });
+      previewSettings.addEventListener('keydown', (event) => { if (event.key === 'Escape') close(true); });
+      positionButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          cancelTimers();
+          cancelAnimationFrame(frame);
+          position = button.dataset.macPosition;
+          cameraPointerIndex = null;
+          expanded = keepOpen;
+          hovered = false;
+          hoverSuppressed = false;
+          progress = keepOpen ? 1 : 0;
+          preview.dataset.position = position;
+          desktop.dataset.position = position;
+          positionButtons.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+          followSelection();
+          resize();
+          update(false, false);
+        });
+      });
+      sizeControl.addEventListener('input', () => {
+        const percent = Math.min(150, Math.max(80, Number(sizeControl.value) || 100));
+        scale = percent / 100;
+        sizeOutput.textContent = `${percent}%`;
+        sizeControl.setAttribute('aria-valuetext', `${percent}%`);
+        resize();
+      });
+      keepControl.addEventListener('change', () => {
+        keepOpen = keepControl.checked;
+        if (keepOpen) { hoverSuppressed = false; select(selected); }
+        else close();
+      });
+      modeControl.addEventListener('change', () => {
+        mode = modeControl.value;
+        update(false, false);
+      });
+      valueControl.addEventListener('change', () => {
+        valueStyle = valueControl.value;
+        update(false, false);
+      });
+      reducedMotion.addEventListener('change', () => { followSelection(); update(); });
+      new ResizeObserver(positionSide).observe(desktop);
+      resize();
+      update();
     })();
   </script>
 </body>
