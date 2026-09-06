@@ -1,6 +1,12 @@
 {
   "sourceLanguage" : "ja",
   "strings" : {
+    "metric.activity" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Activity hours 1 (Daily activity)" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "活動時間1（1日の活動）" } }
+      }
+    },
     "metric.healthy_age_goal" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Healthy-age goal" } },
@@ -27,8 +33,8 @@
     },
     "metric.workday" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Work hours" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "勤務時間" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Activity hours 2 (Work hours)" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "活動時間2（勤務時間）" } }
       }
     },
     "metric.year" : {
@@ -39,8 +45,8 @@
     },
     "widget.configuration.description" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Choose timelines, display mode, values, and colors for this widget." } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "時間、表示モード、値、色をこのウィジェット用に選びます。" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Choose timelines, display mode, values, and colors. Activity hours use the labels and weekdays set in the app." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "時間、表示モード、値、色を選びます。活動時間のラベルと曜日はアプリの設定を使います。" } }
       }
     },
     "widget.configuration.display_mode" : {
@@ -93,8 +99,8 @@
     },
     "widget.gallery.description" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "See three timelines in three layouts and colors that suit you." } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "選んだ3つの時間を、3つのレイアウトと好みの色で表示します。" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "See three timelines, including two customizable activity schedules, in layouts and colors that suit you." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "2種類の活動時間など、選んだ3つの時間を好みのレイアウトと色で表示します。" } }
       }
     },
     "widget.gallery.title" : {
@@ -105,8 +111,8 @@
     },
     "widget.lock_screen.configuration.description" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Choose the timeline shown on the Lock Screen." } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ロック画面に表示する時間を選びます。" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Choose the timeline shown on the Lock Screen. Activity hours use the labels and weekdays set in the app." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "ロック画面に表示する時間を選びます。活動時間のラベルと曜日はアプリの設定を使います。" } }
       }
     },
     "widget.lock_screen.configuration.metric" : {

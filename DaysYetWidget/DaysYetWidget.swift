@@ -258,22 +258,25 @@ private struct WidgetMetricRow: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
+    @ViewBuilder
     private func percentageBadge(tight: Bool = false) -> some View {
-        Text(snapshot.percentageText)
-            .font(
-                tight
-                    ? .system(size: tightCaptionSize, weight: .bold, design: .rounded)
-                    : .system(compact ? .caption2 : .caption, design: .rounded, weight: .bold)
-            )
-            .monospacedDigit()
-            .foregroundStyle(
-                renderingMode == .fullColor
-                    ? AnyShapeStyle(palette.foreground)
-                    : AnyShapeStyle(Color.primary)
-            )
-            .padding(.horizontal, tight ? 4 : (compact ? 5 : 7))
-            .padding(.vertical, compact ? 0 : 2)
-            .background(badgeBackground, in: Capsule())
+        if !snapshot.isOff {
+            Text(snapshot.percentageText)
+                .font(
+                    tight
+                        ? .system(size: tightCaptionSize, weight: .bold, design: .rounded)
+                        : .system(compact ? .caption2 : .caption, design: .rounded, weight: .bold)
+                )
+                .monospacedDigit()
+                .foregroundStyle(
+                    renderingMode == .fullColor
+                        ? AnyShapeStyle(palette.foreground)
+                        : AnyShapeStyle(Color.primary)
+                )
+                .padding(.horizontal, tight ? 4 : (compact ? 5 : 7))
+                .padding(.vertical, compact ? 0 : 2)
+                .background(badgeBackground, in: Capsule())
+        }
     }
 
     private var badgeBackground: AnyShapeStyle {

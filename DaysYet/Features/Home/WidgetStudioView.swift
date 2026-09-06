@@ -132,7 +132,7 @@ struct WidgetStudioView: View {
                                 store.setDashboardMetric(candidate, at: index)
                             }
                         } label: {
-                            Label(candidate.title, systemImage: candidate.symbolName)
+                            Label(candidate.title(profile: store.profile), systemImage: candidate.symbolName)
                         }
                     }
                 } label: {
@@ -141,9 +141,11 @@ struct WidgetStudioView: View {
                             .font(.caption.bold())
                             .frame(width: 28, height: 28)
                             .background(.primary.opacity(0.08), in: Circle())
-                        Label(metric.title, systemImage: metric.symbolName)
+                        Label(metric.title(profile: store.profile), systemImage: metric.symbolName)
                             .font(.body.weight(.semibold))
-                        Spacer()
+                            .lineLimit(2)
+                            .truncationMode(.tail)
+                        Spacer(minLength: 4)
                         Image(systemName: "chevron.up.chevron.down")
                             .font(.caption.bold())
                             .foregroundStyle(.secondary)
@@ -153,7 +155,7 @@ struct WidgetStudioView: View {
                     .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel(L10n.text("\(index + 1)本目、\(metric.title)", "Bar \(index + 1), \(metric.title)"))
+                .accessibilityLabel(L10n.text("\(index + 1)本目、\(metric.title(profile: store.profile))", "Bar \(index + 1), \(metric.title(profile: store.profile))"))
             }
         }
     }

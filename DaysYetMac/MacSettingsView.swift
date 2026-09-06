@@ -278,7 +278,7 @@ struct MacSettingsView: View {
                         )
                     ) {
                         ForEach(MetricKind.allCases) { metric in
-                            Label(metric.title, systemImage: metric.symbolName).tag(metric)
+                            Label(metric.title(profile: store.profile), systemImage: metric.symbolName).tag(metric)
                         }
                     }
                 }
@@ -293,7 +293,9 @@ struct MacSettingsView: View {
 
             weekStartSection
 
-            workHoursSection
+            ForEach(MetricKind.activityKinds) { kind in
+                activityHoursSection(for: kind)
+            }
 
             Section {
                 DatePicker(
@@ -360,51 +362,63 @@ struct MacSettingsView: View {
         }
     }
 
-    private var workHoursSection: some View {
-        Section {
+    private func activityHoursSection(for kind: MetricKind) -> some View {
+        let schedule = store.profile.activitySchedule(for: kind)
+        let slotTitle = ActivityScheduleEditorText.title(for: kind)
+        return Section {
+            TextField(
+                L10n.text("ラベル", "Label"),
+                text: activityBinding(for: kind, \.name),
+                prompt: Text(kind.title)
+            )
+            .accessibilityLabel("\(slotTitle)、\(L10n.text("ラベル", "Label"))")
+            .accessibilityIdentifier("\(kind.rawValue).name")
             MacWorkTimeEditor(
                 title: L10n.text("開始時刻", "Start time"),
-                minute: binding(\.workStartMinute)
+                minute: activityBinding(for: kind, \.startMinute)
             )
+            .accessibilityLabel("\(slotTitle)、\(L10n.text("開始時刻", "Start time"))")
+            .accessibilityIdentifier("\(kind.rawValue).startTime")
             MacWorkTimeEditor(
-                title: store.profile.workEndMinute <= store.profile.workStartMinute
-                    ? L10n.text("終了時刻（翌日）", "End time (next day)")
-                    : L10n.text("終了時刻", "End time"),
-                minute: binding(\.workEndMinute)
+                title: ActivityScheduleEditorText.endTimeTitle(for: schedule),
+                minute: activityBinding(for: kind, \.endMinute)
+            )
+            .accessibilityLabel("\(slotTitle)、\(ActivityScheduleEditorText.endTimeTitle(for: schedule))")
+            .accessibilityIdentifier("\(kind.rawValue).endTime")
+            ActivityWeekdayPicker(
+                activeWeekdays: activityBinding(for: kind, \.activeWeekdays),
+                slotTitle: slotTitle,
+                identifier: kind.rawValue
             )
             TimelineView(.periodic(from: .now, by: 60)) { context in
-                let snapshot = TimeProgressCalculator.snapshot(for: .workday, profile: store.profile, now: context.date)
+                let snapshot = TimeProgressCalculator.snapshot(for: kind, profile: store.profile, now: context.date)
                 VStack(alignment: .leading, spacing: 8) {
                     LabeledContent(L10n.text("現在", "Now"), value: snapshot.remainingText)
-                    ProgressView(value: snapshot.elapsedFraction)
+                    if !snapshot.isOff {
+                        ProgressView(value: snapshot.elapsedFraction)
+                    }
                 }
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(snapshot.accessibilitySummary)
             }
         } header: {
-            Text(L10n.text("勤務時間", "Work hours"))
+            Text(slotTitle)
         } footer: {
-            Text(workHoursDescription)
+            Text(ActivityScheduleEditorText.description(for: kind, schedule: schedule))
         }
     }
 
-    private var workHoursDescription: String {
-        let recurrence = L10n.text("毎日、端末の現地時刻で繰り返します。", "Repeats every day in local time. ")
-        if store.profile.workEndMinute == store.profile.workStartMinute {
-            return recurrence + L10n.text(
-                "開始と終了が同じ時刻のため、翌日の同時刻までの24時間として扱います。",
-                "Matching start and end times define a 24-hour period, ending at the same time the next day."
-            )
-        }
-        if store.profile.workEndMinute < store.profile.workStartMinute {
-            return recurrence + L10n.text(
-                "終了は翌日です。勤務終了後は、次の開始時刻まで「勤務終了」と表示します。",
-                "The end time is on the next day. After work ends, “Work finished” appears until the next start."
-            )
-        }
-        return recurrence + L10n.text(
-            "開始前は「開始前」、終了後は「勤務終了」と表示します。",
-            "“Not started” appears before the start time and “Work finished” after the end time."
+    private func activityBinding<Value>(
+        for kind: MetricKind,
+        _ keyPath: WritableKeyPath<ActivitySchedule, Value>
+    ) -> Binding<Value> {
+        Binding(
+            get: { store.profile.activitySchedule(for: kind)[keyPath: keyPath] },
+            set: { value in
+                store.update { profile in
+                    profile.updateActivitySchedule(for: kind) { $0[keyPath: keyPath] = value }
+                }
+            }
         )
     }
 
@@ -416,8 +430,8 @@ struct MacSettingsView: View {
                         Text(L10n.text("あなたの時間は、このMacに。", "Your time stays on this Mac."))
                             .font(.headline)
                         Text(L10n.text(
-                            "日付・目標・勤務時間・表示設定はこのMac内に保存します。外部への送信、追跡、分析、広告は行いません。iPhoneやiPadとの同期も行いません。",
-                            "Dates, goals, work hours, and display preferences are saved on this Mac. No data transmission, tracking, analytics, or ads. There is no sync with iPhone or iPad."
+                            "日付・目標・活動時間とラベル・曜日・表示設定はこのMac内に保存します。外部への送信、追跡、分析、広告は行いません。iPhoneやiPadとの同期も行いません。",
+                            "Dates, goals, activity hours with labels and weekdays, and display preferences are saved on this Mac. No data transmission, tracking, analytics, or ads. There is no sync with iPhone or iPad."
                         ))
                         .foregroundStyle(.secondary)
                     }
@@ -549,7 +563,7 @@ struct MacSettingsView: View {
 }
 
 /// Keeps NSDatePicker's hidden date intact when its clock rolls past midnight.
-/// Only wall-clock minutes belong to the saved, repeating work schedule.
+/// Only wall-clock minutes belong to the saved, repeating activity schedule.
 struct MacWorkTimeEditorState {
     private(set) var date: Date
 
@@ -718,7 +732,7 @@ private struct MacPlacementPreview: View {
     private func previewMetric(_ kind: MetricKind) -> some View {
         let snapshot = TimeProgressCalculator.snapshot(for: kind, profile: profile)
         let accent = MacWidgetStyle.accent(for: kind, theme: profile.widgetTheme)
-        return MacPercentageRing(fraction: snapshot.elapsedFraction, accent: accent)
+        return MacPercentageRing(fraction: snapshot.elapsedFraction, accent: accent, isOff: snapshot.isOff)
             .scaleEffect(0.5625)
             .frame(width: 18, height: 18)
     }

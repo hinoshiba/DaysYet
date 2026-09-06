@@ -17,6 +17,7 @@ enum MacWidgetStyle {
             case .year: Color(red: 0.85, green: 0.81, blue: 0.40)
             case .healthyLife: Color(red: 0.60, green: 0.77, blue: 0.46)
             case .customLife: Color(red: 0.72, green: 0.60, blue: 0.87)
+            case .activity: Color(red: 0.94, green: 0.65, blue: 0.37)
             case .workday: Color(red: 0.39, green: 0.74, blue: 0.82)
             }
         case .quietForest:
@@ -214,6 +215,7 @@ struct MacPercentageRing: View {
     let accent: Color
     var selected = false
     var subdued = false
+    var isOff = false
 
     var body: some View {
         ZStack {
@@ -226,11 +228,16 @@ struct MacPercentageRing: View {
             }
             .opacity(selected ? 1 : (subdued ? 0.68 : 0.80))
             HStack(alignment: .firstTextBaseline, spacing: 0.5) {
-                Text("\(Int((fraction * 100).rounded(.down)))")
-                    .font(.system(size: 10, weight: .semibold))
-                    .monospacedDigit()
-                Text("%")
-                    .font(.system(size: 7, weight: .medium))
+                if isOff {
+                    Text("Off")
+                        .font(.system(size: 9, weight: .medium))
+                } else {
+                    Text("\(Int((fraction * 100).rounded(.down)))")
+                        .font(.system(size: 10, weight: .semibold))
+                        .monospacedDigit()
+                    Text("%")
+                        .font(.system(size: 7, weight: .medium))
+                }
             }
             .foregroundStyle(selected ? MacWidgetStyle.foreground : Color.white.opacity(0.76))
         }
@@ -258,7 +265,7 @@ struct MacTimeRailView: View {
         let selected = controller.isExpanded && controller.selectedMetric == snapshot.kind
         let accent = MacWidgetStyle.accent(for: snapshot.kind, theme: store.profile.widgetTheme)
         return MacPercentageRing(fraction: snapshot.elapsedFraction, accent: accent,
-                                 selected: selected, subdued: controller.isExpanded && !selected)
+                                 selected: selected, subdued: controller.isExpanded && !selected, isOff: snapshot.isOff)
         .frame(width: 46, height: 50)
         .contentShape(Rectangle())
         .onHover { controller.metricHoverChanged(snapshot.kind, hovering: $0) }
@@ -295,7 +302,7 @@ struct MacTimeDetailView: View {
         let scale = MacWidgetPlacement.clampedScale(preferences.scale)
         let mode = store.profile.widgetDisplayMode
         let showsBar = mode != .countdown
-        let showsPercentage = mode == .countdownWithPercentage
+        let showsPercentage = mode == .countdownWithPercentage && !snapshot.isOff
         let accent = MacWidgetStyle.accent(for: snapshot.kind, theme: store.profile.widgetTheme)
         return VStack(alignment: top ? .center : .leading, spacing: showsBar ? 2 : 5) {
             HStack(spacing: 5) {
@@ -339,7 +346,7 @@ struct MacTimeDetailView: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.75)
             }
-            if showsBar {
+            if showsBar && !snapshot.isOff {
                 GeometryReader { geometry in
                     ZStack(alignment: .leading) {
                         Capsule().fill(.white.opacity(0.16))

@@ -141,8 +141,10 @@ struct DaysYetLockScreenWidgetEntryView: View {
                     .lineLimit(1)
                     .minimumScaleFactor(0.75)
                 Spacer(minLength: 2)
-                Text(roundedPercentageText)
-                    .monospacedDigit()
+                if !snapshot.isOff {
+                    Text(roundedPercentageText)
+                        .monospacedDigit()
+                }
             }
             .font(.system(.caption2, design: .rounded, weight: .semibold))
 
@@ -161,7 +163,7 @@ struct DaysYetLockScreenWidgetEntryView: View {
     }
 
     private var roundedPercentageText: String {
-        "\(Int((snapshot.elapsedFraction * 100).rounded()))%"
+        snapshot.isOff ? "Off" : "\(Int((snapshot.elapsedFraction * 100).rounded()))%"
     }
 }
 
