@@ -35,15 +35,6 @@
   document.documentElement.classList.add('has-js');
 })();
 
-(() => {
-  const languageSwitch = document.querySelector('[data-language-base]');
-  if (!languageSwitch) return;
-  const syncLanguageLink = () => {
-    languageSwitch.setAttribute('href', `${languageSwitch.dataset.languageBase}${window.location.hash}`);
-  };
-  window.addEventListener('hashchange', syncLanguageLink);
-  syncLanguageLink();
-})();
 
 (() => {
   const preview = document.querySelector('[data-mac-preview]');
@@ -369,6 +360,7 @@
     update();
   });
   new ResizeObserver(positionSide).observe(desktop);
+  document.addEventListener('languagechange', renderContent);
   preview.style.setProperty('--demo-scale', String(scale));
   positionSide();
   update();

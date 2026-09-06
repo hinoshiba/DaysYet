@@ -430,8 +430,8 @@ struct MacSettingsView: View {
                         Text(L10n.text("あなたの時間は、このMacに。", "Your time stays on this Mac."))
                             .font(.headline)
                         Text(L10n.text(
-                            "日付・目標・活動時間とラベル・曜日・表示設定はこのMac内に保存します。外部への送信、追跡、分析、広告は行いません。iPhoneやiPadとの同期も行いません。",
-                            "Dates, goals, activity hours with labels and weekdays, and display preferences are saved on this Mac. No data transmission, tracking, analytics, or ads. There is no sync with iPhone or iPad."
+                            "日付・目標・活動時間とラベル・曜日・表示設定はこのMac内に保存します。iPhoneやiPadとの同期も行いません。",
+                            "Dates, goals, activity hours with labels and weekdays, and display preferences are saved on this Mac. There is no sync with iPhone or iPad."
                         ))
                         .foregroundStyle(.secondary)
                     }
@@ -740,7 +740,7 @@ private struct MacPlacementPreview: View {
 
 private enum MacProjectLinks {
     static let source = URL(string: "https://github.com/hinoshiba/DaysYet")!
-    static let website = URL(string: "https://daysyet.hinoshiba.com/\(L10n.isJapanese ? "" : "en/")")!
+    static let website = URL(string: "https://daysyet.hinoshiba.com/\(L10n.isJapanese ? "" : "?lang=en")")!
     static let privacy = URL(string: "#privacy", relativeTo: website)!.absoluteURL
     static let support = URL(string: "#support", relativeTo: website)!.absoluteURL
 }

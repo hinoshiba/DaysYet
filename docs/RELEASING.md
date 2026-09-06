@@ -5,6 +5,14 @@ Organizer, and uploaded explicitly to App Store Connect. GitHub Actions runs
 unsigned checks and tests. A Git tag does not build, upload, submit, or publish
 an app. The monitored public support contact is `support@hinoshiba.com`.
 
+## Retire previous hosted automation once
+
+If an earlier Xcode Cloud workflow exists, disable it in Xcode or App Store
+Connect before the next release. Verify that branch or tag changes no longer
+start builds or automatic distribution. Removing repository hooks does not
+change server-side workflow settings. Preserve existing run history and build
+artifacts, and record the verified state in the private release record.
+
 ## Products and configuration
 
 | Product | Shared scheme | Archive destination | Bundle ID |
@@ -92,15 +100,6 @@ Keep private keys and credentials in Keychain or an approved encrypted secret
 store. A local xcconfig contains settings, not passwords or private key data.
 Do not upload certificates, provisioning profiles, export-option plists,
 archives, or diagnostic bundles to GitHub Actions or the source repository.
-
-## Retire the previous Cloud workflow
-
-In Xcode or App Store Connect, deactivate the old Xcode Cloud release workflow
-and verify that it no longer starts on tags or branch changes. Preserve its
-history and build artifacts; deleting a Cloud project or workflow is not part
-of this migration. Removing the repository hook alone does not deactivate a
-server-side workflow. See Apple's [workflow strategy](https://developer.apple.com/documentation/xcode/developing-a-workflow-strategy-for-xcode-cloud)
-and [Cloud project removal guidance](https://developer.apple.com/documentation/xcode/removing-your-project-from-xcode-cloud).
 
 ## Prepare the candidate
 

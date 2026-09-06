@@ -40,13 +40,13 @@ iPhone / iPad版は[App Store](https://apps.apple.com/jp/app/id6802000765)で提
 
 入力した日付と設定は端末内へ保存します。iPhone / iPadではアプリとWidget Extensionだけが共有するApp Group領域、MacではMacアプリ専用のサンドボックス内に保存します。端末間の同期はありません。詳しくは[プライバシーポリシー](PRIVACY.md)と[データマップ](docs/PRIVACY_DATA_MAP.md)をご覧ください。
 
-公開サイトは日本語とEnglishの各1ページです。各案内へページ内リンクで直接移動できます。
+公開サイトは日本語とEnglishを同じページで切り替える単一ページです。各案内へページ内リンクで直接移動できます。
 
-- [日本語 Product](https://daysyet.hinoshiba.com/) / [English Product](https://daysyet.hinoshiba.com/en/)
-- [Privacy](https://daysyet.hinoshiba.com/#privacy) / [English](https://daysyet.hinoshiba.com/en/#privacy)
-- [Terms](https://daysyet.hinoshiba.com/#terms) / [English](https://daysyet.hinoshiba.com/en/#terms)
-- [Support](https://daysyet.hinoshiba.com/#support) / [English](https://daysyet.hinoshiba.com/en/#support)
-- [Accessibility](https://daysyet.hinoshiba.com/#accessibility) / [English](https://daysyet.hinoshiba.com/en/#accessibility)
+- [日本語 Product](https://daysyet.hinoshiba.com/) / [English Product](https://daysyet.hinoshiba.com/?lang=en)
+- [Privacy](https://daysyet.hinoshiba.com/#privacy) / [English](https://daysyet.hinoshiba.com/?lang=en#privacy)
+- [Terms](https://daysyet.hinoshiba.com/#terms) / [English](https://daysyet.hinoshiba.com/?lang=en#terms)
+- [Support](https://daysyet.hinoshiba.com/#support) / [English](https://daysyet.hinoshiba.com/?lang=en#support)
+- [Accessibility](https://daysyet.hinoshiba.com/#accessibility) / [English](https://daysyet.hinoshiba.com/?lang=en#accessibility)
 - Contact: [support@hinoshiba.com](mailto:support@hinoshiba.com)
 
 ## Build

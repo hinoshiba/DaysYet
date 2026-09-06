@@ -11,6 +11,7 @@ bundle_id: com.hinoshiba.daysyet
 widget_bundle_id: com.hinoshiba.daysyet.widget
 app_group: group.com.hinoshiba.daysyet
 widget_kind: com.hinoshiba.daysyet.widget.progress
+lock_screen_widget_kind: com.hinoshiba.daysyet.widget.lock-screen
 # Next source candidate; the submitted 0.1.3 (5) is recorded in review/release-readiness.md.
 version: 0.1.4
 build: 6

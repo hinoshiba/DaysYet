@@ -1,20 +1,18 @@
 ## Summary
 
-<!-- What changed and why? Keep one PR focused on one concern. -->
+Describe the problem and the resulting behavior. Link related issues if applicable.
 
-## Verification
+## Validation
 
-- [ ] `./Scripts/check-compliance.sh`
-- [ ] `./build.sh test`
-- [ ] App and Widget checked in Japanese and English
-- [ ] VoiceOver / Dynamic Type / color-independent meaning checked when UI changed
+Describe the checks you ran and their results. For UI changes, include the languages and screen sizes checked, with screenshots when useful. Note any checks that could not be run.
 
-## Privacy, license, and provenance
+## Release notes
 
-- [ ] No new data flow, SDK, dependency, font, media, dataset, health claim, or brand asset
-- [ ] Or: applicable Privacy Manifest, policy, NOTICE/register, SBOM plan, and source evidence are updated
-- [ ] No competitor code, copy, UI, screenshots, or unverified assets were copied
+Describe user-facing changes, compatibility or migration needs, and any remaining limitations. Write “None” if not applicable.
 
-## Screenshots
+## Checklist
 
-<!-- Use fictional dates only. Add before/after screenshots for UI changes. -->
+- [ ] The change is focused, and relevant documentation is updated.
+- [ ] Relevant local checks pass; builds for review require no maintainer credentials.
+- [ ] No secrets, personal contact details, or generated build artifacts are included. Use support@hinoshiba.com for project contact information.
+- [ ] Third-party code and assets retain their required license notices.

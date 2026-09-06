@@ -33,3 +33,20 @@ ExportOptions*.plist
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/test_output/
+
+# Local validation, build variants, and credential stores
+DerivedData*/
+.derived-data*/
+*.log
+__pycache__/
+*.pyc
+node_modules/
+playwright-report/
+test-results/
+coverage/
+*.keychain
+*.keychain-db
+*.pkcs12
+*.csr
+*.certSigningRequest
+credentials*.json

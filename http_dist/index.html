@@ -1,256 +1,1215 @@
-<!doctype html>
-<html lang="ja">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="apple-itunes-app" content="app-id=6802000765">
-  <meta name="theme-color" content="#f7f3ea" media="(prefers-color-scheme: light)">
-  <meta name="theme-color" content="#0c0e18" media="(prefers-color-scheme: dark)">
-  <title>DaysYet — 人生のTokenを、大切なことへ。</title>
-  <meta name="description" content="人生のTokenを、大切なことへ。iPhone / iPadのウィジェットとMacの画面端で、残り時間と経過をひと目に。Mac版はmacOS 14以降向けに、Mac App Storeでの提供を準備しています。">
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="DaysYet">
-  <meta property="og:title" content="DaysYet — 人生のTokenを、大切なことへ。">
-  <meta property="og:description" content="人生のTokenを、大切なことへ。iPhone / iPadとMacで、今週・今月・今年や目標までの残り時間と経過を表示。Mac版はMac App Storeでの提供を準備しています。">
-  <meta property="og:url" content="https://daysyet.hinoshiba.com/">
-  <meta property="og:image" content="https://daysyet.hinoshiba.com/assets/screenshots/ja/02-widget-target-date.webp">
-  <meta property="og:image:width" content="660">
-  <meta property="og:image:height" content="1434">
-  <meta property="og:image:alt" content="残り時間、経過割合、左から積み重なる進捗バーを同時表示するDaysYetのウィジェット設定画面">
-  <meta property="og:locale" content="ja_JP">
-  <meta property="og:locale:alternate" content="en_US">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="DaysYet — 人生のTokenを、大切なことへ。">
-  <meta name="twitter:description" content="人生のTokenを、大切なことへ。iPhone / iPadとMacで、今週・今月・今年や目標までの残り時間と経過を表示。Mac版はMac App Storeでの提供を準備しています。">
-  <meta name="twitter:image" content="https://daysyet.hinoshiba.com/assets/screenshots/ja/02-widget-target-date.webp">
-  <meta name="twitter:image:alt" content="残り時間、経過割合、左から積み重なる進捗バーを同時表示するDaysYetのウィジェット設定画面">
-  <link rel="canonical" href="https://daysyet.hinoshiba.com/">
-  <link rel="alternate" hreflang="ja" href="https://daysyet.hinoshiba.com/">
-  <link rel="alternate" hreflang="en" href="https://daysyet.hinoshiba.com/en/">
-  <link rel="alternate" hreflang="x-default" href="https://daysyet.hinoshiba.com/">
-  <link rel="icon" href="./favicon.ico" sizes="any">
-  <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="./assets/apple-touch-icon.png">
-  <link rel="stylesheet" href="./assets/site.css?v=20260906-4">
-  <script src="./assets/site.js?v=20260906-4" defer></script>
+<!DOCTYPE html>
+
+<html data-i18n="0" lang="ja">
+<head><script defer="" src="language.js?v=1"></script>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="app-id=6802000765" name="apple-itunes-app"/>
+<meta content="#f7f3ea" media="(prefers-color-scheme: light)" name="theme-color"/>
+<meta content="#0c0e18" media="(prefers-color-scheme: dark)" name="theme-color"/>
+<title data-i18n="1">DaysYet — 人生のTokenを、大切なことへ。</title>
+<meta content="人生のTokenを、大切なことへ。iPhone / iPadのウィジェットとMacの画面端で、残り時間と経過をひと目に。Mac版はmacOS 14以降向けに、Mac App Storeでの提供を準備しています。" data-i18n="2" name="description"/>
+<meta content="website" property="og:type"/>
+<meta content="DaysYet" property="og:site_name"/>
+<meta content="DaysYet — 人生のTokenを、大切なことへ。" data-i18n="3" property="og:title"/>
+<meta content="人生のTokenを、大切なことへ。iPhone / iPadとMacで、今週・今月・今年や目標までの残り時間と経過を表示。Mac版はMac App Storeでの提供を準備しています。" data-i18n="4" property="og:description"/>
+<meta content="https://daysyet.hinoshiba.com/" data-i18n="5" property="og:url"/>
+<meta content="https://daysyet.hinoshiba.com/assets/screenshots/ja/02-widget-target-date.webp" data-i18n="6" property="og:image"/>
+<meta content="660" property="og:image:width"/>
+<meta content="1434" property="og:image:height"/>
+<meta content="残り時間、経過割合、左から積み重なる進捗バーを同時表示するDaysYetのウィジェット設定画面" data-i18n="7" property="og:image:alt"/>
+<meta content="ja_JP" data-i18n="8" property="og:locale"/>
+<meta content="en_US" data-i18n="9" property="og:locale:alternate"/>
+<meta content="summary" name="twitter:card"/>
+<meta content="DaysYet — 人生のTokenを、大切なことへ。" data-i18n="10" name="twitter:title"/>
+<meta content="人生のTokenを、大切なことへ。iPhone / iPadとMacで、今週・今月・今年や目標までの残り時間と経過を表示。Mac版はMac App Storeでの提供を準備しています。" data-i18n="11" name="twitter:description"/>
+<meta content="https://daysyet.hinoshiba.com/assets/screenshots/ja/02-widget-target-date.webp" data-i18n="12" name="twitter:image"/>
+<meta content="残り時間、経過割合、左から積み重なる進捗バーを同時表示するDaysYetのウィジェット設定画面" data-i18n="13" name="twitter:image:alt"/>
+<link href="https://daysyet.hinoshiba.com/" rel="canonical"/>
+
+
+
+<link data-i18n="14" href="./favicon.ico" rel="icon" sizes="any"/>
+<link data-i18n="15" href="./assets/favicon-32.png" rel="icon" sizes="32x32" type="image/png"/>
+<link data-i18n="16" href="./assets/apple-touch-icon.png" rel="apple-touch-icon" sizes="180x180"/>
+<link data-i18n="17" href="./assets/site.css?v=20260906-5" rel="stylesheet"/>
+<script defer="" src="./assets/site.js?v=20260906-5"></script>
 </head>
 <body>
-  <a class="skip-link" href="#main">本文へ移動</a>
-  <header class="site-header" data-menu-open="false">
-    <div class="shell header-inner">
-      <a class="wordmark" href="#top" aria-label="DaysYet トップ">DAYSYET</a>
-      <nav id="site-navigation" class="site-navigation" aria-label="主なナビゲーション">
-        <a href="#mac">Mac</a>
-        <a href="#examples">iPhone / iPad</a>
-        <a href="#features">機能と使い方</a>
-        <a href="#support">サポート</a>
-      </nav>
-      <div class="header-actions">
-        <a class="lang" lang="en" hreflang="en" href="./en/" data-language-base="./en/">EN</a>
-        <button class="nav-toggle" type="button" aria-controls="site-navigation" aria-expanded="false"><span>メニュー</span><svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true" focusable="false"><path d="m3 4.5 3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-      </div>
-    </div>
-  </header>
-
-  <div class="shell">
-    <main id="main" tabindex="-1">
-      <section class="hero" id="top" aria-labelledby="hero-title">
-        <div class="hero-copy">
-          <div class="eyebrow">Your time · Your tokens</div>
-          <h1 id="hero-title" class="token-headline">人生のTokenを、<br>大切なことへ。</h1>
-          <p class="lead">iPhone / iPadのウィジェットとMacの画面端で、今週・今月・今年や人生の目標までの残り時間と経過をひと目に。限りある時間を見渡して、大切なことに使うきっかけに。</p>
-          <div class="actions">
-            <a class="button" href="https://apps.apple.com/jp/app/daysyet-%E6%AE%8B%E3%82%8A%E6%99%82%E9%96%93%E3%82%A6%E3%82%A3%E3%82%B8%E3%82%A7%E3%83%83%E3%83%88/id6802000765">iPhone / iPadのApp Store</a>
-            <a class="button secondary" href="#mac">Mac版を見る</a>
-          </div>
-          <ul class="hero-facts" aria-label="DaysYetの特徴">
-            <li>iPhone / iPad / Mac（提供準備中）</li>
-            <li>3つの表示 / 4テーマ</li>
-            <li>日本語 / English</li>
-            <li>データは端末内だけ</li>
-          </ul>
-        </div>
-        <figure class="hero-figure">
-          <div class="screen-frame hero-screen">
-            <img src="./assets/screenshots/ja/01-widget-time-left.webp" width="660" height="1434" fetchpriority="high" alt="DaysYetのウィジェット設定画面。今月、今年、大切な節目の残り時間と、左から伸びる3本の進捗バーが表示されている。">
-          </div>
-          <figcaption><span aria-hidden="true"></span>選んだ3本を、その場でプレビュー</figcaption>
-        </figure>
-      </section>
-
-      <section id="mac" class="mac-section" aria-labelledby="mac-title">
-        <div class="mac-layout">
-          <div class="mac-heading">
-            <div class="section-heading">
-              <div class="eyebrow">DaysYet for Mac</div>
-              <h2 id="mac-title">作業のそばに、<br>時間の目印を。</h2>
-              <p class="section-lead">画面の端で、今週・今月・今年の進み具合をひと目に。サークルにポインタを合わせると、残り時間と経過割合が広がります。作業の流れを止めずに、時間を確かめられます。</p>
-            </div>
-            <div class="mac-availability"><span class="platform-tag">macOS 14以降</span><p>Mac App Storeでの提供を準備しています。</p></div>
-          </div>
-          <figure class="mac-preview" id="mac-preview">
-            <div class="mac-desktop" data-mac-desktop data-position="right" role="group" aria-label="Mac版の動作プレビュー。右側配置、150%サイズ。">
-              <div class="mac-menubar" aria-hidden="true"><span><b>Finder</b><span class="mac-menu-item">ファイル</span><span class="mac-menu-item">表示</span></span><span>9月5日（土）12:00</span></div>
-              <div class="mac-camera" aria-hidden="true"></div>
-              <div class="mac-notch" data-mac-preview data-position="right" data-expanded="false">
-                <svg class="mac-surface" data-mac-surface viewBox="0 0 204 212" preserveAspectRatio="none" aria-hidden="true"><path data-mac-contour d="M204 0 C204 15.08 192 18.56 175.02 18.56 L175 18.56 C162 18.56 158 26.97 158 40.6 V171.4 C158 185.03 162 193.44 175 193.44 L175.02 193.44 C192 193.44 204 196.92 204 212 Z"/></svg>
-                <div class="mac-detail" id="mac-preview-detail" data-mac-detail aria-hidden="true"><div class="mac-detail-content" data-mac-detail-content data-changing="false"><div class="mac-detail-header"><span class="mac-detail-name" data-mac-name>今週</span><span class="mac-detail-percentage" data-mac-percentage>79%</span></div><span class="mac-countdown" data-mac-countdown><span data-mac-days>1</span><small>日</small><span data-mac-hours>12</span><small>時間</small></span><div class="mac-detail-progress" data-mac-progress role="progressbar" aria-label="経過割合" aria-valuemin="0" aria-valuemax="100" aria-valuenow="79"><span></span></div></div></div>
-                <div class="mac-rail">
-                  <button class="mac-metric" type="button" data-mac-metric="0" data-percentage="79" data-name="今週" data-days="1" data-hours="12" data-color="#ef9868" style="--metric-color: #ef9868; --progress: 79%" aria-label="今週、経過79%、残り1日12時間、詳細を表示" aria-describedby="mac-preview-description" aria-controls="mac-preview-detail" aria-expanded="false" data-active="false"><span class="mac-ring" aria-hidden="true"><strong class="mac-ring-value">79<small>%</small></strong></span></button>
-                  <button class="mac-metric" type="button" data-mac-metric="1" data-percentage="15" data-name="今月" data-days="25" data-hours="12" data-color="#a6d391" style="--metric-color: #a6d391; --progress: 15%" aria-label="今月、経過15%、残り25日12時間、詳細を表示" aria-describedby="mac-preview-description" aria-controls="mac-preview-detail" aria-expanded="false" data-active="false"><span class="mac-ring" aria-hidden="true"><strong class="mac-ring-value">15<small>%</small></strong></span></button>
-                  <button class="mac-metric" type="button" data-mac-metric="2" data-percentage="68" data-name="今年" data-days="117" data-hours="12" data-color="#eed47d" style="--metric-color: #eed47d; --progress: 68%" aria-label="今年、経過68%、残り117日12時間、詳細を表示" aria-describedby="mac-preview-description" aria-controls="mac-preview-detail" aria-expanded="false" data-active="false"><span class="mac-ring" aria-hidden="true"><strong class="mac-ring-value">68<small>%</small></strong></span></button>
-                </div>
-              </div>
-            </div>
-            <p id="mac-preview-description" class="visually-hidden">表示例: 今週79%、今月15%、今年68%。サークルを選ぶと、残り時間と経過割合を表示します。Tabキーでも選択でき、Escキーで閉じます。</p>
-            <figcaption>サークルに触れると、残り時間を表示。上下にドラッグして動かせます。数値は表示例です。</figcaption>
-          </figure>
-        </div>
-        <div class="mac-benefits">
-          <article><h3>必要なときに、詳しく</h3><p>サークルから、残り時間・経過割合・バーをまとめて確認。アプリでは3つの表示モードと4テーマから選べます。</p></article>
-          <article><h3>自分の画面に合わせて</h3><p>アプリでは左右・上端への配置と、80〜150%のサイズ調整に対応。左右の配置では、上下にドラッグして位置を変えられます。</p></article>
-          <article><h3>Macの中だけに保存</h3><p>今週・今月・今年は起動してすぐ表示。「勤務時間」や自分の目標も選べます。データはMac内に保存され、端末間の同期はありません。</p></article>
-        </div>
-      </section>
-
-      <section id="examples" aria-labelledby="examples-title">
-        <div class="section-heading">
-          <div class="eyebrow">DaysYet for iPhone / iPad</div>
-          <h2 id="examples-title">選ぶ。切り替える。<br>あとは、ひと目で。</h2>
-          <p class="section-lead">画面の操作はシンプルです。見たい3つの時間、表示モード、テーマを選ぶと、ホーム画面ウィジェットのプレビューへそのまま反映されます。バー表示では右側の値も選べます。</p>
-        </div>
-        <div class="sample-grid">
-          <figure class="sample-card">
-            <div class="screen-frame">
-              <img src="./assets/screenshots/ja/02-widget-target-date.webp" width="660" height="1434" loading="lazy" decoding="async" alt="落ち着いたフォレストテーマで、3つの残り時間、経過割合、左から伸びるバーを同時表示したDaysYetのウィジェット設定画面。">
-            </div>
-            <figcaption>
-              <span class="sample-number">01</span>
-              <div><h3>残りも、歩みも、ひと目で。</h3><p>大きな残り時間に、経過割合と左から積み重なるバーを添えて確認。時間だけ、バーだけの表示にも切り替えられます。</p></div>
-            </figcaption>
-          </figure>
-          <figure class="sample-card">
-            <div class="screen-frame">
-              <img src="./assets/screenshots/ja/03-time-library.webp" width="660" height="1434" loading="lazy" decoding="async" alt="今週、今月、今年、健康でいたい年齢、大切な節目を、残り時間、経過割合、進捗バーで並べた時間一覧。">
-            </div>
-            <figcaption>
-              <span class="sample-number">02</span>
-              <div><h3>いまを、いくつもの距離から見る</h3><p>今週から人生の目標までを一覧で確認。ウィジェットに置く3本は、ここから選べます。</p></div>
-            </figcaption>
-          </figure>
-        </div>
-      </section>
-
-      <section id="features" aria-labelledby="features-title">
-        <div class="section-heading">
-          <div class="eyebrow">iPhone / iPad features</div>
-          <h2 id="features-title">3つの時間だから、迷わず見渡せる。</h2>
-          <p class="section-lead">暦と自分の目標をホーム画面とロック画面へ。ホーム画面の時間、モード、値、テーマは、アプリ全体でもウィジェットごとでも選べます。</p>
-        </div>
-        <div class="feature-grid">
-          <article class="feature-card"><span aria-hidden="true">01</span><h3>選べる3つの時間</h3><p>今週・今月・今年・健康でいたい年齢から選択。必要になったら、大切な日の起算日と目標日時も追加できます。</p></article>
-          <article class="feature-card"><span aria-hidden="true">02</span><h3>3つの表示と4テーマ</h3><p>時間だけ、残り時間・経過割合・バーの複合表示、バーだけを切り替え、鮮やかな夜や穏やかな森・朝・海から色を選べます。</p></article>
-          <article class="feature-card"><span aria-hidden="true">03</span><h3>ホーム画面とロック画面</h3><p>ホーム画面はSmall・Mediumで3本、ロック画面はInline・Circular・Rectangularで選んだ1本を表示。ホーム画面ではウィジェットごとの上書きもできます。</p></article>
-        </div>
-        <section class="steps" aria-labelledby="steps-title">
-          <div class="steps-copy"><div class="eyebrow">Three steps</div><h3 id="steps-title">始め方も、3ステップ。</h3></div>
-          <ol>
-            <li><span>1</span><div><strong>時間を選ぶ</strong><p>アプリの「ウィジェット」タブで、ホーム画面に表示したい3本を並べます。</p></div></li>
-            <li><span>2</span><div><strong>見せ方を選ぶ</strong><p>ホーム画面では、3つのレイアウトと4つのテーマから組み合わせを選びます。</p></div></li>
-            <li><span>3</span><div><strong>画面へ追加</strong><p>ホーム画面には3本、ロック画面には追加後に選んだ1本を表示できます。</p></div></li>
-          </ol>
-        </section>
-      </section>
-
-      <section id="accessibility" class="band-section" aria-labelledby="accessibility-title">
-        <div><div class="eyebrow">Accessibility</div><h2 id="accessibility-title">ひと目にも、<br>読み上げにも。</h2></div>
-        <div class="band-copy">
-          <p>DaysYetはVoiceOverと、色だけに依存しないラベル・数値を考慮して設計しています。iPhone / iPadではDynamic Type、Dark Interface、コントラスト設定にも対応しています。</p>
-          <p>各表示はタイトル、残り時間、経過割合、目標日時を一つの意味ある要素として読み上げます。視覚表示にも常にテキストを残し、色だけに頼りません。</p>
-          <p>利用できない操作や改善点がある場合は、端末、OS、利用している支援機能、再現手順を添えて<a href="#support">お知らせください</a>。個人の日付は送らないでください。</p>
-        </div>
-      </section>
-
-      <section id="support" aria-labelledby="support-title">
-        <div class="section-heading">
-          <div class="eyebrow">Support</div>
-          <h2 id="support-title">困ったときに。</h2>
-          <p class="section-lead">まずはよくある質問をご確認ください。解決しない場合は、support@hinoshiba.comへお問い合わせください。</p>
-        </div>
-        <div class="contact-grid">
-          <article class="contact-card"><div class="contact-icon" aria-hidden="true">?</div><div><h3>不具合・質問</h3><p>端末やOSのバージョン、再現手順、期待した表示を添えてください。個人の日付は架空の値に置き換えてください。</p><a href="mailto:support@hinoshiba.com?subject=DaysYet%20Support">support@hinoshiba.com <span aria-hidden="true">→</span></a></div></article>
-          <article class="contact-card"><div class="contact-icon" aria-hidden="true">!</div><div><h3>セキュリティ</h3><p>件名に「Security」と記載し、詳細を含めず安全な報告経路をご依頼ください。認証情報や秘密鍵は送らないでください。</p><a href="mailto:support@hinoshiba.com?subject=%5BSecurity%5D%20DaysYet">support@hinoshiba.com <span aria-hidden="true">→</span></a></div></article>
-        </div>
-        <div class="faq">
-          <h3>よくある質問</h3>
-          <details><summary>Mac版を始める</summary><p>Mac版はmacOS 14以降に対応し、Mac App Storeでの提供を準備しています。公開前の動作は<a href="#mac-preview">このページのプレビュー</a>で試せます。Mac版ではDaysYetを起動すると、今週・今月・今年が画面の右端に表示されます。設定画面を閉じても常駐表示は続きます。本体をダブルクリックすると設定が開きます。macOSのウィジェットギャラリーから追加する操作は不要です。</p></details>
-          <details><summary>Macで配置・表示内容を変える</summary><p>ウィジェット本体をダブルクリックして設定を開き、表示する3つの時間、詳細の表示モード、プログレスバー表示時の値（残り時間・経過割合・終了日時）、テーマ、表示先ディスプレイ、左右または上端の配置、左右配置時の上下位置、サイズ（80〜150%、標準100%）を選びます。サイズに合わせてサークルと文字も変わります。項目にポインタを合わせると詳細が開きます。左右では選んだサークルの高さに合わせて、詳細と黒いパネルの膨らみが上下に移動します。上端ではバーやそのすぐ上にポインタを合わせて項目を切り替えられます。それより上のカメラ部分では、現在の項目の詳細が開きます。バーの帯と線の太さもサイズに合わせて変わります。本体のダブルクリックは設定を開きます。「詳細を開いたままにする」も設定で選べます。通常はポインタを外すと詳細が閉じます。「詳細を開いたままにする」を選んだ場合は、設定でオフにして閉じます。表示・非表示と終了は設定から操作できます。非表示にした場合は、DaysYetをもう一度起動すると設定が開き、表示を戻せます。</p></details>
-          <details><summary>Macの常駐表示が見つからない</summary><p>DaysYetをもう一度起動して設定を開き、常駐表示を有効にしてください。表示先ディスプレイと配置も設定で確認できます。改善しない場合は、MacとmacOSのバージョン、接続しているディスプレイ、再現手順を添えてお問い合わせください。</p></details>
-          <details><summary>Mac版で週の始まりを変える</summary><p>提供準備中のMac版では「設定 → 時間 → 週の始まり」から変更できます。初期状態は端末のカレンダー設定に従い、現在使われる曜日も表示します。日曜〜土曜のいずれかを指定すると、その曜日の現地時刻0:00から翌週の同じ曜日0:00までを「今週」として計算します。変更はMac版の残り時間・経過割合・終了日時に反映されます。</p></details>
-          <details><summary>Mac版で毎日の勤務時間を設定する</summary><p>提供準備中のMac版で開始・終了時刻を設定し、表示する項目から「勤務時間」を選びます。初期値は9:00〜18:00で、端末の現地時刻で毎日繰り返します。日中の勤務では開始前に「開始前」、勤務中に残り時間、終了後に「勤務終了」を表示します。22:00〜翌6:00のような勤務にも対応し、開始と終了が同じ時刻の場合は24時間として扱います。勤務時刻は端末内だけに保存され、他の端末には同期されません。</p></details>
-          <details><summary>iPhone・iPad・Mac間で同期する</summary><p>端末間の同期機能はありません。表示する時間や目標日は各端末で設定します。データの消去も操作した端末だけに反映されます。</p></details>
-          <details open><summary>ウィジェットを追加する</summary><p>ホーム画面では空いている場所を長押しし、「編集」からDaysYetを検索してSmallまたはMediumを追加します。ロック画面では画面を長押しし、「カスタマイズ」からロック画面のウィジェット領域をタップしてDaysYetを追加します。Inline、Circular、Rectangularから選べます。</p></details>
-          <details><summary>表示する時間を変える</summary><p>アプリのウィジェットタブで3本を選ぶと、変更がホーム画面ウィジェットへ反映されます。特定のホーム画面ウィジェットだけ変える場合は、そのウィジェットを長押しして「ウィジェットを編集」を開き、「アプリで選んだ3本を使う」をオフにします。ロック画面で表示する1本は、ロック画面のカスタマイズ中にウィジェットをタップして選べます。</p></details>
-          <details><summary>表示モードやテーマを変える</summary><p>ホーム画面では、アプリのウィジェットタブで「時間」「時間＋％」「バー」から選び、4つのテーマを切り替えられます。「時間＋％」では、各行に残り時間、経過割合、左から伸びる進捗バーを一緒に表示します。特定のウィジェットだけ別の表示や色にする場合は、ホーム画面から「ウィジェットを編集」を開いて上書きできます。</p></details>
-          <details><summary>大切な日の起算日を変える</summary><p>アプリの「時間」タブから「人生の基準を編集」を開き、「大切な日」で起算日と目標日時を設定します。起算日を0%として、目標日時に100%となる経過割合を計算します。</p></details>
-          <details><summary>表示が更新されない</summary><p>一度DaysYetを開いて設定を保存し直し、ウィジェットがホーム画面またはロック画面に追加されていることを確認してください。OSが更新時刻を調整するため、常に秒単位で更新されるものではありません。改善しない場合は端末・OS・アプリバージョンを添えて<a href="mailto:support@hinoshiba.com?subject=DaysYet%20Support">support@hinoshiba.com</a>へお問い合わせください。</p></details>
-          <details><summary>データを消去する</summary><p>iPhone / iPadでは設定タブ、Macではウィジェット本体のダブルクリックで開く設定画面で「すべてのデータを消去」を選びます。Macでは常駐パネルの配置とサイズの設定も初期状態へ戻ります。他の端末には影響しません。入力したデータは開発者のサーバーに保存されません。</p></details>
-        </div>
-      </section>
-
-      <section id="source" class="source-section" aria-labelledby="source-title">
-        <div><div class="eyebrow">Open source</div><h2 id="source-title">コードも、<br>データの流れも公開。</h2></div>
-        <div><p>iPhone / iPad版のアプリ本体はApache License 2.0で公開しています。ビルド手順、依存台帳、Privacy Manifest、端末内でのデータ保存範囲を確認できます。</p><div class="actions"><a class="button" href="https://github.com/hinoshiba/DaysYet">GitHubで見る</a><a class="button secondary" href="mailto:support@hinoshiba.com?subject=DaysYet%20Support">お問い合わせ</a></div></div>
-      </section>
-
-      <section id="privacy" class="policy-section" aria-labelledby="privacy-title">
-        <div class="section-heading">
-          <div class="eyebrow">Privacy · 最終更新 2026-09-06</div>
-          <h2 id="privacy-title">入力した情報は、<br>この端末だけに。</h2>
-        </div>
-        <div class="privacy-intro">
-          <div>
-            <p class="notice"><strong>要点:</strong> DaysYetは利用者データを収集・送信せず、追跡、広告、分析SDKを使用しません。入力した情報は端末内だけに保存されます。この方針は、提供準備中のMac版にも適用します。</p>
-            <p class="section-lead">設定画面から保存内容を確認し、いつでもすべてのデータを消去できます。</p>
-          </div>
-          <figure class="privacy-figure">
-            <div class="screen-frame">
-              <img src="./assets/screenshots/ja/04-privacy-settings.webp" width="660" height="1434" loading="lazy" decoding="async" alt="入力した日付は送信されず、分析SDKや広告を使わないことを示すDaysYetの設定画面。">
-            </div>
-            <figcaption>プライバシー設定もアプリ内から確認できます。</figcaption>
-          </figure>
-        </div>
-        <div class="policy-grid">
-          <article><h3>1. 保存する情報と目的</h3><p>生年月日、健康でいたい年齢、目標名、目標の起算日と目標日時、毎日の勤務開始・終了時刻、週の始まりの設定、ウィジェットの項目、表示モード、値の形式、テーマを保存します。「勤務時間」の表示は任意で、勤務時刻は端末の現地時刻に基づく計算に使います。Mac版は常駐パネルの表示・非表示、表示先ディスプレイ、画面端の配置と位置、サークル・文字を含むサイズ、詳細を開いたままにする設定も保存します。時間の計算とアプリ・ウィジェット・常駐パネルの表示にだけ使います。</p></article>
-          <article><h3>2. 保存場所と共有範囲</h3><p>iPhone / iPad版はアプリとWidget Extensionが共有する端末内のApp Group領域に、Mac版はMacアプリ専用のサンドボックス内に保存します。端末間での同期はありません。開発者のサーバー、クラウド、分析・広告事業者、その他第三者へ送信せず、アカウントも作成しません。</p><p>ホーム画面・ロック画面のウィジェットやMacの常駐パネルは、端末を見ることのできる人の目に触れる場合があります。ロック画面では、端末がロックされている間も表示される場合があります。</p></article>
-          <article><h3>3. 追跡・広告・分析</h3><p>追跡、行動分析、広告、第三者SDKを使用しません。AppleがApp StoreやOSの提供に伴って処理する情報には、Appleのプライバシーポリシーが適用されます。</p></article>
-          <article><h3>4. 健康に関する情報</h3><p>「健康でいたい年齢」は利用者自身が決める計画上の目標です。HealthKitへアクセスせず、医学的診断、健康測定、治療、実際の寿命予測を行いません。外部の健康統計データも同梱していません。</p></article>
-          <article><h3>5. 削除と保持期間</h3><p>設定画面の「すべてのデータを消去」で、その端末の保存情報を直ちに削除できます。Mac版では常駐パネルの配置とサイズの設定も初期状態へ戻ります。他の端末のデータには影響しません。アプリ削除後に残る端末内データはOSが管理します。開発者は利用者データを受信・保存しないため、開発者へ削除請求を行う対象はありません。</p></article>
-          <article><h3>6. 外部リンクと変更</h3><p>利用者がソースコード、プライバシー、サポートへのリンクをタップした場合に限り、システムブラウザが開きます。外部通信、クラウド同期、クラッシュ解析、購入検証サーバー、HealthKit、第三者SDKなどを追加する場合は、この方針、Privacy Manifest、App Store Privacy回答を事前に更新します。</p></article>
-          <article class="wide"><h3>7. お問い合わせ時の情報</h3><p>お問い合わせ先は<a href="mailto:support@hinoshiba.com">support@hinoshiba.com</a>です。利用者が任意にメールを送信した場合、送信元メールアドレスと本文を、返信および必要なサポート対応のために利用します。個人の日付、健康情報、認証情報、秘密鍵は送らないでください。脆弱性を報告する場合は、メール本文に詳細を含めず、安全な報告経路を依頼してください。</p></article>
-        </div>
-      </section>
-
-      <section id="terms" class="terms-section" aria-labelledby="terms-title">
-        <div class="section-heading">
-          <div class="eyebrow">Terms · 発効日 2026-09-05</div>
-          <h2 id="terms-title">利用条件</h2>
-          <p class="section-lead">App Storeで提供するDaysYetにはAppleの<a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">標準使用許諾契約</a>が適用されます。ソースコードからのビルドにはリポジトリに記載するライセンスが適用されます。以下は製品に関する追加情報です。</p>
-        </div>
-        <div class="terms-grid">
-          <article><h3>目的</h3><p>DaysYetは、時間の進捗と利用者自身が設定した目標を表示する個人向け情報ツールです。表示は保証、助言、診断、医療行為、または将来の出来事の予測ではありません。</p></article>
-          <article><h3>利用者の責任</h3><p>入力内容、ウィジェットを見える場所へ置くこと、表示された情報に基づく判断は利用者の責任です。重要な期限は公式情報や一次資料でも確認してください。</p></article>
-          <article><h3>可用性と変更</h3><p>OS、WidgetKit、端末設定などにより更新時刻や表示が変わることがあります。適用法で認められる範囲で、機能の継続、完全性、特定目的への適合を保証しません。セキュリティ、法令、品質のために機能を変更・終了する場合があります。</p></article>
-          <article><h3>OSSとブランド</h3><p>ソースコードにはApache License 2.0が適用されます。DaysYetの名称、ロゴ、App Icon、Store素材は同ライセンスの対象外です。詳細は<a href="https://github.com/hinoshiba/DaysYet">公開リポジトリ</a>をご覧ください。</p></article>
-          <article class="wide"><h3>お問い合わせ</h3><p>製品についてのご質問は、個人の日付を含めずに<a href="mailto:support@hinoshiba.com">support@hinoshiba.com</a>へお送りください。</p></article>
-        </div>
-      </section>
-    </main>
-
-    <footer>
-      <span>Operator: hinoshiba · © 2026</span>
-      <nav class="footer-links" aria-label="関連情報"><a href="#privacy">プライバシー</a><a href="#accessibility">アクセシビリティ</a><a href="#terms">利用条件</a><a href="#support">サポート</a><a href="https://github.com/hinoshiba/DaysYet">GitHub</a></nav>
-    </footer>
-  </div>
-</body>
+<a class="skip-link" data-i18n="18" href="#main">本文へ移動</a>
+<header class="site-header" data-menu-open="false">
+<div class="shell header-inner">
+<a aria-label="DaysYet トップ" class="wordmark" data-i18n="19" href="#top">DAYSYET</a>
+<nav aria-label="主なナビゲーション" class="site-navigation" data-i18n="20" id="site-navigation">
+<a href="#mac">Mac</a>
+<a href="#examples">iPhone / iPad</a>
+<a href="#features">機能と使い方</a>
+<a href="#support">サポート</a>
+<a href="#privacy">プライバシー</a><a href="#terms">利用条件</a></nav>
+<div class="header-actions">
+<a class="lang" data-i18n="21" data-language-switch="" href="?lang=en" hreflang="en" lang="en">EN</a>
+<button aria-controls="site-navigation" aria-expanded="false" class="nav-toggle" type="button"><span data-i18n="22">メニュー</span><svg aria-hidden="true" focusable="false" height="12" viewbox="0 0 12 12" width="12"><path d="m3 4.5 3 3 3-3" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"></path></svg></button>
+</div>
+</div>
+</header>
+<div class="shell">
+<main id="main" tabindex="-1">
+<section aria-labelledby="hero-title" class="hero" id="top">
+<div class="hero-copy">
+<div class="eyebrow">Your time · Your tokens</div>
+<h1 class="token-headline" data-i18n="23" id="hero-title">人生のTokenを、<br/>大切なことへ。</h1>
+<p class="lead" data-i18n="24">iPhone / iPadのウィジェットとMacの画面端で、今週・今月・今年や人生の目標までの残り時間と経過をひと目に。限りある時間を見渡して、大切なことに使うきっかけに。</p>
+<div class="actions" data-i18n="25">
+<a class="button" href="https://apps.apple.com/jp/app/daysyet-%E6%AE%8B%E3%82%8A%E6%99%82%E9%96%93%E3%82%A6%E3%82%A3%E3%82%B8%E3%82%A7%E3%83%83%E3%83%88/id6802000765">iPhone / iPadのApp Store</a>
+<a class="button secondary" href="#mac">Mac版を見る</a>
+</div>
+<ul aria-label="DaysYetの特徴" class="hero-facts" data-i18n="26">
+<li data-i18n="27">iPhone / iPad / Mac（提供準備中）</li>
+<li data-i18n="28">3つの表示 / 4テーマ</li>
+<li data-i18n="29">日本語 / English</li>
+<li data-i18n="30">データは端末内だけ</li>
+</ul>
+</div>
+<figure class="hero-figure">
+<div class="screen-frame hero-screen">
+<img alt="DaysYetのウィジェット設定画面。今月、今年、大切な節目の残り時間と、左から伸びる3本の進捗バーが表示されている。" data-i18n="31" fetchpriority="high" height="1434" src="./assets/screenshots/ja/01-widget-time-left.webp" width="660"/>
+</div>
+<figcaption data-i18n="32"><span aria-hidden="true"></span>選んだ3本を、その場でプレビュー</figcaption>
+</figure>
+</section>
+<section aria-labelledby="mac-title" class="mac-section" id="mac">
+<div class="mac-layout">
+<div class="mac-heading">
+<div class="section-heading">
+<div class="eyebrow">DaysYet for Mac</div>
+<h2 data-i18n="33" id="mac-title">作業のそばに、<br/>時間の目印を。</h2>
+<p class="section-lead" data-i18n="34">画面の端で、今週・今月・今年の進み具合をひと目に。サークルにポインタを合わせると、残り時間と経過割合が広がります。作業の流れを止めずに、時間を確かめられます。</p>
+</div>
+<div class="mac-availability"><span class="platform-tag" data-i18n="35">macOS 14以降</span><p data-i18n="36">Mac App Storeでの提供を準備しています。</p></div>
+</div>
+<figure class="mac-preview" id="mac-preview">
+<div aria-label="Mac版の動作プレビュー。右側配置、150%サイズ。" class="mac-desktop" data-i18n="37" data-mac-desktop="" data-position="right" role="group">
+<div aria-hidden="true" class="mac-menubar" data-i18n="38"><span><b>Finder</b><span class="mac-menu-item">ファイル</span><span class="mac-menu-item">表示</span></span><span>9月5日（土）12:00</span></div>
+<div aria-hidden="true" class="mac-camera"></div>
+<div class="mac-notch" data-expanded="false" data-mac-preview="" data-position="right">
+<svg aria-hidden="true" class="mac-surface" data-mac-surface="" preserveaspectratio="none" viewbox="0 0 204 212"><path d="M204 0 C204 15.08 192 18.56 175.02 18.56 L175 18.56 C162 18.56 158 26.97 158 40.6 V171.4 C158 185.03 162 193.44 175 193.44 L175.02 193.44 C192 193.44 204 196.92 204 212 Z" data-mac-contour=""></path></svg>
+<div aria-hidden="true" class="mac-detail" data-mac-detail="" id="mac-preview-detail"><div class="mac-detail-content" data-changing="false" data-mac-detail-content=""><div class="mac-detail-header" data-i18n="39"><span class="mac-detail-name" data-mac-name="">今週</span><span class="mac-detail-percentage" data-mac-percentage="">79%</span></div><span class="mac-countdown" data-i18n="40" data-mac-countdown=""><span data-mac-days="">1</span><small>日</small><span data-mac-hours="">12</span><small>時間</small></span><div aria-label="経過割合" aria-valuemax="100" aria-valuemin="0" aria-valuenow="79" class="mac-detail-progress" data-i18n="41" data-mac-progress="" role="progressbar"><span></span></div></div></div>
+<div class="mac-rail">
+<button aria-controls="mac-preview-detail" aria-describedby="mac-preview-description" aria-expanded="false" aria-label="今週、経過79%、残り1日12時間、詳細を表示" class="mac-metric" data-active="false" data-color="#ef9868" data-days="1" data-hours="12" data-i18n="42" data-mac-metric="0" data-name="今週" data-percentage="79" style="--metric-color: #ef9868; --progress: 79%" type="button"><span aria-hidden="true" class="mac-ring"><strong class="mac-ring-value">79<small>%</small></strong></span></button>
+<button aria-controls="mac-preview-detail" aria-describedby="mac-preview-description" aria-expanded="false" aria-label="今月、経過15%、残り25日12時間、詳細を表示" class="mac-metric" data-active="false" data-color="#a6d391" data-days="25" data-hours="12" data-i18n="43" data-mac-metric="1" data-name="今月" data-percentage="15" style="--metric-color: #a6d391; --progress: 15%" type="button"><span aria-hidden="true" class="mac-ring"><strong class="mac-ring-value">15<small>%</small></strong></span></button>
+<button aria-controls="mac-preview-detail" aria-describedby="mac-preview-description" aria-expanded="false" aria-label="今年、経過68%、残り117日12時間、詳細を表示" class="mac-metric" data-active="false" data-color="#eed47d" data-days="117" data-hours="12" data-i18n="44" data-mac-metric="2" data-name="今年" data-percentage="68" style="--metric-color: #eed47d; --progress: 68%" type="button"><span aria-hidden="true" class="mac-ring"><strong class="mac-ring-value">68<small>%</small></strong></span></button>
+</div>
+</div>
+</div>
+<p class="visually-hidden" data-i18n="45" id="mac-preview-description">表示例: 今週79%、今月15%、今年68%。サークルを選ぶと、残り時間と経過割合を表示します。Tabキーでも選択でき、Escキーで閉じます。</p>
+<figcaption data-i18n="46">サークルに触れると、残り時間を表示。上下にドラッグして動かせます。数値は表示例です。</figcaption>
+</figure>
+</div>
+<div class="mac-benefits">
+<article><h3 data-i18n="47">必要なときに、詳しく</h3><p data-i18n="48">サークルから、残り時間・経過割合・バーをまとめて確認。アプリでは3つの表示モードと4テーマから選べます。</p></article>
+<article><h3 data-i18n="49">自分の画面に合わせて</h3><p data-i18n="50">アプリでは左右・上端への配置と、80〜150%のサイズ調整に対応。左右の配置では、上下にドラッグして位置を変えられます。</p></article>
+<article><h3 data-i18n="51">Macの中だけに保存</h3><p data-i18n="52">今週・今月・今年は起動してすぐ表示。「勤務時間」や自分の目標も選べます。データはMac内に保存され、端末間の同期はありません。</p></article>
+</div>
+</section>
+<section aria-labelledby="examples-title" id="examples">
+<div class="section-heading">
+<div class="eyebrow">DaysYet for iPhone / iPad</div>
+<h2 data-i18n="53" id="examples-title">選ぶ。切り替える。<br/>あとは、ひと目で。</h2>
+<p class="section-lead" data-i18n="54">画面の操作はシンプルです。見たい3つの時間、表示モード、テーマを選ぶと、ホーム画面ウィジェットのプレビューへそのまま反映されます。バー表示では右側の値も選べます。</p>
+</div>
+<div class="sample-grid">
+<figure class="sample-card">
+<div class="screen-frame">
+<img alt="落ち着いたフォレストテーマで、3つの残り時間、経過割合、左から伸びるバーを同時表示したDaysYetのウィジェット設定画面。" data-i18n="55" decoding="async" height="1434" loading="lazy" src="./assets/screenshots/ja/02-widget-target-date.webp" width="660"/>
+</div>
+<figcaption>
+<span class="sample-number">01</span>
+<div><h3 data-i18n="56">残りも、歩みも、ひと目で。</h3><p data-i18n="57">大きな残り時間に、経過割合と左から積み重なるバーを添えて確認。時間だけ、バーだけの表示にも切り替えられます。</p></div>
+</figcaption>
+</figure>
+<figure class="sample-card">
+<div class="screen-frame">
+<img alt="今週、今月、今年、健康でいたい年齢、大切な節目を、残り時間、経過割合、進捗バーで並べた時間一覧。" data-i18n="58" decoding="async" height="1434" loading="lazy" src="./assets/screenshots/ja/03-time-library.webp" width="660"/>
+</div>
+<figcaption>
+<span class="sample-number">02</span>
+<div><h3 data-i18n="59">いまを、いくつもの距離から見る</h3><p data-i18n="60">今週から人生の目標までを一覧で確認。ウィジェットに置く3本は、ここから選べます。</p></div>
+</figcaption>
+</figure>
+</div>
+</section>
+<section aria-labelledby="features-title" id="features">
+<div class="section-heading">
+<div class="eyebrow">iPhone / iPad features</div>
+<h2 data-i18n="61" id="features-title">3つの時間だから、迷わず見渡せる。</h2>
+<p class="section-lead" data-i18n="62">暦と自分の目標をホーム画面とロック画面へ。ホーム画面の時間、モード、値、テーマは、アプリ全体でもウィジェットごとでも選べます。</p>
+</div>
+<div class="feature-grid">
+<article class="feature-card"><span aria-hidden="true">01</span><h3 data-i18n="63">選べる3つの時間</h3><p data-i18n="64">今週・今月・今年・健康でいたい年齢から選択。必要になったら、大切な日の起算日と目標日時も追加できます。</p></article>
+<article class="feature-card"><span aria-hidden="true">02</span><h3 data-i18n="65">3つの表示と4テーマ</h3><p data-i18n="66">時間だけ、残り時間・経過割合・バーの複合表示、バーだけを切り替え、鮮やかな夜や穏やかな森・朝・海から色を選べます。</p></article>
+<article class="feature-card"><span aria-hidden="true">03</span><h3 data-i18n="67">ホーム画面とロック画面</h3><p data-i18n="68">ホーム画面はSmall・Mediumで3本、ロック画面はInline・Circular・Rectangularで選んだ1本を表示。ホーム画面ではウィジェットごとの上書きもできます。</p></article>
+</div>
+<section aria-labelledby="steps-title" class="steps">
+<div class="steps-copy"><div class="eyebrow">Three steps</div><h3 data-i18n="69" id="steps-title">始め方も、3ステップ。</h3></div>
+<ol>
+<li><span>1</span><div><strong data-i18n="70">時間を選ぶ</strong><p data-i18n="71">アプリの「ウィジェット」タブで、ホーム画面に表示したい3本を並べます。</p></div></li>
+<li><span>2</span><div><strong data-i18n="72">見せ方を選ぶ</strong><p data-i18n="73">ホーム画面では、3つのレイアウトと4つのテーマから組み合わせを選びます。</p></div></li>
+<li><span>3</span><div><strong data-i18n="74">画面へ追加</strong><p data-i18n="75">ホーム画面には3本、ロック画面には追加後に選んだ1本を表示できます。</p></div></li>
+</ol>
+</section>
+</section>
+<section aria-labelledby="accessibility-title" class="band-section" id="accessibility">
+<div><div class="eyebrow">Accessibility</div><h2 data-i18n="76" id="accessibility-title">ひと目にも、<br/>読み上げにも。</h2></div>
+<div class="band-copy">
+<p data-i18n="77">DaysYetはVoiceOverと、色だけに依存しないラベル・数値を考慮して設計しています。iPhone / iPadではDynamic Type、Dark Interface、コントラスト設定にも対応しています。</p>
+<p data-i18n="78">各表示はタイトル、残り時間、経過割合、目標日時を一つの意味ある要素として読み上げます。視覚表示にも常にテキストを残し、色だけに頼りません。</p>
+<p data-i18n="79">利用できない操作や改善点がある場合は、端末、OS、利用している支援機能、再現手順を添えて<a href="#support">お知らせください</a>。個人の日付は送らないでください。</p>
+</div>
+</section>
+<section aria-labelledby="support-title" id="support">
+<div class="section-heading">
+<div class="eyebrow">Support</div>
+<h2 data-i18n="80" id="support-title">困ったときに。</h2>
+<p class="section-lead" data-i18n="81">アプリの使い方は、まず下のFAQをご確認ください。App Storeのダウンロード・購入・請求はAppleサポートをご利用ください。</p>
+</div>
+<div class="contact-grid">
+<article class="contact-card"><div aria-hidden="true" class="contact-icon">?</div><div><h3 data-i18n="82">不具合・質問</h3><p data-i18n="83">端末やOSのバージョン、再現手順、期待した表示を添えてください。個人の日付は架空の値に置き換えてください。</p><a href="mailto:support@hinoshiba.com?subject=DaysYet%20Support">support@hinoshiba.com <span aria-hidden="true">→</span></a></div></article>
+<article class="contact-card"><div aria-hidden="true" class="contact-icon">↗</div><div><h3 data-i18n="84">App Storeについて</h3><p data-i18n="85">ダウンロード、購入、請求、返金のご案内。</p><a href="https://support.apple.com/billing">Apple Support</a></div></article>
+</div>
+<div class="faq">
+<h3 data-i18n="86">よくある質問</h3>
+<details><summary data-i18n="87">Mac版を始める</summary><p data-i18n="88">Mac版はmacOS 14以降に対応し、Mac App Storeでの提供を準備しています。公開前の動作は<a href="#mac-preview">このページのプレビュー</a>で試せます。Mac版ではDaysYetを起動すると、今週・今月・今年が画面の右端に表示されます。設定画面を閉じても常駐表示は続きます。本体をダブルクリックすると設定が開きます。macOSのウィジェットギャラリーから追加する操作は不要です。</p></details>
+<details><summary data-i18n="89">Macで配置・表示内容を変える</summary><p data-i18n="90">ウィジェット本体をダブルクリックして設定を開き、表示する3つの時間、詳細の表示モード、プログレスバー表示時の値（残り時間・経過割合・終了日時）、テーマ、表示先ディスプレイ、左右または上端の配置、左右配置時の上下位置、サイズ（80〜150%、標準100%）を選びます。サイズに合わせてサークルと文字も変わります。項目にポインタを合わせると詳細が開きます。左右では選んだサークルの高さに合わせて、詳細と黒いパネルの膨らみが上下に移動します。上端ではバーやそのすぐ上にポインタを合わせて項目を切り替えられます。それより上のカメラ部分では、現在の項目の詳細が開きます。バーの帯と線の太さもサイズに合わせて変わります。本体のダブルクリックは設定を開きます。「詳細を開いたままにする」も設定で選べます。通常はポインタを外すと詳細が閉じます。「詳細を開いたままにする」を選んだ場合は、設定でオフにして閉じます。表示・非表示と終了は設定から操作できます。非表示にした場合は、DaysYetをもう一度起動すると設定が開き、表示を戻せます。</p></details>
+<details><summary data-i18n="91">Macの常駐表示が見つからない</summary><p data-i18n="92">DaysYetをもう一度起動して設定を開き、常駐表示を有効にしてください。表示先ディスプレイと配置も設定で確認できます。改善しない場合は、MacとmacOSのバージョン、接続しているディスプレイ、再現手順を添えてお問い合わせください。</p></details>
+<details><summary data-i18n="93">Mac版で週の始まりを変える</summary><p data-i18n="94">提供準備中のMac版では「設定 → 時間 → 週の始まり」から変更できます。初期状態は端末のカレンダー設定に従い、現在使われる曜日も表示します。日曜〜土曜のいずれかを指定すると、その曜日の現地時刻0:00から翌週の同じ曜日0:00までを「今週」として計算します。変更はMac版の残り時間・経過割合・終了日時に反映されます。</p></details>
+<details><summary data-i18n="95">Mac版で毎日の勤務時間を設定する</summary><p data-i18n="96">提供準備中のMac版で開始・終了時刻を設定し、表示する項目から「勤務時間」を選びます。初期値は9:00〜18:00で、端末の現地時刻で毎日繰り返します。日中の勤務では開始前に「開始前」、勤務中に残り時間、終了後に「勤務終了」を表示します。22:00〜翌6:00のような勤務にも対応し、開始と終了が同じ時刻の場合は24時間として扱います。勤務時刻は端末内だけに保存され、他の端末には同期されません。</p></details>
+<details><summary data-i18n="97">iPhone・iPad・Mac間で同期する</summary><p data-i18n="98">端末間の同期機能はありません。表示する時間や目標日は各端末で設定します。データの消去も操作した端末だけに反映されます。</p></details>
+<details open=""><summary data-i18n="99">ウィジェットを追加する</summary><p data-i18n="100">ホーム画面では空いている場所を長押しし、「編集」からDaysYetを検索してSmallまたはMediumを追加します。ロック画面では画面を長押しし、「カスタマイズ」からロック画面のウィジェット領域をタップしてDaysYetを追加します。Inline、Circular、Rectangularから選べます。</p></details>
+<details><summary data-i18n="101">表示する時間を変える</summary><p data-i18n="102">アプリのウィジェットタブで3本を選ぶと、変更がホーム画面ウィジェットへ反映されます。特定のホーム画面ウィジェットだけ変える場合は、そのウィジェットを長押しして「ウィジェットを編集」を開き、「アプリで選んだ3本を使う」をオフにします。ロック画面で表示する1本は、ロック画面のカスタマイズ中にウィジェットをタップして選べます。</p></details>
+<details><summary data-i18n="103">表示モードやテーマを変える</summary><p data-i18n="104">ホーム画面では、アプリのウィジェットタブで「時間」「時間＋％」「バー」から選び、4つのテーマを切り替えられます。「時間＋％」では、各行に残り時間、経過割合、左から伸びる進捗バーを一緒に表示します。特定のウィジェットだけ別の表示や色にする場合は、ホーム画面から「ウィジェットを編集」を開いて上書きできます。</p></details>
+<details><summary data-i18n="105">大切な日の起算日を変える</summary><p data-i18n="106">アプリの「時間」タブから「人生の基準を編集」を開き、「大切な日」で起算日と目標日時を設定します。起算日を0%として、目標日時に100%となる経過割合を計算します。</p></details>
+<details><summary data-i18n="107">表示が更新されない</summary><p data-i18n="108">一度DaysYetを開いて設定を保存し直し、ウィジェットがホーム画面またはロック画面に追加されていることを確認してください。OSが更新時刻を調整するため、常に秒単位で更新されるものではありません。改善しない場合は端末・OS・アプリバージョンを添えて<a href="mailto:support@hinoshiba.com?subject=DaysYet%20Support">support@hinoshiba.com</a>へお問い合わせください。</p></details>
+<details><summary data-i18n="109">データを消去する</summary><p data-i18n="110">iPhone / iPadでは設定タブ、Macではウィジェット本体のダブルクリックで開く設定画面で「すべてのデータを消去」を選びます。Macでは常駐パネルの配置とサイズの設定も初期状態へ戻ります。他の端末には影響しません。入力したデータは開発者のサーバーに保存されません。</p></details>
+</div>
+</section>
+<section aria-labelledby="source-title" class="source-section" id="source">
+<div><div class="eyebrow">Open source</div><h2 data-i18n="111" id="source-title">ソースコードを公開。</h2></div>
+<div><p data-i18n="112">iPhone・iPad・Mac版のソースコードはApache License 2.0で公開しています。ビルド手順や開発への参加方法はGitHubをご覧ください。</p><div class="actions" data-i18n="113"><a class="button" href="https://github.com/hinoshiba/DaysYet">GitHubで見る</a><a class="button secondary" href="https://www.hinoshiba.com/products/">ほかのアプリ</a></div></div>
+</section>
+<section aria-labelledby="privacy-title" class="policy-section" id="privacy"><div class="section-heading"><div class="eyebrow">PRIVACY</div><h2 data-i18n="114" id="privacy-title">プライバシーポリシー</h2></div><div class="policy-copy"><p data-i18n="115">運営者はhinoshibaです。日付、目標、活動時間とラベル・曜日、表示設定は時間の計算と表示に使い、端末内に保存します。iPhone / iPadではアプリとウィジェットの共有領域、Macではアプリの専用領域を使用し、端末間では同期しません。開発者はアプリの入力データを収集せず、広告・追跡は行いません。</p><p data-i18n="116">設定の「すべてのデータを消去」で、この端末の保存内容を削除できます。ウィジェットやMacのパネルは、画面を見る人に表示されることがあります。健康でいたい年齢はご自身で決める計画上の目標です。</p><p data-i18n="117">お問い合わせのメールアドレスと本文は、対応のために必要な期間利用し、不要になった情報は削除します。<a href="mailto:support@hinoshiba.com">support@hinoshiba.com</a>へご連絡ください。App Storeの利用には<a href="https://www.apple.com/legal/privacy/">Appleのプライバシーポリシー</a>が適用されます。このサイトはGitHub Pagesで配信され、アクセス情報は<a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHubのプライバシーステートメント</a>に従って処理されます。</p><p data-i18n="118">最終更新：2026年9月6日。変更時はこのページを更新します。</p></div></section>
+<section aria-labelledby="terms-title" class="terms-section" id="terms"><div class="section-heading"><div class="eyebrow">TERMS</div><h2 data-i18n="119" id="terms-title">利用・販売について</h2></div><div class="policy-copy"><p data-i18n="120">App Store版には<a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Apple標準EULA</a>が適用されます。価格、提供条件、購入手続はApp Storeの表示をご確認ください。購入・請求・返金は<a href="https://support.apple.com/billing">Appleサポート</a>へ。</p><p data-i18n="121">DaysYetは、ご自身で設定した目標と時間の目安を表示するツールです。医療上の助言や寿命の予測ではありません。重要な期限は元の情報をご確認ください。OSや端末の設定によって表示の更新時刻は変わります。</p><p data-i18n="122">ソースコードはApache License 2.0で公開しています。名称・ロゴ・ブランド素材の条件は<a href="https://github.com/hinoshiba/DaysYet">GitHub</a>をご確認ください。製品に関するお問い合わせは<a href="mailto:support@hinoshiba.com">support@hinoshiba.com</a>へ。</p></div></section>
+</main>
+<footer>
+<span>Operator: hinoshiba · © 2026</span>
+<nav aria-label="関連情報" class="footer-links" data-i18n="123"><a href="#privacy">プライバシー</a><a href="#accessibility">アクセシビリティ</a><a href="#terms">利用条件</a><a href="#support">サポート</a><a href="https://github.com/hinoshiba/DaysYet">GitHub</a><a href="https://www.hinoshiba.com/products/">ほかのアプリ</a></nav>
+</footer>
+</div>
+<script id="translations" type="application/json">{
+  "0": {
+    "attributes": {
+      "lang": {
+        "ja": "ja",
+        "en": "en"
+      }
+    }
+  },
+  "1": {
+    "text": {
+      "0": {
+        "ja": "DaysYet — 人生のTokenを、大切なことへ。",
+        "en": "DaysYet — Life’s tokens. Make them count."
+      }
+    }
+  },
+  "2": {
+    "attributes": {
+      "content": {
+        "ja": "人生のTokenを、大切なことへ。iPhone / iPadのウィジェットとMacの画面端で、残り時間と経過をひと目に。Mac版はmacOS 14以降向けに、Mac App Storeでの提供を準備しています。",
+        "en": "Make life’s tokens count. See time left and elapsed progress with iPhone and iPad widgets and a Mac desktop panel. The Mac app is being prepared for the Mac App Store, for macOS 14 or later."
+      }
+    }
+  },
+  "3": {
+    "attributes": {
+      "content": {
+        "ja": "DaysYet — 人生のTokenを、大切なことへ。",
+        "en": "DaysYet — Life’s tokens. Make them count."
+      }
+    }
+  },
+  "4": {
+    "attributes": {
+      "content": {
+        "ja": "人生のTokenを、大切なことへ。iPhone / iPadとMacで、今週・今月・今年や目標までの残り時間と経過を表示。Mac版はMac App Storeでの提供を準備しています。",
+        "en": "Life’s tokens. Make them count. Keep time left and elapsed progress in view on iPhone, iPad, and Mac. The Mac app is being prepared for the Mac App Store."
+      }
+    }
+  },
+  "5": {
+    "attributes": {
+      "content": {
+        "ja": "https://daysyet.hinoshiba.com/",
+        "en": "https://daysyet.hinoshiba.com/en/"
+      }
+    }
+  },
+  "6": {
+    "attributes": {
+      "content": {
+        "ja": "https://daysyet.hinoshiba.com/assets/screenshots/ja/02-widget-target-date.webp",
+        "en": "https://daysyet.hinoshiba.com/assets/screenshots/en/02-widget-target-date.webp"
+      }
+    }
+  },
+  "7": {
+    "attributes": {
+      "content": {
+        "ja": "残り時間、経過割合、左から積み重なる進捗バーを同時表示するDaysYetのウィジェット設定画面",
+        "en": "DaysYet Widget screen showing time left, elapsed percentage, and left-to-right progress bars together"
+      }
+    }
+  },
+  "8": {
+    "attributes": {
+      "content": {
+        "ja": "ja_JP",
+        "en": "en_US"
+      }
+    }
+  },
+  "9": {
+    "attributes": {
+      "content": {
+        "ja": "en_US",
+        "en": "ja_JP"
+      }
+    }
+  },
+  "10": {
+    "attributes": {
+      "content": {
+        "ja": "DaysYet — 人生のTokenを、大切なことへ。",
+        "en": "DaysYet — Life’s tokens. Make them count."
+      }
+    }
+  },
+  "11": {
+    "attributes": {
+      "content": {
+        "ja": "人生のTokenを、大切なことへ。iPhone / iPadとMacで、今週・今月・今年や目標までの残り時間と経過を表示。Mac版はMac App Storeでの提供を準備しています。",
+        "en": "Life’s tokens. Make them count. Keep time left and elapsed progress in view on iPhone, iPad, and Mac. The Mac app is being prepared for the Mac App Store."
+      }
+    }
+  },
+  "12": {
+    "attributes": {
+      "content": {
+        "ja": "https://daysyet.hinoshiba.com/assets/screenshots/ja/02-widget-target-date.webp",
+        "en": "https://daysyet.hinoshiba.com/assets/screenshots/en/02-widget-target-date.webp"
+      }
+    }
+  },
+  "13": {
+    "attributes": {
+      "content": {
+        "ja": "残り時間、経過割合、左から積み重なる進捗バーを同時表示するDaysYetのウィジェット設定画面",
+        "en": "DaysYet Widget screen showing time left, elapsed percentage, and left-to-right progress bars together"
+      }
+    }
+  },
+  "14": {
+    "attributes": {
+      "href": {
+        "ja": "./favicon.ico",
+        "en": "favicon.ico"
+      }
+    }
+  },
+  "15": {
+    "attributes": {
+      "href": {
+        "ja": "./assets/favicon-32.png",
+        "en": "assets/favicon-32.png"
+      }
+    }
+  },
+  "16": {
+    "attributes": {
+      "href": {
+        "ja": "./assets/apple-touch-icon.png",
+        "en": "assets/apple-touch-icon.png"
+      }
+    }
+  },
+  "17": {
+    "attributes": {
+      "href": {
+        "ja": "./assets/site.css?v=20260906-5",
+        "en": "assets/site.css?v=20260906-5"
+      }
+    }
+  },
+  "18": {
+    "text": {
+      "0": {
+        "ja": "本文へ移動",
+        "en": "Skip to content"
+      }
+    }
+  },
+  "19": {
+    "attributes": {
+      "aria-label": {
+        "ja": "DaysYet トップ",
+        "en": "DaysYet home"
+      }
+    }
+  },
+  "20": {
+    "html": {
+      "ja": "\n<a href=\"#mac\">Mac<\/a>\n<a href=\"#examples\">iPhone / iPad<\/a>\n<a href=\"#features\">機能と使い方<\/a>\n<a href=\"#support\">サポート<\/a>\n<a href=\"#privacy\">プライバシー<\/a><a href=\"#terms\">利用条件<\/a>",
+      "en": "\n<a href=\"#mac\">Mac<\/a>\n<a href=\"#examples\">iPhone / iPad<\/a>\n<a href=\"#features\">Features<\/a>\n<a href=\"#support\">Support<\/a>\n<a href=\"#privacy\">Privacy<\/a><a href=\"#terms\">Terms<\/a>"
+    },
+    "attributes": {
+      "aria-label": {
+        "ja": "主なナビゲーション",
+        "en": "Main navigation"
+      }
+    }
+  },
+  "21": {
+    "text": {
+      "0": {
+        "ja": "EN",
+        "en": "日本語"
+      }
+    },
+    "attributes": {
+      "href": {
+        "ja": "?lang=en",
+        "en": "?lang=ja"
+      },
+      "lang": {
+        "ja": "en",
+        "en": "ja"
+      },
+      "hreflang": {
+        "ja": "en",
+        "en": "ja"
+      }
+    }
+  },
+  "22": {
+    "text": {
+      "0": {
+        "ja": "メニュー",
+        "en": "Menu"
+      }
+    }
+  },
+  "23": {
+    "html": {
+      "ja": "人生のTokenを、<br/>大切なことへ。",
+      "en": "Life’s tokens.<br/>Make them count."
+    }
+  },
+  "24": {
+    "text": {
+      "0": {
+        "ja": "iPhone / iPadのウィジェットとMacの画面端で、今週・今月・今年や人生の目標までの残り時間と経過をひと目に。限りある時間を見渡して、大切なことに使うきっかけに。",
+        "en": "With iPhone and iPad widgets and a panel at the edge of your Mac display, see time left and elapsed progress for your week, month, year, and personal goals. Make room for what matters."
+      }
+    }
+  },
+  "25": {
+    "html": {
+      "ja": "\n<a class=\"button\" href=\"https://apps.apple.com/jp/app/daysyet-%E6%AE%8B%E3%82%8A%E6%99%82%E9%96%93%E3%82%A6%E3%82%A3%E3%82%B8%E3%82%A7%E3%83%83%E3%83%88/id6802000765\">iPhone / iPadのApp Store<\/a>\n<a class=\"button secondary\" href=\"#mac\">Mac版を見る<\/a>\n",
+      "en": "\n<a class=\"button\" href=\"https://apps.apple.com/us/app/daysyet-time-left-widget/id6802000765\">App Store for iPhone / iPad<\/a>\n<a class=\"button secondary\" href=\"#mac\">Explore the Mac app<\/a>\n"
+    }
+  },
+  "26": {
+    "attributes": {
+      "aria-label": {
+        "ja": "DaysYetの特徴",
+        "en": "DaysYet highlights"
+      }
+    }
+  },
+  "27": {
+    "text": {
+      "0": {
+        "ja": "iPhone / iPad / Mac（提供準備中）",
+        "en": "iPhone / iPad / Mac preview"
+      }
+    }
+  },
+  "28": {
+    "text": {
+      "0": {
+        "ja": "3つの表示 / 4テーマ",
+        "en": "3 modes / 4 themes"
+      }
+    }
+  },
+  "29": {
+    "text": {
+      "0": {
+        "ja": "日本語 / English",
+        "en": "English / 日本語"
+      }
+    }
+  },
+  "30": {
+    "text": {
+      "0": {
+        "ja": "データは端末内だけ",
+        "en": "On-device data only"
+      }
+    }
+  },
+  "31": {
+    "attributes": {
+      "alt": {
+        "ja": "DaysYetのウィジェット設定画面。今月、今年、大切な節目の残り時間と、左から伸びる3本の進捗バーが表示されている。",
+        "en": "DaysYet Widget screen showing time left and three left-to-right progress bars for This month, This year, and A milestone."
+      },
+      "src": {
+        "ja": "./assets/screenshots/ja/01-widget-time-left.webp",
+        "en": "assets/screenshots/en/01-widget-time-left.webp"
+      }
+    }
+  },
+  "32": {
+    "html": {
+      "ja": "<span aria-hidden=\"true\"><\/span>選んだ3本を、その場でプレビュー",
+      "en": "<span aria-hidden=\"true\"><\/span>Preview your three timelines as you choose them"
+    }
+  },
+  "33": {
+    "html": {
+      "ja": "作業のそばに、<br/>時間の目印を。",
+      "en": "A little sense of time.<br/>Right beside your work."
+    }
+  },
+  "34": {
+    "text": {
+      "0": {
+        "ja": "画面の端で、今週・今月・今年の進み具合をひと目に。サークルにポインタを合わせると、残り時間と経過割合が広がります。作業の流れを止めずに、時間を確かめられます。",
+        "en": "Keep your week, month, and year in view at the edge of your screen. Hover over a circle to reveal time left and elapsed progress, without interrupting your work."
+      }
+    }
+  },
+  "35": {
+    "text": {
+      "0": {
+        "ja": "macOS 14以降",
+        "en": "macOS 14 or later"
+      }
+    }
+  },
+  "36": {
+    "text": {
+      "0": {
+        "ja": "Mac App Storeでの提供を準備しています。",
+        "en": "Coming to the Mac App Store."
+      }
+    }
+  },
+  "37": {
+    "attributes": {
+      "aria-label": {
+        "ja": "Mac版の動作プレビュー。右側配置、150%サイズ。",
+        "en": "Interactive Mac preview, fixed at the right edge at 150% size."
+      }
+    }
+  },
+  "38": {
+    "html": {
+      "ja": "<span><b>Finder<\/b><span class=\"mac-menu-item\">ファイル<\/span><span class=\"mac-menu-item\">表示<\/span><\/span><span>9月5日（土）12:00<\/span>",
+      "en": "<span><b>Finder<\/b><span class=\"mac-menu-item\">File<\/span><span class=\"mac-menu-item\">View<\/span><\/span><span>Sat Sep 5 12:00 PM<\/span>"
+    }
+  },
+  "39": {
+    "html": {
+      "ja": "<span class=\"mac-detail-name\" data-mac-name=\"\">今週<\/span><span class=\"mac-detail-percentage\" data-mac-percentage=\"\">79%<\/span>",
+      "en": "<span class=\"mac-detail-name\" data-mac-name=\"\">This week<\/span><span class=\"mac-detail-percentage\" data-mac-percentage=\"\">79%<\/span>"
+    }
+  },
+  "40": {
+    "html": {
+      "ja": "<span data-mac-days=\"\">1<\/span><small>日<\/small><span data-mac-hours=\"\">12<\/span><small>時間<\/small>",
+      "en": "<span data-mac-days=\"\">1<\/span><small>d<\/small><span data-mac-hours=\"\">12<\/span><small>h<\/small>"
+    }
+  },
+  "41": {
+    "attributes": {
+      "aria-label": {
+        "ja": "経過割合",
+        "en": "Elapsed progress"
+      }
+    }
+  },
+  "42": {
+    "attributes": {
+      "aria-label": {
+        "ja": "今週、経過79%、残り1日12時間、詳細を表示",
+        "en": "This week, 79% elapsed, 1 day 12 hours left, Show details"
+      },
+      "data-name": {
+        "ja": "今週",
+        "en": "This week"
+      }
+    }
+  },
+  "43": {
+    "attributes": {
+      "aria-label": {
+        "ja": "今月、経過15%、残り25日12時間、詳細を表示",
+        "en": "This month, 15% elapsed, 25 days 12 hours left, Show details"
+      },
+      "data-name": {
+        "ja": "今月",
+        "en": "This month"
+      }
+    }
+  },
+  "44": {
+    "attributes": {
+      "aria-label": {
+        "ja": "今年、経過68%、残り117日12時間、詳細を表示",
+        "en": "This year, 68% elapsed, 117 days 12 hours left, Show details"
+      },
+      "data-name": {
+        "ja": "今年",
+        "en": "This year"
+      }
+    }
+  },
+  "45": {
+    "text": {
+      "0": {
+        "ja": "表示例: 今週79%、今月15%、今年68%。サークルを選ぶと、残り時間と経過割合を表示します。Tabキーでも選択でき、Escキーで閉じます。",
+        "en": "Sample values: this week 79%, this month 15%, this year 68%. Select a circle to reveal time left and elapsed progress. You can also use Tab to select and Esc to close."
+      }
+    }
+  },
+  "46": {
+    "text": {
+      "0": {
+        "ja": "サークルに触れると、残り時間を表示。上下にドラッグして動かせます。数値は表示例です。",
+        "en": "Hover or tap a circle to see time left. Drag up or down to move the panel. Values are examples."
+      }
+    }
+  },
+  "47": {
+    "text": {
+      "0": {
+        "ja": "必要なときに、詳しく",
+        "en": "More detail when you need it"
+      }
+    }
+  },
+  "48": {
+    "text": {
+      "0": {
+        "ja": "サークルから、残り時間・経過割合・バーをまとめて確認。アプリでは3つの表示モードと4テーマから選べます。",
+        "en": "See time left, elapsed progress, and a bar together. The app offers three detail modes and four themes."
+      }
+    }
+  },
+  "49": {
+    "text": {
+      "0": {
+        "ja": "自分の画面に合わせて",
+        "en": "At home on your display"
+      }
+    }
+  },
+  "50": {
+    "text": {
+      "0": {
+        "ja": "アプリでは左右・上端への配置と、80〜150%のサイズ調整に対応。左右の配置では、上下にドラッグして位置を変えられます。",
+        "en": "In the app, choose the left, right, or top edge and adjust the size from 80–150%. At either side, drag the panel up or down to find your position."
+      }
+    }
+  },
+  "51": {
+    "text": {
+      "0": {
+        "ja": "Macの中だけに保存",
+        "en": "Saved only on your Mac"
+      }
+    }
+  },
+  "52": {
+    "text": {
+      "0": {
+        "ja": "今週・今月・今年は起動してすぐ表示。「勤務時間」や自分の目標も選べます。データはMac内に保存され、端末間の同期はありません。",
+        "en": "Your week, month, and year appear on first launch. You can also choose Work hours or personal goals. Data stays on your Mac, with no device sync."
+      }
+    }
+  },
+  "53": {
+    "html": {
+      "ja": "選ぶ。切り替える。<br/>あとは、ひと目で。",
+      "en": "Choose. Switch.<br/>See it at a glance."
+    }
+  },
+  "54": {
+    "text": {
+      "0": {
+        "ja": "画面の操作はシンプルです。見たい3つの時間、表示モード、テーマを選ぶと、ホーム画面ウィジェットのプレビューへそのまま反映されます。バー表示では右側の値も選べます。",
+        "en": "Pick your three timelines, display mode, and theme, and the preview reflects exactly what your Home Screen widget will show. In Bars mode, you can also choose the value shown at the right."
+      }
+    }
+  },
+  "55": {
+    "attributes": {
+      "alt": {
+        "ja": "落ち着いたフォレストテーマで、3つの残り時間、経過割合、左から伸びるバーを同時表示したDaysYetのウィジェット設定画面。",
+        "en": "DaysYet Widget screen showing time left, elapsed percentage, and left-to-right progress bars together in the calming Quiet Forest theme."
+      },
+      "src": {
+        "ja": "./assets/screenshots/ja/02-widget-target-date.webp",
+        "en": "assets/screenshots/en/02-widget-target-date.webp"
+      }
+    }
+  },
+  "56": {
+    "text": {
+      "0": {
+        "ja": "残りも、歩みも、ひと目で。",
+        "en": "What remains. How far you’ve come."
+      }
+    }
+  },
+  "57": {
+    "text": {
+      "0": {
+        "ja": "大きな残り時間に、経過割合と左から積み重なるバーを添えて確認。時間だけ、バーだけの表示にも切り替えられます。",
+        "en": "Keep large time-left values beside elapsed percentages and bars that build from left to right. Switch to time-only or bars-only whenever you prefer."
+      }
+    }
+  },
+  "58": {
+    "attributes": {
+      "alt": {
+        "ja": "今週、今月、今年、健康でいたい年齢、大切な節目を、残り時間、経過割合、進捗バーで並べた時間一覧。",
+        "en": "DaysYet Time Library listing this week, month, year, a healthy-age goal, and a milestone with time left, elapsed percentages, and progress bars."
+      },
+      "src": {
+        "ja": "./assets/screenshots/ja/03-time-library.webp",
+        "en": "assets/screenshots/en/03-time-library.webp"
+      }
+    }
+  },
+  "59": {
+    "text": {
+      "0": {
+        "ja": "いまを、いくつもの距離から見る",
+        "en": "See now from several distances"
+      }
+    }
+  },
+  "60": {
+    "text": {
+      "0": {
+        "ja": "今週から人生の目標までを一覧で確認。ウィジェットに置く3本は、ここから選べます。",
+        "en": "Review everything from this week to a personal milestone. Choose the three for your widget from this library."
+      }
+    }
+  },
+  "61": {
+    "text": {
+      "0": {
+        "ja": "3つの時間だから、迷わず見渡せる。",
+        "en": "Three timelines. A clearer sense of time."
+      }
+    }
+  },
+  "62": {
+    "text": {
+      "0": {
+        "ja": "暦と自分の目標をホーム画面とロック画面へ。ホーム画面の時間、モード、値、テーマは、アプリ全体でもウィジェットごとでも選べます。",
+        "en": "Bring calendar periods and personal goals to your Home Screen and Lock Screen. Choose the Home Screen timelines, mode, values, and theme for the app, or override them per widget."
+      }
+    }
+  },
+  "63": {
+    "text": {
+      "0": {
+        "ja": "選べる3つの時間",
+        "en": "Choose three timelines"
+      }
+    }
+  },
+  "64": {
+    "text": {
+      "0": {
+        "ja": "今週・今月・今年・健康でいたい年齢から選択。必要になったら、大切な日の起算日と目標日時も追加できます。",
+        "en": "Pick from this week, month, year, and a healthy-age goal. Add an optional milestone with its own start and target dates whenever you need one."
+      }
+    }
+  },
+  "65": {
+    "text": {
+      "0": {
+        "ja": "3つの表示と4テーマ",
+        "en": "Three modes, four themes"
+      }
+    }
+  },
+  "66": {
+    "text": {
+      "0": {
+        "ja": "時間だけ、残り時間・経過割合・バーの複合表示、バーだけを切り替え、鮮やかな夜や穏やかな森・朝・海から色を選べます。",
+        "en": "Switch among time-only, combined time-left-and-elapsed-progress, and bars-only views, then choose vivid night or a calmer forest, dawn, or sea palette."
+      }
+    }
+  },
+  "67": {
+    "text": {
+      "0": {
+        "ja": "ホーム画面とロック画面",
+        "en": "Home Screen and Lock Screen"
+      }
+    }
+  },
+  "68": {
+    "text": {
+      "0": {
+        "ja": "ホーム画面はSmall・Mediumで3本、ロック画面はInline・Circular・Rectangularで選んだ1本を表示。ホーム画面ではウィジェットごとの上書きもできます。",
+        "en": "Show three timelines in Small or Medium on the Home Screen, or one selected timeline in Inline, Circular, or Rectangular on the Lock Screen. Home Screen widgets can also be overridden individually."
+      }
+    }
+  },
+  "69": {
+    "text": {
+      "0": {
+        "ja": "始め方も、3ステップ。",
+        "en": "Set up in three steps."
+      }
+    }
+  },
+  "70": {
+    "text": {
+      "0": {
+        "ja": "時間を選ぶ",
+        "en": "Choose timelines"
+      }
+    }
+  },
+  "71": {
+    "text": {
+      "0": {
+        "ja": "アプリの「ウィジェット」タブで、ホーム画面に表示したい3本を並べます。",
+        "en": "Arrange the three you want on the Home Screen in the app’s Widget tab."
+      }
+    }
+  },
+  "72": {
+    "text": {
+      "0": {
+        "ja": "見せ方を選ぶ",
+        "en": "Choose the feel"
+      }
+    }
+  },
+  "73": {
+    "text": {
+      "0": {
+        "ja": "ホーム画面では、3つのレイアウトと4つのテーマから組み合わせを選びます。",
+        "en": "For the Home Screen, pick one of three layouts and four palettes."
+      }
+    }
+  },
+  "74": {
+    "text": {
+      "0": {
+        "ja": "画面へ追加",
+        "en": "Add to a screen"
+      }
+    }
+  },
+  "75": {
+    "text": {
+      "0": {
+        "ja": "ホーム画面には3本、ロック画面には追加後に選んだ1本を表示できます。",
+        "en": "Show three timelines on the Home Screen or choose one after adding the Lock Screen widget."
+      }
+    }
+  },
+  "76": {
+    "html": {
+      "ja": "ひと目にも、<br/>読み上げにも。",
+      "en": "Clear at a glance<br/>and aloud."
+    }
+  },
+  "77": {
+    "text": {
+      "0": {
+        "ja": "DaysYetはVoiceOverと、色だけに依存しないラベル・数値を考慮して設計しています。iPhone / iPadではDynamic Type、Dark Interface、コントラスト設定にも対応しています。",
+        "en": "DaysYet is designed with VoiceOver and labels and numbers that do not rely on color alone. On iPhone and iPad, it also supports Dynamic Type, Dark Interface, and contrast settings."
+      }
+    }
+  },
+  "78": {
+    "text": {
+      "0": {
+        "ja": "各表示はタイトル、残り時間、経過割合、目標日時を一つの意味ある要素として読み上げます。視覚表示にも常にテキストを残し、色だけに頼りません。",
+        "en": "Each item exposes its title, time left, elapsed percentage, and target date as one meaningful spoken element. Text remains visible in every mode, so meaning never depends on color alone."
+      }
+    }
+  },
+  "79": {
+    "html": {
+      "ja": "利用できない操作や改善点がある場合は、端末、OS、利用している支援機能、再現手順を添えて<a href=\"#support\">お知らせください<\/a>。個人の日付は送らないでください。",
+      "en": "If a task is inaccessible or could be improved, <a href=\"#support\">contact us<\/a> with the device, OS, assistive feature, and reproduction steps. Do not include personal dates."
+    }
+  },
+  "80": {
+    "text": {
+      "0": {
+        "ja": "困ったときに。",
+        "en": "We’re here to help."
+      }
+    }
+  },
+  "81": {
+    "text": {
+      "0": {
+        "ja": "アプリの使い方は、まず下のFAQをご確認ください。App Storeのダウンロード・購入・請求はAppleサポートをご利用ください。",
+        "en": "Check the FAQ below for help with the app. For App Store downloads, purchases, and billing, use Apple Support."
+      }
+    }
+  },
+  "82": {
+    "text": {
+      "0": {
+        "ja": "不具合・質問",
+        "en": "Bugs and questions"
+      }
+    }
+  },
+  "83": {
+    "text": {
+      "0": {
+        "ja": "端末やOSのバージョン、再現手順、期待した表示を添えてください。個人の日付は架空の値に置き換えてください。",
+        "en": "Include the device and OS version, reproduction steps, and expected result. Replace personal dates with fictional values."
+      }
+    }
+  },
+  "84": {
+    "text": {
+      "0": {
+        "ja": "App Storeについて",
+        "en": "App Store support"
+      }
+    }
+  },
+  "85": {
+    "text": {
+      "0": {
+        "ja": "ダウンロード、購入、請求、返金のご案内。",
+        "en": "Downloads, purchases, billing, and refunds."
+      }
+    }
+  },
+  "86": {
+    "text": {
+      "0": {
+        "ja": "よくある質問",
+        "en": "Frequently asked questions"
+      }
+    }
+  },
+  "87": {
+    "text": {
+      "0": {
+        "ja": "Mac版を始める",
+        "en": "Get started on Mac"
+      }
+    }
+  },
+  "88": {
+    "html": {
+      "ja": "Mac版はmacOS 14以降に対応し、Mac App Storeでの提供を準備しています。公開前の動作は<a href=\"#mac-preview\">このページのプレビュー<\/a>で試せます。Mac版ではDaysYetを起動すると、今週・今月・今年が画面の右端に表示されます。設定画面を閉じても常駐表示は続きます。本体をダブルクリックすると設定が開きます。macOSのウィジェットギャラリーから追加する操作は不要です。",
+      "en": "The Mac app supports macOS 14 or later and is being prepared for the Mac App Store. Try the <a href=\"#mac-preview\">interactive preview on this page<\/a> before release. In the Mac app, launching DaysYet shows this week, month, and year at the right edge of your display. The panel stays active when you close settings. Double-click the widget to open settings. There is no widget to add from the macOS widget gallery."
+    }
+  },
+  "89": {
+    "text": {
+      "0": {
+        "ja": "Macで配置・表示内容を変える",
+        "en": "Change the Mac panel’s position or contents"
+      }
+    }
+  },
+  "90": {
+    "text": {
+      "0": {
+        "ja": "ウィジェット本体をダブルクリックして設定を開き、表示する3つの時間、詳細の表示モード、プログレスバー表示時の値（残り時間・経過割合・終了日時）、テーマ、表示先ディスプレイ、左右または上端の配置、左右配置時の上下位置、サイズ（80〜150%、標準100%）を選びます。サイズに合わせてサークルと文字も変わります。項目にポインタを合わせると詳細が開きます。左右では選んだサークルの高さに合わせて、詳細と黒いパネルの膨らみが上下に移動します。上端ではバーやそのすぐ上にポインタを合わせて項目を切り替えられます。それより上のカメラ部分では、現在の項目の詳細が開きます。バーの帯と線の太さもサイズに合わせて変わります。本体のダブルクリックは設定を開きます。「詳細を開いたままにする」も設定で選べます。通常はポインタを外すと詳細が閉じます。「詳細を開いたままにする」を選んだ場合は、設定でオフにして閉じます。表示・非表示と終了は設定から操作できます。非表示にした場合は、DaysYetをもう一度起動すると設定が開き、表示を戻せます。",
+        "en": "Double-click the widget to open settings. Choose three timelines, the detail mode, the value in Progress bars mode (time left, elapsed progress, or end date), theme, display, left/right/top placement, vertical position for side placement, and size (80–150%, default 100%). Circles and text scale together. Hover over a timeline to open details. At either side, the expanded section and its details move up or down to align with the selected circle. At the top, hover over the bars or just above them to switch timelines. Higher in the camera area, hovering opens the current timeline. Both the band and line thickness follow the size setting. Double-click the widget to open settings, including the option to keep details open. Move the pointer away to close details. If Keep details open is enabled, turn it off in settings to close them. Settings include visibility and Quit controls. If the widget is hidden, open DaysYet again to access settings and show it."
+      }
+    }
+  },
+  "91": {
+    "text": {
+      "0": {
+        "ja": "Macの常駐表示が見つからない",
+        "en": "The Mac panel is missing"
+      }
+    }
+  },
+  "92": {
+    "text": {
+      "0": {
+        "ja": "DaysYetをもう一度起動して設定を開き、常駐表示を有効にしてください。表示先ディスプレイと配置も設定で確認できます。改善しない場合は、MacとmacOSのバージョン、接続しているディスプレイ、再現手順を添えてお問い合わせください。",
+        "en": "Open DaysYet again to access settings and enable the panel. Review the selected display and position in settings. If the problem continues, contact support with your Mac and macOS version, connected displays, and reproduction steps."
+      }
+    }
+  },
+  "93": {
+    "text": {
+      "0": {
+        "ja": "Mac版で週の始まりを変える",
+        "en": "Change the first day of the week on Mac"
+      }
+    }
+  },
+  "94": {
+    "text": {
+      "0": {
+        "ja": "提供準備中のMac版では「設定 → 時間 → 週の始まり」から変更できます。初期状態は端末のカレンダー設定に従い、現在使われる曜日も表示します。日曜〜土曜のいずれかを指定すると、その曜日の現地時刻0:00から翌週の同じ曜日0:00までを「今週」として計算します。変更はMac版の残り時間・経過割合・終了日時に反映されます。",
+        "en": "In the upcoming Mac app, open Settings → Timelines → Week starts on. The default follows your device’s calendar setting and shows the weekday currently in use. You can choose any weekday instead, measuring This week from local midnight on that day to local midnight on the same day the following week. The choice updates time left, elapsed progress, and the end date in the Mac app."
+      }
+    }
+  },
+  "95": {
+    "text": {
+      "0": {
+        "ja": "Mac版で毎日の勤務時間を設定する",
+        "en": "Set a daily work countdown on Mac"
+      }
+    }
+  },
+  "96": {
+    "text": {
+      "0": {
+        "ja": "提供準備中のMac版で開始・終了時刻を設定し、表示する項目から「勤務時間」を選びます。初期値は9:00〜18:00で、端末の現地時刻で毎日繰り返します。日中の勤務では開始前に「開始前」、勤務中に残り時間、終了後に「勤務終了」を表示します。22:00〜翌6:00のような勤務にも対応し、開始と終了が同じ時刻の場合は24時間として扱います。勤務時刻は端末内だけに保存され、他の端末には同期されません。",
+        "en": "In the upcoming Mac app, set your start and end times, then choose Work hours as a displayed timeline. The default is 9:00 AM–6:00 PM, repeating every day in the device’s local time. For daytime shifts, it indicates when work has not started, shows time left during work, and marks work as finished afterward. Overnight shifts such as 10:00 PM–6:00 AM are supported; matching start and end times mean a 24-hour shift. Work times stay on the device and do not sync elsewhere."
+      }
+    }
+  },
+  "97": {
+    "text": {
+      "0": {
+        "ja": "iPhone・iPad・Mac間で同期する",
+        "en": "Sync between iPhone, iPad, and Mac"
+      }
+    }
+  },
+  "98": {
+    "text": {
+      "0": {
+        "ja": "端末間の同期機能はありません。表示する時間や目標日は各端末で設定します。データの消去も操作した端末だけに反映されます。",
+        "en": "There is no device sync. Set up timelines and personal goals separately on each device. Deleting data affects only the device where you perform the action."
+      }
+    }
+  },
+  "99": {
+    "text": {
+      "0": {
+        "ja": "ウィジェットを追加する",
+        "en": "Add the widget"
+      }
+    }
+  },
+  "100": {
+    "text": {
+      "0": {
+        "ja": "ホーム画面では空いている場所を長押しし、「編集」からDaysYetを検索してSmallまたはMediumを追加します。ロック画面では画面を長押しし、「カスタマイズ」からロック画面のウィジェット領域をタップしてDaysYetを追加します。Inline、Circular、Rectangularから選べます。",
+        "en": "On the Home Screen, touch and hold an empty area, choose Edit, search for DaysYet, and add Small or Medium. On the Lock Screen, touch and hold the screen, choose Customize, and tap a Lock Screen widget area to add DaysYet. Choose Inline, Circular, or Rectangular."
+      }
+    }
+  },
+  "101": {
+    "text": {
+      "0": {
+        "ja": "表示する時間を変える",
+        "en": "Change the displayed timelines"
+      }
+    }
+  },
+  "102": {
+    "text": {
+      "0": {
+        "ja": "アプリのウィジェットタブで3本を選ぶと、変更がホーム画面ウィジェットへ反映されます。特定のホーム画面ウィジェットだけ変える場合は、そのウィジェットを長押しして「ウィジェットを編集」を開き、「アプリで選んだ3本を使う」をオフにします。ロック画面で表示する1本は、ロック画面のカスタマイズ中にウィジェットをタップして選べます。",
+        "en": "Select three timelines on the app’s Widget tab for the Home Screen. To override one Home Screen widget, touch and hold it, choose Edit Widget, disable “Use the three selected in the app,” and select its timelines. To choose the one timeline shown on the Lock Screen, tap the widget while customizing the Lock Screen."
+      }
+    }
+  },
+  "103": {
+    "text": {
+      "0": {
+        "ja": "表示モードやテーマを変える",
+        "en": "Change the display mode or theme"
+      }
+    }
+  },
+  "104": {
+    "text": {
+      "0": {
+        "ja": "ホーム画面では、アプリのウィジェットタブで「時間」「時間＋％」「バー」から選び、4つのテーマを切り替えられます。「時間＋％」では、各行に残り時間、経過割合、左から伸びる進捗バーを一緒に表示します。特定のウィジェットだけ別の表示や色にする場合は、ホーム画面から「ウィジェットを編集」を開いて上書きできます。",
+        "en": "For the Home Screen, use the app’s Widget tab to choose Time, Time + %, or Bars and select one of four themes. Time + % shows time left, elapsed percentage, and a progress bar that fills from left to right in every row. To give one widget a different display or color, open Edit Widget from the Home Screen and override the app setting."
+      }
+    }
+  },
+  "105": {
+    "text": {
+      "0": {
+        "ja": "大切な日の起算日を変える",
+        "en": "Change a milestone’s start date"
+      }
+    }
+  },
+  "106": {
+    "text": {
+      "0": {
+        "ja": "アプリの「時間」タブから「人生の基準を編集」を開き、「大切な日」で起算日と目標日時を設定します。起算日を0%として、目標日時に100%となる経過割合を計算します。",
+        "en": "Open Edit life reference points from the Times tab, then set the milestone’s start and target dates. Progress starts at 0% on the start date and reaches 100% at the target."
+      }
+    }
+  },
+  "107": {
+    "text": {
+      "0": {
+        "ja": "表示が更新されない",
+        "en": "The widget is not updating"
+      }
+    }
+  },
+  "108": {
+    "html": {
+      "ja": "一度DaysYetを開いて設定を保存し直し、ウィジェットがホーム画面またはロック画面に追加されていることを確認してください。OSが更新時刻を調整するため、常に秒単位で更新されるものではありません。改善しない場合は端末・OS・アプリバージョンを添えて<a href=\"mailto:support@hinoshiba.com?subject=DaysYet%20Support\">support@hinoshiba.com<\/a>へお問い合わせください。",
+      "en": "Open DaysYet once and save the settings again, then confirm the widget remains on the Home Screen or Lock Screen. The operating system schedules widget refreshes, so values do not update every second. If the problem continues, email <a href=\"mailto:support@hinoshiba.com?subject=DaysYet%20Support\">support@hinoshiba.com<\/a> with the device, OS, and app version."
+    }
+  },
+  "109": {
+    "text": {
+      "0": {
+        "ja": "データを消去する",
+        "en": "Delete data"
+      }
+    }
+  },
+  "110": {
+    "text": {
+      "0": {
+        "ja": "iPhone / iPadでは設定タブ、Macではウィジェット本体のダブルクリックで開く設定画面で「すべてのデータを消去」を選びます。Macでは常駐パネルの配置とサイズの設定も初期状態へ戻ります。他の端末には影響しません。入力したデータは開発者のサーバーに保存されません。",
+        "en": "Choose “Delete all data” from the Settings tab on iPhone or iPad, or from settings opened by double-clicking the Mac widget. On Mac, panel layout and size preferences also return to their defaults. Other devices are unaffected. Data entered in DaysYet is not stored on a developer server."
+      }
+    }
+  },
+  "111": {
+    "text": {
+      "0": {
+        "ja": "ソースコードを公開。",
+        "en": "Built in the open."
+      }
+    }
+  },
+  "112": {
+    "text": {
+      "0": {
+        "ja": "iPhone・iPad・Mac版のソースコードはApache License 2.0で公開しています。ビルド手順や開発への参加方法はGitHubをご覧ください。",
+        "en": "The iPhone, iPad, and Mac source code is available under Apache License 2.0. Build instructions and contribution guidelines are on GitHub."
+      }
+    }
+  },
+  "113": {
+    "html": {
+      "ja": "<a class=\"button\" href=\"https://github.com/hinoshiba/DaysYet\">GitHubで見る<\/a><a class=\"button secondary\" href=\"https://www.hinoshiba.com/products/\">ほかのアプリ<\/a>",
+      "en": "<a class=\"button\" href=\"https://github.com/hinoshiba/DaysYet\">View on GitHub<\/a><a class=\"button secondary\" href=\"https://www.hinoshiba.com/products/\">More apps<\/a>"
+    }
+  },
+  "114": {
+    "text": {
+      "0": {
+        "ja": "プライバシーポリシー",
+        "en": "Privacy policy"
+      }
+    }
+  },
+  "115": {
+    "text": {
+      "0": {
+        "ja": "運営者はhinoshibaです。日付、目標、活動時間とラベル・曜日、表示設定は時間の計算と表示に使い、端末内に保存します。iPhone / iPadではアプリとウィジェットの共有領域、Macではアプリの専用領域を使用し、端末間では同期しません。開発者はアプリの入力データを収集せず、広告・追跡は行いません。",
+        "en": "The operator is hinoshiba. Dates, goals, activity hours with labels and weekdays, and display preferences are used to calculate and display time and are stored on your device. The iPhone / iPad app shares local storage with its widget; the Mac app uses its own sandbox. Devices do not sync. The developer does not collect app entries or use advertising or tracking."
+      }
+    }
+  },
+  "116": {
+    "text": {
+      "0": {
+        "ja": "設定の「すべてのデータを消去」で、この端末の保存内容を削除できます。ウィジェットやMacのパネルは、画面を見る人に表示されることがあります。健康でいたい年齢はご自身で決める計画上の目標です。",
+        "en": "Use Delete all data in Settings to remove saved information on the current device. Widgets and Mac panels may be visible to people who can see your screen. The healthy-age goal is a personal planning marker you choose."
+      }
+    }
+  },
+  "117": {
+    "html": {
+      "ja": "お問い合わせのメールアドレスと本文は、対応のために必要な期間利用し、不要になった情報は削除します。<a href=\"mailto:support@hinoshiba.com\">support@hinoshiba.com<\/a>へご連絡ください。App Storeの利用には<a href=\"https://www.apple.com/legal/privacy/\">Appleのプライバシーポリシー<\/a>が適用されます。このサイトはGitHub Pagesで配信され、アクセス情報は<a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">GitHubのプライバシーステートメント<\/a>に従って処理されます。",
+      "en": "Your email address and message are used for support as long as needed and deleted when no longer necessary. Contact <a href=\"mailto:support@hinoshiba.com\">support@hinoshiba.com<\/a>. App Store use is subject to <a href=\"https://www.apple.com/legal/privacy/\">Apple’s privacy policy<\/a>. This site is hosted on GitHub Pages, which processes access information under <a href=\"https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement\">GitHub’s Privacy Statement<\/a>."
+    }
+  },
+  "118": {
+    "text": {
+      "0": {
+        "ja": "最終更新：2026年9月6日。変更時はこのページを更新します。",
+        "en": "Updated September 6, 2026. Changes will be published on this page."
+      }
+    }
+  },
+  "119": {
+    "text": {
+      "0": {
+        "ja": "利用・販売について",
+        "en": "Terms and sales information"
+      }
+    }
+  },
+  "120": {
+    "html": {
+      "ja": "App Store版には<a href=\"https://www.apple.com/legal/internet-services/itunes/dev/stdeula/\">Apple標準EULA<\/a>が適用されます。価格、提供条件、購入手続はApp Storeの表示をご確認ください。購入・請求・返金は<a href=\"https://support.apple.com/billing\">Appleサポート<\/a>へ。",
+      "en": "App Store copies are subject to <a href=\"https://www.apple.com/legal/internet-services/itunes/dev/stdeula/\">Apple’s Standard EULA<\/a>. Check the App Store for prices, availability, and purchase terms. For purchases, billing, and refunds, use <a href=\"https://support.apple.com/billing\">Apple Support<\/a>."
+    }
+  },
+  "121": {
+    "text": {
+      "0": {
+        "ja": "DaysYetは、ご自身で設定した目標と時間の目安を表示するツールです。医療上の助言や寿命の予測ではありません。重要な期限は元の情報をご確認ください。OSや端末の設定によって表示の更新時刻は変わります。",
+        "en": "DaysYet displays time estimates and goals you choose. It does not provide medical advice or predict lifespan. Confirm important deadlines with their original source. Refresh timing varies with the operating system and device settings."
+      }
+    }
+  },
+  "122": {
+    "html": {
+      "ja": "ソースコードはApache License 2.0で公開しています。名称・ロゴ・ブランド素材の条件は<a href=\"https://github.com/hinoshiba/DaysYet\">GitHub<\/a>をご確認ください。製品に関するお問い合わせは<a href=\"mailto:support@hinoshiba.com\">support@hinoshiba.com<\/a>へ。",
+      "en": "The source code is available under Apache License 2.0. See <a href=\"https://github.com/hinoshiba/DaysYet\">GitHub<\/a> for name, logo, and brand asset terms. Contact <a href=\"mailto:support@hinoshiba.com\">support@hinoshiba.com<\/a> for product questions."
+    }
+  },
+  "123": {
+    "html": {
+      "ja": "<a href=\"#privacy\">プライバシー<\/a><a href=\"#accessibility\">アクセシビリティ<\/a><a href=\"#terms\">利用条件<\/a><a href=\"#support\">サポート<\/a><a href=\"https://github.com/hinoshiba/DaysYet\">GitHub<\/a><a href=\"https://www.hinoshiba.com/products/\">ほかのアプリ<\/a>",
+      "en": "<a href=\"#privacy\">Privacy<\/a><a href=\"#accessibility\">Accessibility<\/a><a href=\"#terms\">Terms<\/a><a href=\"#support\">Support<\/a><a href=\"https://github.com/hinoshiba/DaysYet\">GitHub<\/a><a href=\"https://www.hinoshiba.com/products/\">More apps<\/a>"
+    },
+    "attributes": {
+      "aria-label": {
+        "ja": "関連情報",
+        "en": "More information"
+      }
+    }
+  }
+}</script></body>
 </html>

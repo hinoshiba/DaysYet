@@ -39,6 +39,6 @@ On 2026-09-06, **Submit for Review** succeeded separately for macOS 0.1.2, build
 
 `Scripts/validate-store-assets.py` currently validates the existing iPhone / iPad metadata and screenshots. Its success does not validate `macos/` or establish Mac submission readiness. Check Mac descriptions (4,000 characters), promotional text (170 characters), keywords (100 bytes), empty initial-release notes, screenshot dimensions, and the final native UI separately.
 
-The release workflow uses local Xcode Archive and Organizer upload. The obsolete Xcode Cloud bootstrap hook was removed from the repository. The Cloud page inspected during preparation showed its getting-started screen and no existing workflow was found; a completed workflow-disable action has not been verified.
+The release workflow uses local Xcode Archive and Organizer upload.
 
 The iPhone / iPad App Store icon is embedded in the build at `DaysYet/Assets.xcassets/AppIcon.appiconset/AppIcon.png`; the native Mac icon is in `DaysYetMac/Assets.xcassets/MacAppIcon.appiconset`. Validate the icon included in each archive.

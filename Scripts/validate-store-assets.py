@@ -66,135 +66,8 @@ def local_target(page: Path, path: str) -> Path:
 
 
 def validate_site() -> None:
-    required_pages = {"index.html": "ja", "en/index.html": "en"}
-    actual_pages = {path.relative_to(SITE).as_posix() for path in SITE.rglob("*.html")}
-    if actual_pages != set(required_pages):
-        missing = sorted(set(required_pages) - actual_pages)
-        unexpected = sorted(actual_pages - set(required_pages))
-        details = []
-        if missing:
-            details.append(f"missing: {', '.join(missing)}")
-        if unexpected:
-            details.append(f"unexpected: {', '.join(unexpected)}")
-        fail(f"http_dist must contain exactly index.html and en/index.html ({'; '.join(details)})")
-
-    required_anchors = {"examples", "features", "privacy", "terms", "support", "accessibility"}
-    screenshot_names = {
-        "01-widget-time-left.webp", "02-widget-target-date.webp",
-        "03-time-library.webp", "04-privacy-settings.webp",
-    }
-    expected_images = {
-        "index.html": {f"./assets/screenshots/ja/{name}" for name in screenshot_names},
-        "en/index.html": {f"../assets/screenshots/en/{name}" for name in screenshot_names},
-    }
-    expected_canonicals = {
-        "index.html": "https://daysyet.hinoshiba.com/",
-        "en/index.html": "https://daysyet.hinoshiba.com/en/",
-    }
-    expected_app_store_links = {
-        "index.html": "https://apps.apple.com/jp/app/daysyet-%E6%AE%8B%E3%82%8A%E6%99%82%E9%96%93%E3%82%A6%E3%82%A3%E3%82%B8%E3%82%A7%E3%83%83%E3%83%88/id6802000765",
-        "en/index.html": "https://apps.apple.com/us/app/daysyet-time-left-widget/id6802000765",
-    }
-    expected_social = {
-        "index.html": {
-            "locale": "ja_JP",
-            "image": "https://daysyet.hinoshiba.com/assets/screenshots/ja/02-widget-target-date.webp",
-        },
-        "en/index.html": {
-            "locale": "en_US",
-            "image": "https://daysyet.hinoshiba.com/assets/screenshots/en/02-widget-target-date.webp",
-        },
-    }
-    expected_icons = {
-        "index.html": {"./favicon.ico", "./assets/favicon-32.png", "./assets/apple-touch-icon.png"},
-        "en/index.html": {"../favicon.ico", "../assets/favicon-32.png", "../assets/apple-touch-icon.png"},
-    }
-    support_mailto = "mailto:support@hinoshiba.com"
-    forbidden = ["PLACEHOLDER", "TODO", "TBD", "Provisional brand", "Terms · Draft", "公開準備中"]
-    parsed_pages: dict[Path, PageParser] = {}
-    for relative, language in required_pages.items():
-        page = SITE / relative
-        content = read(page)
-        expected_lang = f'lang="{language}"'
-        if expected_lang not in content:
-            fail(f"incorrect or missing html language: http_dist/{relative}")
-        for marker in forbidden:
-            if marker in content:
-                fail(f"release placeholder in http_dist/{relative}: {marker}")
-        if 'hreflang="ja"' not in content or 'hreflang="en"' not in content:
-            fail(f"missing ja/en alternate links: http_dist/{relative}")
-        expected_canonical = f'rel="canonical" href="{expected_canonicals[relative]}"'
-        if expected_canonical not in content:
-            fail(f"incorrect canonical URL in http_dist/{relative}")
-
-        parser = PageParser()
-        parser.feed(content)
-        parsed_pages[page.resolve()] = parser
-        required_metadata = {
-            "description", "apple-itunes-app", "og:type", "og:site_name", "og:title", "og:description",
-            "og:url", "og:image", "og:image:alt", "og:locale",
-            "twitter:card", "twitter:title", "twitter:description", "twitter:image",
-            "twitter:image:alt",
-        }
-        missing_metadata = sorted(required_metadata - parser.metadata.keys())
-        if missing_metadata:
-            fail(f"missing social/search metadata in http_dist/{relative}: {', '.join(missing_metadata)}")
-        if parser.metadata["og:url"] != expected_canonicals[relative]:
-            fail(f"incorrect Open Graph URL in http_dist/{relative}: {parser.metadata['og:url']}")
-        if parser.metadata["og:locale"] != expected_social[relative]["locale"]:
-            fail(f"incorrect Open Graph locale in http_dist/{relative}: {parser.metadata['og:locale']}")
-        if parser.metadata["og:image"] != expected_social[relative]["image"]:
-            fail(f"incorrect Open Graph image in http_dist/{relative}: {parser.metadata['og:image']}")
-        if parser.metadata["twitter:image"] != expected_social[relative]["image"]:
-            fail(f"incorrect Twitter image in http_dist/{relative}: {parser.metadata['twitter:image']}")
-        if parser.metadata["twitter:card"] not in {"summary", "summary_large_image"}:
-            fail(f"unsupported Twitter card in http_dist/{relative}: {parser.metadata['twitter:card']}")
-        if parser.metadata["apple-itunes-app"] != "app-id=6802000765":
-            fail(f"incorrect Smart App Banner ID in http_dist/{relative}")
-        if expected_app_store_links[relative] not in parser.links:
-            fail(f"missing App Store product link in http_dist/{relative}")
-        missing_anchors = sorted(required_anchors - parser.anchors)
-        if missing_anchors:
-            fail(f"missing required anchors in http_dist/{relative}: {', '.join(missing_anchors)}")
-        image_sources = {src for src, _ in parser.images if src}
-        missing_images = sorted(expected_images[relative] - image_sources)
-        if missing_images:
-            fail(f"missing required screenshots in http_dist/{relative}: {', '.join(missing_images)}")
-        missing_icons = sorted(expected_icons[relative] - set(parser.links))
-        if missing_icons:
-            fail(f"missing required web icons in http_dist/{relative}: {', '.join(missing_icons)}")
-        if support_mailto not in parser.links:
-            fail(f"missing support email link in http_dist/{relative}: {support_mailto}")
-        if any("github.com/hinoshiba/DaysYet/issues/new/choose" in link for link in parser.links):
-            fail(f"customer support must use {support_mailto} in http_dist/{relative}")
-
-    for relative in required_pages:
-        page = SITE / relative
-        parser = parsed_pages[page.resolve()]
-        for href in parser.links:
-            parts = urlsplit(href)
-            if parts.scheme or parts.netloc:
-                continue
-            target = page.resolve() if not parts.path else local_target(page, parts.path)
-            if not target.exists():
-                fail(f"broken local link in {relative}: {href}")
-            if parts.fragment and target.suffix == ".html":
-                target_parser = parsed_pages.get(target)
-                anchor = unquote(parts.fragment)
-                if target_parser is None or anchor not in target_parser.anchors:
-                    fail(f"broken local anchor in {relative}: {href}")
-
-        for src, alt in parser.images:
-            if not src:
-                fail(f"image is missing src in http_dist/{relative}")
-            if alt is None or not alt.strip():
-                fail(f"image is missing descriptive alt text in http_dist/{relative}: {src}")
-            parts = urlsplit(src)
-            if parts.scheme or parts.netloc:
-                continue
-            target = local_target(page, parts.path)
-            if not target.is_file():
-                fail(f"broken local image in {relative}: {src}")
+    import runpy
+    runpy.run_path(str(ROOT / "Scripts/validate-site.py"), run_name="__main__")
 
 
 def validate_catalog() -> None:
@@ -252,6 +125,7 @@ def validate_metadata() -> None:
         "widget_bundle_id: com.hinoshiba.daysyet.widget",
         "app_group: group.com.hinoshiba.daysyet",
         "widget_kind: com.hinoshiba.daysyet.widget.progress",
+        "lock_screen_widget_kind: com.hinoshiba.daysyet.widget.lock-screen",
     ):
         if expected not in configuration_lines:
             fail(f"AppStore/configuration.yml is missing: {expected}")

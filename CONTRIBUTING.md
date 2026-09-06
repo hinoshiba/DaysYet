@@ -49,11 +49,8 @@ this check with them before changing `core.hooksPath`.
 
 Unless explicitly stated otherwise, contributions intentionally submitted for inclusion are provided under Apache License 2.0, as described by Section 5 of the license.
 
-Use a Developer Certificate of Origin sign-off on commits:
-
-```text
-Signed-off-by: Your Name <your-email@example.com>
-```
+Use a Developer Certificate of Origin sign-off on commits with your public
+contributor identity. Project contact information uses `support@hinoshiba.com`.
 
 By signing off, you certify that you have the right to submit the contribution under the project license. Do not copy code, UI, copy, icons, screenshots, or data from competitors or unverified sources.
 
@@ -67,3 +64,9 @@ Any dependency, font, image, audio, dataset, or SDK addition must update the app
 - Privacy/data behavior is unchanged or documented.
 - Licenses, assets, and data provenance are recorded.
 - User-facing behavior and release documentation are updated.
+
+Use local Xcode for development and releases. Pull-request builds and tests
+are unsigned and require no maintainer credentials. After changing the
+repository, run the relevant checks, review the diff, then git commit and
+git push your branch. Submit it with the common pull-request template.
+The maintainer uses `support@hinoshiba.com` for public commit email metadata.
