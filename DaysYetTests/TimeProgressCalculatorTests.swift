@@ -1,5 +1,9 @@
 import XCTest
+#if os(macOS)
+@testable import DaysYetMac
+#else
 @testable import DaysYet
+#endif
 
 final class TimeProgressCalculatorTests: XCTestCase {
     private var calendar: Calendar {

@@ -22,7 +22,7 @@ struct TimeLibraryView: View {
                         NavigationLink {
                             ProfileEditorView()
                         } label: {
-                            Label(L10n.text("人生の基準を編集", "Edit life reference points"), systemImage: "pencil")
+                            Label(L10n.text("時間の基準を編集", "Edit time reference points"), systemImage: "pencil")
                                 .frame(maxWidth: .infinity)
                                 .padding(.vertical, 14)
                         }
@@ -57,6 +57,10 @@ struct ProfileEditorView: View {
 
     var body: some View {
         Form {
+            weekStartSection
+
+            workHoursSection
+
             Section(L10n.text("人生の基準", "Life reference points")) {
                 DatePicker(
                     L10n.text("生年月日", "Birth date"),
@@ -109,6 +113,96 @@ struct ProfileEditorView: View {
             }
         }
         .navigationTitle(L10n.text("時間を編集", "Edit Times"))
+    }
+
+    private var weekStartSection: some View {
+        let weekday = store.profile.weekStartDay.resolvedTitle()
+        return Section {
+            Picker(L10n.text("開始曜日", "First day"), selection: binding(\.weekStartDay)) {
+                ForEach(WeekStartDay.allCases) { day in
+                    Text(day.title).tag(day)
+                }
+            }
+        } header: {
+            Text(L10n.text("週の始まり", "Week starts on"))
+        } footer: {
+            Text(L10n.text(
+                "\(weekday)の午前0時から、翌週の\(weekday)の午前0時までを「今週」として表示します。",
+                "“This week” runs from midnight on \(weekday) to midnight on the following \(weekday)."
+            ))
+        }
+    }
+
+    private var workHoursSection: some View {
+        Section {
+            DatePicker(
+                L10n.text("開始時刻", "Start time"),
+                selection: workTimeBinding(\.workStartMinute),
+                displayedComponents: .hourAndMinute
+            )
+            DatePicker(
+                store.profile.workEndMinute <= store.profile.workStartMinute
+                    ? L10n.text("終了時刻（翌日）", "End time (next day)")
+                    : L10n.text("終了時刻", "End time"),
+                selection: workTimeBinding(\.workEndMinute),
+                displayedComponents: .hourAndMinute
+            )
+            TimelineView(.periodic(from: .now, by: 60)) { context in
+                let snapshot = TimeProgressCalculator.snapshot(for: .workday, profile: store.profile, now: context.date)
+                VStack(alignment: .leading, spacing: 8) {
+                    LabeledContent(L10n.text("現在", "Now"), value: snapshot.remainingText)
+                    ProgressView(value: snapshot.elapsedFraction)
+                }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(snapshot.accessibilitySummary)
+            }
+        } header: {
+            Text(L10n.text("勤務時間", "Work hours"))
+        } footer: {
+            Text(workHoursDescription)
+        }
+    }
+
+    private var workHoursDescription: String {
+        let recurrence = L10n.text("毎日、端末の現地時刻で繰り返します。", "Repeats every day in local time. ")
+        if store.profile.workEndMinute == store.profile.workStartMinute {
+            return recurrence + L10n.text(
+                "開始と終了が同じ時刻のため、翌日の同時刻までの24時間として扱います。",
+                "Matching start and end times define a 24-hour period, ending at the same time the next day."
+            )
+        }
+        if store.profile.workEndMinute < store.profile.workStartMinute {
+            return recurrence + L10n.text(
+                "終了は翌日です。勤務終了後は、次の開始時刻まで「勤務終了」と表示します。",
+                "The end time is on the next day. After work ends, “Work finished” appears until the next start."
+            )
+        }
+        return recurrence + L10n.text(
+            "開始前は「開始前」、終了後は「勤務終了」と表示します。",
+            "“Not started” appears before the start time and “Work finished” after the end time."
+        )
+    }
+
+    private func workTimeBinding(_ keyPath: WritableKeyPath<UserProfile, Int>) -> Binding<Date> {
+        // Use a fixed local date so the visual picker and accessibility value
+        // describe the same clock time without depending on today's DST changes.
+        Binding(
+            get: {
+                var calendar = Calendar(identifier: .gregorian)
+                calendar.timeZone = .autoupdatingCurrent
+                let minute = store.profile[keyPath: keyPath]
+                return calendar.date(from: DateComponents(
+                    year: 2001, month: 1, day: 15, hour: minute / 60, minute: minute % 60
+                )) ?? .now
+            },
+            set: { value in
+                var calendar = Calendar(identifier: .gregorian)
+                calendar.timeZone = .autoupdatingCurrent
+                let components = calendar.dateComponents([.hour, .minute], from: value)
+                let minute = (components.hour ?? 0) * 60 + (components.minute ?? 0)
+                store.update { $0[keyPath: keyPath] = minute }
+            }
+        )
     }
 
     private func binding<Value>(_ keyPath: WritableKeyPath<UserProfile, Value>) -> Binding<Value> {

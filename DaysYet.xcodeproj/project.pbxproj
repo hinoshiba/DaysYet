@@ -9,44 +9,76 @@
 /* Begin PBXBuildFile section */
 		00F25F2FAC04A2CB5FAE3266 /* DaysYetWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA369AB53C5EA2EB4743187 /* DaysYetWidget.swift */; };
 		03487D18EDC2D9D94757A09D /* DATA_SOURCES.md in Resources */ = {isa = PBXBuildFile; fileRef = 4F043AFA52F194DBD59AF711 /* DATA_SOURCES.md */; };
+		08AFE0ECDA1D7147C230EBD8 /* ProfileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B04E98B81C6EE39699985B09 /* ProfileStore.swift */; };
 		11CE4CE5C819962411E0E55D /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 785E00C0D2C2EA34EB0A2AA4 /* UserProfile.swift */; };
 		13B2D4AAC9C730D98D6D82BF /* L10n.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CD64EF0BE487E467E8EE54 /* L10n.swift */; };
+		15A96E0DCAECA58CA0D5ECE7 /* MacWidgetPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69813457F6DD4D80042683BE /* MacWidgetPreferences.swift */; };
 		173E528C30D166D165D41436 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 80602A41F91F2981A51EBE0E /* LICENSE */; };
+		24DD53A121D0DA6BD9F70460 /* THIRD_PARTY_NOTICES.md in Resources */ = {isa = PBXBuildFile; fileRef = 37680AC2C679AD7E5923DC15 /* THIRD_PARTY_NOTICES.md */; };
 		2DCBD464C37F81B7F4FC236D /* ProfileRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D4529A3EAFCABF61CBA729D /* ProfileRepository.swift */; };
 		35AC664734EEEB4F383A996F /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA91CAA558C93AA58DF6FEB8 /* ProgressBar.swift */; };
+		39DAA55E95A5E78EE50BDFE7 /* WorkHoursTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9662ABB4E73AFBAA5B22B82D /* WorkHoursTests.swift */; };
 		431EC325BD13055C51A21AF7 /* DaysYetWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6947F66D3D5B82E52FFDE992 /* DaysYetWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		457E6915E9DD0A4DA516C1D8 /* WidgetPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00AAA44E592AAC3BF808D773 /* WidgetPreview.swift */; };
 		4916B55AAAB4AA35C6D34D37 /* ProfileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B04E98B81C6EE39699985B09 /* ProfileStore.swift */; };
+		4A99EB9C683A50BFFB97E3BA /* MacTimeRailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D94F4707A5BA71C438877A9 /* MacTimeRailView.swift */; };
+		4DFC782E74EFE4EF5625A693 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 76A627882BF859D704488EBF /* PrivacyInfo.xcprivacy */; };
 		4E58729CFFB84CB4C1BA1E4E /* ProfileRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D4529A3EAFCABF61CBA729D /* ProfileRepository.swift */; };
 		4EDDD820E2F065C84EB6B5B8 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5077CE484DDB9FA8448530A /* RootView.swift */; };
 		512CFBE061B7440C1ED28ED5 /* THIRD_PARTY_NOTICES.md in Resources */ = {isa = PBXBuildFile; fileRef = 37680AC2C679AD7E5923DC15 /* THIRD_PARTY_NOTICES.md */; };
+		5452BBBBF9E7A355C511D6FB /* ProfileRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D4529A3EAFCABF61CBA729D /* ProfileRepository.swift */; };
+		5661379D160B03A3D8D7C2ED /* ASSET_LICENSES.md in Resources */ = {isa = PBXBuildFile; fileRef = 7533C992E89912E1A026E4C4 /* ASSET_LICENSES.md */; };
 		567336EF98496F222B1AB276 /* TimeMetric.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787BB50AE053C559748C39E4 /* TimeMetric.swift */; };
+		589088BF6B0D2D21B1E42601 /* TimeMetric.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787BB50AE053C559748C39E4 /* TimeMetric.swift */; };
 		5E8645B190857C3DCBBA3076 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969922BBF414097227DF1A0E /* OnboardingView.swift */; };
 		6588473D3F42BFD5BF6AF326 /* WidgetStudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B76A90071D066FB56C71C5EC /* WidgetStudioView.swift */; };
+		6D93E37B71D9C59C5B169118 /* DaysYetTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40CE81B58E035A5129E7D2E /* DaysYetTheme.swift */; };
 		7403B0F82A146A7AFB2A3415 /* DaysYetTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40CE81B58E035A5129E7D2E /* DaysYetTheme.swift */; };
+		750E3DC6CCC3CF4B00AF94BF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B8EF889B5F766FA4E4E1F328 /* Localizable.xcstrings */; };
+		7712665604D34DE34FD77AE3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7EEF11C88A39D6BFF1B4D534 /* Assets.xcassets */; };
+		78A8590AFB6B87F956553E70 /* WorkHoursTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9662ABB4E73AFBAA5B22B82D /* WorkHoursTests.swift */; };
+		78E35E9D015BD80CA4B4A221 /* DaysYetMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FCB41C9C9E755B3BEEED6E5 /* DaysYetMacApp.swift */; };
 		7D3F68DAD83CACE73A3660BB /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F18863FE1366766444715E8 /* SettingsView.swift */; };
 		80282C52FEDFF23801AAEA57 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 343F8E3BCF1BFAEAEBD45A97 /* Assets.xcassets */; };
 		85EABD42E7FC7E7ADDCA3C2B /* TimeMetric.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787BB50AE053C559748C39E4 /* TimeMetric.swift */; };
 		9021D64237A8C956A22F7E6C /* WidgetConfigurationIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F496778F27954462FC180E9 /* WidgetConfigurationIntent.swift */; };
+		943AF5ED0EF0C3BFC7DA2557 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 07705141EA121C9FBCD0F6E8 /* InfoPlist.strings */; };
+		94479AEE70C99AAF3C2210B8 /* MacWidgetPointerInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80547D3903A118C0591FA41E /* MacWidgetPointerInteraction.swift */; };
 		A0FA6DE40F146A27740D1A54 /* ASSET_LICENSES.md in Resources */ = {isa = PBXBuildFile; fileRef = 7533C992E89912E1A026E4C4 /* ASSET_LICENSES.md */; };
 		A3DD38AC667FA2A651C26431 /* DaysYetApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B2991E7A8BFF58FEDD422CF /* DaysYetApp.swift */; };
+		A49A848B853782DFD545CE0E /* NOTICE in Resources */ = {isa = PBXBuildFile; fileRef = 58FE27717C77D4B7907182C9 /* NOTICE */; };
 		A8D788E8B5582322DD48F6A7 /* L10n.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CD64EF0BE487E467E8EE54 /* L10n.swift */; };
+		B420EAFB604CA21AEF3D34B5 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 785E00C0D2C2EA34EB0A2AA4 /* UserProfile.swift */; };
 		B488AE222EA19AF5F4AA42DC /* TimeLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F2218EE8FA923E98D18516D4 /* TimeLibraryView.swift */; };
 		B5DAF61685AE2120FC34313D /* TimeProgressCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 091F1E00C9DBA9A030F1A29D /* TimeProgressCalculatorTests.swift */; };
 		B66DE5162B94257F7742A20D /* NOTICE in Resources */ = {isa = PBXBuildFile; fileRef = 58FE27717C77D4B7907182C9 /* NOTICE */; };
 		B89D0FFBAA65FDE3315CFE58 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B8EF889B5F766FA4E4E1F328 /* Localizable.xcstrings */; };
 		B99D9E3C09AB918414346C08 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 71388ED2AE6C8DC3C059BFA2 /* PrivacyInfo.xcprivacy */; };
 		C56317008E96E1CC6CBEEAA8 /* CountdownValueLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0618C16198637FB983104639 /* CountdownValueLabel.swift */; };
+		C5FFD3A0BCC08174065295DB /* MacWidgetSelectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B654EE3C8A3A58D1CA888B91 /* MacWidgetSelectionTests.swift */; };
+		C8E7D8C6C12AE8C965D8F11A /* WeekStartTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62BD112C3BA9417B89662401 /* WeekStartTests.swift */; };
 		CAF47E6D83B6357A740FED03 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B8EF889B5F766FA4E4E1F328 /* Localizable.xcstrings */; };
 		CC2239801EBE676781A15316 /* DaysYetWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A688870A80B2CCC93B72C9B /* DaysYetWidgetBundle.swift */; };
+		CFDADD3AD39F8A8248936B23 /* MacWidgetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5850D0BE692A63A71E62BE3E /* MacWidgetTests.swift */; };
+		D140799DC3B11E6C4B49AD2E /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 80602A41F91F2981A51EBE0E /* LICENSE */; };
+		D6F28DDF872DCCAC2BE34579 /* MacWidgetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A595FB6033234CAF7CA04E0C /* MacWidgetController.swift */; };
+		D70A37DD7864DF557E54602D /* MacSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B11D4C863E5F66FF0D5780 /* MacSettingsView.swift */; };
+		D9DF23D0950A358548E83792 /* DATA_SOURCES.md in Resources */ = {isa = PBXBuildFile; fileRef = 4F043AFA52F194DBD59AF711 /* DATA_SOURCES.md */; };
 		DBF3257F4C9FB8F300DC21C0 /* CountdownValueLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0618C16198637FB983104639 /* CountdownValueLabel.swift */; };
 		DFAB566A99FE9D4C3B9DF254 /* WidgetThemePalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223C8EC7373FA0756EAB7C3B /* WidgetThemePalette.swift */; };
+		E3E2174926AFE6402CD2BCBC /* WeekStartTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62BD112C3BA9417B89662401 /* WeekStartTests.swift */; };
+		E599D0FABAA625A46424AD4D /* WidgetThemePalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223C8EC7373FA0756EAB7C3B /* WidgetThemePalette.swift */; };
 		EAA338EF8B8FFEA8B25247EC /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 7FFE29BF02B4BBBAAF4BC232 /* PrivacyInfo.xcprivacy */; };
+		EB99BA47FDFE71A6167B0C81 /* CountdownValueLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0618C16198637FB983104639 /* CountdownValueLabel.swift */; };
 		EF5AEE0C2965F4F18F9B096F /* WidgetThemePalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223C8EC7373FA0756EAB7C3B /* WidgetThemePalette.swift */; };
+		F12A599B4D7C4566D140AFA1 /* TimeProgressCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 091F1E00C9DBA9A030F1A29D /* TimeProgressCalculatorTests.swift */; };
+		F2A3AC241AF4291382F95BE3 /* MacWorkTimeEditorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F70CE77930AFDEDAAEF41791 /* MacWorkTimeEditorTests.swift */; };
 		F571C748BB95F074FBA354F9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7789B3FE1FCF7E665C59E506 /* InfoPlist.strings */; };
 		F75BC1455EB0CA7AD67AEAEE /* DaysYetLockScreenWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B4316388958D185FAD4CCF /* DaysYetLockScreenWidget.swift */; };
 		F818F4E6F2B38B114678BF36 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = A9F151DF177251D2B0EC2871 /* InfoPlist.strings */; };
 		FB226A76DFBF9E8165F7AD29 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 785E00C0D2C2EA34EB0A2AA4 /* UserProfile.swift */; };
+		FB2992EC52031417A5F16BCD /* L10n.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CD64EF0BE487E467E8EE54 /* L10n.swift */; };
+		FF2EA20E325876F47246EEEB /* MacWidgetDragTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE1F2B7FEEEBC873DF9B2C2 /* MacWidgetDragTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +88,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 05749A4A6B0F0D6B3CE39C34;
 			remoteInfo = DaysYet;
+		};
+		832523700F6A395B208E47E4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7B2BC7D121AD88D1A05765C6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2F5EC37929FBBC30A02F32D0;
+			remoteInfo = DaysYetMac;
 		};
 		A340DD18A8D50FD9FF7BEDEF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -84,7 +123,9 @@
 		00AAA44E592AAC3BF808D773 /* WidgetPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetPreview.swift; sourceTree = "<group>"; };
 		036F8BD9D4F1B7467842B3A4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0618C16198637FB983104639 /* CountdownValueLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownValueLabel.swift; sourceTree = "<group>"; };
+		0825BF284DF9112223DDBEFA /* Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Signing.xcconfig; sourceTree = "<group>"; };
 		091F1E00C9DBA9A030F1A29D /* TimeProgressCalculatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeProgressCalculatorTests.swift; sourceTree = "<group>"; };
+		0FCB41C9C9E755B3BEEED6E5 /* DaysYetMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysYetMacApp.swift; sourceTree = "<group>"; };
 		115989BAB479742C1F5196E8 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1A688870A80B2CCC93B72C9B /* DaysYetWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysYetWidgetBundle.swift; sourceTree = "<group>"; };
 		1F496778F27954462FC180E9 /* WidgetConfigurationIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetConfigurationIntent.swift; sourceTree = "<group>"; };
@@ -94,39 +135,77 @@
 		42CD64EF0BE487E467E8EE54 /* L10n.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = L10n.swift; sourceTree = "<group>"; };
 		4F043AFA52F194DBD59AF711 /* DATA_SOURCES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = DATA_SOURCES.md; sourceTree = "<group>"; };
 		4F18863FE1366766444715E8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		5850D0BE692A63A71E62BE3E /* MacWidgetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetTests.swift; sourceTree = "<group>"; };
 		58FE27717C77D4B7907182C9 /* NOTICE */ = {isa = PBXFileReference; path = NOTICE; sourceTree = "<group>"; };
 		5B2E5AC365670A90ADF4A2A1 /* DaysYet.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DaysYet.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		62BD112C3BA9417B89662401 /* WeekStartTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekStartTests.swift; sourceTree = "<group>"; };
 		6947F66D3D5B82E52FFDE992 /* DaysYetWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = DaysYetWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		69813457F6DD4D80042683BE /* MacWidgetPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetPreferences.swift; sourceTree = "<group>"; };
+		6D029136DF87FA805CE2847C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		71388ED2AE6C8DC3C059BFA2 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		7533C992E89912E1A026E4C4 /* ASSET_LICENSES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ASSET_LICENSES.md; sourceTree = "<group>"; };
+		76A627882BF859D704488EBF /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		785E00C0D2C2EA34EB0A2AA4 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		787BB50AE053C559748C39E4 /* TimeMetric.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeMetric.swift; sourceTree = "<group>"; };
 		7B2991E7A8BFF58FEDD422CF /* DaysYetApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysYetApp.swift; sourceTree = "<group>"; };
+		7EEF11C88A39D6BFF1B4D534 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7FFE29BF02B4BBBAAF4BC232 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		80547D3903A118C0591FA41E /* MacWidgetPointerInteraction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetPointerInteraction.swift; sourceTree = "<group>"; };
 		80602A41F91F2981A51EBE0E /* LICENSE */ = {isa = PBXFileReference; path = LICENSE; sourceTree = "<group>"; };
 		8D4529A3EAFCABF61CBA729D /* ProfileRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileRepository.swift; sourceTree = "<group>"; };
+		8FE1F2B7FEEEBC873DF9B2C2 /* MacWidgetDragTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetDragTests.swift; sourceTree = "<group>"; };
+		8FE865DB573E3BF33345150E /* DaysYetMacTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DaysYetMacTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		9662ABB4E73AFBAA5B22B82D /* WorkHoursTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkHoursTests.swift; sourceTree = "<group>"; };
 		969922BBF414097227DF1A0E /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		9D94F4707A5BA71C438877A9 /* MacTimeRailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacTimeRailView.swift; sourceTree = "<group>"; };
+		A1B11D4C863E5F66FF0D5780 /* MacSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSettingsView.swift; sourceTree = "<group>"; };
 		A40CE81B58E035A5129E7D2E /* DaysYetTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysYetTheme.swift; sourceTree = "<group>"; };
 		A5077CE484DDB9FA8448530A /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		A595FB6033234CAF7CA04E0C /* MacWidgetController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetController.swift; sourceTree = "<group>"; };
 		A9E1151ACD8A1E94DF04D3A0 /* DaysYetTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = DaysYetTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B04E98B81C6EE39699985B09 /* ProfileStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileStore.swift; sourceTree = "<group>"; };
+		B654EE3C8A3A58D1CA888B91 /* MacWidgetSelectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetSelectionTests.swift; sourceTree = "<group>"; };
 		B76A90071D066FB56C71C5EC /* WidgetStudioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetStudioView.swift; sourceTree = "<group>"; };
 		B76F2990B7B59DF8981C5A3A /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B8EF889B5F766FA4E4E1F328 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		B91D17AB4C05AFCE7E8BA18C /* DaysYet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DaysYet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BEA369AB53C5EA2EB4743187 /* DaysYetWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysYetWidget.swift; sourceTree = "<group>"; };
 		C10B69E5DF938A33AEEC9B9A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CA91CAA558C93AA58DF6FEB8 /* ProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBar.swift; sourceTree = "<group>"; };
 		D0B4316388958D185FAD4CCF /* DaysYetLockScreenWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysYetLockScreenWidget.swift; sourceTree = "<group>"; };
 		F2218EE8FA923E98D18516D4 /* TimeLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLibraryView.swift; sourceTree = "<group>"; };
+		F70CE77930AFDEDAAEF41791 /* MacWorkTimeEditorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWorkTimeEditorTests.swift; sourceTree = "<group>"; };
+		F83DA82C878A7FA4C25CD16D /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		015258345CA4FC14987CC3A0 /* DaysYetMacTests */ = {
+			isa = PBXGroup;
+			children = (
+				8FE1F2B7FEEEBC873DF9B2C2 /* MacWidgetDragTests.swift */,
+				B654EE3C8A3A58D1CA888B91 /* MacWidgetSelectionTests.swift */,
+				5850D0BE692A63A71E62BE3E /* MacWidgetTests.swift */,
+				F70CE77930AFDEDAAEF41791 /* MacWorkTimeEditorTests.swift */,
+			);
+			path = DaysYetMacTests;
+			sourceTree = "<group>";
+		};
 		01A74EAD58527D66A4D5B6BA /* DaysYetTests */ = {
 			isa = PBXGroup;
 			children = (
 				091F1E00C9DBA9A030F1A29D /* TimeProgressCalculatorTests.swift */,
+				62BD112C3BA9417B89662401 /* WeekStartTests.swift */,
+				9662ABB4E73AFBAA5B22B82D /* WorkHoursTests.swift */,
 			);
 			path = DaysYetTests;
+			sourceTree = "<group>";
+		};
+		02BAFD473136DBE58B59488E /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				0825BF284DF9112223DDBEFA /* Signing.xcconfig */,
+			);
+			path = Config;
 			sourceTree = "<group>";
 		};
 		0424A4ABE21AC089992E9D64 /* Design */ = {
@@ -137,10 +216,28 @@
 			path = Design;
 			sourceTree = "<group>";
 		};
+		1EBCCA896930A82C1AD37CBF /* DaysYetMac */ = {
+			isa = PBXGroup;
+			children = (
+				7EEF11C88A39D6BFF1B4D534 /* Assets.xcassets */,
+				0FCB41C9C9E755B3BEEED6E5 /* DaysYetMacApp.swift */,
+				A1B11D4C863E5F66FF0D5780 /* MacSettingsView.swift */,
+				9D94F4707A5BA71C438877A9 /* MacTimeRailView.swift */,
+				A595FB6033234CAF7CA04E0C /* MacWidgetController.swift */,
+				80547D3903A118C0591FA41E /* MacWidgetPointerInteraction.swift */,
+				69813457F6DD4D80042683BE /* MacWidgetPreferences.swift */,
+				76A627882BF859D704488EBF /* PrivacyInfo.xcprivacy */,
+				07705141EA121C9FBCD0F6E8 /* InfoPlist.strings */,
+			);
+			path = DaysYetMac;
+			sourceTree = "<group>";
+		};
 		2F06D0F57EA534874E9D027D /* Products */ = {
 			isa = PBXGroup;
 			children = (
 				5B2E5AC365670A90ADF4A2A1 /* DaysYet.app */,
+				B91D17AB4C05AFCE7E8BA18C /* DaysYet.app */,
+				8FE865DB573E3BF33345150E /* DaysYetMacTests.xctest */,
 				A9E1151ACD8A1E94DF04D3A0 /* DaysYetTests.xctest */,
 				6947F66D3D5B82E52FFDE992 /* DaysYetWidget.appex */,
 			);
@@ -155,7 +252,10 @@
 				80602A41F91F2981A51EBE0E /* LICENSE */,
 				58FE27717C77D4B7907182C9 /* NOTICE */,
 				37680AC2C679AD7E5923DC15 /* THIRD_PARTY_NOTICES.md */,
+				02BAFD473136DBE58B59488E /* Config */,
 				EB1E8B1F92D96FDC55948FFC /* DaysYet */,
+				1EBCCA896930A82C1AD37CBF /* DaysYetMac */,
+				015258345CA4FC14987CC3A0 /* DaysYetMacTests */,
 				01A74EAD58527D66A4D5B6BA /* DaysYetTests */,
 				9FC2643860A178CB1AF832B2 /* DaysYetWidget */,
 				FA52699628EA4AB321357425 /* Shared */,
@@ -273,6 +373,42 @@
 			productReference = 5B2E5AC365670A90ADF4A2A1 /* DaysYet.app */;
 			productType = "com.apple.product-type.application";
 		};
+		26C14DC3F4816953E004B28D /* DaysYetMacTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AB1DDDFE5F3F2744A5AC5BE0 /* Build configuration list for PBXNativeTarget "DaysYetMacTests" */;
+			buildPhases = (
+				FFC9FEEEF84C35A9CA11DED1 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5728513C4021A63535910B78 /* PBXTargetDependency */,
+			);
+			name = DaysYetMacTests;
+			packageProductDependencies = (
+			);
+			productName = DaysYetMacTests;
+			productReference = 8FE865DB573E3BF33345150E /* DaysYetMacTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		2F5EC37929FBBC30A02F32D0 /* DaysYetMac */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B5C4FEF5D2CA3EF06D6D5FB6 /* Build configuration list for PBXNativeTarget "DaysYetMac" */;
+			buildPhases = (
+				42FCBFAB170B6F3782EF2986 /* Sources */,
+				6ACC76D3DA38F60F73629C3F /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DaysYetMac;
+			packageProductDependencies = (
+			);
+			productName = DaysYetMac;
+			productReference = B91D17AB4C05AFCE7E8BA18C /* DaysYet.app */;
+			productType = "com.apple.product-type.application";
+		};
 		D0267B263E8450E155F6EA6C /* DaysYetWidget */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 619A58A4069E5C0BDDA361ED /* Build configuration list for PBXNativeTarget "DaysYetWidget" */;
@@ -321,6 +457,12 @@
 					05749A4A6B0F0D6B3CE39C34 = {
 						ProvisioningStyle = Automatic;
 					};
+					26C14DC3F4816953E004B28D = {
+						ProvisioningStyle = Automatic;
+					};
+					2F5EC37929FBBC30A02F32D0 = {
+						ProvisioningStyle = Automatic;
+					};
 					D0267B263E8450E155F6EA6C = {
 						ProvisioningStyle = Automatic;
 					};
@@ -345,6 +487,8 @@
 			projectRoot = "";
 			targets = (
 				05749A4A6B0F0D6B3CE39C34 /* DaysYet */,
+				2F5EC37929FBBC30A02F32D0 /* DaysYetMac */,
+				26C14DC3F4816953E004B28D /* DaysYetMacTests */,
 				FD641515D8C275796D5F6C2C /* DaysYetTests */,
 				D0267B263E8450E155F6EA6C /* DaysYetWidget */,
 			);
@@ -365,6 +509,22 @@
 				B66DE5162B94257F7742A20D /* NOTICE in Resources */,
 				B99D9E3C09AB918414346C08 /* PrivacyInfo.xcprivacy in Resources */,
 				512CFBE061B7440C1ED28ED5 /* THIRD_PARTY_NOTICES.md in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		6ACC76D3DA38F60F73629C3F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5661379D160B03A3D8D7C2ED /* ASSET_LICENSES.md in Resources */,
+				7712665604D34DE34FD77AE3 /* Assets.xcassets in Resources */,
+				D9DF23D0950A358548E83792 /* DATA_SOURCES.md in Resources */,
+				943AF5ED0EF0C3BFC7DA2557 /* InfoPlist.strings in Resources */,
+				D140799DC3B11E6C4B49AD2E /* LICENSE in Resources */,
+				750E3DC6CCC3CF4B00AF94BF /* Localizable.xcstrings in Resources */,
+				A49A848B853782DFD545CE0E /* NOTICE in Resources */,
+				4DFC782E74EFE4EF5625A693 /* PrivacyInfo.xcprivacy in Resources */,
+				24DD53A121D0DA6BD9F70460 /* THIRD_PARTY_NOTICES.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -398,6 +558,27 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		42FCBFAB170B6F3782EF2986 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EB99BA47FDFE71A6167B0C81 /* CountdownValueLabel.swift in Sources */,
+				78E35E9D015BD80CA4B4A221 /* DaysYetMacApp.swift in Sources */,
+				6D93E37B71D9C59C5B169118 /* DaysYetTheme.swift in Sources */,
+				FB2992EC52031417A5F16BCD /* L10n.swift in Sources */,
+				D70A37DD7864DF557E54602D /* MacSettingsView.swift in Sources */,
+				4A99EB9C683A50BFFB97E3BA /* MacTimeRailView.swift in Sources */,
+				D6F28DDF872DCCAC2BE34579 /* MacWidgetController.swift in Sources */,
+				94479AEE70C99AAF3C2210B8 /* MacWidgetPointerInteraction.swift in Sources */,
+				15A96E0DCAECA58CA0D5ECE7 /* MacWidgetPreferences.swift in Sources */,
+				5452BBBBF9E7A355C511D6FB /* ProfileRepository.swift in Sources */,
+				08AFE0ECDA1D7147C230EBD8 /* ProfileStore.swift in Sources */,
+				589088BF6B0D2D21B1E42601 /* TimeMetric.swift in Sources */,
+				B420EAFB604CA21AEF3D34B5 /* UserProfile.swift in Sources */,
+				E599D0FABAA625A46424AD4D /* WidgetThemePalette.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		CBBEF835296F4359FE958F0C /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -426,6 +607,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				B5DAF61685AE2120FC34313D /* TimeProgressCalculatorTests.swift in Sources */,
+				C8E7D8C6C12AE8C965D8F11A /* WeekStartTests.swift in Sources */,
+				39DAA55E95A5E78EE50BDFE7 /* WorkHoursTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FFC9FEEEF84C35A9CA11DED1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FF2EA20E325876F47246EEEB /* MacWidgetDragTests.swift in Sources */,
+				C5FFD3A0BCC08174065295DB /* MacWidgetSelectionTests.swift in Sources */,
+				CFDADD3AD39F8A8248936B23 /* MacWidgetTests.swift in Sources */,
+				F2A3AC241AF4291382F95BE3 /* MacWorkTimeEditorTests.swift in Sources */,
+				F12A599B4D7C4566D140AFA1 /* TimeProgressCalculatorTests.swift in Sources */,
+				E3E2174926AFE6402CD2BCBC /* WeekStartTests.swift in Sources */,
+				78A8590AFB6B87F956553E70 /* WorkHoursTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -437,6 +634,11 @@
 			target = 05749A4A6B0F0D6B3CE39C34 /* DaysYet */;
 			targetProxy = 8304CC63603B7E5DD29E53F6 /* PBXContainerItemProxy */;
 		};
+		5728513C4021A63535910B78 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2F5EC37929FBBC30A02F32D0 /* DaysYetMac */;
+			targetProxy = 832523700F6A395B208E47E4 /* PBXContainerItemProxy */;
+		};
 		C6FC57C116F65CDDD2AB6BC8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = D0267B263E8450E155F6EA6C /* DaysYetWidget */;
@@ -445,6 +647,15 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		07705141EA121C9FBCD0F6E8 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				6D029136DF87FA805CE2847C /* en */,
+				F83DA82C878A7FA4C25CD16D /* ja */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 		7789B3FE1FCF7E665C59E506 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -471,6 +682,8 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_ENTITLEMENTS = DaysYetWidget/DaysYetWidget.entitlements;
+				CODE_SIGN_IDENTITY = "$(inherited)";
+				CURRENT_PROJECT_VERSION = 5;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = DaysYetWidget/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -478,10 +691,37 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				MARKETING_VERSION = 0.1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.widget;
+				PROVISIONING_PROFILE_SPECIFIER = "$(DAYSYET_WIDGET_PROFILE)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1BFE1EBF69ED32806E803481 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = MacAppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = DaysYetMac/DaysYetMac.entitlements;
+				CODE_SIGN_IDENTITY = "$(inherited)";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 3;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = DaysYetMac/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet;
+				PRODUCT_MODULE_NAME = DaysYetMac;
+				PRODUCT_NAME = DaysYet;
+				PROVISIONING_PROFILE_SPECIFIER = "$(DAYSYET_MAC_PROFILE)";
+				SDKROOT = macosx;
 			};
 			name = Debug;
 		};
@@ -491,14 +731,17 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DaysYet/DaysYet.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "$(inherited)";
+				CURRENT_PROJECT_VERSION = 5;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = DaysYet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 0.1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet;
+				PROVISIONING_PROFILE_SPECIFIER = "$(DAYSYET_IOS_PROFILE)";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -506,6 +749,7 @@
 		};
 		2B9D58309B28CAD1A698B2C4 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0825BF284DF9112223DDBEFA /* Signing.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -537,9 +781,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -558,16 +800,14 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MARKETING_VERSION = 0.1.2;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.10;
-				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -577,6 +817,8 @@
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_ENTITLEMENTS = DaysYetWidget/DaysYetWidget.entitlements;
+				CODE_SIGN_IDENTITY = "$(inherited)";
+				CURRENT_PROJECT_VERSION = 5;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = DaysYetWidget/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -584,7 +826,9 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				MARKETING_VERSION = 0.1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.widget;
+				PROVISIONING_PROFILE_SPECIFIER = "$(DAYSYET_WIDGET_PROFILE)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -593,6 +837,7 @@
 		};
 		58556FFA2CCF8B3476FFD69A /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0825BF284DF9112223DDBEFA /* Signing.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -624,9 +869,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -639,15 +882,13 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
-				MARKETING_VERSION = 0.1.2;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.10;
-				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -658,16 +899,64 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DaysYet/DaysYet.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_IDENTITY = "$(inherited)";
+				CURRENT_PROJECT_VERSION = 5;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = DaysYet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				MARKETING_VERSION = 0.1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet;
+				PROVISIONING_PROFILE_SPECIFIER = "$(DAYSYET_IOS_PROFILE)";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		873D6D76A5B0F0A2880FE879 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = MacAppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = DaysYetMac/DaysYetMac.entitlements;
+				CODE_SIGN_IDENTITY = "$(inherited)";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 3;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = DaysYetMac/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet;
+				PRODUCT_MODULE_NAME = DaysYetMac;
+				PRODUCT_NAME = DaysYet;
+				PROVISIONING_PROFILE_SPECIFIER = "$(DAYSYET_MAC_PROFILE)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		D6C48EC35A25773FDD9B5769 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 3;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.mac.tests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DaysYet.app/Contents/MacOS/DaysYet";
 			};
 			name = Debug;
 		};
@@ -676,12 +965,14 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGNING_ALLOWED = NO;
+				CURRENT_PROJECT_VERSION = 5;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MARKETING_VERSION = 0.1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.tests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -694,16 +985,38 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGNING_ALLOWED = NO;
+				CURRENT_PROJECT_VERSION = 5;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MARKETING_VERSION = 0.1.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.tests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DaysYet.app/DaysYet";
+			};
+			name = Release;
+		};
+		FCC49F1983C128183CD9EFBA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 3;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@loader_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.mac.tests;
+				SDKROOT = macosx;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/DaysYet.app/Contents/MacOS/DaysYet";
 			};
 			name = Release;
 		};
@@ -737,11 +1050,29 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
+		AB1DDDFE5F3F2744A5AC5BE0 /* Build configuration list for PBXNativeTarget "DaysYetMacTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D6C48EC35A25773FDD9B5769 /* Debug */,
+				FCC49F1983C128183CD9EFBA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		AE34289370AF154504D227A2 /* Build configuration list for PBXProject "DaysYet" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2B9D58309B28CAD1A698B2C4 /* Debug */,
 				58556FFA2CCF8B3476FFD69A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		B5C4FEF5D2CA3EF06D6D5FB6 /* Build configuration list for PBXNativeTarget "DaysYetMac" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1BFE1EBF69ED32806E803481 /* Debug */,
+				873D6D76A5B0F0A2880FE879 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

@@ -61,6 +61,8 @@ final class ProfileStore: ObservableObject {
         var updated = profile
         mutation(&updated)
         updated.dashboardMetrics = updated.normalizedDashboardMetrics
+        updated.workStartMinute = UserProfile.clampedWorkMinute(updated.workStartMinute)
+        updated.workEndMinute = UserProfile.clampedWorkMinute(updated.workEndMinute)
         // The UI intentionally exposes a start date, not a hidden start time.
         updated.customTargetStartDate = Calendar.autoupdatingCurrent.startOfDay(
             for: updated.customTargetStartDate

@@ -53,18 +53,16 @@ struct DaysYetTimelineProvider: AppIntentTimelineProvider {
             }
         }
 
-        // Period and milestone boundaries must never keep showing a stale
-        // "remaining" state, even when they fall between regular entries.
+        // Include work starts, ends, and daily resets as well as calendar and
+        // milestone boundaries, even when they fall between regular entries.
         for metric in firstEntry.metrics {
-            let boundary = TimeProgressCalculator.dateInterval(
+            entryDates += TimeProgressCalculator.transitionDates(
                 for: metric,
                 profile: profile,
-                now: now,
+                after: now,
+                through: refreshDate,
                 calendar: calendar
-            ).end
-            if boundary > now, boundary <= refreshDate {
-                entryDates.append(boundary)
-            }
+            )
         }
 
         let entries = Set(entryDates)
@@ -78,17 +76,24 @@ struct DaysYetTimelineProvider: AppIntentTimelineProvider {
         configuration: DaysYetConfigurationIntent,
         profile: UserProfile = ProfileRepository.load()
     ) -> DaysYetTimelineEntry {
-        let metrics: [MetricKind]
-        if !profile.isConfigured {
-            metrics = [.week, .month, .year]
-        } else if configuration.followsAppSelection {
-            metrics = profile.normalizedDashboardMetrics
+        let requestedMetrics: [MetricKind]
+        if configuration.followsAppSelection {
+            requestedMetrics = profile.normalizedDashboardMetrics
         } else {
-            metrics = [
+            requestedMetrics = [
                 configuration.firstMetric.metricKind,
                 configuration.secondMetric.metricKind,
                 configuration.thirdMetric.metricKind
             ]
+        }
+        // Calendar periods and the default work schedule are usable before
+        // onboarding. Only personal reference points need to be configured.
+        var usedMetrics = Set(requestedMetrics.filter { $0 != .healthyLife && $0 != .customLife })
+        let metrics = requestedMetrics.map { metric -> MetricKind in
+            guard !profile.isConfigured, metric == .healthyLife || metric == .customLife else { return metric }
+            let replacement = [MetricKind.week, .month, .year].first { !usedMetrics.contains($0) } ?? .week
+            usedMetrics.insert(replacement)
+            return replacement
         }
         return DaysYetTimelineEntry(
             date: date,

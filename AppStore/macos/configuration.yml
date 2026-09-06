@@ -1,0 +1,21 @@
+# First native macOS platform version on the existing DaysYet App Store record.
+# The macOS platform exists on that record, with version 0.1.2 saved.
+# Retain the record's existing shared name, categories, pricing, availability,
+# and release settings. Do not create a separate SKU or App Store record.
+app_name: DaysYet
+platform: macos
+primary_locale: ja
+additional_locales:
+  - en-US
+sku: daysyet-ios
+app_store_id: 6802000765
+bundle_id: com.hinoshiba.daysyet
+scheme: DaysYetMac
+# Working Mac candidate validated by Apple; upload/processing status is tracked
+# in ../review/release-readiness.md. iOS 0.1.2 (4) remains released.
+version: 0.1.2
+build: 3
+initial_release: true
+minimum_os: "14.0"
+standard_eula: true
+copyright: "2026 hinoshiba"

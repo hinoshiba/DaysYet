@@ -7,6 +7,7 @@ enum MetricKind: String, Codable, CaseIterable, Identifiable, Sendable {
     case year
     case healthyLife
     case customLife
+    case workday
 
     var id: String { rawValue }
 
@@ -17,6 +18,7 @@ enum MetricKind: String, Codable, CaseIterable, Identifiable, Sendable {
         case .year: L10n.text("今年", "This year")
         case .healthyLife: L10n.text("健康でいたい年齢", "Healthy-age goal")
         case .customLife: L10n.text("大切な日", "Milestone")
+        case .workday: L10n.text("勤務時間", "Work hours")
         }
     }
 
@@ -35,6 +37,7 @@ enum MetricKind: String, Codable, CaseIterable, Identifiable, Sendable {
         case .year: "sparkles"
         case .healthyLife: "heart.text.clipboard"
         case .customLife: "flag.checkered"
+        case .workday: "briefcase"
         }
     }
 }
@@ -135,6 +138,7 @@ enum WidgetMetricOption: String, AppEnum, CaseIterable {
     case year
     case healthyLife
     case customLife
+    case workday
 
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "widget.metric.type")
     static let caseDisplayRepresentations: [WidgetMetricOption: DisplayRepresentation] = [
@@ -142,7 +146,8 @@ enum WidgetMetricOption: String, AppEnum, CaseIterable {
         .month: "metric.month",
         .year: "metric.year",
         .healthyLife: "metric.healthy_age_goal",
-        .customLife: "metric.milestone"
+        .customLife: "metric.milestone",
+        .workday: "metric.workday"
     ]
 
     var metricKind: MetricKind {
@@ -157,6 +162,7 @@ enum LockScreenMetricOption: String, AppEnum, CaseIterable {
     case year
     case healthyLife
     case customLife
+    case workday
 
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "widget.lock_screen.metric.type")
     static let caseDisplayRepresentations: [LockScreenMetricOption: DisplayRepresentation] = [
@@ -165,7 +171,8 @@ enum LockScreenMetricOption: String, AppEnum, CaseIterable {
         .month: "metric.month",
         .year: "metric.year",
         .healthyLife: "metric.healthy_age_goal",
-        .customLife: "metric.milestone"
+        .customLife: "metric.milestone",
+        .workday: "metric.workday"
     ]
 
     func resolved(profile: UserProfile) -> MetricKind {
@@ -186,6 +193,8 @@ enum LockScreenMetricOption: String, AppEnum, CaseIterable {
             return .healthyLife
         case .customLife:
             return .customLife
+        case .workday:
+            return .workday
         }
     }
 }
@@ -319,7 +328,9 @@ struct MetricSnapshot: Identifiable, Equatable, Sendable {
 
     func targetDateText(compact: Bool = false) -> String {
         let formatted: String
-        if compact, kind == .healthyLife || kind == .customLife {
+        if compact, kind == .workday {
+            formatted = targetDate.formatted(date: .omitted, time: .shortened)
+        } else if compact, kind == .healthyLife || kind == .customLife {
             formatted = targetDate.formatted(.dateTime.year(.twoDigits).month(.defaultDigits).day())
         } else if compact {
             formatted = targetDate.formatted(.dateTime.month(.defaultDigits).day())
@@ -353,6 +364,7 @@ struct MetricSnapshot: Identifiable, Equatable, Sendable {
             switch kind {
             case .healthyLife: return L10n.text("目安超過", "Past target")
             case .customLife: return L10n.text("到達", "Reached")
+            case .workday: return countdown.terminalText ?? ""
             default: return L10n.text("更新中", "Updating")
             }
         }
@@ -371,18 +383,23 @@ enum TimeProgressCalculator {
         let total = max(interval.end.timeIntervalSince(interval.start), 1)
         let elapsed = max(now.timeIntervalSince(interval.start), 0)
         let fraction = min(max(elapsed / total, 0), 1)
+        let beforeWork = kind == .workday && now < interval.start
+        let afterWork = kind == .workday && now >= interval.end
 
         return MetricSnapshot(
             kind: kind,
             title: kind == .customLife ? nonEmpty(profile.customTargetName, fallback: kind.title) : kind.title,
             context: context(for: kind, profile: profile, target: interval.end, calendar: calendar),
-            countdown: countdownPresentation(
+            countdown: beforeWork ? CountdownPresentation(
+                prefix: "", components: [], suffix: "",
+                terminalText: L10n.text("開始前", "Not started")
+            ) : countdownPresentation(
                 for: kind,
                 now: now,
                 target: interval.end,
                 calendar: calendar
             ),
-            elapsedFraction: fraction,
+            elapsedFraction: afterWork ? 1 : fraction,
             targetDate: interval.end
         )
     }
@@ -395,7 +412,9 @@ enum TimeProgressCalculator {
     ) -> DateInterval {
         switch kind {
         case .week:
-            return calendar.dateInterval(of: .weekOfYear, for: now) ?? fallbackInterval(now: now)
+            var weekCalendar = calendar
+            weekCalendar.firstWeekday = profile.weekStartDay.resolvedWeekday(in: calendar)
+            return weekCalendar.dateInterval(of: .weekOfYear, for: now) ?? fallbackInterval(now: now)
         case .month:
             return calendar.dateInterval(of: .month, for: now) ?? fallbackInterval(now: now)
         case .year:
@@ -406,7 +425,70 @@ enum TimeProgressCalculator {
         case .customLife:
             let start = profile.customTargetStartDate
             return DateInterval(start: start, end: max(profile.customTargetDate, start.addingTimeInterval(1)))
+        case .workday:
+            let today = calendar.startOfDay(for: now)
+            let todayInterval = workdayInterval(startingOn: today, profile: profile, calendar: calendar)
+            if UserProfile.clampedWorkMinute(profile.workEndMinute) <= UserProfile.clampedWorkMinute(profile.workStartMinute),
+               now < todayInterval.start,
+               let yesterday = calendar.date(byAdding: .day, value: -1, to: today) {
+                // An overnight shift belongs to the date on which it started,
+                // including the completed period before the next evening.
+                return workdayInterval(startingOn: yesterday, profile: profile, calendar: calendar)
+            }
+            return todayInterval
         }
+    }
+
+    /// Changes that can fall between WidgetKit's regular timeline entries.
+    static func transitionDates(
+        for kind: MetricKind,
+        profile: UserProfile,
+        after now: Date,
+        through end: Date,
+        calendar: Calendar
+    ) -> [Date] {
+        guard end > now else { return [] }
+        if kind != .workday {
+            let boundary = dateInterval(for: kind, profile: profile, now: now, calendar: calendar).end
+            return boundary > now && boundary <= end ? [boundary] : []
+        }
+
+        let today = calendar.startOfDay(for: now)
+        var day = calendar.date(byAdding: .day, value: -1, to: today) ?? today
+        var dates = Set<Date>()
+        while day <= end {
+            let interval = workdayInterval(startingOn: day, profile: profile, calendar: calendar)
+            for date in [day, interval.start, interval.end] where date > now && date <= end {
+                dates.insert(date)
+            }
+            guard let nextDay = calendar.date(byAdding: .day, value: 1, to: day), nextDay > day else { break }
+            day = nextDay
+        }
+        return dates.sorted()
+    }
+
+    private static func workdayInterval(
+        startingOn day: Date,
+        profile: UserProfile,
+        calendar: Calendar
+    ) -> DateInterval {
+        let startMinute = UserProfile.clampedWorkMinute(profile.workStartMinute)
+        let endMinute = UserProfile.clampedWorkMinute(profile.workEndMinute)
+        let endDay = endMinute <= startMinute
+            ? calendar.date(byAdding: .day, value: 1, to: day) ?? day
+            : day
+        let start = clockDate(minute: startMinute, on: day, calendar: calendar)
+        let end = clockDate(minute: endMinute, on: endDay, calendar: calendar)
+        // A skipped clock interval during a DST change can have zero duration.
+        // It is complete at that instant, rather than becoming negative.
+        return DateInterval(start: start, end: max(end, start))
+    }
+
+    private static func clockDate(minute: Int, on day: Date, calendar: Calendar) -> Date {
+        calendar.date(
+            bySettingHour: minute / 60, minute: minute % 60, second: 0, of: day,
+            matchingPolicy: .nextTime, repeatedTimePolicy: .first, direction: .forward
+        ) ?? calendar.startOfDay(for: day)
     }
 
     private static func targetDate(from birthDate: Date, years: Double, calendar: Calendar) -> Date {
@@ -430,6 +512,8 @@ enum TimeProgressCalculator {
             return L10n.text("設定した \(formattedAge(profile.healthyLifeYears)) 歳まで", "until age \(formattedAge(profile.healthyLifeYears))")
         case .customLife:
             return target.formatted(.dateTime.year().month(.abbreviated).day())
+        case .workday:
+            return L10n.text("毎日の勤務時間", "Daily work hours")
         }
     }
 
@@ -446,6 +530,8 @@ enum TimeProgressCalculator {
                 terminalText = L10n.text("設定した目安を超えています", "Beyond your set target")
             case .customLife:
                 terminalText = L10n.text("ここまで歩みました", "Milestone reached")
+            case .workday:
+                terminalText = L10n.text("勤務終了", "Work finished")
             default:
                 terminalText = L10n.text("次の期間へ更新中", "Updating period")
             }
@@ -458,7 +544,12 @@ enum TimeProgressCalculator {
         let suffix = L10n.text("", "left")
         let components: [CountdownComponent]
 
-        if approximateDays >= 730 {
+        if kind == .workday {
+            components = [
+                CountdownComponent(value: Int(seconds / 3_600), unit: L10n.text("時間", "h")),
+                CountdownComponent(value: Int(seconds / 60) % 60, unit: L10n.text("分", "m"))
+            ]
+        } else if approximateDays >= 730 {
             let values = calendar.dateComponents([.year, .month], from: now, to: target)
             components = [
                 CountdownComponent(value: max(values.year ?? 0, 0), unit: L10n.text("年", "y")),

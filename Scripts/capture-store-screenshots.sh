@@ -34,6 +34,7 @@ if [[ -z "${DAYSYET_SCREENSHOT_APP_PATH:-}" ]]; then
     -sdk iphonesimulator \
     -destination 'generic/platform=iOS Simulator' \
     -derivedDataPath "${DERIVED_DATA}" \
+    CODE_SIGNING_ALLOWED=NO \
     build
 elif [[ ! -d "${APP_PATH}" ]]; then
   echo "error: DAYSYET_SCREENSHOT_APP_PATH does not point to an app bundle" >&2
@@ -96,6 +97,7 @@ capture() {
   take_shot "02-widget-target-date.png" --screenshot-time-and-percentage --screenshot-quiet-forest
   take_shot "03-time-library.png" --screenshot-times
   take_shot "04-privacy-settings.png" --screenshot-settings
+  take_shot "05-work-hours-week-start.png" --screenshot-edit-times
   xcrun simctl status_bar "${simulator_id}" clear
 }
 

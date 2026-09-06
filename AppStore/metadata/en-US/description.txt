@@ -1,7 +1,10 @@
 DaysYet lets you view three different timelines on your Home Screen and one selected timeline on your Lock Screen.
 
 THREE TIMELINES AT A GLANCE
-Choose from this week, this month, this year, a healthy-age goal you set, and a milestone date with its own start date. Use the three selected in the app, or configure a different combination for each widget.
+Choose from this week, this month, this year, daily work hours, a healthy-age goal you set, and a milestone date with its own start date. Use the three selected in the app, or configure a different combination for each widget.
+
+DAILY WORK HOURS AND YOUR WEEK
+Set a work start and end time to see the time left each day. Overnight schedules are supported, and the schedule repeats in your device’s local time. Choose the first day of This week using the device calendar setting or any weekday. Work times and week settings stay on device.
 
 THREE DISPLAY LAYOUTS
 Switch between a large time-left countdown, a combined view of time left, elapsed percentage, and progress, and three evenly spaced progress bars. Bars fill from left to right as time passes, leaving the time ahead uncolored. For progress bars, choose time left, elapsed percentage, or the target date and time.
@@ -15,6 +18,6 @@ JAPANESE AND ENGLISH
 Use the app, widget, and widget configuration in Japanese or English.
 
 ON DEVICE BY DESIGN
-No account is required. Your birth date and configured dates remain in the on-device area shared by the app and widget and are not sent to the developer. DaysYet contains no advertising or analytics SDKs. You can delete all saved data from Settings at any time.
+No account is required. Your birth date, configured dates, work times, and week-start choice remain in the on-device area shared by the app and widget and are not sent to the developer. DaysYet contains no advertising or analytics SDKs. You can delete all saved data from Settings at any time.
 
 The healthy-age goal is a personal planning marker you choose. It is not a statistic, medical advice, diagnosis, or a prediction of your health or lifespan.
