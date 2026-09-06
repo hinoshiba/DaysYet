@@ -1036,3 +1036,7 @@ footer {
   .mac-detail-content,
   .mac-notch[data-expanded="true"] .mac-detail { transition: none; }
 }
+
+.policy-copy { max-width: 860px; color: var(--muted); line-height: 1.85; }
+.policy-copy p + p { margin-top: 1em; }
+.policy-copy a { overflow-wrap: anywhere; }

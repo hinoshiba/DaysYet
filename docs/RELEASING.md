@@ -93,15 +93,6 @@ store. A local xcconfig contains settings, not passwords or private key data.
 Do not upload certificates, provisioning profiles, export-option plists,
 archives, or diagnostic bundles to GitHub Actions or the source repository.
 
-## Retire the previous Cloud workflow
-
-In Xcode or App Store Connect, deactivate the old Xcode Cloud release workflow
-and verify that it no longer starts on tags or branch changes. Preserve its
-history and build artifacts; deleting a Cloud project or workflow is not part
-of this migration. Removing the repository hook alone does not deactivate a
-server-side workflow. See Apple's [workflow strategy](https://developer.apple.com/documentation/xcode/developing-a-workflow-strategy-for-xcode-cloud)
-and [Cloud project removal guidance](https://developer.apple.com/documentation/xcode/removing-your-project-from-xcode-cloud).
-
 ## Prepare the candidate
 
 1. Choose a marketing version and a build number greater than any already
