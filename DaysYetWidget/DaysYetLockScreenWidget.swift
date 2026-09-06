@@ -48,15 +48,13 @@ struct DaysYetLockScreenTimelineProvider: AppIntentTimelineProvider {
             calendar.date(byAdding: .minute, value: $0 * 5, to: now)
         }
 
-        let boundary = TimeProgressCalculator.dateInterval(
+        entryDates += TimeProgressCalculator.transitionDates(
             for: metric,
             profile: profile,
-            now: now,
+            after: now,
+            through: refreshDate,
             calendar: calendar
-        ).end
-        if boundary > now, boundary <= refreshDate {
-            entryDates.append(boundary)
-        }
+        )
 
         let entries = Set(entryDates)
             .sorted()

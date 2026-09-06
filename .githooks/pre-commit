@@ -1,0 +1,5 @@
+#!/bin/sh
+set -eu
+
+daysyet_repo=$(git rev-parse --show-toplevel)
+python3 "$daysyet_repo/Scripts/check-public-files.py" --staged --root "$daysyet_repo"

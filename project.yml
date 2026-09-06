@@ -4,17 +4,18 @@ options:
   bundleIdPrefix: com.hinoshiba.daysyet
   deploymentTarget:
     iOS: "17.0"
+    macOS: "14.0"
   developmentLanguage: ja
   createIntermediateGroups: true
 
+configFiles:
+  Debug: Config/Signing.xcconfig
+  Release: Config/Signing.xcconfig
+
 settings:
   base:
-    MARKETING_VERSION: "0.1.2"
-    CURRENT_PROJECT_VERSION: "3"
     VERSIONING_SYSTEM: apple-generic
     SWIFT_VERSION: "5.10"
-    CODE_SIGN_STYLE: Automatic
-    TARGETED_DEVICE_FAMILY: "1,2"
 
 targets:
   DaysYet:
@@ -58,8 +59,13 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.hinoshiba.daysyet
+        MARKETING_VERSION: "0.1.3"
+        CURRENT_PROJECT_VERSION: "5"
+        TARGETED_DEVICE_FAMILY: "1,2"
         GENERATE_INFOPLIST_FILE: NO
         CODE_SIGN_ENTITLEMENTS: DaysYet/DaysYet.entitlements
+        CODE_SIGN_IDENTITY: $(inherited)
+        PROVISIONING_PROFILE_SPECIFIER: $(DAYSYET_IOS_PROFILE)
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
     dependencies:
@@ -89,8 +95,13 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.hinoshiba.daysyet.widget
+        MARKETING_VERSION: "0.1.3"
+        CURRENT_PROJECT_VERSION: "5"
+        TARGETED_DEVICE_FAMILY: "1,2"
         GENERATE_INFOPLIST_FILE: NO
         CODE_SIGN_ENTITLEMENTS: DaysYetWidget/DaysYetWidget.entitlements
+        CODE_SIGN_IDENTITY: $(inherited)
+        PROVISIONING_PROFILE_SPECIFIER: $(DAYSYET_WIDGET_PROFILE)
         APPLICATION_EXTENSION_API_ONLY: YES
         SKIP_INSTALL: YES
 
@@ -104,6 +115,75 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.hinoshiba.daysyet.tests
+        MARKETING_VERSION: "0.1.3"
+        CURRENT_PROJECT_VERSION: "5"
+        TARGETED_DEVICE_FAMILY: "1,2"
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGNING_ALLOWED: NO
+
+  DaysYetMac:
+    type: application
+    platform: macOS
+    productName: DaysYet
+    sources:
+      - path: DaysYetMac
+        excludes:
+          - Info.plist
+          - DaysYetMac.entitlements
+      - path: Shared
+      - path: DaysYet/App/ProfileStore.swift
+      - path: DaysYet/Design/DaysYetTheme.swift
+      - path: LICENSE
+        buildPhase: resources
+      - path: NOTICE
+        buildPhase: resources
+      - path: THIRD_PARTY_NOTICES.md
+        buildPhase: resources
+      - path: ASSET_LICENSES.md
+        buildPhase: resources
+      - path: DATA_SOURCES.md
+        buildPhase: resources
+    info:
+      path: DaysYetMac/Info.plist
+      properties:
+        CFBundleDisplayName: DaysYet
+        CFBundleLocalizations:
+          - ja
+          - en
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        ITSAppUsesNonExemptEncryption: false
+        LSApplicationCategoryType: public.app-category.lifestyle
+        LSUIElement: true
+        NSHumanReadableCopyright: Copyright © 2026 hinoshiba
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.hinoshiba.daysyet
+        MARKETING_VERSION: "0.1.2"
+        CURRENT_PROJECT_VERSION: "3"
+        PRODUCT_NAME: DaysYet
+        PRODUCT_MODULE_NAME: DaysYetMac
+        GENERATE_INFOPLIST_FILE: NO
+        CODE_SIGN_ENTITLEMENTS: DaysYetMac/DaysYetMac.entitlements
+        CODE_SIGN_IDENTITY: $(inherited)
+        PROVISIONING_PROFILE_SPECIFIER: $(DAYSYET_MAC_PROFILE)
+        ENABLE_HARDENED_RUNTIME: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: MacAppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+
+  DaysYetMacTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: DaysYetTests
+      - path: DaysYetMacTests
+    dependencies:
+      - target: DaysYetMac
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.hinoshiba.daysyet.mac.tests
+        MARKETING_VERSION: "0.1.2"
+        CURRENT_PROJECT_VERSION: "3"
         GENERATE_INFOPLIST_FILE: YES
         CODE_SIGNING_ALLOWED: NO
 
@@ -117,3 +197,15 @@ schemes:
     test:
       targets:
         - DaysYetTests
+    archive:
+      config: Release
+  DaysYetMac:
+    build:
+      targets:
+        DaysYetMac: all
+        DaysYetMacTests: [test]
+    test:
+      targets:
+        - DaysYetMacTests
+    archive:
+      config: Release

@@ -1,4 +1,4 @@
-name: iOS CI
+name: Apple platforms CI
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: ios-ci-${{ github.ref }}
+  group: apple-ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
 
       - name: Install pinned XcodeGen
         shell: bash
@@ -38,7 +40,7 @@ jobs:
           swift --version
           xcodegen --version
 
-      - name: Compliance checks
+      - name: Public files and compliance checks
         run: ./Scripts/check-compliance.sh
 
       - name: Validate Store screenshots
@@ -47,7 +49,7 @@ jobs:
       - name: Verify generated Xcode project
         run: |
           set -euo pipefail
-          xcodegen generate
+          ./build.sh project
           generated_state=$(git status --porcelain=v1 --untracked-files=all)
           if [ -n "${generated_state}" ]; then
             git status --short --untracked-files=all
@@ -56,3 +58,6 @@ jobs:
 
       - name: Build and test app plus Widget
         run: ./build.sh test
+
+      - name: Build and test macOS app
+        run: ./build.sh test-mac

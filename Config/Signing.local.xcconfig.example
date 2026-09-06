@@ -1,0 +1,14 @@
+// Copy to Signing.local.xcconfig on the authorized build Mac.
+// Fill in the existing Apple Developer team's identifier locally.
+DEVELOPMENT_TEAM =
+
+// Keep credentials and private keys in Keychain, never in this file.
+// The shared default uses automatic signing. Optional manual signing uses
+// existing profiles, with a separate profile for each application/extension:
+// CODE_SIGN_STYLE[config=Release] = Manual
+// CODE_SIGN_IDENTITY[config=Release] = Apple Distribution
+// DAYSYET_IOS_PROFILE[config=Release] =
+// DAYSYET_WIDGET_PROFILE[config=Release] =
+// DAYSYET_MAC_PROFILE[config=Release] =
+// For App Store distribution use an existing Apple Distribution identity.
+// Never use Developer ID for a Mac App Store archive.

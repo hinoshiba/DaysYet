@@ -12,15 +12,38 @@ Thank you for helping improve this project.
 ## Development
 
 1. Install Xcode 16+ and XcodeGen 2.45.4.
-2. Run `./build.sh test`.
+2. Run `./build.sh test` for iOS and `./build.sh test-mac` for macOS.
 3. Make the smallest coherent change.
 4. Add tests for date boundaries, storage migrations, and Widget configuration behavior.
-5. Run `./Scripts/check-compliance.sh` and `./build.sh test` before submitting.
+5. Run `./Scripts/check-compliance.sh`, `./build.sh test`, and `./build.sh test-mac` before submitting.
 
 `project.yml` is the project-configuration source of truth. The generated
-`DaysYet.xcodeproj` and shared scheme are committed so Xcode Cloud can always
-discover the product. Run `xcodegen generate` after changing `project.yml` and
-commit both; pull-request CI rejects a stale generated project.
+`DaysYet.xcodeproj` and shared schemes are committed so a clean checkout opens
+in Xcode. Run `./build.sh project` after changing `project.yml` and commit both;
+pull-request CI rejects a stale generated project.
+
+Unsigned builds and tests need no signing configuration. For an authorized
+device build or release, use the ignored `Config/Signing.local.xcconfig` as
+described in [Local Xcode releases](docs/RELEASING.md). Keep team identifiers,
+personal certificate identities, provisioning profiles, and credentials out of
+the tracked project. Do not generate or transfer signing identities as a
+routine contribution step.
+
+Before publishing a commit, run `python3 Scripts/check-public-files.py` and
+`python3 Scripts/check-public-files.py --staged`, then review the staged diff.
+The checks inspect working files and the Git index respectively, not previous
+history or personal details embedded in images. GitHub Actions does not sign,
+archive, upload, or submit releases.
+
+Enable the repository's staged-file guard in each local checkout:
+
+```sh
+git config --local core.hooksPath .githooks
+```
+
+The pre-commit hook runs the same index scan and blocks a detected private
+file before it becomes a commit. If you already maintain Git hooks, integrate
+this check with them before changing `core.hooksPath`.
 
 ## License and provenance
 
@@ -38,7 +61,7 @@ Any dependency, font, image, audio, dataset, or SDK addition must update the app
 
 ## Pull request checklist
 
-- App and Widget build.
+- iPhone / iPad app, Widget, and Mac app build.
 - Tests pass.
 - Accessibility and Japanese/English layouts were checked.
 - Privacy/data behavior is unchanged or documented.

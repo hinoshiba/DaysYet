@@ -21,7 +21,12 @@ enum ProfileRepository {
         defaults.removeObject(forKey: profileKey)
     }
 
+    // The standalone Mac app has no extension or cross-device storage.
+#if os(macOS)
+    private static let defaults = UserDefaults.standard
+#else
     private static let defaults = UserDefaults(suiteName: appGroupIdentifier)!
+#endif
 
     private static var encoder: JSONEncoder {
         let encoder = JSONEncoder()

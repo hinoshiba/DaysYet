@@ -2,10 +2,15 @@
 
 | Data | Source | Purpose | Storage | Shared with | User deletion |
 |---|---|---|---|---|---|
-| Birth date | User input | Life-target calculation | App Group `UserDefaults` | App + Widget only | Settings → Delete all data |
-| Healthy-age goal | User input | Personal planning progress | App Group `UserDefaults` | App + Widget only | Same |
-| Milestone title/start date/target date | User input | Custom progress and countdown | App Group `UserDefaults` | App + Widget only | Same |
-| Three selected metrics, display mode, value style, and theme | User choice | App and Widget rendering | App Group + Widget configuration managed by iOS | App + Widget + iOS configuration UI | Edit Widget / reset app |
+| Birth date | User input | Life-target calculation | iOS: App Group `UserDefaults`; macOS: sandboxed `UserDefaults.standard` | iOS: App + Widget only; macOS: Mac app only | Settings → Delete all data on that device |
+| Healthy-age goal | User input | Personal planning progress | Same | Same | Same |
+| Milestone title/start date/target date | User input | Custom progress and countdown | Same | Same | Same |
+| Daily work start/end times (`workStartMinute`, `workEndMinute`, minutes after local midnight) | User settings; defaults 09:00–18:00 | Optional Work hours timeline: daily local-time countdown, including overnight shifts | iOS: App Group `UserDefaults`; macOS: sandboxed `UserDefaults.standard` | iOS: App + Widget only; macOS: Mac app only | Settings → Delete all data on that device resets work-time settings |
+| Week start preference (`weekStartDay`: device calendar setting or a weekday) | User choice; defaults to device calendar setting | This week countdown, elapsed progress, and end date across the app, widgets, and Mac panel | iOS: App Group `UserDefaults`; macOS: sandboxed `UserDefaults.standard` | iOS: App + Widget only; macOS: Mac app only | Settings → Delete all data on that device resets the preference |
+| Three selected metrics, display mode, value style, and theme | User choice | App, Widget, and desktop panel rendering | iOS: App Group + Widget configuration managed by iOS; macOS: sandboxed `UserDefaults.standard` | iOS: App + Widget + iOS configuration UI; macOS: Mac app only | iOS: Edit Widget / reset app; macOS: Settings → Delete all data |
+| Desktop panel visibility, selected display identifier, screen edge, vertical position, size scale (icons and text), and keep-details-open preference | User choice | Place and display the Mac panel | Sandboxed `UserDefaults.standard` | Mac app only | Settings → Delete all data resets panel preferences |
+
+Data is stored independently on each device. There is no device sync, and the Mac app does not share an App Group with the iOS app or include a WidgetKit extension.
 
 ## Network paths
 
@@ -17,4 +22,8 @@ For the current implementation: **Data Not Collected**. Re-audit before every re
 
 ## Required-reason APIs
 
-The app and Widget use App Group `UserDefaults`. Both executable bundles include a `PrivacyInfo.xcprivacy` declaration for `NSPrivacyAccessedAPICategoryUserDefaults`, approved reason `1C8F.1` (access by members of the same App Group). Production storage intentionally has no `UserDefaults.standard` fallback.
+The iOS app and Widget use App Group `UserDefaults`. Both executable bundles include a `PrivacyInfo.xcprivacy` declaration for `NSPrivacyAccessedAPICategoryUserDefaults`, approved reason `1C8F.1` (access by members of the same App Group). iOS production storage intentionally has no `UserDefaults.standard` fallback.
+
+The Mac app uses `UserDefaults.standard` within its own sandbox for timeline and panel settings. Its `PrivacyInfo.xcprivacy` declares `NSPrivacyAccessedAPICategoryUserDefaults` with reason `CA92.1` (data accessible only to the app). Mac preferences do not require App Group entitlements.
+
+The Mac panel uses `ProcessInfo.systemUptime` to measure elapsed time during its selection animation. Its manifest declares `NSPrivacyAccessedAPICategorySystemBootTime` with reason `35F9.1` for timing events within the app. These measurements stay in memory and are neither saved nor sent off-device. See Apple's [required-reason API declarations](https://developer.apple.com/documentation/bundleresources/app-privacy-configuration/nsprivacyaccessedapitypes/nsprivacyaccessedapitype).

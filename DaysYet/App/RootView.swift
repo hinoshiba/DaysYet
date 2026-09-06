@@ -3,14 +3,19 @@ import SwiftUI
 struct RootView: View {
     @EnvironmentObject private var store: ProfileStore
     @State private var selectedTab: Int
+#if DEBUG
+    @State private var screenshotEditTimesPresented: Bool
+#endif
 
     init() {
 #if DEBUG
         let arguments = ProcessInfo.processInfo.arguments
+        let editsTimes = arguments.contains("--screenshot-edit-times")
         let initialTab = arguments.contains("--screenshot-settings")
             ? 2
-            : arguments.contains("--screenshot-times") ? 1 : 0
+            : (arguments.contains("--screenshot-times") || editsTimes) ? 1 : 0
         _selectedTab = State(initialValue: initialTab)
+        _screenshotEditTimesPresented = State(initialValue: editsTimes)
 #else
         _selectedTab = State(initialValue: 0)
 #endif
@@ -26,6 +31,11 @@ struct RootView: View {
 
             NavigationStack {
                 TimeLibraryView()
+#if DEBUG
+                    .navigationDestination(isPresented: $screenshotEditTimesPresented) {
+                        ProfileEditorView()
+                    }
+#endif
             }
             .tabItem { Label(L10n.text("時間", "Times"), systemImage: "circle.dotted") }
             .tag(1)

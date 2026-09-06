@@ -18,6 +18,7 @@ struct WidgetThemePalette {
         case .year: metricGradients[2]
         case .healthyLife: metricGradients[3]
         case .customLife: metricGradients[4]
+        case .workday: metricGradients[5]
         }
     }
 
@@ -36,7 +37,8 @@ struct WidgetThemePalette {
                     [Color(red: 1.0, green: 0.39, blue: 0.34), Color(red: 1.0, green: 0.57, blue: 0.32)],
                     [Color(red: 1.0, green: 0.68, blue: 0.16), Color(red: 1.0, green: 0.82, blue: 0.26)],
                     [Color(red: 0.76, green: 0.88, blue: 0.19), Color(red: 0.42, green: 0.78, blue: 0.39)],
-                    [Color(red: 0.69, green: 0.48, blue: 0.98), Color(red: 0.95, green: 0.42, blue: 0.76)]
+                    [Color(red: 0.69, green: 0.48, blue: 0.98), Color(red: 0.95, green: 0.42, blue: 0.76)],
+                    [Color(red: 0.30, green: 0.84, blue: 0.75), Color(red: 0.18, green: 0.61, blue: 0.70)]
                 ]
             )
         case .quietForest:
@@ -52,7 +54,8 @@ struct WidgetThemePalette {
                     [Color(red: 0.50, green: 0.41, blue: 0.33), Color(red: 0.55, green: 0.39, blue: 0.32)],
                     [Color(red: 0.45, green: 0.44, blue: 0.28), Color(red: 0.47, green: 0.43, blue: 0.26)],
                     [Color(red: 0.34, green: 0.46, blue: 0.31), Color(red: 0.30, green: 0.47, blue: 0.32)],
-                    [Color(red: 0.44, green: 0.42, blue: 0.50), Color(red: 0.46, green: 0.41, blue: 0.54)]
+                    [Color(red: 0.44, green: 0.42, blue: 0.50), Color(red: 0.46, green: 0.41, blue: 0.54)],
+                    [Color(red: 0.29, green: 0.49, blue: 0.45), Color(red: 0.26, green: 0.44, blue: 0.43)]
                 ]
             )
         case .softDawn:
@@ -68,7 +71,8 @@ struct WidgetThemePalette {
                     [Color(red: 0.62, green: 0.36, blue: 0.32), Color(red: 0.66, green: 0.33, blue: 0.33)],
                     [Color(red: 0.56, green: 0.40, blue: 0.26), Color(red: 0.61, green: 0.38, blue: 0.19)],
                     [Color(red: 0.39, green: 0.45, blue: 0.35), Color(red: 0.33, green: 0.46, blue: 0.36)],
-                    [Color(red: 0.56, green: 0.37, blue: 0.47), Color(red: 0.58, green: 0.35, blue: 0.52)]
+                    [Color(red: 0.56, green: 0.37, blue: 0.47), Color(red: 0.58, green: 0.35, blue: 0.52)],
+                    [Color(red: 0.41, green: 0.47, blue: 0.47), Color(red: 0.35, green: 0.45, blue: 0.50)]
                 ]
             )
         case .calmSea:
@@ -84,7 +88,8 @@ struct WidgetThemePalette {
                     [Color(red: 0.32, green: 0.46, blue: 0.57), Color(red: 0.31, green: 0.45, blue: 0.62)],
                     [Color(red: 0.35, green: 0.46, blue: 0.49), Color(red: 0.29, green: 0.47, blue: 0.52)],
                     [Color(red: 0.27, green: 0.48, blue: 0.47), Color(red: 0.23, green: 0.48, blue: 0.48)],
-                    [Color(red: 0.40, green: 0.43, blue: 0.59), Color(red: 0.41, green: 0.42, blue: 0.64)]
+                    [Color(red: 0.40, green: 0.43, blue: 0.59), Color(red: 0.41, green: 0.42, blue: 0.64)],
+                    [Color(red: 0.20, green: 0.46, blue: 0.61), Color(red: 0.17, green: 0.46, blue: 0.68)]
                 ]
             )
         }

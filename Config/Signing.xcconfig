@@ -1,0 +1,7 @@
+// Shared defaults contain no account or certificate identity.
+CODE_SIGN_STYLE = Automatic
+// Organizer re-signs the archive for the selected distribution channel.
+CODE_SIGN_IDENTITY = Apple Development
+
+// Optional, untracked settings for the authorized build Mac.
+#include? "Signing.local.xcconfig"

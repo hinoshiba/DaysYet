@@ -1,6 +1,6 @@
 # Third-party notices
 
-The iOS application and Widget extension currently ship with **no third-party runtime code, fonts, images, analytics SDKs, or advertising SDKs**.
+The iOS application, Widget extension, and macOS application currently ship with **no third-party runtime code, fonts, images, analytics SDKs, or advertising SDKs**.
 
 The following development tool is not bundled in the distributed application:
 

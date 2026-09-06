@@ -10,7 +10,7 @@ struct SettingsView: View {
                 NavigationLink {
                     ProfileEditorView()
                 } label: {
-                    Label(L10n.text("人生の基準", "Life reference points"), systemImage: "calendar.badge.clock")
+                    Label(L10n.text("時間の基準", "Time reference points"), systemImage: "calendar.badge.clock")
                 }
             } header: {
                 Text(L10n.text("表示", "Display"))
@@ -87,8 +87,8 @@ private struct PrivacyView: View {
         List {
             Section {
                 Text(L10n.text(
-                    "本アプリは、生年月日・目標年齢・大切な日の起算日と目標日時・表示設定を、アプリとウィジェットの共有領域に保存します。データを外部へ送信せず、追跡・分析・広告を行いません。設定画面からいつでも全データを消去できます。",
-                    "This app stores your birth date, target age, milestone start and target dates, and display choices in the private area shared by the app and its widget. It sends nothing off device and performs no tracking, analytics, or advertising. You can delete all data from Settings at any time."
+                    "本アプリは、生年月日・目標年齢・勤務時間・大切な日の起算日と目標日時・表示設定を、アプリとウィジェットの共有領域に保存します。データを外部へ送信せず、追跡・分析・広告を行いません。設定画面からいつでも全データを消去できます。",
+                    "This app stores your birth date, target age, work hours, milestone start and target dates, and display choices in the private area shared by the app and its widget. It sends nothing off device and performs no tracking, analytics, or advertising. You can delete all data from Settings at any time."
                 ))
             }
 
