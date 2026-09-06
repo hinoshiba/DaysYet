@@ -1,12 +1,12 @@
 # Privacy Policy / プライバシーポリシー
 
-最終更新 / Last updated: 2026-09-05
+最終更新 / Last updated: 2026-09-06
 
 ## 日本語
 
 ### 保存する情報と目的
 
-DaysYetは、利用者が入力した生年月日、健康でいたい年齢、目標名、目標の起算日と目標日時、毎日の勤務開始・終了時刻、週の始まりの設定、ウィジェットに表示する項目、表示モード、値の形式、テーマを保存します。「勤務時間」の表示は任意で、勤務時刻は端末の現地時刻に基づくカウントダウンに使います。Mac版では、常駐パネルの表示・非表示、表示先ディスプレイ、画面端の配置、左右配置時の上下位置、アイコン・文字を含むサイズ、詳細を開いたままにする設定も保存します。これらは時間の計算、アプリ画面、ウィジェット・常駐パネル表示にだけ使います。
+DaysYetは、利用者が入力した生年月日、健康でいたい年齢、目標名、目標の起算日と目標日時、2種類の活動時間のラベル名・開始終了時刻・有効な曜日、週の始まりの設定、ウィジェットに表示する項目、表示モード、値の形式、テーマを保存します。「活動時間」の表示は任意で、ラベル名は表示に、時刻と曜日は端末の現地時刻に基づくカウントダウンとOffの判定に使います。Mac版では、常駐パネルの表示・非表示、表示先ディスプレイ、画面端の配置、左右配置時の上下位置、アイコン・文字を含むサイズ、詳細を開いたままにする設定も保存します。これらは時間の計算、アプリ画面、ウィジェット・常駐パネル表示にだけ使います。
 
 ### 保存場所と共有範囲
 
@@ -38,7 +38,7 @@ DaysYetは追跡、行動分析、広告、第三者SDKを使用しません。A
 
 ### Data stored and purpose
 
-DaysYet stores the birth date, healthy-age goal, milestone name, start and target dates, daily work start and end times, week-start preference, widget selections, display mode, value-display style, and theme entered or selected by the user. Showing Work hours is optional; work times are used for a daily countdown based on the device’s local time. The Mac app also stores panel visibility, selected display, screen edge, vertical position, size including icons and text, and the preference to keep details open. The data is used only to calculate and display timelines in the app, widget, and desktop panel.
+DaysYet stores the birth date, healthy-age goal, milestone name, start and target dates, labels, start and end times, and enabled weekdays for two activity schedules, week-start preference, widget selections, display mode, value-display style, and theme entered or selected by the user. Showing activity hours is optional; labels are used for display, and times and weekdays are used for countdowns and Off status based on the device’s local time. The Mac app also stores panel visibility, selected display, screen edge, vertical position, size including icons and text, and the preference to keep details open. The data is used only to calculate and display timelines in the app, widget, and desktop panel.
 
 ### Storage and sharing
 

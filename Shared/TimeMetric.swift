@@ -7,9 +7,12 @@ enum MetricKind: String, Codable, CaseIterable, Identifiable, Sendable {
     case year
     case healthyLife
     case customLife
+    case activity
     case workday
 
     var id: String { rawValue }
+    static let activityKinds: [MetricKind] = [.activity, .workday]
+    var isActivity: Bool { Self.activityKinds.contains(self) }
 
     var title: String {
         switch self {
@@ -18,8 +21,20 @@ enum MetricKind: String, Codable, CaseIterable, Identifiable, Sendable {
         case .year: L10n.text("今年", "This year")
         case .healthyLife: L10n.text("健康でいたい年齢", "Healthy-age goal")
         case .customLife: L10n.text("大切な日", "Milestone")
+        case .activity: L10n.text("1日の活動", "Daily activity")
         case .workday: L10n.text("勤務時間", "Work hours")
         }
+    }
+
+    func title(profile: UserProfile) -> String {
+        let customName: String
+        switch self {
+        case .activity, .workday: customName = profile.activitySchedule(for: self).name
+        case .customLife: customName = profile.customTargetName
+        default: return title
+        }
+        let trimmed = customName.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? title : trimmed
     }
 
     var shortTitle: String {
@@ -37,6 +52,7 @@ enum MetricKind: String, Codable, CaseIterable, Identifiable, Sendable {
         case .year: "sparkles"
         case .healthyLife: "heart.text.clipboard"
         case .customLife: "flag.checkered"
+        case .activity: "sun.max"
         case .workday: "briefcase"
         }
     }
@@ -138,6 +154,7 @@ enum WidgetMetricOption: String, AppEnum, CaseIterable {
     case year
     case healthyLife
     case customLife
+    case activity
     case workday
 
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "widget.metric.type")
@@ -147,6 +164,7 @@ enum WidgetMetricOption: String, AppEnum, CaseIterable {
         .year: "metric.year",
         .healthyLife: "metric.healthy_age_goal",
         .customLife: "metric.milestone",
+        .activity: "metric.activity",
         .workday: "metric.workday"
     ]
 
@@ -162,6 +180,7 @@ enum LockScreenMetricOption: String, AppEnum, CaseIterable {
     case year
     case healthyLife
     case customLife
+    case activity
     case workday
 
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "widget.lock_screen.metric.type")
@@ -172,6 +191,7 @@ enum LockScreenMetricOption: String, AppEnum, CaseIterable {
         .year: "metric.year",
         .healthyLife: "metric.healthy_age_goal",
         .customLife: "metric.milestone",
+        .activity: "metric.activity",
         .workday: "metric.workday"
     ]
 
@@ -193,6 +213,8 @@ enum LockScreenMetricOption: String, AppEnum, CaseIterable {
             return .healthyLife
         case .customLife:
             return .customLife
+        case .activity:
+            return .activity
         case .workday:
             return .workday
         }
@@ -306,29 +328,32 @@ struct MetricSnapshot: Identifiable, Equatable, Sendable {
     let countdown: CountdownPresentation
     let elapsedFraction: Double
     let targetDate: Date
+    var isOff: Bool = false
 
     var id: String { kind.rawValue }
     var remainingText: String { countdown.plainText }
-    var percentageText: String { String(format: "%.1f%%", elapsedFraction * 100) }
+    var percentageText: String { isOff ? "Off" : String(format: "%.1f%%", elapsedFraction * 100) }
 
     var percentageElapsedText: String {
-        L10n.text("\(percentageText)経過", "\(percentageText) elapsed")
+        isOff ? "Off" : L10n.text("\(percentageText)経過", "\(percentageText) elapsed")
     }
 
     func valueText(style: MetricValueStyle, compact: Bool = false) -> String {
+        if isOff { return "Off" }
         switch style {
         case .remaining:
-            compact ? compactRemainingText : remainingText
+            return compact ? compactRemainingText : remainingText
         case .percentage:
-            percentageElapsedText
+            return percentageElapsedText
         case .targetDate:
-            targetDateText(compact: compact)
+            return targetDateText(compact: compact)
         }
     }
 
     func targetDateText(compact: Bool = false) -> String {
+        if isOff { return "Off" }
         let formatted: String
-        if compact, kind == .workday {
+        if compact, kind.isActivity {
             formatted = targetDate.formatted(date: .omitted, time: .shortened)
         } else if compact, kind == .healthyLife || kind == .customLife {
             formatted = targetDate.formatted(.dateTime.year(.twoDigits).month(.defaultDigits).day())
@@ -345,18 +370,20 @@ struct MetricSnapshot: Identifiable, Equatable, Sendable {
     }
 
     func secondarySummary(excluding style: MetricValueStyle) -> String {
+        if isOff { return context }
         switch style {
         case .remaining:
-            "\(percentageElapsedText) · \(targetDateText())"
+            return "\(percentageElapsedText) · \(targetDateText())"
         case .percentage:
-            "\(remainingText) · \(targetDateText())"
+            return "\(remainingText) · \(targetDateText())"
         case .targetDate:
-            "\(remainingText) · \(percentageElapsedText)"
+            return "\(remainingText) · \(percentageElapsedText)"
         }
     }
 
     var accessibilitySummary: String {
-        "\(title)。\(remainingText)。\(percentageElapsedText)。\(targetDateText())。"
+        if isOff { return "\(title)。Off。\(context)。" }
+        return "\(title)。\(remainingText)。\(percentageElapsedText)。\(targetDateText())。"
     }
 
     private var compactRemainingText: String {
@@ -364,7 +391,7 @@ struct MetricSnapshot: Identifiable, Equatable, Sendable {
             switch kind {
             case .healthyLife: return L10n.text("目安超過", "Past target")
             case .customLife: return L10n.text("到達", "Reached")
-            case .workday: return countdown.terminalText ?? ""
+            case .activity, .workday: return countdown.terminalText ?? ""
             default: return L10n.text("更新中", "Updating")
             }
         }
@@ -379,18 +406,28 @@ enum TimeProgressCalculator {
         now: Date = .now,
         calendar: Calendar = .autoupdatingCurrent
     ) -> MetricSnapshot {
-        let interval = dateInterval(for: kind, profile: profile, now: now, calendar: calendar)
+        let scheduledInterval = kind.isActivity
+            ? activityInterval(schedule: profile.activitySchedule(for: kind), now: now, calendar: calendar)
+            : nil
+        let isOff = kind.isActivity && scheduledInterval == nil
+        let interval = kind.isActivity
+            ? scheduledInterval ?? DateInterval(start: now, duration: 0)
+            : dateInterval(for: kind, profile: profile, now: now, calendar: calendar)
         let total = max(interval.end.timeIntervalSince(interval.start), 1)
         let elapsed = max(now.timeIntervalSince(interval.start), 0)
         let fraction = min(max(elapsed / total, 0), 1)
-        let beforeWork = kind == .workday && now < interval.start
-        let afterWork = kind == .workday && now >= interval.end
+        let beforeActivity = kind.isActivity && now < interval.start
+        let afterActivity = kind.isActivity && !isOff && now >= interval.end
 
         return MetricSnapshot(
             kind: kind,
-            title: kind == .customLife ? nonEmpty(profile.customTargetName, fallback: kind.title) : kind.title,
-            context: context(for: kind, profile: profile, target: interval.end, calendar: calendar),
-            countdown: beforeWork ? CountdownPresentation(
+            title: kind.title(profile: profile),
+            context: isOff
+                ? offContext(schedule: profile.activitySchedule(for: kind))
+                : context(for: kind, profile: profile, target: interval.end, calendar: calendar),
+            countdown: isOff ? CountdownPresentation(
+                prefix: "", components: [], suffix: "", terminalText: "Off"
+            ) : beforeActivity ? CountdownPresentation(
                 prefix: "", components: [], suffix: "",
                 terminalText: L10n.text("開始前", "Not started")
             ) : countdownPresentation(
@@ -399,8 +436,9 @@ enum TimeProgressCalculator {
                 target: interval.end,
                 calendar: calendar
             ),
-            elapsedFraction: afterWork ? 1 : fraction,
-            targetDate: interval.end
+            elapsedFraction: afterActivity ? 1 : fraction,
+            targetDate: interval.end,
+            isOff: isOff
         )
     }
 
@@ -425,17 +463,9 @@ enum TimeProgressCalculator {
         case .customLife:
             let start = profile.customTargetStartDate
             return DateInterval(start: start, end: max(profile.customTargetDate, start.addingTimeInterval(1)))
-        case .workday:
-            let today = calendar.startOfDay(for: now)
-            let todayInterval = workdayInterval(startingOn: today, profile: profile, calendar: calendar)
-            if UserProfile.clampedWorkMinute(profile.workEndMinute) <= UserProfile.clampedWorkMinute(profile.workStartMinute),
-               now < todayInterval.start,
-               let yesterday = calendar.date(byAdding: .day, value: -1, to: today) {
-                // An overnight shift belongs to the date on which it started,
-                // including the completed period before the next evening.
-                return workdayInterval(startingOn: yesterday, profile: profile, calendar: calendar)
-            }
-            return todayInterval
+        case .activity, .workday:
+            return activityInterval(schedule: profile.activitySchedule(for: kind), now: now, calendar: calendar)
+                ?? DateInterval(start: now, duration: 0)
         }
     }
 
@@ -448,17 +478,23 @@ enum TimeProgressCalculator {
         calendar: Calendar
     ) -> [Date] {
         guard end > now else { return [] }
-        if kind != .workday {
+        if !kind.isActivity {
             let boundary = dateInterval(for: kind, profile: profile, now: now, calendar: calendar).end
             return boundary > now && boundary <= end ? [boundary] : []
         }
 
+        let schedule = profile.activitySchedule(for: kind).normalized
+        guard !schedule.activeWeekdays.isEmpty else { return [] }
         let today = calendar.startOfDay(for: now)
         var day = calendar.date(byAdding: .day, value: -1, to: today) ?? today
         var dates = Set<Date>()
         while day <= end {
-            let interval = workdayInterval(startingOn: day, profile: profile, calendar: calendar)
-            for date in [day, interval.start, interval.end] where date > now && date <= end {
+            var boundaries = [day]
+            if schedule.activeWeekdays.contains(calendar.component(.weekday, from: day)) {
+                let interval = activityInterval(startingOn: day, schedule: schedule, calendar: calendar)
+                boundaries += [interval.start, interval.end]
+            }
+            for date in boundaries where date > now && date <= end {
                 dates.insert(date)
             }
             guard let nextDay = calendar.date(byAdding: .day, value: 1, to: day), nextDay > day else { break }
@@ -467,13 +503,30 @@ enum TimeProgressCalculator {
         return dates.sorted()
     }
 
-    private static func workdayInterval(
+    private static func activityInterval(schedule: ActivitySchedule, now: Date, calendar: Calendar) -> DateInterval? {
+        let schedule = schedule.normalized
+        let today = calendar.startOfDay(for: now)
+        let todayIsActive = schedule.activeWeekdays.contains(calendar.component(.weekday, from: today))
+        let todayInterval = activityInterval(startingOn: today, schedule: schedule, calendar: calendar)
+        if schedule.endMinute <= schedule.startMinute,
+           now < todayInterval.start,
+           let yesterday = calendar.date(byAdding: .day, value: -1, to: today),
+           schedule.activeWeekdays.contains(calendar.component(.weekday, from: yesterday)) {
+            let previous = activityInterval(startingOn: yesterday, schedule: schedule, calendar: calendar)
+            // An enabled overnight period remains active into an Off weekday.
+            // On enabled days retain its completed state until the next start.
+            if now < previous.end || todayIsActive { return previous }
+        }
+        return todayIsActive ? todayInterval : nil
+    }
+
+    private static func activityInterval(
         startingOn day: Date,
-        profile: UserProfile,
+        schedule: ActivitySchedule,
         calendar: Calendar
     ) -> DateInterval {
-        let startMinute = UserProfile.clampedWorkMinute(profile.workStartMinute)
-        let endMinute = UserProfile.clampedWorkMinute(profile.workEndMinute)
+        let startMinute = UserProfile.clampedWorkMinute(schedule.startMinute)
+        let endMinute = UserProfile.clampedWorkMinute(schedule.endMinute)
         let endDay = endMinute <= startMinute
             ? calendar.date(byAdding: .day, value: 1, to: day) ?? day
             : day
@@ -512,9 +565,15 @@ enum TimeProgressCalculator {
             return L10n.text("設定した \(formattedAge(profile.healthyLifeYears)) 歳まで", "until age \(formattedAge(profile.healthyLifeYears))")
         case .customLife:
             return target.formatted(.dateTime.year().month(.abbreviated).day())
-        case .workday:
-            return L10n.text("毎日の勤務時間", "Daily work hours")
+        case .activity, .workday:
+            return L10n.text("活動時間", "Activity hours")
         }
+    }
+
+    private static func offContext(schedule: ActivitySchedule) -> String {
+        schedule.activeWeekdays.isEmpty
+            ? L10n.text("すべての曜日がOffです", "All weekdays are Off")
+            : L10n.text("今日はOffです", "Today is Off")
     }
 
     private static func countdownPresentation(
@@ -530,8 +589,8 @@ enum TimeProgressCalculator {
                 terminalText = L10n.text("設定した目安を超えています", "Beyond your set target")
             case .customLife:
                 terminalText = L10n.text("ここまで歩みました", "Milestone reached")
-            case .workday:
-                terminalText = L10n.text("勤務終了", "Work finished")
+            case .activity, .workday:
+                terminalText = L10n.text("活動終了", "Finished")
             default:
                 terminalText = L10n.text("次の期間へ更新中", "Updating period")
             }
@@ -544,7 +603,7 @@ enum TimeProgressCalculator {
         let suffix = L10n.text("", "left")
         let components: [CountdownComponent]
 
-        if kind == .workday {
+        if kind.isActivity {
             components = [
                 CountdownComponent(value: Int(seconds / 3_600), unit: L10n.text("時間", "h")),
                 CountdownComponent(value: Int(seconds / 60) % 60, unit: L10n.text("分", "m"))
@@ -574,10 +633,6 @@ enum TimeProgressCalculator {
 
     private static func formattedAge(_ value: Double) -> String {
         value.rounded() == value ? String(Int(value)) : String(format: "%.1f", value)
-    }
-
-    private static func nonEmpty(_ value: String, fallback: String) -> String {
-        value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? fallback : value
     }
 
     private static func fallbackInterval(now: Date) -> DateInterval {

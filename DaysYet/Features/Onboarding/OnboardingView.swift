@@ -60,7 +60,7 @@ struct OnboardingView: View {
                     .font(.system(size: 38, weight: .bold, design: .rounded))
                     .multilineTextAlignment(.center)
                     .tracking(-0.8)
-                Text(L10n.text("勤務時間から、今月・今年・人生まで。\n大切な3本だけを、ホーム画面へ。", "From work hours to months, years, and life.\nKeep the three that matter on your Home Screen."))
+                Text(L10n.text("活動時間から、今月・今年・人生まで。\n大切な3本だけを、ホーム画面へ。", "From activity hours to months, years, and life.\nKeep the three that matter on your Home Screen."))
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.secondary)
                     .lineSpacing(4)

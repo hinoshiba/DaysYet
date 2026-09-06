@@ -59,7 +59,9 @@ struct ProfileEditorView: View {
         Form {
             weekStartSection
 
-            workHoursSection
+            ForEach(MetricKind.activityKinds) { kind in
+                activityHoursSection(for: kind)
+            }
 
             Section(L10n.text("人生の基準", "Life reference points")) {
                 DatePicker(
@@ -133,74 +135,89 @@ struct ProfileEditorView: View {
         }
     }
 
-    private var workHoursSection: some View {
-        Section {
+    private func activityHoursSection(for kind: MetricKind) -> some View {
+        let schedule = store.profile.activitySchedule(for: kind)
+        let slotTitle = ActivityScheduleEditorText.title(for: kind)
+        return Section {
+            TextField(
+                L10n.text("ラベル", "Label"),
+                text: activityBinding(for: kind, \.name),
+                prompt: Text(kind.title)
+            )
+            .accessibilityLabel("\(slotTitle)、\(L10n.text("ラベル", "Label"))")
+            .accessibilityIdentifier("\(kind.rawValue).name")
             DatePicker(
                 L10n.text("開始時刻", "Start time"),
-                selection: workTimeBinding(\.workStartMinute),
+                selection: activityTimeBinding(for: kind, \.startMinute),
                 displayedComponents: .hourAndMinute
             )
+            .accessibilityLabel("\(slotTitle)、\(L10n.text("開始時刻", "Start time"))")
+            .accessibilityIdentifier("\(kind.rawValue).startTime")
             DatePicker(
-                store.profile.workEndMinute <= store.profile.workStartMinute
-                    ? L10n.text("終了時刻（翌日）", "End time (next day)")
-                    : L10n.text("終了時刻", "End time"),
-                selection: workTimeBinding(\.workEndMinute),
+                ActivityScheduleEditorText.endTimeTitle(for: schedule),
+                selection: activityTimeBinding(for: kind, \.endMinute),
                 displayedComponents: .hourAndMinute
+            )
+            .accessibilityLabel("\(slotTitle)、\(ActivityScheduleEditorText.endTimeTitle(for: schedule))")
+            .accessibilityIdentifier("\(kind.rawValue).endTime")
+            ActivityWeekdayPicker(
+                activeWeekdays: activityBinding(for: kind, \.activeWeekdays),
+                slotTitle: slotTitle,
+                identifier: kind.rawValue
             )
             TimelineView(.periodic(from: .now, by: 60)) { context in
-                let snapshot = TimeProgressCalculator.snapshot(for: .workday, profile: store.profile, now: context.date)
+                let snapshot = TimeProgressCalculator.snapshot(for: kind, profile: store.profile, now: context.date)
                 VStack(alignment: .leading, spacing: 8) {
                     LabeledContent(L10n.text("現在", "Now"), value: snapshot.remainingText)
-                    ProgressView(value: snapshot.elapsedFraction)
+                    if !snapshot.isOff {
+                        ProgressView(value: snapshot.elapsedFraction)
+                    }
                 }
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(snapshot.accessibilitySummary)
             }
         } header: {
-            Text(L10n.text("勤務時間", "Work hours"))
+            Text(slotTitle)
         } footer: {
-            Text(workHoursDescription)
+            Text(ActivityScheduleEditorText.description(for: kind, schedule: schedule))
         }
     }
 
-    private var workHoursDescription: String {
-        let recurrence = L10n.text("毎日、端末の現地時刻で繰り返します。", "Repeats every day in local time. ")
-        if store.profile.workEndMinute == store.profile.workStartMinute {
-            return recurrence + L10n.text(
-                "開始と終了が同じ時刻のため、翌日の同時刻までの24時間として扱います。",
-                "Matching start and end times define a 24-hour period, ending at the same time the next day."
-            )
-        }
-        if store.profile.workEndMinute < store.profile.workStartMinute {
-            return recurrence + L10n.text(
-                "終了は翌日です。勤務終了後は、次の開始時刻まで「勤務終了」と表示します。",
-                "The end time is on the next day. After work ends, “Work finished” appears until the next start."
-            )
-        }
-        return recurrence + L10n.text(
-            "開始前は「開始前」、終了後は「勤務終了」と表示します。",
-            "“Not started” appears before the start time and “Work finished” after the end time."
+    private func activityBinding<Value>(
+        for kind: MetricKind,
+        _ keyPath: WritableKeyPath<ActivitySchedule, Value>
+    ) -> Binding<Value> {
+        Binding(
+            get: { store.profile.activitySchedule(for: kind)[keyPath: keyPath] },
+            set: { value in
+                store.update { profile in
+                    profile.updateActivitySchedule(for: kind) { $0[keyPath: keyPath] = value }
+                }
+            }
         )
     }
 
-    private func workTimeBinding(_ keyPath: WritableKeyPath<UserProfile, Int>) -> Binding<Date> {
+    private func activityTimeBinding(
+        for kind: MetricKind,
+        _ keyPath: WritableKeyPath<ActivitySchedule, Int>
+    ) -> Binding<Date> {
         // Use a fixed local date so the visual picker and accessibility value
         // describe the same clock time without depending on today's DST changes.
-        Binding(
+        let minute = activityBinding(for: kind, keyPath)
+        return Binding(
             get: {
                 var calendar = Calendar(identifier: .gregorian)
                 calendar.timeZone = .autoupdatingCurrent
-                let minute = store.profile[keyPath: keyPath]
+                let value = minute.wrappedValue
                 return calendar.date(from: DateComponents(
-                    year: 2001, month: 1, day: 15, hour: minute / 60, minute: minute % 60
+                    year: 2001, month: 1, day: 15, hour: value / 60, minute: value % 60
                 )) ?? .now
             },
             set: { value in
                 var calendar = Calendar(identifier: .gregorian)
                 calendar.timeZone = .autoupdatingCurrent
                 let components = calendar.dateComponents([.hour, .minute], from: value)
-                let minute = (components.hour ?? 0) * 60 + (components.minute ?? 0)
-                store.update { $0[keyPath: keyPath] = minute }
+                minute.wrappedValue = (components.hour ?? 0) * 60 + (components.minute ?? 0)
             }
         )
     }

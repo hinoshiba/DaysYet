@@ -151,18 +151,21 @@ private struct WidgetPreviewMetricRow: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
+    @ViewBuilder
     private func percentageBadge(tight: Bool = false) -> some View {
-        Text(snapshot.percentageText)
-            .font(
-                tight
-                    ? .system(size: tightCaptionSize, weight: .bold, design: .rounded)
-                    : .system(compact ? .caption2 : .caption, design: .rounded, weight: .bold)
-            )
-            .monospacedDigit()
-            .foregroundStyle(palette.foreground)
-            .padding(.horizontal, tight ? 4 : (compact ? 5 : 7))
-            .padding(.vertical, compact ? 0 : 2)
-            .background(palette.accent.opacity(0.18), in: Capsule())
+        if !snapshot.isOff {
+            Text(snapshot.percentageText)
+                .font(
+                    tight
+                        ? .system(size: tightCaptionSize, weight: .bold, design: .rounded)
+                        : .system(compact ? .caption2 : .caption, design: .rounded, weight: .bold)
+                )
+                .monospacedDigit()
+                .foregroundStyle(palette.foreground)
+                .padding(.horizontal, tight ? 4 : (compact ? 5 : 7))
+                .padding(.vertical, compact ? 0 : 2)
+                .background(palette.accent.opacity(0.18), in: Capsule())
+        }
     }
 
     private func combinedProgressBar(height: CGFloat) -> some View {
