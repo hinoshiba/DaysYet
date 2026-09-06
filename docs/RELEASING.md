@@ -5,6 +5,14 @@ Organizer, and uploaded explicitly to App Store Connect. GitHub Actions runs
 unsigned checks and tests. A Git tag does not build, upload, submit, or publish
 an app. The monitored public support contact is `support@hinoshiba.com`.
 
+## Retire previous hosted automation once
+
+If an earlier Xcode Cloud workflow exists, disable it in Xcode or App Store
+Connect before the next release. Verify that branch or tag changes no longer
+start builds or automatic distribution. Removing repository hooks does not
+change server-side workflow settings. Preserve existing run history and build
+artifacts, and record the verified state in the private release record.
+
 ## Products and configuration
 
 | Product | Shared scheme | Archive destination | Bundle ID |
