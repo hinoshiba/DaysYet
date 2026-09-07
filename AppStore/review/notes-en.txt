@@ -11,12 +11,13 @@ To review the Lock Screen Widget:
 2. Add “DaysYet — Lock Screen” in Inline, Circular, or Rectangular format.
 3. Tap the added Widget while customizing to choose its single timeline. By default, it uses the first timeline selected in the app.
 
-To review Work hours and week starts:
-1. Open Times > Edit time reference points.
-2. In Work hours, set a start and end time. The default is 09:00–18:00; the schedule repeats daily in the device’s local time. Choose Work hours on the Widget tab or in a Widget’s configuration.
-3. A daytime schedule shows “Not started” before work, remaining time during work, and “Work finished” afterward. An end time earlier than the start ends the next day. Equal start and end times define a 24-hour schedule. This feature is a countdown, not attendance tracking or employer reporting.
-4. In Week starts on > First day, choose the device setting or a weekday. This week then runs from local midnight on that weekday to the next occurrence, and the app and Widgets use the same setting.
+To review activity schedules and week starts:
+1. Open Settings > Time reference points. This is the entry point for editing dates and activity schedules; Times displays the available timelines.
+2. Activity hours 1 and Activity hours 2 each have an editable name, start and end times, and independent active weekdays. For a new user, Daily activity defaults to 07:00–23:00 every day and Work hours to 09:00–18:00 Monday–Friday. Existing users keep their previous work times, daily recurrence, and display selections.
+3. Change either label and toggle weekdays On or Off, then select the activity on the Widget tab or in a Widget’s configuration. The app and Widgets use the saved label, times, and weekdays. All weekdays can be Off to pause an activity.
+4. Schedules repeat in the device’s local time. A daytime schedule shows “Not started” before activity, remaining time during activity, and “Finished” afterward. Inactive days show “Off.” An end time earlier than the start ends the next day, even when that next day is Off; the start day determines whether an activity runs. Equal start and end times define a 24-hour schedule. This feature is a countdown, not attendance tracking or employer reporting.
+5. In Week starts on > First day, choose the device setting or a weekday. This week then runs from local midnight on that weekday to the next occurrence, and the app and Widgets use the same setting.
 
-The milestone supports user-selected start and target dates. Birth date, healthy-age goal, milestone name and dates, work times, week-start choice, and Widget preferences remain in the on-device App Group shared with the Widget extension. There is no device sync. Settings > Delete all data resets saved entries and preferences. The app makes no application-initiated network requests and includes no analytics, advertising, or third-party runtime SDKs. Public source, Privacy, and Support links open in the system browser only after a user tap.
+The milestone supports user-selected start and target dates. Birth date, healthy-age goal, milestone name and dates, activity names, times and weekdays, week-start choice, and Widget preferences remain in the on-device App Group shared with the Widget extension. There is no device sync. Settings > Delete all data resets saved entries and preferences. The app makes no application-initiated network requests and includes no analytics, advertising, or third-party runtime SDKs. Public source, Privacy, and Support links open in the system browser only after a user tap.
 
 “Healthy-age goal” is a user-entered planning marker. It is not based on a health dataset and is not medical advice, diagnosis, health measurement, or a prediction of lifespan.

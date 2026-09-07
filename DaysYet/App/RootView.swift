@@ -11,9 +11,9 @@ struct RootView: View {
 #if DEBUG
         let arguments = ProcessInfo.processInfo.arguments
         let editsTimes = arguments.contains("--screenshot-edit-times")
-        let initialTab = arguments.contains("--screenshot-settings")
+        let initialTab = arguments.contains("--screenshot-settings") || editsTimes
             ? 2
-            : (arguments.contains("--screenshot-times") || editsTimes) ? 1 : 0
+            : arguments.contains("--screenshot-times") ? 1 : 0
         _selectedTab = State(initialValue: initialTab)
         _screenshotEditTimesPresented = State(initialValue: editsTimes)
 #else
@@ -31,17 +31,17 @@ struct RootView: View {
 
             NavigationStack {
                 TimeLibraryView()
-#if DEBUG
-                    .navigationDestination(isPresented: $screenshotEditTimesPresented) {
-                        ProfileEditorView()
-                    }
-#endif
             }
             .tabItem { Label(L10n.text("時間", "Times"), systemImage: "circle.dotted") }
             .tag(1)
 
             NavigationStack {
                 SettingsView()
+#if DEBUG
+                    .navigationDestination(isPresented: $screenshotEditTimesPresented) {
+                        ProfileEditorView()
+                    }
+#endif
             }
             .tabItem { Label(L10n.text("設定", "Settings"), systemImage: "slider.horizontal.3") }
             .tag(2)

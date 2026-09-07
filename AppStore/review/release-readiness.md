@@ -1,5 +1,9 @@
 # Release readiness
 
+## Current iOS 0.1.4 candidate
+
+On 2026-09-08, App Store Connect showed iOS 0.1.3 (5) and macOS 0.1.2 (3) as Ready for Distribution. The historical submission records below describe their status on 2026-09-06. The current iOS-only candidate is 0.1.4 (6), with two customizable activity schedules and time editing consolidated under Settings. See [the 0.1.4 release record](../releases/0.1.4.md) for current verification and submission progress.
+
 ## iOS 0.1.3 update
 
 Final Submit for Review succeeded for iOS 0.1.3 (5) on 2026-09-06 at 19:04 JST. App Store Connect confirmed one submitted item and Waiting for Review (「審査待ち」), with that exact version and build in the submission details. The app, Widget extension, and tests share this version; the separately submitted Mac platform remains 0.1.2 (3). Japanese and English descriptions, promotional text, update notes, and review notes are saved. All 20 refreshed screenshots are attached to their corresponding language and device sets. Automatic release after approval and the existing non-phased release setting are preserved. Apple approval and public availability are pending; iOS 0.1.2 (4) remains the released version.
