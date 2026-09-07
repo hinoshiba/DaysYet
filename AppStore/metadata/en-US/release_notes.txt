@@ -1,3 +1,3 @@
-• Added a daily Work hours countdown with configurable start and end times, including overnight schedules.
-• Choose when This week starts using your device setting or any weekday.
-• Work hours and week settings apply in the app, Home Screen widgets, and Lock Screen widgets.
+• Set up two activity schedules, such as your whole day and work hours, with custom names, start and end times, and active weekdays.
+• Set individual weekdays to Off and use overnight schedules. Your existing work times and display selections are preserved.
+• Editing dates and activity schedules now starts in one place: Settings > Time reference points.

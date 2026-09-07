@@ -19,16 +19,6 @@ struct TimeLibraryView: View {
                         }
                         .padding(.bottom, 8)
 
-                        NavigationLink {
-                            ProfileEditorView()
-                        } label: {
-                            Label(L10n.text("時間の基準を編集", "Edit time reference points"), systemImage: "pencil")
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 14)
-                        }
-                        .buttonStyle(.bordered)
-                        .buttonBorderShape(.roundedRectangle(radius: 16))
-
                         ForEach(MetricKind.allCases) { metric in
                             MetricCard(
                                 snapshot: TimeProgressCalculator.snapshot(
