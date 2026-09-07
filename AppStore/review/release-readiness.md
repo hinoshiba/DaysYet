@@ -1,10 +1,18 @@
 # Release readiness
 
-## Current iOS 0.1.4 candidate
+## Current iOS 0.1.4 submission
 
-On 2026-09-08, App Store Connect showed iOS 0.1.3 (5) and macOS 0.1.2 (3) as Ready for Distribution. The historical submission records below describe their status on 2026-09-06. The current iOS-only candidate is 0.1.4 (6), with two customizable activity schedules and time editing consolidated under Settings. See [the 0.1.4 release record](../releases/0.1.4.md) for current verification and submission progress.
+Final Submit for Review succeeded for iOS 0.1.4 (6) on 2026-09-08 at 07:09 JST. App Store Connect confirmed “1 item submitted,” then showed one submitted item, iOS 0.1.4 (6), Waiting for Review (「審査待ち」), and the same submission date and time in the submission details. Apple approval and public availability of 0.1.4 are pending. This iOS-only update adds two customizable activity schedules and consolidates time editing under Settings. Apple Validate passed all checks, upload completed at 07:03 JST, Apple processing completed, and build 6 was selected and saved before submission. See [the 0.1.4 release record](../releases/0.1.4.md) for the detailed verification record.
 
-## iOS 0.1.3 update
+On 2026-09-08, App Store Connect showed the preceding iOS 0.1.3 (5) and macOS 0.1.2 (3) releases as Ready for Distribution. The historical submission records below describe their status on 2026-09-06, before that confirmation. No macOS version was included in the 0.1.4 submission.
+
+The archive was created through the Xcode 26.6 (17F113) UI from a dedicated worktree starting clean at source commit [`de4f2a987c4245a92a390bbf3b47e07d3ef637c0`](https://github.com/hinoshiba/DaysYet/commit/de4f2a987c4245a92a390bbf3b47e07d3ef637c0), recorded by the source tag [v0.1.4](https://github.com/hinoshiba/DaysYet/tree/v0.1.4). [PR #9](https://github.com/hinoshiba/DaysYet/pull/9) merged to main as `2fdd980180a595105f3e9ce2fc0bb5ef912282ca` with the identical tree, and [candidate CI passed](https://github.com/hinoshiba/DaysYet/actions/runs/34164645705). Xcode generated only string-catalog extraction metadata during archiving, so the source worktree did not remain unchanged throughout. Existing translations were unchanged; the packaged Japanese and English translations matched an independent compilation of the candidate catalog, including byte equality after key-order normalization. Only the generated catalog change was restored after verification.
+
+The app and Widget were verified as iPhoneOS / arm64, version 0.1.4 (6), with valid deep/strict signatures, consistent signing and provisioning entitlements, matching App Groups, privacy manifests matching source, and matching dSYM UUIDs. No test bundles were included. Local iOS tests passed 67/67 and Mac regression tests passed 114/114 with the standard Xcode compiler. A physical device was unavailable, so these checks do not establish device-level operation of the signed archive.
+
+Japanese and English descriptions, promotional text, update notes, and review notes are saved and verified in the submitted version. All 20 refreshed screenshots are attached: five each for Japanese and English iPhone and iPad, with order 01–05 verified in each set. The English support URL opens the English page. Existing review contact information, the No Data Collected privacy declaration, the 4+ age rating, automatic release after approval, and non-phased release were confirmed and preserved. Add for Review and final Submit for Review both completed successfully. The release is awaiting Apple's review.
+
+## Historical iOS 0.1.3 submission (2026-09-06)
 
 Final Submit for Review succeeded for iOS 0.1.3 (5) on 2026-09-06 at 19:04 JST. App Store Connect confirmed one submitted item and Waiting for Review (「審査待ち」), with that exact version and build in the submission details. The app, Widget extension, and tests share this version; the separately submitted Mac platform remains 0.1.2 (3). Japanese and English descriptions, promotional text, update notes, and review notes are saved. All 20 refreshed screenshots are attached to their corresponding language and device sets. Automatic release after approval and the existing non-phased release setting are preserved. Apple approval and public availability are pending; iOS 0.1.2 (4) remains the released version.
 
@@ -12,7 +20,7 @@ The update adds daily Work hours, including overnight schedules, and a device-de
 
 The official iOS archive was created from clean commit `3fce5f8f1fc2948999bc85a3d54800771a6690af` with Xcode 26.6 (17F113), recorded by the immutable source tag [v0.1.3](https://github.com/hinoshiba/DaysYet/tree/v0.1.3). Both the app and Widget were verified as 0.1.3 (5), with valid signatures, matching App Group/profile entitlements, privacy manifests matching source, and matching dSYMs; no test bundles were included. Apple validation, upload, and processing completed, and build 5 was selected for the submitted version. [Candidate CI passed](https://github.com/hinoshiba/DaysYet/actions/runs/34025340509). [PR #6](https://github.com/hinoshiba/DaysYet/pull/6) published the shared iOS/Mac source and was merged to main as `dc405d6` with the same source tree; [main CI also passed](https://github.com/hinoshiba/DaysYet/actions/runs/34025766316).
 
-## Mac 0.1.2 submission
+## Historical Mac 0.1.2 submission (2026-09-06)
 
 Release status: 2026-09-06. Submit for Review succeeded for macOS 0.1.2, build 3, on the existing DaysYet App Store record. App Store Connect confirmed one submitted item, no remaining draft, and Waiting for Review (「審査待ち」). Japanese and English metadata, Mac review notes, and three screenshots per localization are attached. Apple Validate, upload, and processing completed, with only the TestFlight provisioning-profile warning. The public Mac website update is deployed and verified. The existing automatic-release-after-approval setting is preserved. The Mac release is awaiting Apple's review; iOS 0.1.2 (4) remains released and was not part of this submission.
 
