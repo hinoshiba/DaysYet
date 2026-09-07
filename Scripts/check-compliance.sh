@@ -5,6 +5,7 @@ readonly MODE="${1:-development}"
 cd "$(dirname "$0")/.."
 readonly ICON_PATH="DaysYet/Assets.xcassets/AppIcon.appiconset/AppIcon.png"
 readonly EXPECTED_ICON_SHA256="0e51cbe928a9239a4a58a34986cfbc950250704903f035f42a40d87b8b1a636f"
+readonly EXPECTED_MAC_ICON_SHA256="e7b925a0b098adfacd92ba772ce0dc175567cd8166f3b633cd4ad95db28e7a98"
 readonly EXPECTED_SUPPORT_EMAIL="support@hinoshiba.com"
 readonly EXPECTED_APP_ID="com.hinoshiba.daysyet"
 readonly EXPECTED_WIDGET_ID="${EXPECTED_APP_ID}.widget"
@@ -126,8 +127,9 @@ if [[ "${actual_icon_sha256}" != "${EXPECTED_ICON_SHA256}" ]]; then
   exit 1
 fi
 mac_icon_sha256="$(shasum -a 256 DaysYetMac/Assets.xcassets/MacAppIcon.appiconset/icon_1024.png | awk '{print $1}')"
-if [[ "${mac_icon_sha256}" != "${EXPECTED_ICON_SHA256}" ]]; then
-  echo "error: Mac icon must reuse the reviewed source artwork" >&2
+# The legacy Mac asset includes rounded corners and transparent padding.
+if [[ "${mac_icon_sha256}" != "${EXPECTED_MAC_ICON_SHA256}" ]]; then
+  echo "error: Mac icon changed; review its shape and rights and update ASSET_LICENSES.md" >&2
   exit 1
 fi
 
