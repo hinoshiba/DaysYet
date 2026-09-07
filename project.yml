@@ -60,7 +60,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.hinoshiba.daysyet
         MARKETING_VERSION: "0.1.4"
-        CURRENT_PROJECT_VERSION: "6"
+        CURRENT_PROJECT_VERSION: "7"
         TARGETED_DEVICE_FAMILY: "1,2"
         GENERATE_INFOPLIST_FILE: NO
         CODE_SIGN_ENTITLEMENTS: DaysYet/DaysYet.entitlements
@@ -96,7 +96,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.hinoshiba.daysyet.widget
         MARKETING_VERSION: "0.1.4"
-        CURRENT_PROJECT_VERSION: "6"
+        CURRENT_PROJECT_VERSION: "7"
         TARGETED_DEVICE_FAMILY: "1,2"
         GENERATE_INFOPLIST_FILE: NO
         CODE_SIGN_ENTITLEMENTS: DaysYetWidget/DaysYetWidget.entitlements
@@ -116,7 +116,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.hinoshiba.daysyet.tests
         MARKETING_VERSION: "0.1.4"
-        CURRENT_PROJECT_VERSION: "6"
+        CURRENT_PROJECT_VERSION: "7"
         TARGETED_DEVICE_FAMILY: "1,2"
         GENERATE_INFOPLIST_FILE: YES
         CODE_SIGNING_ALLOWED: NO
@@ -160,7 +160,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.hinoshiba.daysyet
         MARKETING_VERSION: "0.1.4"
-        CURRENT_PROJECT_VERSION: "6"
+        CURRENT_PROJECT_VERSION: "7"
         PRODUCT_NAME: DaysYet
         PRODUCT_MODULE_NAME: DaysYetMac
         GENERATE_INFOPLIST_FILE: NO
@@ -183,7 +183,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.hinoshiba.daysyet.mac.tests
         MARKETING_VERSION: "0.1.4"
-        CURRENT_PROJECT_VERSION: "6"
+        CURRENT_PROJECT_VERSION: "7"
         GENERATE_INFOPLIST_FILE: YES
         CODE_SIGNING_ALLOWED: NO
 

@@ -1,0 +1,3 @@
+• Set up two activity schedules, such as your whole day and work hours, with custom names, start and end times, and active weekdays.
+• Set individual weekdays to Off and use overnight schedules. Your existing work times and display selections are preserved. Edit schedules in the Timelines tab in Settings.
+• Updated the Mac app icon with rounded corners.
