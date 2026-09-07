@@ -1,5 +1,11 @@
 # App Store submission resources
 
+The current joint release candidate is **iOS / iPadOS and macOS 0.1.4 (7)**, including two configurable activity schedules and the rounded Mac icon. See the [build 7 release record](releases/0.1.4-build7.md) for its source, validation, screenshot provenance, and submission progress. The current screenshot package contains 20 iPhone / iPad images and eight Mac images (four per localization). Keep the existing shared store names and localized discovery metadata already saved in App Store Connect.
+
+The older submission narrative below records the initial Mac release and iOS 0.1.3; its statuses and screenshot counts are historical. Use the current release record and [local Xcode release procedure](../docs/RELEASING.md) for this candidate.
+
+## Earlier submission record
+
 This directory contains the DaysYet App Store Connect metadata, screenshots, and review materials. Japanese is the primary language; English (U.S.) is the secondary localization. The release owner has chosen to add the native Mac app to the existing DaysYet record, Apple ID `6802000765`, with bundle ID `com.hinoshiba.daysyet`. The Mac target and platform configuration remain separate from iPhone / iPad. See [release readiness](review/release-readiness.md) for the current gaps.
 
 ```text

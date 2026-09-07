@@ -1,1 +1,1 @@
-desktop,countdown,progress,work hours,deadline,goals,week,month,year,remaining
+memento mori,progress,clock,week,month,year,deadline,work,hours,remaining,left,desktop,display
