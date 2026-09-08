@@ -1,6 +1,6 @@
 # App Store submission resources
 
-The current joint release candidate is **iOS / iPadOS and macOS 0.1.4 (7)**, including two configurable activity schedules and the rounded Mac icon. See the [build 7 release record](releases/0.1.4-build7.md) for its source, validation, screenshot provenance, and submission progress. The current screenshot package contains 20 iPhone / iPad images and eight Mac images (four per localization). Keep the existing shared store names and localized discovery metadata already saved in App Store Connect.
+**iOS / iPadOS and macOS 0.1.4 (7) are both Waiting for Review.** Final submissions succeeded on 2026-09-08 at 08:51 JST for iOS and 08:58 JST for macOS; the earlier iOS build 6 submission was canceled. This release includes two configurable activity schedules and the rounded Mac icon. See the [build 7 release record](releases/0.1.4-build7.md) for the submitted source, validation, and screenshot provenance. All 20 iPhone / iPad images and eight Mac images are attached. Apple approval and public availability are pending; automatic release after approval remains enabled.
 
 The older submission narrative below records the initial Mac release and iOS 0.1.3; its statuses and screenshot counts are historical. Use the current release record and [local Xcode release procedure](../docs/RELEASING.md) for this candidate.
 
