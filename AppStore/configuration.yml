@@ -1,5 +1,5 @@
 # iPhone / iPad platform configuration. The native Mac platform shares this App Store
-# record; its separate candidate configuration is in macos/configuration.yml.
+# record; its separate platform configuration is in macos/configuration.yml.
 app_name: DaysYet
 platform: ios
 primary_locale: ja
@@ -12,8 +12,8 @@ widget_bundle_id: com.hinoshiba.daysyet.widget
 app_group: group.com.hinoshiba.daysyet
 widget_kind: com.hinoshiba.daysyet.widget.progress
 lock_screen_widget_kind: com.hinoshiba.daysyet.widget.lock-screen
-# Source candidate; the iOS 0.1.4 (6) submission is recorded in releases/0.1.4.md.
-# Replacement preparation is tracked in releases/0.1.4-build7.md.
+# Submitted 2026-09-08 at 08:51 JST; Waiting for Review.
+# Replaces the canceled build 6 submission; see releases/0.1.4-build7.md.
 version: 0.1.4
 build: 7
 initial_release: false
