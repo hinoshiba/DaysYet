@@ -4,7 +4,7 @@
 
 今週、今月、今年、活動時間、健康でいたい年齢、大切な日から選び、時間の残りと進み具合を静かに見渡すiPhone / iPad / Macアプリです。iPhone / iPadではホーム画面に3つ、ロック画面に1つを表示。Macでは画面端に常駐する3つの時間から、必要な詳細を開けます。3つの表示モードと4つのカラーテーマを選べます。
 
-iPhone / iPad版は[App Store](https://apps.apple.com/jp/app/id6802000765)で提供しています。Mac版はこのリポジトリからビルドできます。Mac版のストア配布・署名済みダウンロードはまだ提供していません。
+iPhone / iPad版は[App Store](https://apps.apple.com/jp/app/id6802000765)、Mac版は[Mac App Store](https://apps.apple.com/jp/app/id6802000765?platform=mac)で提供しています。Mac版はこのリポジトリからビルドすることもできます。
 
 ## Features
 
