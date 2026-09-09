@@ -293,7 +293,7 @@ struct MacSettingsView: View {
             } footer: {
                 Text(L10n.text(
                     "サークルは標準で3つ、最大\(MetricKind.allCases.count)つまで追加できます。画面上端・カメラの切り欠きでは、この一覧の上から3つだけを表示・選択できます。すでに表示中の時間を選ぶと、順番を入れ替えます。",
-                    "Start with three circles and add up to \(MetricKind.allCases.count). At the top edge or camera notch, only the first three timelines in this list are displayed and selectable. Selecting a timeline already in use swaps its position."
+                    "Three circles are shown by default, with up to \(MetricKind.allCases.count) in total. At the top edge or camera notch, only the first three timelines in this list are displayed and selectable. Selecting a timeline already in use swaps its position."
                 ))
             }
 
