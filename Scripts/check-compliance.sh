@@ -85,6 +85,14 @@ assert_line() {
 }
 
 allowed_public_docs=(
+  docs/STUDY_DAYS.md
+  docs/screenshots/study-days/ios-en-calendar.png
+  docs/screenshots/study-days/ios-ja-calendar.png
+  docs/screenshots/study-days/ios-ja-overview.png
+  docs/screenshots/study-days/ios-widget-preview-ja.png
+  docs/screenshots/study-days/ipad-ja.png
+  docs/screenshots/study-days/macos-en.png
+  docs/screenshots/study-days/macos-ja.png
   docs/DEPENDENCY_POLICY.md
   docs/PRIVACY_DATA_MAP.md
   docs/RELEASING.md
