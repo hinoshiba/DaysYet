@@ -9,6 +9,7 @@ enum MetricKind: String, Codable, CaseIterable, Identifiable, Sendable {
     case customLife
     case activity
     case workday
+    case study
 
     var id: String { rawValue }
     static let activityKinds: [MetricKind] = [.activity, .workday]
@@ -23,6 +24,7 @@ enum MetricKind: String, Codable, CaseIterable, Identifiable, Sendable {
         case .customLife: L10n.text("大切な日", "Milestone")
         case .activity: L10n.text("1日の活動", "Daily activity")
         case .workday: L10n.text("勤務時間", "Work hours")
+        case .study: L10n.text("学習日", "Study days")
         }
     }
 
@@ -31,6 +33,7 @@ enum MetricKind: String, Codable, CaseIterable, Identifiable, Sendable {
         switch self {
         case .activity, .workday: customName = profile.activitySchedule(for: self).name
         case .customLife: customName = profile.customTargetName
+        case .study: customName = profile.studySchedule.name
         default: return title
         }
         let trimmed = customName.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -54,6 +57,7 @@ enum MetricKind: String, Codable, CaseIterable, Identifiable, Sendable {
         case .customLife: "flag.checkered"
         case .activity: "sun.max"
         case .workday: "briefcase"
+        case .study: "book.closed"
         }
     }
 }
@@ -156,6 +160,7 @@ enum WidgetMetricOption: String, AppEnum, CaseIterable {
     case customLife
     case activity
     case workday
+    case study
 
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "widget.metric.type")
     static let caseDisplayRepresentations: [WidgetMetricOption: DisplayRepresentation] = [
@@ -165,7 +170,8 @@ enum WidgetMetricOption: String, AppEnum, CaseIterable {
         .healthyLife: "metric.healthy_age_goal",
         .customLife: "metric.milestone",
         .activity: "metric.activity",
-        .workday: "metric.workday"
+        .workday: "metric.workday",
+        .study: "metric.study"
     ]
 
     var metricKind: MetricKind {
@@ -182,6 +188,7 @@ enum LockScreenMetricOption: String, AppEnum, CaseIterable {
     case customLife
     case activity
     case workday
+    case study
 
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "widget.lock_screen.metric.type")
     static let caseDisplayRepresentations: [LockScreenMetricOption: DisplayRepresentation] = [
@@ -192,7 +199,8 @@ enum LockScreenMetricOption: String, AppEnum, CaseIterable {
         .healthyLife: "metric.healthy_age_goal",
         .customLife: "metric.milestone",
         .activity: "metric.activity",
-        .workday: "metric.workday"
+        .workday: "metric.workday",
+        .study: "metric.study"
     ]
 
     func resolved(profile: UserProfile) -> MetricKind {
@@ -217,6 +225,8 @@ enum LockScreenMetricOption: String, AppEnum, CaseIterable {
             return .activity
         case .workday:
             return .workday
+        case .study:
+            return .study
         }
     }
 }
@@ -353,7 +363,9 @@ struct MetricSnapshot: Identifiable, Equatable, Sendable {
     func targetDateText(compact: Bool = false) -> String {
         if isOff { return "Off" }
         let formatted: String
-        if compact, kind.isActivity {
+        if kind == .study {
+            formatted = targetDate.formatted(date: .numeric, time: .omitted)
+        } else if compact, kind.isActivity {
             formatted = targetDate.formatted(date: .omitted, time: .shortened)
         } else if compact, kind == .healthyLife || kind == .customLife {
             formatted = targetDate.formatted(.dateTime.year(.twoDigits).month(.defaultDigits).day())
@@ -391,7 +403,7 @@ struct MetricSnapshot: Identifiable, Equatable, Sendable {
             switch kind {
             case .healthyLife: return L10n.text("目安超過", "Past target")
             case .customLife: return L10n.text("到達", "Reached")
-            case .activity, .workday: return countdown.terminalText ?? ""
+            case .activity, .workday, .study: return countdown.terminalText ?? ""
             default: return L10n.text("更新中", "Updating")
             }
         }
@@ -406,6 +418,9 @@ enum TimeProgressCalculator {
         now: Date = .now,
         calendar: Calendar = .autoupdatingCurrent
     ) -> MetricSnapshot {
+        if kind == .study {
+            return studySnapshot(profile: profile, now: now, calendar: calendar)
+        }
         let scheduledInterval = kind.isActivity
             ? activityInterval(schedule: profile.activitySchedule(for: kind), now: now, calendar: calendar)
             : nil
@@ -463,6 +478,13 @@ enum TimeProgressCalculator {
         case .customLife:
             let start = profile.customTargetStartDate
             return DateInterval(start: start, end: max(profile.customTargetDate, start.addingTimeInterval(1)))
+        case .study:
+            let schedule = profile.studySchedule.normalized
+            let start = schedule.startDate(in: calendar)
+            let end = schedule.endDate(in: calendar)
+            let exclusiveEnd = calendar.date(byAdding: .day, value: 1, to: end)
+                .map { calendar.startOfDay(for: $0) } ?? end
+            return DateInterval(start: start, end: max(exclusiveEnd, start))
         case .activity, .workday:
             return activityInterval(schedule: profile.activitySchedule(for: kind), now: now, calendar: calendar)
                 ?? DateInterval(start: now, duration: 0)
@@ -478,6 +500,23 @@ enum TimeProgressCalculator {
         calendar: Calendar
     ) -> [Date] {
         guard end > now else { return [] }
+        if kind == .study {
+            let schedule = profile.studySchedule.normalized
+            let lastDay = schedule.endDate(in: calendar)
+            let lastBoundary = calendar.date(byAdding: .day, value: 1, to: lastDay)
+                .map { calendar.startOfDay(for: $0) } ?? lastDay
+            var day = max(calendar.startOfDay(for: now), schedule.startDate(in: calendar))
+            var boundaries: [Date] = []
+            for _ in 0...StudySchedule.maximumDayCount {
+                guard day <= end, day <= lastBoundary else { break }
+                if day > now { boundaries.append(day) }
+                guard let next = calendar.date(byAdding: .day, value: 1, to: day) else { break }
+                let nextDay = calendar.startOfDay(for: next)
+                guard nextDay > day else { break }
+                day = nextDay
+            }
+            return boundaries
+        }
         if !kind.isActivity {
             let boundary = dateInterval(for: kind, profile: profile, now: now, calendar: calendar).end
             return boundary > now && boundary <= end ? [boundary] : []
@@ -501,6 +540,44 @@ enum TimeProgressCalculator {
             day = nextDay
         }
         return dates.sorted()
+    }
+
+    private static func studySnapshot(profile: UserProfile, now: Date, calendar: Calendar) -> MetricSnapshot {
+        let schedule = profile.studySchedule.normalized
+        let selectedDays = schedule.selectedDates(calendar: calendar)
+        let today = calendar.startOfDay(for: now)
+        let elapsedCount = selectedDays.filter { $0 < today }.count
+        let remainingCount = selectedDays.count - elapsedCount
+        let presentation: CountdownPresentation
+        let context: String
+        if selectedDays.isEmpty {
+            presentation = CountdownPresentation(
+                prefix: "", components: [], suffix: "",
+                terminalText: L10n.text("学習日を選択", "Select study days")
+            )
+            context = L10n.text("カレンダーで日付や曜日を選んでください", "Choose dates or weekdays in the calendar")
+        } else if remainingCount == 0 {
+            presentation = CountdownPresentation(
+                prefix: "", components: [], suffix: "",
+                terminalText: L10n.text("予定日が経過", "Scheduled days elapsed")
+            )
+            context = L10n.text("全\(selectedDays.count)日の予定が経過しました", "All \(selectedDays.count) scheduled days have elapsed")
+        } else {
+            presentation = CountdownPresentation(
+                prefix: L10n.text("あと", ""),
+                components: [CountdownComponent(value: remainingCount, unit: L10n.text("日", "d"))],
+                suffix: L10n.text("", "left"), terminalText: nil
+            )
+            context = L10n.text("全\(selectedDays.count)日の予定・今日を含む", "Of \(selectedDays.count) scheduled days · includes today")
+        }
+        return MetricSnapshot(
+            kind: .study,
+            title: MetricKind.study.title(profile: profile),
+            context: context,
+            countdown: presentation,
+            elapsedFraction: selectedDays.isEmpty ? 0 : Double(elapsedCount) / Double(selectedDays.count),
+            targetDate: schedule.endDate(in: calendar)
+        )
     }
 
     private static func activityInterval(schedule: ActivitySchedule, now: Date, calendar: Calendar) -> DateInterval? {
@@ -567,6 +644,8 @@ enum TimeProgressCalculator {
             return target.formatted(.dateTime.year().month(.abbreviated).day())
         case .activity, .workday:
             return L10n.text("活動時間", "Activity hours")
+        case .study:
+            return L10n.text("選択した学習日", "Selected study days")
         }
     }
 

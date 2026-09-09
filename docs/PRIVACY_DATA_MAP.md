@@ -5,14 +5,17 @@
 | Birth date | User input | Life-target calculation | iOS: App Group `UserDefaults`; macOS: sandboxed `UserDefaults.standard` | iOS: App + Widget only; macOS: Mac app only | Settings → Delete all data on that device |
 | Healthy-age goal | User input | Personal planning progress | Same | Same | Same |
 | Milestone title/start date/target date | User input | Custom progress and countdown | Same | Same | Same |
+| Study plan name, start/end dates, available weekdays, and individual date additions/exclusions | User input | Count available study days remaining and display elapsed progress; no study completion records | Same | Same | Same |
 | Labels, start/end times (minutes after local midnight), and enabled weekdays for two activity schedules | User settings; new-install defaults: daily activity 07:00–23:00 every day, work hours 09:00–18:00 Monday–Friday | Optional activity timelines: custom titles, local-time countdowns, and Off status, including overnight schedules | iOS: App Group `UserDefaults`; macOS: sandboxed `UserDefaults.standard` | iOS: App + Widget only; macOS: Mac app only | Settings → Delete all data on that device resets activity settings |
 | Week start preference (`weekStartDay`: device calendar setting or a weekday) | User choice; defaults to device calendar setting | This week countdown, elapsed progress, and end date across the app, widgets, and Mac panel | iOS: App Group `UserDefaults`; macOS: sandboxed `UserDefaults.standard` | iOS: App + Widget only; macOS: Mac app only | Settings → Delete all data on that device resets the preference |
-| Three selected metrics, display mode, value style, and theme | User choice | App, Widget, and desktop panel rendering | iOS: App Group + Widget configuration managed by iOS; macOS: sandboxed `UserDefaults.standard` | iOS: App + Widget + iOS configuration UI; macOS: Mac app only | iOS: Edit Widget / reset app; macOS: Settings → Delete all data |
+| Selected metrics (three on iOS, three to eight on macOS), display mode, value style, and theme | User choice | App, Widget, and desktop panel rendering | iOS: App Group + Widget configuration managed by iOS; macOS: sandboxed `UserDefaults.standard` | iOS: App + Widget + iOS configuration UI; macOS: Mac app only | iOS: Edit Widget / reset app; macOS: Settings → Delete all data |
 | Desktop panel visibility, selected display identifier, screen edge, vertical position, size scale (icons and text), and keep-details-open preference | User choice | Place and display the Mac panel | Sandboxed `UserDefaults.standard` | Mac app only | Settings → Delete all data resets panel preferences |
 
 Data is stored independently on each device. There is no device sync, and the Mac app does not share an App Group with the iOS app or include a WidgetKit extension.
 
 Existing Work hours times and metric selections are retained during migration; all weekdays remain enabled for the migrated schedule to preserve its previous daily behavior. This migration happens on the device and sends no data externally. Activity labels may be visible in selected widgets or the Mac panel, just like milestone titles.
+
+Study plans use an in-app calendar without reading or writing the device's calendar events. Study plan names may be visible in selected widgets or the Mac panel. All study settings are saved and deleted with the device's profile.
 
 ## Network paths
 

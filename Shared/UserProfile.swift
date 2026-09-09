@@ -85,6 +85,7 @@ struct UserProfile: Codable, Equatable, Sendable {
     var customTargetDate: Date
     var dailyActivity: ActivitySchedule
     var workActivity: ActivitySchedule
+    var studySchedule: StudySchedule
     var weekStartDay: WeekStartDay
     var dashboardMetrics: [MetricKind]
     var widgetDisplayMode: WidgetDisplayMode
@@ -151,6 +152,7 @@ struct UserProfile: Codable, Equatable, Sendable {
         case workEndMinute
         case dailyActivity
         case workActivity
+        case studySchedule
         case weekStartDay
         case dashboardMetrics
         case widgetDisplayMode
@@ -174,7 +176,8 @@ struct UserProfile: Codable, Equatable, Sendable {
         workEndMinute: Int = 18 * 60,
         weekStartDay: WeekStartDay = .system,
         dailyActivity: ActivitySchedule = .daily,
-        workActivity: ActivitySchedule? = nil
+        workActivity: ActivitySchedule? = nil,
+        studySchedule: StudySchedule = .initial
     ) {
         self.birthDate = birthDate
         self.healthyLifeYears = healthyLifeYears
@@ -186,6 +189,7 @@ struct UserProfile: Codable, Equatable, Sendable {
             startMinute: workStartMinute, endMinute: workEndMinute, activeWeekdays: ActivitySchedule.work.activeWeekdays
         )
         self.weekStartDay = weekStartDay
+        self.studySchedule = studySchedule.normalized
         self.dashboardMetrics = dashboardMetrics
         self.widgetDisplayMode = widgetDisplayMode
         self.dashboardValueStyle = dashboardValueStyle
@@ -207,6 +211,7 @@ struct UserProfile: Codable, Equatable, Sendable {
         )
         dailyActivity = (try? ActivitySchedule(from: container.superDecoder(forKey: .dailyActivity), defaults: .daily)) ?? .daily
         workActivity = (try? ActivitySchedule(from: container.superDecoder(forKey: .workActivity), defaults: .work)) ?? legacyWork
+        studySchedule = (try? container.decode(StudySchedule.self, forKey: .studySchedule)) ?? .initial
         // Keep the existing device-calendar behavior for older profiles and
         // ignore unrecognized future values without losing other preferences.
         weekStartDay = (try? container.decode(WeekStartDay.self, forKey: .weekStartDay)) ?? .system
@@ -230,6 +235,7 @@ struct UserProfile: Codable, Equatable, Sendable {
         try container.encode(customTargetDate, forKey: .customTargetDate)
         try container.encode(dailyActivity.normalized, forKey: .dailyActivity)
         try container.encode(workActivity.normalized, forKey: .workActivity)
+        try container.encode(studySchedule.normalized, forKey: .studySchedule)
         // Keep clock fields readable by an older app/extension sharing this store.
         try container.encode(workStartMinute, forKey: .workStartMinute)
         try container.encode(workEndMinute, forKey: .workEndMinute)

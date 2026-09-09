@@ -25,6 +25,12 @@
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "今月" } }
       }
     },
+    "metric.study" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Study days" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "学習日" } }
+      }
+    },
     "metric.week" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "This week" } },

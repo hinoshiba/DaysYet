@@ -10,7 +10,7 @@ struct RootView: View {
     init() {
 #if DEBUG
         let arguments = ProcessInfo.processInfo.arguments
-        let editsTimes = arguments.contains("--screenshot-edit-times")
+        let editsTimes = arguments.contains("--screenshot-edit-times") || arguments.contains("--screenshot-study-days")
         let initialTab = arguments.contains("--screenshot-settings") || editsTimes
             ? 2
             : arguments.contains("--screenshot-times") ? 1 : 0
@@ -39,7 +39,11 @@ struct RootView: View {
                 SettingsView()
 #if DEBUG
                     .navigationDestination(isPresented: $screenshotEditTimesPresented) {
-                        ProfileEditorView()
+                        if ProcessInfo.processInfo.arguments.contains("--screenshot-study-days") {
+                            StudyScheduleScreen()
+                        } else {
+                            ProfileEditorView()
+                        }
                     }
 #endif
             }

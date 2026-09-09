@@ -14,8 +14,8 @@ final class MacCircleSettingsTests: XCTestCase {
 
     func testMacKeepsAllUniqueCirclesWhileIOSProjectionKeepsTheFirstThree() {
         var profile = UserProfile.initial
-        profile.dashboardMetrics = [.workday, .month, .activity, .year, .month, .healthyLife, .customLife, .week]
-        let expected: [MetricKind] = [.workday, .month, .activity, .year, .healthyLife, .customLife, .week]
+        profile.dashboardMetrics = [.workday, .month, .activity, .year, .month, .healthyLife, .customLife, .week, .study]
+        let expected: [MetricKind] = [.workday, .month, .activity, .year, .healthyLife, .customLife, .week, .study]
         XCTAssertEqual(profile.macDashboardMetrics, expected)
         XCTAssertEqual(profile.normalizedDashboardMetrics, Array(expected.prefix(3)))
         XCTAssertEqual(profile.macWidgetMetrics(for: .left), expected)
