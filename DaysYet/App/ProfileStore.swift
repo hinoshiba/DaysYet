@@ -5,8 +5,16 @@ import WidgetKit
 @MainActor
 final class ProfileStore: ObservableObject {
     @Published private(set) var profile: UserProfile
+    private let saveProfile: (UserProfile) -> Void
 
-    init(profile: UserProfile = ProfileRepository.load()) {
+    init(
+        profile: UserProfile = ProfileRepository.load(),
+        saveProfile: @escaping (UserProfile) -> Void = {
+            ProfileRepository.save($0)
+            WidgetCenter.shared.reloadAllTimelines()
+        }
+    ) {
+        self.saveProfile = saveProfile
 #if DEBUG
         let arguments = ProcessInfo.processInfo.arguments
         if arguments.contains("--screenshot-onboarding") {
@@ -60,7 +68,11 @@ final class ProfileStore: ObservableObject {
     func update(_ mutation: (inout UserProfile) -> Void) {
         var updated = profile
         mutation(&updated)
+#if os(macOS)
+        updated.dashboardMetrics = updated.macDashboardMetrics
+#else
         updated.dashboardMetrics = updated.normalizedDashboardMetrics
+#endif
         updated.dailyActivity = updated.dailyActivity.normalized
         updated.workActivity = updated.workActivity.normalized
         // The UI intentionally exposes a start date, not a hidden start time.
@@ -76,8 +88,12 @@ final class ProfileStore: ObservableObject {
     }
 
     func setDashboardMetric(_ metric: MetricKind, at index: Int) {
-        guard profile.normalizedDashboardMetrics.indices.contains(index) else { return }
+#if os(macOS)
+        var metrics = profile.macDashboardMetrics
+#else
         var metrics = profile.normalizedDashboardMetrics
+#endif
+        guard metrics.indices.contains(index) else { return }
         if let duplicateIndex = metrics.firstIndex(of: metric), duplicateIndex != index {
             metrics.swapAt(index, duplicateIndex)
         } else {
@@ -85,6 +101,22 @@ final class ProfileStore: ObservableObject {
         }
         update { $0.dashboardMetrics = metrics }
     }
+
+#if os(macOS)
+    func addMacDashboardMetric() {
+        var metrics = profile.macDashboardMetrics
+        guard let next = MetricKind.allCases.first(where: { !metrics.contains($0) }) else { return }
+        metrics.append(next)
+        update { $0.dashboardMetrics = metrics }
+    }
+
+    func removeMacDashboardMetric(at index: Int) {
+        var metrics = profile.macDashboardMetrics
+        guard metrics.count > 3, metrics.indices.contains(index) else { return }
+        metrics.remove(at: index)
+        update { $0.dashboardMetrics = metrics }
+    }
+#endif
 
     func completeOnboarding(
         birthDate: Date,
@@ -111,7 +143,6 @@ final class ProfileStore: ObservableObject {
     }
 
     private func persist() {
-        ProfileRepository.save(profile)
-        WidgetCenter.shared.reloadAllTimelines()
+        saveProfile(profile)
     }
 }

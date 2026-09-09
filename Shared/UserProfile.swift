@@ -242,13 +242,18 @@ struct UserProfile: Codable, Equatable, Sendable {
     }
 
     var normalizedDashboardMetrics: [MetricKind] {
+        Array(macDashboardMetrics.prefix(3))
+    }
+
+    /// macOS can show every chosen timeline; iOS keeps its three-slot layout.
+    var macDashboardMetrics: [MetricKind] {
         var unique = dashboardMetrics.reduce(into: [MetricKind]()) { result, metric in
             if !result.contains(metric) { result.append(metric) }
         }
         for metric in MetricKind.allCases where unique.count < 3 && !unique.contains(metric) {
             unique.append(metric)
         }
-        return Array(unique.prefix(3))
+        return unique
     }
 
     static func clampedWorkMinute(_ minute: Int) -> Int {

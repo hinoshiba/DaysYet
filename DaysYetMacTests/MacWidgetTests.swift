@@ -5,6 +5,86 @@ import XCTest
 final class MacWidgetPlacementTests: XCTestCase {
     private let desktop = NSRect(x: 80, y: 40, width: 1440, height: 900)
 
+    func testAddedCirclesStayInsideTheDisplayAndSelectTheirOwnRows() {
+        for count in 3...MetricKind.allCases.count {
+            for edge in [MacWidgetEdge.left, .right] {
+                for scale in [0.8, 1.0, 1.5] {
+                    for availableHeight in [CGFloat(230), 900] {
+                        let bounds = NSRect(x: -1440, y: 40, width: 1440, height: availableHeight)
+                        let idle = MacWidgetPlacement.frame(in: bounds, edge: edge, position: 0.8,
+                            expanded: false, scale: scale, metricCount: count)
+                        let open = MacWidgetPlacement.frame(in: bounds, edge: edge, position: 0.8,
+                            expanded: true, scale: scale, metricCount: count)
+                        XCTAssertTrue(bounds.contains(idle))
+                        XCTAssertTrue(bounds.contains(open))
+                        XCTAssertEqual(idle.minY, open.minY)
+                        XCTAssertEqual(idle.height, min(CGFloat(112 + 50 * (count - 1)) * scale, availableHeight))
+                        let verticalScale = MacWidgetPlacement.sideVerticalScale(in: open.size,
+                            scale: scale, metricCount: count)
+                        for (index, center) in MacWidgetPlacement.ringCenters(for: count).enumerated() {
+                            for frame in [idle, open] {
+                                let point = CGPoint(x: edge == .left ? 23 * scale : frame.width - 23 * scale,
+                                                    y: center * verticalScale)
+                                XCTAssertEqual(MacWidgetSurface.sideHoverIndex(at: point, in: frame.size,
+                                    edge: edge, scale: scale, metricCount: count), index)
+                                XCTAssertTrue(MacWidgetSurface.contains(point, in: frame.size, edge: edge,
+                                    selectedIndex: CGFloat(index), scale: scale, metricCount: count))
+                                for degrees in stride(from: 0, to: 360, by: 15) {
+                                    let angle = CGFloat(degrees) * .pi / 180
+                                    let perimeter = CGPoint(x: point.x + cos(angle) * 16 * scale,
+                                                            y: point.y + sin(angle) * 16 * verticalScale)
+                                    XCTAssertTrue(MacWidgetSurface.contains(perimeter, in: frame.size, edge: edge,
+                                        selectedIndex: CGFloat(index), scale: scale, metricCount: count),
+                                        "The whole circle must fit, including compressed end rows.")
+                                }
+                            }
+                            let detail = MacWidgetPlacement.sideDetailFrame(in: open.size, edge: edge,
+                                selectedIndex: CGFloat(index), scale: scale, metricCount: count)
+                            let surface = MacWidgetSurface.path(in: open.size, edge: edge,
+                                selectedIndex: CGFloat(index), scale: scale, metricCount: count)
+                            XCTAssertEqual(detail.midY, center * verticalScale, accuracy: 0.0001)
+                            for x in [detail.minX, detail.midX, detail.maxX] {
+                                for y in [detail.minY, detail.midY, detail.maxY] {
+                                    XCTAssertTrue(surface.contains(CGPoint(x: x, y: y)),
+                                        "count=\(count), row=\(index), scale=\(scale), height=\(availableHeight)")
+                                }
+                            }
+                        }
+                        XCTAssertNil(MacWidgetSurface.sideHoverIndex(at: CGPoint(x: 23 * scale, y: 0),
+                            in: idle.size, edge: edge, scale: scale, metricCount: count))
+                    }
+                }
+            }
+        }
+    }
+
+    func testExtraCirclesDoNotResizeTheCameraStrip() {
+        for expanded in [false, true] {
+            let expected = MacWidgetPlacement.frame(in: desktop, edge: .top, position: 0.5, expanded: expanded)
+            for count in 4...MetricKind.allCases.count {
+                XCTAssertEqual(MacWidgetPlacement.frame(in: desktop, edge: .top, position: 0.5,
+                    expanded: expanded, metricCount: count), expected)
+            }
+        }
+    }
+
+    func testDraggingTheLongRailPreservesItsPlacementAfterRelaunch() {
+        let count = MetricKind.allCases.count
+        let frame = MacWidgetPlacement.frame(in: desktop, edge: .right, position: 0.5,
+            expanded: false, metricCount: count)
+        let point = NSPoint(x: frame.midX, y: frame.midY)
+        var interaction = MacWidgetPointerInteraction()
+        interaction.begin(at: point, frame: frame, bounds: desktop, position: 0.5,
+            clickCount: 1, timestamp: 0)
+        guard let placement = interaction.update(at: NSPoint(x: point.x, y: point.y - 100)) else {
+            return XCTFail("Dragging a longer rail must update its placement.")
+        }
+        let restored = MacWidgetPlacement.frame(in: desktop, edge: .right, position: placement.position,
+            expanded: false, metricCount: count)
+        XCTAssertEqual(restored.minY, placement.frame.minY, accuracy: 0.0001)
+        XCTAssertEqual(restored.size, frame.size)
+    }
+
     func testNotchClampsTopAndBottomPositions() {
         for expanded in [false, true] {
             for scale in [0.8, 1.0, 1.5] {

@@ -158,14 +158,125 @@ final class MacWidgetSelectionTests: XCTestCase {
     }
 
     @MainActor
-    private func withController(_ body: @MainActor (MacWidgetController) async throws -> Void) async throws {
+    func testAdditionalSideRowsCanBeSelectedAndSurviveReordering() async throws {
+        var profile = UserProfile.initial
+        profile.dashboardMetrics = [.week, .month, .year, .healthyLife, .customLife, .activity, .workday]
+        try await withController(profile: profile) { controller in
+            XCTAssertEqual(controller.activeMetrics.count, 7)
+            controller.metricHoverChanged(.workday, hovering: true)
+            let opened = try await eventually {
+                controller.isExpanded && controller.selectedMetric == .workday
+            }
+            XCTAssertTrue(opened)
+            XCTAssertEqual(controller.selectionPosition, 6)
+
+            controller.preferences.keepDetailsOpen = true
+            controller.store.update { $0.dashboardMetrics = [.workday, .week, .month, .year, .healthyLife, .customLife, .activity] }
+            let reordered = try await eventually { controller.selectionPosition == 0 }
+            XCTAssertTrue(reordered)
+            XCTAssertEqual(controller.selectedMetric, .workday)
+            XCTAssertTrue(controller.isExpanded)
+        }
+    }
+
+    @MainActor
+    func testRemovingSelectedExtraRowReconcilesToTheFirstRemainingMetric() async throws {
+        var profile = UserProfile.initial
+        profile.dashboardMetrics = [.week, .month, .year, .healthyLife]
+        try await withController(profile: profile) { controller in
+            controller.metricHoverChanged(.healthyLife, hovering: true)
+            let opened = try await eventually { controller.selectedMetric == .healthyLife }
+            XCTAssertTrue(opened)
+            XCTAssertEqual(controller.selectionPosition, 3)
+
+            controller.store.update { $0.dashboardMetrics = [.week, .month, .year] }
+            let reconciled = try await eventually {
+                controller.selectedMetric == .week && controller.selectionPosition == 0
+            }
+            XCTAssertTrue(reconciled)
+            XCTAssertEqual(controller.activeMetrics, [.week, .month, .year])
+            try await Task.sleep(for: .milliseconds(300))
+            XCTAssertEqual(controller.selectedMetric, .week)
+            XCTAssertEqual(controller.selectionPosition, 0)
+        }
+    }
+
+    @MainActor
+    func testProfileChangeCancelsHoverForARemovedRow() async throws {
+        var profile = UserProfile.initial
+        profile.dashboardMetrics = [.week, .month, .year, .healthyLife]
+        try await withController(profile: profile) { controller in
+            controller.metricHoverChanged(.healthyLife, hovering: true)
+            controller.store.update { $0.dashboardMetrics = [.week, .month, .year] }
+            try await Task.sleep(for: .milliseconds(300))
+            XCTAssertFalse(controller.isExpanded)
+            XCTAssertEqual(controller.selectedMetric, .week)
+            XCTAssertEqual(controller.selectionPosition, 0)
+
+            // A late SwiftUI hover callback for the removed view is also ignored.
+            controller.metricHoverChanged(.healthyLife, hovering: true)
+            try await Task.sleep(for: .milliseconds(300))
+            XCTAssertFalse(controller.isExpanded)
+            XCTAssertEqual(controller.selectedMetric, .week)
+        }
+    }
+
+    @MainActor
+    func testTopPlacementReconcilesAnExtraSelectionAndKeepsOnlyTheFirstThree() async throws {
+        var profile = UserProfile.initial
+        profile.dashboardMetrics = [.week, .month, .year, .healthyLife]
+        try await withController(profile: profile) { controller in
+            controller.metricHoverChanged(.healthyLife, hovering: true)
+            let opened = try await eventually { controller.selectedMetric == .healthyLife }
+            XCTAssertTrue(opened)
+            controller.preferences.keepDetailsOpen = true
+            controller.preferences.edge = .top
+
+            let reconciled = try await eventually {
+                controller.selectedMetric == .week && controller.selectionPosition == 0
+            }
+            XCTAssertTrue(reconciled)
+            XCTAssertEqual(controller.activeMetrics, [.week, .month, .year])
+            XCTAssertTrue(controller.isExpanded)
+
+            controller.preferences.edge = .right
+            let restored = try await eventually { controller.activeMetrics.count == 4 }
+            XCTAssertTrue(restored)
+            // Allow queued preference delivery to settle before the next hover.
+            try await Task.sleep(for: .milliseconds(20))
+            controller.metricHoverChanged(.healthyLife, hovering: true)
+            let selectedAgain = try await eventually {
+                controller.selectedMetric == .healthyLife && controller.selectionPosition == 3
+            }
+            XCTAssertTrue(selectedAgain)
+        }
+    }
+
+    @MainActor
+    func testSwitchingToTopCancelsADeferredExtraRowHover() async throws {
+        var profile = UserProfile.initial
+        profile.dashboardMetrics = [.week, .month, .year, .healthyLife]
+        try await withController(profile: profile) { controller in
+            controller.metricHoverChanged(.healthyLife, hovering: true)
+            controller.preferences.edge = .top
+            try await Task.sleep(for: .milliseconds(300))
+            XCTAssertFalse(controller.isExpanded)
+            XCTAssertEqual(controller.activeMetrics, [.week, .month, .year])
+            XCTAssertEqual(controller.selectedMetric, .week)
+            XCTAssertEqual(controller.selectionPosition, 0)
+        }
+    }
+
+    @MainActor
+    private func withController(profile: UserProfile = .initial,
+                                _ body: @MainActor (MacWidgetController) async throws -> Void) async throws {
         let suiteName = "com.hinoshiba.daysyet.mac.selection.tests.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
         let preferences = MacWidgetPreferences(defaults: defaults)
         preferences.edge = .left
-        // Supplying a profile skips ProfileRepository.load(). Never call
-        // start(), store.update(), or store.reset(): no panels or user data.
-        let store = ProfileStore(profile: .initial)
+        // Inject both reads and writes, and never start a panel or reset the
+        // repository: these tests cannot modify the user's saved profile.
+        let store = ProfileStore(profile: profile, saveProfile: { _ in })
         let controller = MacWidgetController(store: store, preferences: preferences)
         defer {
             controller.closeDetails()

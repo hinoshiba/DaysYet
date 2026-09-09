@@ -13,6 +13,13 @@ enum MacWidgetEdge: String, CaseIterable, Identifiable {
     }
 }
 
+extension UserProfile {
+    /// The camera strip has three segments; side rails use every configured circle.
+    func macWidgetMetrics(for edge: MacWidgetEdge) -> [MetricKind] {
+        edge == .top ? Array(macDashboardMetrics.prefix(3)) : macDashboardMetrics
+    }
+}
+
 struct MacDisplay: Identifiable {
     let id: String
     let name: String
@@ -87,6 +94,23 @@ enum MacWidgetPlacement {
     static let expandedSize = NSSize(width: 204, height: 212)
     static let ringCenters: [CGFloat] = [56, 106, 156]
 
+    static func clampedMetricCount(_ count: Int) -> Int {
+        min(max(count, 3), MetricKind.allCases.count)
+    }
+
+    static func railHeight(for metricCount: Int) -> CGFloat {
+        railSize.height + 50 * CGFloat(clampedMetricCount(metricCount) - 3)
+    }
+
+    static func ringCenters(for metricCount: Int) -> [CGFloat] {
+        (0..<clampedMetricCount(metricCount)).map { 56 + 50 * CGFloat($0) }
+    }
+
+    /// Compress all vertical content together when the available display is short.
+    static func sideVerticalScale(in size: CGSize, scale: Double, metricCount: Int = 3) -> CGFloat {
+        min(clampedScale(scale), max(size.height, 0) / railHeight(for: metricCount))
+    }
+
     static func clampedScale(_ scale: Double) -> Double {
         scale.isFinite ? min(max(scale, 0.8), 1.5) : 1
     }
@@ -111,11 +135,13 @@ enum MacWidgetPlacement {
                       width: width, height: 52 * factor)
     }
 
-    static func sideDetailFrame(in size: CGSize, edge: MacWidgetEdge, selectedIndex: CGFloat, scale: Double) -> CGRect {
+    static func sideDetailFrame(in size: CGSize, edge: MacWidgetEdge, selectedIndex: CGFloat, scale: Double,
+                                metricCount: Int = 3) -> CGRect {
         let factor = clampedScale(scale)
-        let index = selectedIndex.isFinite ? min(max(selectedIndex, 0), 2) : 0
+        let verticalScale = sideVerticalScale(in: size, scale: scale, metricCount: metricCount)
+        let index = selectedIndex.isFinite ? min(max(selectedIndex, 0), CGFloat(clampedMetricCount(metricCount) - 1)) : 0
         return CGRect(x: edge == .right ? size.width - 184 * factor : 60 * factor,
-                      y: (30 + 50 * index) * factor, width: 124 * factor, height: 52 * factor)
+                      y: (30 + 50 * index) * verticalScale, width: 124 * factor, height: 52 * verticalScale)
     }
 
     static func railFrame(in visibleFrame: NSRect, edge: MacWidgetEdge, position: Double) -> NSRect {
@@ -123,7 +149,8 @@ enum MacWidgetPlacement {
     }
 
     static func frame(in visibleFrame: NSRect, edge: MacWidgetEdge, position: Double, expanded: Bool,
-                      scale: Double = 1, screenFrame: NSRect? = nil, topInfo: MacTopNotchInfo? = nil) -> NSRect {
+                      scale: Double = 1, screenFrame: NSRect? = nil, topInfo: MacTopNotchInfo? = nil,
+                      metricCount: Int = 3) -> NSRect {
         let factor = clampedScale(scale)
         if edge == .top {
             let screen = screenFrame ?? visibleFrame
@@ -140,7 +167,7 @@ enum MacWidgetPlacement {
         }
         let fraction = position.isFinite ? min(max(position, 0), 1) : 0.5
         let size = expanded ? expandedSize : railSize
-        let height = min(size.height * factor, visibleFrame.height)
+        let height = min(railHeight(for: metricCount) * factor, visibleFrame.height)
         let width = min(size.width * factor, visibleFrame.width)
         return NSRect(
             x: edge == .right ? visibleFrame.maxX - width : visibleFrame.minX,
@@ -155,6 +182,18 @@ enum MacWidgetPlacement {
 /// One contour drives rendering and pointer acceptance. Coordinates start at the
 /// window's top left, matching SwiftUI rather than AppKit's bottom-left origin.
 enum MacWidgetSurface {
+    static func sideHoverIndex(at point: CGPoint, in size: CGSize, edge: MacWidgetEdge,
+                               scale: Double, metricCount: Int = 3) -> Int? {
+        guard edge != .top else { return nil }
+        let factor = MacWidgetPlacement.clampedScale(scale)
+        let verticalScale = MacWidgetPlacement.sideVerticalScale(in: size, scale: scale, metricCount: metricCount)
+        let count = MacWidgetPlacement.clampedMetricCount(metricCount)
+        let rows = CGRect(x: edge == .right ? size.width - 46 * factor : 0,
+                          y: 31 * verticalScale, width: 46 * factor, height: 50 * CGFloat(count) * verticalScale)
+        guard verticalScale > 0, rows.contains(point) else { return nil }
+        return min(Int((point.y - rows.minY) / (50 * verticalScale)), count - 1)
+    }
+
     /// The physical camera remains a hover target for the current metric when
     /// the pointer is outside the enlarged segment targets just above the bars.
     static func topCameraHoverFrame(in size: CGSize, scale: Double, topCameraInset: CGFloat,
@@ -199,7 +238,7 @@ enum MacWidgetSurface {
     }
 
     static func path(in size: CGSize, edge: MacWidgetEdge, selectedIndex: CGFloat, scale: Double,
-                     topCameraInset: CGFloat = 0, topNotchWidth: CGFloat = 0) -> CGPath {
+                     topCameraInset: CGFloat = 0, topNotchWidth: CGFloat = 0, metricCount: Int = 3) -> CGPath {
         let path = CGMutablePath()
         guard size.width > 0, size.height > 0 else { return path }
         let factor = CGFloat(MacWidgetPlacement.clampedScale(scale))
@@ -242,7 +281,8 @@ enum MacWidgetSurface {
         let base = min(MacWidgetPlacement.railSize.width, w)
         let extensionWidth = max(w - base, 0)
         let expansion = min(extensionWidth / 158, 1)
-        let shoulder = min(29, h / 5)
+        let verticalFactor = min(h / MacWidgetPlacement.railHeight(for: metricCount), 1)
+        let shoulder = min(29 * verticalFactor, h / 5)
         let neck = max(base - 29, base * 0.37)
         func point(_ depth: CGFloat, _ y: CGFloat) -> CGPoint { CGPoint(x: depth, y: y) }
         func anchored(_ point: CGPoint) -> CGPoint {
@@ -270,9 +310,8 @@ enum MacWidgetSurface {
         }
         path.move(to: anchored(point(0, 0)))
         if extensionWidth > 0 {
-            let index = selectedIndex.isFinite ? min(max(selectedIndex, 0), 2) : 0
+            let index = selectedIndex.isFinite ? min(max(selectedIndex, 0), CGFloat(MacWidgetPlacement.clampedMetricCount(metricCount) - 1)) : 0
             let center = 56 + 50 * index
-            let verticalFactor = h / 212
             func bodyY(_ y: CGFloat) -> CGFloat { y * verticalFactor }
             let top = center - 40 * expansion
             let bottom = center + 40 * expansion
@@ -368,12 +407,13 @@ enum MacWidgetSurface {
     }
 
     static func contains(_ point: CGPoint, in size: CGSize, edge: MacWidgetEdge, selectedIndex: CGFloat,
-                         scale: Double, topCameraInset: CGFloat = 0, topNotchWidth: CGFloat = 0) -> Bool {
+                         scale: Double, topCameraInset: CGFloat = 0, topNotchWidth: CGFloat = 0,
+                         metricCount: Int = 3) -> Bool {
         if edge == .top, point.y < topCameraInset {
             return topCameraHoverFrame(in: size, scale: scale, topCameraInset: topCameraInset,
                                        topNotchWidth: topNotchWidth).contains(point)
         }
         return path(in: size, edge: edge, selectedIndex: selectedIndex, scale: scale,
-                    topCameraInset: topCameraInset, topNotchWidth: topNotchWidth).contains(point)
+                    topCameraInset: topCameraInset, topNotchWidth: topNotchWidth, metricCount: metricCount).contains(point)
     }
 }
