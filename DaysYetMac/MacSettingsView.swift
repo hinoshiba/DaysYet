@@ -109,31 +109,14 @@ struct MacSettingsView: View {
                         .foregroundStyle(.secondary)
                     } else {
                         VStack(alignment: .leading, spacing: 8) {
-                            HStack {
-                                Text(L10n.text("上下の位置", "Vertical position"))
-                                Spacer()
-                                Button(L10n.text("中央に戻す", "Center")) { controller.recenter() }
-                                    .controlSize(.small)
-                            }
-                            Slider(value: $preferences.verticalPosition, in: 0...1) {
-                                Text(L10n.text("上下の位置", "Vertical position"))
-                            } minimumValueLabel: {
-                                Text(L10n.text("上", "Top")).font(.caption)
-                            } maximumValueLabel: {
-                                Text(L10n.text("下", "Bottom")).font(.caption)
-                            }
-                            .labelsHidden()
-                            .accessibilityLabel(L10n.text("上下の位置", "Vertical position"))
-                            .accessibilityValue(L10n.text(
-                                "上から\(Int(preferences.verticalPosition * 100))パーセント",
-                                "\(Int(preferences.verticalPosition * 100)) percent from top"
-                            ))
                             Text(L10n.text(
                                 "ウィジェット本体を上下にドラッグして移動できます。移動した位置は自動で保存されます。",
                                 "Drag the widget up or down to move it. Its position is saved automatically."
                             ))
                             .font(.caption)
                             .foregroundStyle(.secondary)
+                            Button(L10n.text("中央に戻す", "Center")) { controller.recenter() }
+                                .controlSize(.small)
                         }
                     }
                 }
@@ -234,8 +217,8 @@ struct MacSettingsView: View {
                 .accessibilityLabel(L10n.text("画面の端に表示するウィジェットのプレビュー", "Preview of the widget at the screen edge"))
 
             Text(L10n.text(
-                "今週、今月、今年。\n3つの時間を、デスクトップの端に。",
-                "Your week, month, and year.\nThree timelines at the edge of your desktop."
+                "今週、今月、今年。\n選んだ時間を、デスクトップの端に。",
+                "Your week, month, and year.\nYour chosen timelines at the edge of your desktop."
             ))
             .font(.callout)
             .lineSpacing(3)
@@ -269,25 +252,48 @@ struct MacSettingsView: View {
     private var timelineSettings: some View {
         Form {
             Section {
-                ForEach(0..<3, id: \.self) { index in
-                    Picker(
-                        L10n.text("\(index + 1)つ目の時間", "Timeline \(index + 1)"),
-                        selection: Binding(
-                            get: { store.profile.normalizedDashboardMetrics[index] },
-                            set: { store.setDashboardMetric($0, at: index) }
-                        )
-                    ) {
-                        ForEach(MetricKind.allCases) { metric in
-                            Label(metric.title(profile: store.profile), systemImage: metric.symbolName).tag(metric)
+                ForEach(store.profile.macDashboardMetrics.indices, id: \.self) { index in
+                    HStack {
+                        Picker(
+                            L10n.text("\(index + 1)つ目の時間", "Timeline \(index + 1)"),
+                            selection: Binding(
+                                get: {
+                                    let metrics = store.profile.macDashboardMetrics
+                                    return metrics.indices.contains(index) ? metrics[index] : .week
+                                },
+                                set: { store.setDashboardMetric($0, at: index) }
+                            )
+                        ) {
+                            ForEach(MetricKind.allCases) { metric in
+                                Label(metric.title(profile: store.profile), systemImage: metric.symbolName).tag(metric)
+                            }
+                        }
+                        if store.profile.macDashboardMetrics.count > 3 {
+                            Button(role: .destructive) {
+                                store.removeMacDashboardMetric(at: index)
+                            } label: {
+                                Image(systemName: "minus.circle")
+                            }
+                            .buttonStyle(.borderless)
+                            .help(L10n.text("このサークルを削除", "Remove this circle"))
+                            .accessibilityLabel(L10n.text(
+                                "\(index + 1)つ目のサークルを削除", "Remove circle \(index + 1)"
+                            ))
                         }
                     }
                 }
+                Button {
+                    store.addMacDashboardMetric()
+                } label: {
+                    Label(L10n.text("サークルを追加", "Add Circle"), systemImage: "plus.circle")
+                }
+                .disabled(store.profile.macDashboardMetrics.count == MetricKind.allCases.count)
             } header: {
-                Text(L10n.text("表示する3つの時間", "Your three timelines"))
+                Text(L10n.text("表示する時間", "Your timelines"))
             } footer: {
                 Text(L10n.text(
-                    "すでに表示中の時間を選ぶと、順番を入れ替えます。今週・今月・今年は日付の入力なしで使えます。",
-                    "Selecting a timeline already in use swaps its position. Week, month, and year work without entering any dates."
+                    "サークルは標準で3つ、最大\(MetricKind.allCases.count)つまで追加できます。画面上端・カメラの切り欠きでは、この一覧の上から3つだけを表示・選択できます。すでに表示中の時間を選ぶと、順番を入れ替えます。",
+                    "Three circles are shown by default, with up to \(MetricKind.allCases.count) in total. At the top edge or camera notch, only the first three timelines in this list are displayed and selectable. Selecting a timeline already in use swaps its position."
                 ))
             }
 
@@ -638,9 +644,12 @@ private struct MacPlacementPreview: View {
     var body: some View {
         GeometryReader { geometry in
             // Keep space for the largest setting while showing the relative size.
-            let previewScale = 0.75 * min(max(scale, 0.8), 1.5)
+            let metrics = profile.macWidgetMetrics(for: edge)
+            let baseHeight = CGFloat(104 + 25 * (metrics.count - 3))
+            let previewScale = min(0.75, max(geometry.size.height - 28, 0) / (baseHeight * 1.5))
+                * min(max(scale, 0.8), 1.5)
             let widgetWidth = 27 * previewScale
-            let widgetHeight = 104 * previewScale
+            let widgetHeight = baseHeight * previewScale
             ZStack(alignment: .topLeading) {
                 LinearGradient(
                     colors: [Color(red: 0.24, green: 0.29, blue: 0.42), Color(red: 0.08, green: 0.11, blue: 0.20)],
@@ -689,7 +698,7 @@ private struct MacPlacementPreview: View {
                         .frame(width: topWidth, height: cameraHeight + extraThickness)
                         .overlay(alignment: .topLeading) {
                             HStack(spacing: 2) {
-                                ForEach(profile.normalizedDashboardMetrics) { kind in
+                                ForEach(metrics) { kind in
                                     let snapshot = TimeProgressCalculator.snapshot(for: kind, profile: profile)
                                     GeometryReader { track in
                                         Capsule().fill(.white.opacity(0.16))
@@ -707,11 +716,11 @@ private struct MacPlacementPreview: View {
                         .offset(x: (geometry.size.width - topWidth) / 2)
                 } else {
                     VStack(spacing: 7) {
-                        ForEach(profile.normalizedDashboardMetrics) { kind in
+                        ForEach(metrics) { kind in
                             previewMetric(kind)
                         }
                     }
-                    .frame(width: 27, height: 104)
+                    .frame(width: 27, height: baseHeight)
                     .background(MacWidgetStyle.background, in: MacEdgeNotchShape(edge: edge))
                     .scaleEffect(previewScale, anchor: .topLeading)
                     .frame(width: widgetWidth, height: widgetHeight, alignment: .topLeading)

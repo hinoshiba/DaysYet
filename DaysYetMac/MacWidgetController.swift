@@ -26,10 +26,28 @@ final class MacWidgetController: ObservableObject {
     private var localPointerMonitor: Any?
     private var animationPointerTimer: Timer?
     private var pointerInteraction = MacWidgetPointerInteraction()
+    private var previousMetrics: [MetricKind]
+    private var previousEdge: MacWidgetEdge
+
+    var activeMetrics: [MetricKind] {
+        store.profile.macWidgetMetrics(for: preferences.edge)
+    }
 
     init(store: ProfileStore, preferences: MacWidgetPreferences) {
         self.store = store
         self.preferences = preferences
+        previousMetrics = store.profile.macWidgetMetrics(for: preferences.edge)
+        previousEdge = preferences.edge
+        // Observe configuration independently of the panel's lifetime. Delivery
+        // on the main queue reads the committed values after @Published willSet.
+        preferences.objectWillChange
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in self?.synchronize(animated: true) }
+            .store(in: &subscriptions)
+        store.$profile.dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in self?.synchronize(animated: true) }
+            .store(in: &subscriptions)
     }
 
     func start() {
@@ -53,19 +71,6 @@ final class MacWidgetController: ObservableObject {
         panel = window
         installPointerMonitoring()
 
-        preferences.objectWillChange
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] _ in self?.synchronize(animated: true) }
-            .store(in: &subscriptions)
-        store.$profile
-            .receive(on: DispatchQueue.main)
-            .sink { [weak self] profile in
-                guard let self else { return }
-                let metrics = profile.normalizedDashboardMetrics
-                let selection = self.selectedMetric.flatMap { metrics.contains($0) ? $0 : nil } ?? metrics.first
-                self.setSelection(selection, metrics: metrics)
-            }
-            .store(in: &subscriptions)
         NotificationCenter.default.publisher(for: NSApplication.didChangeScreenParametersNotification)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in self?.screenConfigurationChanged() }
@@ -102,7 +107,7 @@ final class MacWidgetController: ObservableObject {
     }
 
     private func beginMetricHover(_ metric: MetricKind) {
-        guard !pointerInteraction.isPressed else { return }
+        guard !pointerInteraction.isPressed, activeMetrics.contains(metric) else { return }
         setHovered(true)
         guard hoveredMetric != metric else { return }
         hoveredMetric = metric
@@ -112,7 +117,8 @@ final class MacWidgetController: ObservableObject {
         intentTask = Task { [weak self] in
             try? await Task.sleep(for: .milliseconds(delay))
             guard !Task.isCancelled, let self, self.isHovered,
-                  self.hoveredMetric == metric, self.preferences.isVisible else { return }
+                  self.hoveredMetric == metric, self.preferences.isVisible,
+                  self.activeMetrics.contains(metric) else { return }
             self.setSelection(metric)
             self.setExpanded(true)
             self.updatePointerAcceptance()
@@ -206,15 +212,16 @@ final class MacWidgetController: ObservableObject {
         if preferences.isVisible { panel.orderFrontRegardless() }
     }
 
-    private func setSelection(_ metric: MetricKind?, metrics: [MetricKind]? = nil) {
-        let metrics = metrics ?? store.profile.normalizedDashboardMetrics
-        selectedMetric = metric
+    private func setSelection(_ metric: MetricKind?, metrics: [MetricKind]? = nil, animated: Bool = true) {
+        let metrics = metrics ?? activeMetrics
+        let metric = metric.flatMap { metrics.contains($0) ? $0 : metrics.first }
+        if selectedMetric != metric { selectedMetric = metric }
         let destination = CGFloat(metric.flatMap { metrics.firstIndex(of: $0) } ?? 0)
         selectionTask?.cancel()
-        guard isExpanded, preferences.edge != .top,
+        guard animated, isExpanded, preferences.edge != .top,
               !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion,
               selectionPosition != destination else {
-            selectionPosition = destination
+            if selectionPosition != destination { selectionPosition = destination }
             updatePointerAcceptance()
             return
         }
@@ -247,6 +254,7 @@ final class MacWidgetController: ObservableObject {
     }
 
     private func synchronize(animated: Bool = false) {
+        let metricsChanged = reconcileMetricConfiguration()
         // Preference notifications already queued when the press began must
         // not animate the panel back to its previous saved position.
         if pointerInteraction.isPressed {
@@ -257,13 +265,15 @@ final class MacWidgetController: ObservableObject {
         if preferences.isVisible {
             if !preferences.keepDetailsOpen { releasePanelFocus() }
             if preferences.keepDetailsOpen {
-                if selectedMetric == nil { setSelection(store.profile.normalizedDashboardMetrics.first) }
+                if selectedMetric == nil { setSelection(activeMetrics.first) }
                 isExpanded = true
             } else if !isHovered {
                 isExpanded = false
                 setSelection(selectedMetric)
             }
-            positionPanel(animated: animated && panel?.isVisible == true)
+            // A new row count or edge changes the coordinate system itself.
+            // Apply that frame together with its selection and hit-test layout.
+            positionPanel(animated: animated && !metricsChanged && panel?.isVisible == true)
             panel?.orderFrontRegardless()
             updatePointerAcceptance()
         } else {
@@ -278,6 +288,26 @@ final class MacWidgetController: ObservableObject {
             panel?.orderOut(nil)
             setSelection(selectedMetric)
         }
+    }
+
+    @discardableResult
+    private func reconcileMetricConfiguration() -> Bool {
+        let metrics = activeMetrics
+        guard previousMetrics != metrics || previousEdge != preferences.edge else { return false }
+        previousMetrics = metrics
+        previousEdge = preferences.edge
+        // A queued hover or an in-flight row animation refers to the old list.
+        // Settle the selection before the contour changes size or placement.
+        intentTask?.cancel()
+        selectionTask?.cancel()
+        closeTask?.cancel()
+        pointerInteraction.cancel()
+        hoveredMetric = nil
+        isHovered = false
+        suppressTopHoverUntilExit = false
+        let selection = selectedMetric.flatMap { metrics.contains($0) ? $0 : nil } ?? metrics.first
+        setSelection(selection, metrics: metrics, animated: false)
+        return true
     }
 
     private var selectedScreen: NSScreen? {
@@ -303,7 +333,8 @@ final class MacWidgetController: ObservableObject {
         let destination = MacWidgetPlacement.frame(in: screen.visibleFrame, edge: preferences.edge,
                                                    position: preferences.verticalPosition,
                                                    expanded: isExpanded, scale: preferences.scale,
-                                                   screenFrame: screen.frame, topInfo: info)
+                                                   screenFrame: screen.frame, topInfo: info,
+                                                   metricCount: activeMetrics.count)
         animationPointerTimer?.invalidate()
         if animated && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion {
             let duration = isExpanded ? 0.24 : 0.18
@@ -351,7 +382,7 @@ final class MacWidgetController: ObservableObject {
         let inside = panel.frame.contains(pointer) && MacWidgetSurface.contains(local, in: panel.frame.size,
                                                edge: preferences.edge, selectedIndex: selectionPosition,
                                                scale: preferences.scale, topCameraInset: topInfo.cameraInset,
-                                               topNotchWidth: topInfo.notchWidth)
+                                               topNotchWidth: topInfo.notchWidth, metricCount: activeMetrics.count)
         // Transparent corners and the unused space beside the moving detail must
         // allow clicks to reach the application underneath the widget.
         panel.ignoresMouseEvents = !inside
@@ -366,7 +397,7 @@ final class MacWidgetController: ObservableObject {
             if !inHoverRegion { suppressTopHoverUntilExit = false }
             setHovered(inside || inHoverRegion)
             if inHoverRegion, !suppressTopHoverUntilExit {
-                let metrics = store.profile.normalizedDashboardMetrics
+                let metrics = activeMetrics
                 if let index, metrics.indices.contains(index) {
                     beginMetricHover(metrics[index])
                 } else if overCamera, let metric = selectedMetric.flatMap({ metrics.contains($0) ? $0 : nil }) ?? metrics.first {
@@ -401,7 +432,8 @@ final class MacWidgetController: ObservableObject {
             let local = CGPoint(x: pointer.x - panel.frame.minX, y: panel.frame.maxY - pointer.y)
             guard MacWidgetSurface.contains(local, in: panel.frame.size, edge: preferences.edge,
                     selectedIndex: selectionPosition, scale: preferences.scale,
-                    topCameraInset: topInfo.cameraInset, topNotchWidth: topInfo.notchWidth) else { return false }
+                    topCameraInset: topInfo.cameraInset, topNotchWidth: topInfo.notchWidth,
+                    metricCount: activeMetrics.count) else { return false }
             closeTask?.cancel()
             intentTask?.cancel()
             hoveredMetric = nil
@@ -452,12 +484,12 @@ final class MacWidgetController: ObservableObject {
         guard preferences.edge != .top, let panel, panel.isVisible else { return }
         let scale = MacWidgetPlacement.clampedScale(preferences.scale)
         let local = CGPoint(x: pointer.x - panel.frame.minX, y: panel.frame.maxY - pointer.y)
-        let railX = preferences.edge == .right ? panel.frame.width - 46 * scale : 0
-        let rows = CGRect(x: railX, y: 31 * scale, width: 46 * scale, height: 150 * scale)
-        guard rows.contains(local), MacWidgetSurface.contains(local, in: panel.frame.size,
-                edge: preferences.edge, selectedIndex: selectionPosition, scale: scale) else { return }
-        let index = min(Int((local.y - rows.minY) / (50 * scale)), 2)
-        let metrics = store.profile.normalizedDashboardMetrics
+        let metrics = activeMetrics
+        guard let index = MacWidgetSurface.sideHoverIndex(at: local, in: panel.frame.size,
+                edge: preferences.edge, scale: scale, metricCount: metrics.count),
+              MacWidgetSurface.contains(local, in: panel.frame.size,
+                edge: preferences.edge, selectedIndex: selectionPosition, scale: scale,
+                metricCount: metrics.count) else { return }
         if metrics.indices.contains(index) { beginMetricHover(metrics[index]) }
     }
 

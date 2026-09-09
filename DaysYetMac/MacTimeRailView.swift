@@ -96,7 +96,7 @@ struct MacDesktopWidgetView: View {
             let surface = Path(MacWidgetSurface.path(
                 in: geometry.size, edge: preferences.edge, selectedIndex: controller.selectionPosition,
                 scale: scale, topCameraInset: controller.topInfo.cameraInset,
-                topNotchWidth: controller.topInfo.notchWidth
+                topNotchWidth: controller.topInfo.notchWidth, metricCount: controller.activeMetrics.count
             ))
             ZStack(alignment: .topLeading) {
                 surface.fill(MacWidgetStyle.background)
@@ -104,10 +104,12 @@ struct MacDesktopWidgetView: View {
                     topContent(in: geometry.size, scale: scale)
                 } else {
                     let width = geometry.size.width / scale
-                    let height = geometry.size.height / scale
+                    let height = MacWidgetPlacement.railHeight(for: controller.activeMetrics.count)
+                    let verticalScale = MacWidgetPlacement.sideVerticalScale(in: geometry.size,
+                        scale: scale, metricCount: controller.activeMetrics.count)
                     sideContent(width: width, height: height)
                         .frame(width: width, height: height)
-                        .scaleEffect(scale, anchor: .topLeading)
+                        .scaleEffect(x: scale, y: verticalScale, anchor: .topLeading)
                 }
             }
             .frame(width: geometry.size.width, height: geometry.size.height, alignment: .topLeading)
@@ -147,14 +149,15 @@ struct MacDesktopWidgetView: View {
         let expansion = min(max((width - 46) / 158, 0), 1)
         let reveal = min(max((expansion - 0.42) / 0.50, 0), 1)
         let detail = MacWidgetPlacement.sideDetailFrame(in: CGSize(width: width, height: height),
-            edge: preferences.edge, selectedIndex: controller.selectionPosition, scale: 1)
+            edge: preferences.edge, selectedIndex: controller.selectionPosition, scale: 1,
+            metricCount: controller.activeMetrics.count)
         return ZStack(alignment: .topLeading) {
             detailContent(width: detail.width)
                 .offset(x: detail.minX, y: detail.minY)
                 .opacity(reveal)
                 .accessibilityHidden(!controller.isExpanded)
             MacTimeRailView(store: store, preferences: preferences, controller: controller)
-                .frame(width: 46, height: 212)
+                .frame(width: 46, height: height)
                 .offset(x: preferences.edge == .right ? width - 46 : 0)
         }
         .frame(width: width, height: height, alignment: .topLeading)
@@ -182,7 +185,7 @@ struct MacTopProgressBarView: View {
         GeometryReader { geometry in
             TimelineView(.periodic(from: .now, by: 60)) { context in
                 HStack(spacing: 0) {
-                    ForEach(store.profile.normalizedDashboardMetrics) { kind in
+                    ForEach(store.profile.macWidgetMetrics(for: .top)) { kind in
                         let snapshot = TimeProgressCalculator.snapshot(for: kind, profile: store.profile, now: context.date)
                         let selected = controller.isExpanded && controller.selectedMetric == kind
                         let width = max(geometry.size.width / 3 - 4, 0)
@@ -253,7 +256,7 @@ struct MacTimeRailView: View {
     var body: some View {
         TimelineView(.periodic(from: .now, by: 60)) { context in
             VStack(spacing: 0) {
-                ForEach(store.profile.normalizedDashboardMetrics) { kind in
+                ForEach(controller.activeMetrics) { kind in
                     railMetric(TimeProgressCalculator.snapshot(for: kind, profile: store.profile, now: context.date))
                 }
             }
@@ -286,7 +289,8 @@ struct MacTimeDetailView: View {
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 60)) { context in
-            let kind = controller.selectedMetric ?? store.profile.normalizedDashboardMetrics[0]
+            let metrics = controller.activeMetrics
+            let kind = controller.selectedMetric.flatMap { metrics.contains($0) ? $0 : nil } ?? metrics[0]
             let snapshot = TimeProgressCalculator.snapshot(for: kind, profile: store.profile, now: context.date)
             ZStack {
                 detail(snapshot)
