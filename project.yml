@@ -121,6 +121,20 @@ targets:
         GENERATE_INFOPLIST_FILE: YES
         CODE_SIGNING_ALLOWED: NO
 
+  DaysYetUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: DaysYetUITests
+    dependencies:
+      - target: DaysYet
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.hinoshiba.daysyet.uitests
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGNING_ALLOWED: NO
+        TEST_TARGET_NAME: DaysYet
+
   DaysYetMac:
     type: application
     platform: macOS
@@ -209,3 +223,12 @@ schemes:
         - DaysYetMacTests
     archive:
       config: Release
+
+  DaysYetUI:
+    build:
+      targets:
+        DaysYet: all
+        DaysYetUITests: [test]
+    test:
+      targets:
+        - DaysYetUITests

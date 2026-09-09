@@ -49,6 +49,23 @@ struct ProfileEditorView: View {
         Form {
             weekStartSection
 
+            Section {
+                NavigationLink {
+                    StudyScheduleScreen()
+                } label: {
+                    Label(L10n.text("学習日を選ぶ", "Choose study days"), systemImage: "calendar.badge.checkmark")
+                }
+                .accessibilityIdentifier("study.openEditor")
+                Text(L10n.text(
+                    "期間内の曜日や日付を選び、学習できる残りの日数を表示します。",
+                    "Choose weekdays and dates in a short period to count your remaining study days."
+                ))
+                .font(.footnote)
+                .foregroundStyle(.secondary)
+            } header: {
+                Text(MetricKind.study.title)
+            }
+
             ForEach(MetricKind.activityKinds) { kind in
                 activityHoursSection(for: kind)
             }
@@ -253,5 +270,22 @@ struct ProfileEditorView: View {
 
     private var latestTargetDate: Date {
         Calendar.current.date(byAdding: .year, value: 100, to: .now) ?? .distantFuture
+    }
+}
+
+struct StudyScheduleScreen: View {
+    @EnvironmentObject private var store: ProfileStore
+
+    var body: some View {
+        StudyScheduleEditor(
+            schedule: Binding(
+                get: { store.profile.studySchedule },
+                set: { value in store.update { $0.studySchedule = value } }
+            ),
+            weekStartDay: store.profile.weekStartDay
+        )
+        .navigationTitle(L10n.text("学習日", "Study days"))
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .tabBar)
     }
 }

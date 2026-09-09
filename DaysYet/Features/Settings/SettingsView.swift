@@ -12,6 +12,7 @@ struct SettingsView: View {
                 } label: {
                     Label(L10n.text("時間の基準", "Time reference points"), systemImage: "calendar.badge.clock")
                 }
+                .accessibilityIdentifier("settings.editTimes")
             } header: {
                 Text(L10n.text("表示", "Display"))
             }
@@ -87,8 +88,8 @@ private struct PrivacyView: View {
         List {
             Section {
                 Text(L10n.text(
-                    "本アプリは、生年月日・目標年齢・活動時間とラベル・曜日・大切な日の起算日と目標日時・表示設定を、アプリとウィジェットの共有領域に保存します。設定画面からいつでも全データを消去できます。",
-                    "This app stores your birth date, target age, activity hours with labels and weekdays, milestone start and target dates, and display choices in the private area shared by the app and its widget. You can delete all data from Settings at any time."
+                    "本アプリは、生年月日・目標年齢・活動時間とラベル・曜日・大切な日の起算日と目標日時・学習日の期間と曜日・個別の日付・表示設定を、アプリとウィジェットの共有領域に保存します。設定画面からいつでも全データを消去できます。",
+                    "This app stores your birth date, target age, activity hours with labels and weekdays, milestone start and target dates, study periods with weekdays and individual dates, and display choices in the private area shared by the app and its widget. You can delete all data from Settings at any time."
                 ))
             }
 

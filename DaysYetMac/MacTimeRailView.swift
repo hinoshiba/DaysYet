@@ -19,6 +19,7 @@ enum MacWidgetStyle {
             case .customLife: Color(red: 0.72, green: 0.60, blue: 0.87)
             case .activity: Color(red: 0.94, green: 0.65, blue: 0.37)
             case .workday: Color(red: 0.39, green: 0.74, blue: 0.82)
+            case .study: Color(red: 0.55, green: 0.65, blue: 0.96)
             }
         case .quietForest:
             Color(red: kind == .month ? 0.68 : 0.52, green: 0.74, blue: 0.57)

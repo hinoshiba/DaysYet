@@ -14,9 +14,10 @@ final class ProfileStore: ObservableObject {
             WidgetCenter.shared.reloadAllTimelines()
         }
     ) {
-        self.saveProfile = saveProfile
 #if DEBUG
         let arguments = ProcessInfo.processInfo.arguments
+        // Synthetic UI-review data must never replace a person’s saved profile.
+        self.saveProfile = arguments.contains("--screenshot-mode") ? { _ in } : saveProfile
         if arguments.contains("--screenshot-onboarding") {
             var screenshotProfile = UserProfile.initial
             screenshotProfile.isConfigured = false
@@ -51,6 +52,19 @@ final class ProfileStore: ObservableObject {
                 : arguments.contains("--screenshot-soft-dawn")
                     ? .softDawn
                     : arguments.contains("--screenshot-calm-sea") ? .calmSea : .vividNight
+            if arguments.contains("--screenshot-study-days") || arguments.contains("--screenshot-study-widget") {
+                let start = calendar.dateInterval(of: .month, for: .now)?.start ?? .now
+                let end = calendar.date(byAdding: .day, value: 27, to: start) ?? start
+                screenshotProfile.studySchedule = StudySchedule(
+                    name: L10n.text("資格試験の準備", "Exam preparation"),
+                    startDate: start, endDate: end, activeWeekdays: [2, 4, 6]
+                )
+                if let extra = calendar.date(byAdding: .day, value: 11, to: start) {
+                    screenshotProfile.studySchedule.toggleDate(extra, calendar: calendar)
+                }
+                screenshotProfile.weekStartDay = .monday
+                screenshotProfile.dashboardMetrics = [.study, .week, .month]
+            }
             screenshotProfile.isConfigured = true
             self.profile = screenshotProfile
         } else if arguments.contains("--skip-onboarding") {
@@ -61,6 +75,7 @@ final class ProfileStore: ObservableObject {
             self.profile = profile
         }
 #else
+        self.saveProfile = saveProfile
         self.profile = profile
 #endif
     }
@@ -75,6 +90,7 @@ final class ProfileStore: ObservableObject {
 #endif
         updated.dailyActivity = updated.dailyActivity.normalized
         updated.workActivity = updated.workActivity.normalized
+        updated.studySchedule = updated.studySchedule.normalized
         // The UI intentionally exposes a start date, not a hidden start time.
         updated.customTargetStartDate = Calendar.autoupdatingCurrent.startOfDay(
             for: updated.customTargetStartDate
@@ -137,7 +153,13 @@ final class ProfileStore: ObservableObject {
     }
 
     func reset() {
+#if DEBUG
+        if !ProcessInfo.processInfo.arguments.contains("--screenshot-mode") {
+            ProfileRepository.reset()
+        }
+#else
         ProfileRepository.reset()
+#endif
         profile = .initial
         WidgetCenter.shared.reloadAllTimelines()
     }

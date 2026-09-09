@@ -160,21 +160,21 @@ final class MacWidgetSelectionTests: XCTestCase {
     @MainActor
     func testAdditionalSideRowsCanBeSelectedAndSurviveReordering() async throws {
         var profile = UserProfile.initial
-        profile.dashboardMetrics = [.week, .month, .year, .healthyLife, .customLife, .activity, .workday]
+        profile.dashboardMetrics = [.week, .month, .year, .healthyLife, .customLife, .activity, .workday, .study]
         try await withController(profile: profile) { controller in
-            XCTAssertEqual(controller.activeMetrics.count, 7)
-            controller.metricHoverChanged(.workday, hovering: true)
+            XCTAssertEqual(controller.activeMetrics.count, 8)
+            controller.metricHoverChanged(.study, hovering: true)
             let opened = try await eventually {
-                controller.isExpanded && controller.selectedMetric == .workday
+                controller.isExpanded && controller.selectedMetric == .study
             }
             XCTAssertTrue(opened)
-            XCTAssertEqual(controller.selectionPosition, 6)
+            XCTAssertEqual(controller.selectionPosition, 7)
 
             controller.preferences.keepDetailsOpen = true
-            controller.store.update { $0.dashboardMetrics = [.workday, .week, .month, .year, .healthyLife, .customLife, .activity] }
+            controller.store.update { $0.dashboardMetrics = [.study, .week, .month, .year, .healthyLife, .customLife, .activity, .workday] }
             let reordered = try await eventually { controller.selectionPosition == 0 }
             XCTAssertTrue(reordered)
-            XCTAssertEqual(controller.selectedMetric, .workday)
+            XCTAssertEqual(controller.selectedMetric, .study)
             XCTAssertTrue(controller.isExpanded)
         }
     }

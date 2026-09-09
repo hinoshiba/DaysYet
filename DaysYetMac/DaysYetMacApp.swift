@@ -5,8 +5,32 @@ import SwiftUI
 final class MacAppModel {
     static let shared = MacAppModel()
     let store = ProfileStore()
-    let preferences = MacWidgetPreferences()
+    let preferences: MacWidgetPreferences
+    private let screenshotPreferencesSuite: String?
     lazy var controller = MacWidgetController(store: store, preferences: preferences)
+
+    private init() {
+#if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("--screenshot-mode") {
+            // Isolate panel edits during UI review from the user's preferences.
+            let suite = "com.hinoshiba.daysyet.screenshots.\(UUID().uuidString)"
+            guard let defaults = UserDefaults(suiteName: suite) else {
+                preconditionFailure("Could not create isolated screenshot preferences")
+            }
+            screenshotPreferencesSuite = suite
+            preferences = MacWidgetPreferences(defaults: defaults)
+            return
+        }
+#endif
+        screenshotPreferencesSuite = nil
+        preferences = MacWidgetPreferences()
+    }
+
+    func removeScreenshotPreferences() {
+        if let suite = screenshotPreferencesSuite {
+            UserDefaults(suiteName: suite)?.removePersistentDomain(forName: suite)
+        }
+    }
 }
 
 @MainActor
@@ -18,6 +42,16 @@ final class MacAppDelegate: NSObject, NSApplicationDelegate {
         let model = MacAppModel.shared
         model.controller.start()
         if !model.preferences.isVisible { model.controller.showSettings() }
+#if DEBUG
+        let arguments = ProcessInfo.processInfo.arguments
+        if arguments.contains("--screenshot-mode") && arguments.contains("--screenshot-study-days") {
+            model.controller.showSettings()
+        }
+#endif
+    }
+
+    func applicationWillTerminate(_ notification: Notification) {
+        MacAppModel.shared.removeScreenshotPreferences()
     }
 
     // The resident panel owns startup; settings are opened explicitly.

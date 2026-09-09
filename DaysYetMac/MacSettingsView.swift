@@ -7,17 +7,31 @@ struct MacSettingsView: View {
     @ObservedObject var controller: MacWidgetController
 
     @State private var showResetConfirmation = false
+    @State private var showStudySchedule = MacSettingsView.isStudyScreenshot
+    @State private var selectedTab = MacSettingsView.isStudyScreenshot ? 1 : 0
     @State private var selectedDocument: MacLegalDocument?
+
+    private static var isStudyScreenshot: Bool {
+#if DEBUG
+        let arguments = ProcessInfo.processInfo.arguments
+        return arguments.contains("--screenshot-mode") && arguments.contains("--screenshot-study-days")
+#else
+        return false
+#endif
+    }
 
     var body: some View {
         VStack(spacing: 0) {
-            TabView {
+            TabView(selection: $selectedTab) {
                 widgetSettings
                     .tabItem { Label(L10n.text("ウィジェット", "Widget"), systemImage: "rectangle.righthalf.inset.filled") }
+                    .tag(0)
                 timelineSettings
                     .tabItem { Label(L10n.text("時間", "Timelines"), systemImage: "calendar.badge.clock") }
+                    .tag(1)
                 privacySettings
                     .tabItem { Label(L10n.text("プライバシーと情報", "Privacy & About"), systemImage: "hand.raised") }
+                    .tag(2)
             }
             .padding(12)
 
@@ -35,6 +49,12 @@ struct MacSettingsView: View {
         .frame(minWidth: 680, idealWidth: 760, minHeight: 560, idealHeight: 620)
         .sheet(item: $selectedDocument) { document in
             MacLegalDocumentView(document: document)
+        }
+        .sheet(isPresented: $showStudySchedule) {
+            MacStudyScheduleSheet(
+                schedule: personalBinding(\.studySchedule),
+                weekStartDay: store.profile.weekStartDay
+            )
         }
         .alert(
             L10n.text("このMacのデータをすべて消去しますか？", "Delete all data on this Mac?"),
@@ -297,6 +317,8 @@ struct MacSettingsView: View {
                 ))
             }
 
+            studyScheduleSection
+
             weekStartSection
 
             ForEach(MetricKind.activityKinds) { kind in
@@ -348,6 +370,29 @@ struct MacSettingsView: View {
             }
         }
         .formStyle(.grouped)
+    }
+
+    private var studyScheduleSection: some View {
+        Section {
+            TimelineView(.periodic(from: .now, by: 60)) { context in
+                let snapshot = TimeProgressCalculator.snapshot(for: .study, profile: store.profile, now: context.date)
+                LabeledContent(snapshot.title, value: snapshot.remainingText)
+                    .accessibilityIdentifier("study.settings.summary")
+            }
+            Button {
+                showStudySchedule = true
+            } label: {
+                Label(L10n.text("学習日を選ぶ…", "Choose Study Days…"), systemImage: "calendar.badge.checkmark")
+            }
+            .accessibilityIdentifier("study.settings.edit")
+        } header: {
+            Text(L10n.text("学習日", "Study days"))
+        } footer: {
+            Text(L10n.text(
+                "短期の計画に合わせて、カレンダーの日付や曜日から学習できる日を選べます。上の「表示する時間」で学習日を選ぶと、残りの学習日数を表示します。",
+                "Choose available days by date or weekday for a short-term plan. Select Study days in Your timelines above to display the number of study days left."
+            ))
+        }
     }
 
     private var weekStartSection: some View {
@@ -436,8 +481,8 @@ struct MacSettingsView: View {
                         Text(L10n.text("あなたの時間は、このMacに。", "Your time stays on this Mac."))
                             .font(.headline)
                         Text(L10n.text(
-                            "日付・目標・活動時間とラベル・曜日・表示設定はこのMac内に保存します。iPhoneやiPadとの同期も行いません。",
-                            "Dates, goals, activity hours with labels and weekdays, and display preferences are saved on this Mac. There is no sync with iPhone or iPad."
+                            "日付・目標・活動時間とラベル・曜日・学習日・表示設定はこのMac内に保存します。iPhoneやiPadとの同期も行いません。",
+                            "Dates, goals, activity hours with labels and weekdays, study days, and display preferences are saved on this Mac. There is no sync with iPhone or iPad."
                         ))
                         .foregroundStyle(.secondary)
                     }
@@ -565,6 +610,29 @@ struct MacSettingsView: View {
         let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "—"
         let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "—"
         return "\(version) (\(build))"
+    }
+}
+
+private struct MacStudyScheduleSheet: View {
+    @Binding var schedule: StudySchedule
+    let weekStartDay: WeekStartDay
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack {
+                Text(L10n.text("学習日", "Study days"))
+                    .font(.headline)
+                Spacer()
+                Button(L10n.text("完了", "Done")) { dismiss() }
+                    .keyboardShortcut(.defaultAction)
+                    .accessibilityIdentifier("study.settings.done")
+            }
+            .padding(20)
+            Divider()
+            StudyScheduleEditor(schedule: $schedule, weekStartDay: weekStartDay)
+        }
+        .frame(width: 820, height: 620)
     }
 }
 

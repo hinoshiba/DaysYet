@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		00F25F2FAC04A2CB5FAE3266 /* DaysYetWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA369AB53C5EA2EB4743187 /* DaysYetWidget.swift */; };
+		02CAE5C82948C00CA9E5F7A2 /* StudySchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD354587144C454884BB8828 /* StudySchedule.swift */; };
 		03487D18EDC2D9D94757A09D /* DATA_SOURCES.md in Resources */ = {isa = PBXBuildFile; fileRef = 4F043AFA52F194DBD59AF711 /* DATA_SOURCES.md */; };
 		08AFE0ECDA1D7147C230EBD8 /* ProfileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B04E98B81C6EE39699985B09 /* ProfileStore.swift */; };
 		11CE4CE5C819962411E0E55D /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 785E00C0D2C2EA34EB0A2AA4 /* UserProfile.swift */; };
@@ -15,10 +16,12 @@
 		1566FB9383916B66814994CC /* MacCircleSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FAF5701274AE1606389D2BF /* MacCircleSettingsTests.swift */; };
 		15A96E0DCAECA58CA0D5ECE7 /* MacWidgetPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69813457F6DD4D80042683BE /* MacWidgetPreferences.swift */; };
 		173E528C30D166D165D41436 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 80602A41F91F2981A51EBE0E /* LICENSE */; };
+		212802DA1BF8E955FAA43C6B /* StudySchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD354587144C454884BB8828 /* StudySchedule.swift */; };
 		24DD53A121D0DA6BD9F70460 /* THIRD_PARTY_NOTICES.md in Resources */ = {isa = PBXBuildFile; fileRef = 37680AC2C679AD7E5923DC15 /* THIRD_PARTY_NOTICES.md */; };
 		2DCBD464C37F81B7F4FC236D /* ProfileRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D4529A3EAFCABF61CBA729D /* ProfileRepository.swift */; };
 		35AC664734EEEB4F383A996F /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA91CAA558C93AA58DF6FEB8 /* ProgressBar.swift */; };
 		39DAA55E95A5E78EE50BDFE7 /* WorkHoursTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9662ABB4E73AFBAA5B22B82D /* WorkHoursTests.swift */; };
+		3BF43F4237015ECD92A5C738 /* StudyScheduleEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBDAAB14865688B102E5DF7 /* StudyScheduleEditor.swift */; };
 		431EC325BD13055C51A21AF7 /* DaysYetWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6947F66D3D5B82E52FFDE992 /* DaysYetWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		457E6915E9DD0A4DA516C1D8 /* WidgetPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00AAA44E592AAC3BF808D773 /* WidgetPreview.swift */; };
 		4916B55AAAB4AA35C6D34D37 /* ProfileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B04E98B81C6EE39699985B09 /* ProfileStore.swift */; };
@@ -31,23 +34,28 @@
 		5661379D160B03A3D8D7C2ED /* ASSET_LICENSES.md in Resources */ = {isa = PBXBuildFile; fileRef = 7533C992E89912E1A026E4C4 /* ASSET_LICENSES.md */; };
 		567336EF98496F222B1AB276 /* TimeMetric.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787BB50AE053C559748C39E4 /* TimeMetric.swift */; };
 		589088BF6B0D2D21B1E42601 /* TimeMetric.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787BB50AE053C559748C39E4 /* TimeMetric.swift */; };
+		59E7DD6A4423C0C77B0382B1 /* StudyScheduleEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBDAAB14865688B102E5DF7 /* StudyScheduleEditor.swift */; };
 		5E8645B190857C3DCBBA3076 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969922BBF414097227DF1A0E /* OnboardingView.swift */; };
 		6414D35FF6013C7BE2C90A0D /* ActivityScheduleEditorContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = E990ACA6F50800ABD6754B72 /* ActivityScheduleEditorContent.swift */; };
 		6588473D3F42BFD5BF6AF326 /* WidgetStudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B76A90071D066FB56C71C5EC /* WidgetStudioView.swift */; };
 		6D93E37B71D9C59C5B169118 /* DaysYetTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40CE81B58E035A5129E7D2E /* DaysYetTheme.swift */; };
+		6FAA83EC09247D942228C3BA /* StudySchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD354587144C454884BB8828 /* StudySchedule.swift */; };
 		7403B0F82A146A7AFB2A3415 /* DaysYetTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40CE81B58E035A5129E7D2E /* DaysYetTheme.swift */; };
 		750E3DC6CCC3CF4B00AF94BF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B8EF889B5F766FA4E4E1F328 /* Localizable.xcstrings */; };
 		7712665604D34DE34FD77AE3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7EEF11C88A39D6BFF1B4D534 /* Assets.xcassets */; };
 		78A8590AFB6B87F956553E70 /* WorkHoursTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9662ABB4E73AFBAA5B22B82D /* WorkHoursTests.swift */; };
 		78E35E9D015BD80CA4B4A221 /* DaysYetMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FCB41C9C9E755B3BEEED6E5 /* DaysYetMacApp.swift */; };
 		7D3F68DAD83CACE73A3660BB /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F18863FE1366766444715E8 /* SettingsView.swift */; };
+		7D931002DC755EF2AD7D7F44 /* StudyScheduleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 643338F9F52FABE2D2989A81 /* StudyScheduleTests.swift */; };
 		7EA968CA461D8A76438D7105 /* ActivityScheduleEditorContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = E990ACA6F50800ABD6754B72 /* ActivityScheduleEditorContent.swift */; };
 		80282C52FEDFF23801AAEA57 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 343F8E3BCF1BFAEAEBD45A97 /* Assets.xcassets */; };
 		85EABD42E7FC7E7ADDCA3C2B /* TimeMetric.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787BB50AE053C559748C39E4 /* TimeMetric.swift */; };
+		8E5C94002BD49BCB08660381 /* StudyScheduleEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBDAAB14865688B102E5DF7 /* StudyScheduleEditor.swift */; };
 		9021D64237A8C956A22F7E6C /* WidgetConfigurationIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F496778F27954462FC180E9 /* WidgetConfigurationIntent.swift */; };
 		943AF5ED0EF0C3BFC7DA2557 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 07705141EA121C9FBCD0F6E8 /* InfoPlist.strings */; };
 		94479AEE70C99AAF3C2210B8 /* MacWidgetPointerInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80547D3903A118C0591FA41E /* MacWidgetPointerInteraction.swift */; };
 		A0FA6DE40F146A27740D1A54 /* ASSET_LICENSES.md in Resources */ = {isa = PBXBuildFile; fileRef = 7533C992E89912E1A026E4C4 /* ASSET_LICENSES.md */; };
+		A305EED064E52EA26F880C65 /* StudyDaysEditorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F02E0CDB3E124DF4630BAD /* StudyDaysEditorTests.swift */; };
 		A3DD38AC667FA2A651C26431 /* DaysYetApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B2991E7A8BFF58FEDD422CF /* DaysYetApp.swift */; };
 		A49A848B853782DFD545CE0E /* NOTICE in Resources */ = {isa = PBXBuildFile; fileRef = 58FE27717C77D4B7907182C9 /* NOTICE */; };
 		A8D788E8B5582322DD48F6A7 /* L10n.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CD64EF0BE487E467E8EE54 /* L10n.swift */; };
@@ -76,6 +84,7 @@
 		EB99BA47FDFE71A6167B0C81 /* CountdownValueLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0618C16198637FB983104639 /* CountdownValueLabel.swift */; };
 		EF5AEE0C2965F4F18F9B096F /* WidgetThemePalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223C8EC7373FA0756EAB7C3B /* WidgetThemePalette.swift */; };
 		F12A599B4D7C4566D140AFA1 /* TimeProgressCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 091F1E00C9DBA9A030F1A29D /* TimeProgressCalculatorTests.swift */; };
+		F1C690026702A4AAC963828E /* StudyScheduleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 643338F9F52FABE2D2989A81 /* StudyScheduleTests.swift */; };
 		F2A3AC241AF4291382F95BE3 /* MacWorkTimeEditorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F70CE77930AFDEDAAEF41791 /* MacWorkTimeEditorTests.swift */; };
 		F571C748BB95F074FBA354F9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 7789B3FE1FCF7E665C59E506 /* InfoPlist.strings */; };
 		F75BC1455EB0CA7AD67AEAEE /* DaysYetLockScreenWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0B4316388958D185FAD4CCF /* DaysYetLockScreenWidget.swift */; };
@@ -86,6 +95,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		4AA450C00BCDCAF09E2C52A2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7B2BC7D121AD88D1A05765C6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 05749A4A6B0F0D6B3CE39C34;
+			remoteInfo = DaysYet;
+		};
 		8304CC63603B7E5DD29E53F6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7B2BC7D121AD88D1A05765C6 /* Project object */;
@@ -125,6 +141,7 @@
 
 /* Begin PBXFileReference section */
 		00AAA44E592AAC3BF808D773 /* WidgetPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetPreview.swift; sourceTree = "<group>"; };
+		01F02E0CDB3E124DF4630BAD /* StudyDaysEditorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyDaysEditorTests.swift; sourceTree = "<group>"; };
 		036F8BD9D4F1B7467842B3A4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0618C16198637FB983104639 /* CountdownValueLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountdownValueLabel.swift; sourceTree = "<group>"; };
 		0825BF284DF9112223DDBEFA /* Signing.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Signing.xcconfig; sourceTree = "<group>"; };
@@ -142,8 +159,10 @@
 		5850D0BE692A63A71E62BE3E /* MacWidgetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetTests.swift; sourceTree = "<group>"; };
 		58FE27717C77D4B7907182C9 /* NOTICE */ = {isa = PBXFileReference; path = NOTICE; sourceTree = "<group>"; };
 		5B2E5AC365670A90ADF4A2A1 /* DaysYet.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DaysYet.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5BBDAAB14865688B102E5DF7 /* StudyScheduleEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyScheduleEditor.swift; sourceTree = "<group>"; };
 		5FAF5701274AE1606389D2BF /* MacCircleSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacCircleSettingsTests.swift; sourceTree = "<group>"; };
 		62BD112C3BA9417B89662401 /* WeekStartTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekStartTests.swift; sourceTree = "<group>"; };
+		643338F9F52FABE2D2989A81 /* StudyScheduleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyScheduleTests.swift; sourceTree = "<group>"; };
 		6947F66D3D5B82E52FFDE992 /* DaysYetWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = DaysYetWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		69813457F6DD4D80042683BE /* MacWidgetPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetPreferences.swift; sourceTree = "<group>"; };
 		6D029136DF87FA805CE2847C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -178,10 +197,12 @@
 		C10B69E5DF938A33AEEC9B9A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CA91CAA558C93AA58DF6FEB8 /* ProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBar.swift; sourceTree = "<group>"; };
 		D0B4316388958D185FAD4CCF /* DaysYetLockScreenWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysYetLockScreenWidget.swift; sourceTree = "<group>"; };
+		D10E6E3ADE87F9484D9C78A2 /* DaysYetUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = DaysYetUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		E990ACA6F50800ABD6754B72 /* ActivityScheduleEditorContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityScheduleEditorContent.swift; sourceTree = "<group>"; };
 		F2218EE8FA923E98D18516D4 /* TimeLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLibraryView.swift; sourceTree = "<group>"; };
 		F70CE77930AFDEDAAEF41791 /* MacWorkTimeEditorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWorkTimeEditorTests.swift; sourceTree = "<group>"; };
 		F83DA82C878A7FA4C25CD16D /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		FD354587144C454884BB8828 /* StudySchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudySchedule.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -200,6 +221,7 @@
 		01A74EAD58527D66A4D5B6BA /* DaysYetTests */ = {
 			isa = PBXGroup;
 			children = (
+				643338F9F52FABE2D2989A81 /* StudyScheduleTests.swift */,
 				091F1E00C9DBA9A030F1A29D /* TimeProgressCalculatorTests.swift */,
 				62BD112C3BA9417B89662401 /* WeekStartTests.swift */,
 				9662ABB4E73AFBAA5B22B82D /* WorkHoursTests.swift */,
@@ -246,6 +268,7 @@
 				B91D17AB4C05AFCE7E8BA18C /* DaysYet.app */,
 				8FE865DB573E3BF33345150E /* DaysYetMacTests.xctest */,
 				A9E1151ACD8A1E94DF04D3A0 /* DaysYetTests.xctest */,
+				D10E6E3ADE87F9484D9C78A2 /* DaysYetUITests.xctest */,
 				6947F66D3D5B82E52FFDE992 /* DaysYetWidget.appex */,
 			);
 			name = Products;
@@ -264,6 +287,7 @@
 				1EBCCA896930A82C1AD37CBF /* DaysYetMac */,
 				015258345CA4FC14987CC3A0 /* DaysYetMacTests */,
 				01A74EAD58527D66A4D5B6BA /* DaysYetTests */,
+				7EEDCDBD847B74A0F8D766FE /* DaysYetUITests */,
 				9FC2643860A178CB1AF832B2 /* DaysYetWidget */,
 				FA52699628EA4AB321357425 /* Shared */,
 				2F06D0F57EA534874E9D027D /* Products */,
@@ -276,6 +300,14 @@
 				969922BBF414097227DF1A0E /* OnboardingView.swift */,
 			);
 			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		7EEDCDBD847B74A0F8D766FE /* DaysYetUITests */ = {
+			isa = PBXGroup;
+			children = (
+				01F02E0CDB3E124DF4630BAD /* StudyDaysEditorTests.swift */,
+			);
+			path = DaysYetUITests;
 			sourceTree = "<group>";
 		};
 		81BC46FD371CDE9ED4AED07F /* Home */ = {
@@ -351,6 +383,8 @@
 				42CD64EF0BE487E467E8EE54 /* L10n.swift */,
 				B8EF889B5F766FA4E4E1F328 /* Localizable.xcstrings */,
 				8D4529A3EAFCABF61CBA729D /* ProfileRepository.swift */,
+				FD354587144C454884BB8828 /* StudySchedule.swift */,
+				5BBDAAB14865688B102E5DF7 /* StudyScheduleEditor.swift */,
 				787BB50AE053C559748C39E4 /* TimeMetric.swift */,
 				785E00C0D2C2EA34EB0A2AA4 /* UserProfile.swift */,
 				223C8EC7373FA0756EAB7C3B /* WidgetThemePalette.swift */,
@@ -417,6 +451,24 @@
 			productReference = B91D17AB4C05AFCE7E8BA18C /* DaysYet.app */;
 			productType = "com.apple.product-type.application";
 		};
+		7DA495E25E3678A2B5143242 /* DaysYetUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D6E55173F87B3FB367E96198 /* Build configuration list for PBXNativeTarget "DaysYetUITests" */;
+			buildPhases = (
+				C205AAA78593660C9DDD8BCE /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				168DFDC46F2A87FFF6C87B0B /* PBXTargetDependency */,
+			);
+			name = DaysYetUITests;
+			packageProductDependencies = (
+			);
+			productName = DaysYetUITests;
+			productReference = D10E6E3ADE87F9484D9C78A2 /* DaysYetUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		D0267B263E8450E155F6EA6C /* DaysYetWidget */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 619A58A4069E5C0BDDA361ED /* Build configuration list for PBXNativeTarget "DaysYetWidget" */;
@@ -471,6 +523,10 @@
 					2F5EC37929FBBC30A02F32D0 = {
 						ProvisioningStyle = Automatic;
 					};
+					7DA495E25E3678A2B5143242 = {
+						ProvisioningStyle = Automatic;
+						TestTargetID = 05749A4A6B0F0D6B3CE39C34;
+					};
 					D0267B263E8450E155F6EA6C = {
 						ProvisioningStyle = Automatic;
 					};
@@ -498,6 +554,7 @@
 				2F5EC37929FBBC30A02F32D0 /* DaysYetMac */,
 				26C14DC3F4816953E004B28D /* DaysYetMacTests */,
 				FD641515D8C275796D5F6C2C /* DaysYetTests */,
+				7DA495E25E3678A2B5143242 /* DaysYetUITests */,
 				D0267B263E8450E155F6EA6C /* DaysYetWidget */,
 			);
 		};
@@ -560,6 +617,8 @@
 				CC2239801EBE676781A15316 /* DaysYetWidgetBundle.swift in Sources */,
 				A8D788E8B5582322DD48F6A7 /* L10n.swift in Sources */,
 				4E58729CFFB84CB4C1BA1E4E /* ProfileRepository.swift in Sources */,
+				212802DA1BF8E955FAA43C6B /* StudySchedule.swift in Sources */,
+				3BF43F4237015ECD92A5C738 /* StudyScheduleEditor.swift in Sources */,
 				85EABD42E7FC7E7ADDCA3C2B /* TimeMetric.swift in Sources */,
 				FB226A76DFBF9E8165F7AD29 /* UserProfile.swift in Sources */,
 				9021D64237A8C956A22F7E6C /* WidgetConfigurationIntent.swift in Sources */,
@@ -583,9 +642,19 @@
 				15A96E0DCAECA58CA0D5ECE7 /* MacWidgetPreferences.swift in Sources */,
 				5452BBBBF9E7A355C511D6FB /* ProfileRepository.swift in Sources */,
 				08AFE0ECDA1D7147C230EBD8 /* ProfileStore.swift in Sources */,
+				02CAE5C82948C00CA9E5F7A2 /* StudySchedule.swift in Sources */,
+				59E7DD6A4423C0C77B0382B1 /* StudyScheduleEditor.swift in Sources */,
 				589088BF6B0D2D21B1E42601 /* TimeMetric.swift in Sources */,
 				B420EAFB604CA21AEF3D34B5 /* UserProfile.swift in Sources */,
 				E599D0FABAA625A46424AD4D /* WidgetThemePalette.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C205AAA78593660C9DDD8BCE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A305EED064E52EA26F880C65 /* StudyDaysEditorTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -604,6 +673,8 @@
 				35AC664734EEEB4F383A996F /* ProgressBar.swift in Sources */,
 				4EDDD820E2F065C84EB6B5B8 /* RootView.swift in Sources */,
 				7D3F68DAD83CACE73A3660BB /* SettingsView.swift in Sources */,
+				6FAA83EC09247D942228C3BA /* StudySchedule.swift in Sources */,
+				8E5C94002BD49BCB08660381 /* StudyScheduleEditor.swift in Sources */,
 				B488AE222EA19AF5F4AA42DC /* TimeLibraryView.swift in Sources */,
 				567336EF98496F222B1AB276 /* TimeMetric.swift in Sources */,
 				11CE4CE5C819962411E0E55D /* UserProfile.swift in Sources */,
@@ -617,6 +688,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F1C690026702A4AAC963828E /* StudyScheduleTests.swift in Sources */,
 				B5DAF61685AE2120FC34313D /* TimeProgressCalculatorTests.swift in Sources */,
 				C8E7D8C6C12AE8C965D8F11A /* WeekStartTests.swift in Sources */,
 				39DAA55E95A5E78EE50BDFE7 /* WorkHoursTests.swift in Sources */,
@@ -632,6 +704,7 @@
 				C5FFD3A0BCC08174065295DB /* MacWidgetSelectionTests.swift in Sources */,
 				CFDADD3AD39F8A8248936B23 /* MacWidgetTests.swift in Sources */,
 				F2A3AC241AF4291382F95BE3 /* MacWorkTimeEditorTests.swift in Sources */,
+				7D931002DC755EF2AD7D7F44 /* StudyScheduleTests.swift in Sources */,
 				F12A599B4D7C4566D140AFA1 /* TimeProgressCalculatorTests.swift in Sources */,
 				E3E2174926AFE6402CD2BCBC /* WeekStartTests.swift in Sources */,
 				78A8590AFB6B87F956553E70 /* WorkHoursTests.swift in Sources */,
@@ -641,6 +714,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		168DFDC46F2A87FFF6C87B0B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 05749A4A6B0F0D6B3CE39C34 /* DaysYet */;
+			targetProxy = 4AA450C00BCDCAF09E2C52A2 /* PBXContainerItemProxy */;
+		};
 		3DEFE04C8A5E95B682C89052 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 05749A4A6B0F0D6B3CE39C34 /* DaysYet */;
@@ -847,6 +925,24 @@
 			};
 			name = Release;
 		};
+		55B74E06DE24B27FF0C0EF92 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = DaysYet;
+			};
+			name = Release;
+		};
 		58556FFA2CCF8B3476FFD69A /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 0825BF284DF9112223DDBEFA /* Signing.xcconfig */;
@@ -951,6 +1047,24 @@
 				SDKROOT = macosx;
 			};
 			name = Release;
+		};
+		C7CDF150DD92FDA3EF2DC911 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGNING_ALLOWED = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = DaysYet;
+			};
+			name = Debug;
 		};
 		D6C48EC35A25773FDD9B5769 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1085,6 +1199,15 @@
 			buildConfigurations = (
 				1BFE1EBF69ED32806E803481 /* Debug */,
 				873D6D76A5B0F0A2880FE879 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		D6E55173F87B3FB367E96198 /* Build configuration list for PBXNativeTarget "DaysYetUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C7CDF150DD92FDA3EF2DC911 /* Debug */,
+				55B74E06DE24B27FF0C0EF92 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
