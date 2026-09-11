@@ -1,14 +1,17 @@
-Make time for what matters. DaysYet brings life and everyday countdowns to your Home and Lock Screens. See time left and progress for your week, month, year, daily activities, workday and personal milestones.
+Make time for what matters. DaysYet brings life and everyday countdowns to your Home and Lock Screens. See time left and progress for your week, month, year, daily activities, workday, study days, and personal milestones.
 
 Use it as a quiet memento mori: a reminder to be intentional with your time. Set your own healthy-age goal as a personal planning milestone. DaysYet counts down to the age you choose; it does not predict your health or lifespan.
 
 Keep three timelines on your Home Screen and one selected timeline on your Lock Screen.
 
 THREE TIMELINES AT A GLANCE
-Choose from this week, this month, this year, two activity schedules, a healthy-age goal you set, and a milestone date with its own start date. Use the three selected in the app, or configure a different combination for each widget.
+Choose from this week, this month, this year, two activity schedules, a healthy-age goal you set, a milestone date with its own start date, and study days. Use the three selected in the app, or configure a different combination for each widget.
 
 TWO ACTIVITY SCHEDULES AND YOUR WEEK
 Set up two activities, such as your whole day and work hours, with custom names, start and end times, and active weekdays. Set individual weekdays to Off and use overnight schedules in your device’s local time. An activity that has started continues until its end, even if the next day is Off. Choose the first day of This week using the device calendar setting or any weekday. Edit dates and activity schedules in Settings > Time reference points. Your existing work times and display selections are preserved.
+
+COUNT YOUR AVAILABLE STUDY DAYS
+Plan a period of up to 366 days, including the start and end dates. Give it a name, select weekdays, and add or exclude individual dates in the calendar. Two-week and four-week shortcuts help you start a short-term plan. Show the remaining study days in the app or widgets. The count includes today when selected, and progress reflects scheduled days that have passed. It does not record completed study sessions or access your device calendar. Edit your plan in Settings > Time reference points > Choose Study Days.
 
 THREE DISPLAY LAYOUTS
 Switch between a large time-left countdown, a combined view of time left, elapsed percentage, and progress, and three evenly spaced progress bars. Bars fill from left to right as time passes, leaving the time ahead uncolored. For progress bars, choose time left, elapsed percentage, or the target date and time.
@@ -22,6 +25,6 @@ JAPANESE AND ENGLISH
 Use the app, widget, and widget configuration in Japanese or English.
 
 ON DEVICE BY DESIGN
-No account is required. Your birth date, configured dates, activity names, times and weekdays, and week-start choice remain in the on-device area shared by the app and widget and are not sent to the developer. DaysYet contains no advertising or analytics SDKs. You can delete all saved data from Settings at any time.
+No account is required. Your birth date, configured dates, activity names, times and weekdays, week-start choice, and study plan remain in the on-device area shared by the app and widget and are not sent to the developer. DaysYet contains no advertising or analytics SDKs. You can delete all saved data from Settings at any time.
 
 The healthy-age goal is a personal planning marker you choose. It is not a statistic, medical advice, diagnosis, or a prediction of your health or lifespan.

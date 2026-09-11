@@ -1,23 +1,26 @@
-Make time for what matters. DaysYet keeps three life and everyday countdowns at the edge of your Mac display. See time left and progress for your week, month, year, workday and personal milestones while you work.
+Make time for what matters. DaysYet keeps life and everyday countdowns at the edge of your Mac display. See time left and progress for your week, month, year, activities, study days, and personal milestones while you work.
 
 Use it as a quiet memento mori: a reminder to be intentional with your time. Set your own healthy-age goal as a personal planning milestone. DaysYet counts down to the age you choose; it does not predict your health or lifespan.
 
-THREE TIMELINES AT THE EDGE
-Choose small progress circles on the left or right, or three thin bars at the top. Hover to expand the black panel and reveal the selected timeline. On either side, the details move up or down to follow the circle you select.
+YOUR TIMELINES AT THE EDGE
+Start with three small progress circles on the left or right and add up to eight different timelines. Remove circles to return to a minimum of three. Top placement shows three thin bars for the first three timelines in your list and keeps the other selections saved. Hover to expand the black panel and reveal a timeline's details. On either side, the details follow the circle you select.
 
 FIT YOUR WORKSPACE
-Choose left, right, or top placement and the display to use. Drag a side widget up or down; DaysYet saves its position. Adjust the size from 80–150% and choose from four color palettes. Double-click to open settings, where you can also show, hide, or quit the app.
+Choose left, right, or top placement and the display to use. Drag a side widget up or down; DaysYet saves its position. Adjust the size from 80–150%. Choose from four color templates or customize each visible timeline's color, with individual and full resets to the template. Double-click to open settings, where you can show, hide, or quit the app. Enable Launch at login to start DaysYet when you sign in to your Mac.
 
 CHOOSE YOUR LEVEL OF DETAIL
 Pick a large time-left countdown, a combined view of time left, elapsed percentage, and a bar, or a progress-bar view. In the progress-bar view, choose time left, elapsed percentage, or the end date as the value. Details close when you move away, or you can keep them open from settings.
 
+COUNT YOUR AVAILABLE STUDY DAYS
+Name a plan and choose a date range of up to 366 days, including both endpoints. Select weekdays, then add or exclude individual dates in the calendar. Two-week and four-week shortcuts help you get started. Select Study days as a timeline to see how many chosen days remain, including today when selected. Progress reflects scheduled days that have passed, not completed study sessions. This feature does not access your Mac's calendar. Open Settings > Timelines > Choose Study Days to edit the plan.
+
 TWO ACTIVITY SCHEDULES AND YOUR WEEK
-Set up two activities, such as your whole day and work hours, with custom names, start and end times, and active weekdays. Set individual weekdays to Off and use overnight schedules in your Mac's local time. An activity that has started continues until its end, even if the next day is Off. Start This week on the day set by your Mac calendar or choose any weekday. Edit these settings in the Timelines tab. Your existing work times and display selections are preserved.
+Set up two activities, such as your whole day and work hours, with custom names, start and end times, and active weekdays. Set weekdays to Off and use overnight schedules in your Mac's local time. An activity that has started continues until its end, even if the next day is Off. Start This week on the day set by your Mac calendar or choose any weekday. Edit these settings in the Timelines tab. Your existing work times and display selections are preserved.
 
 IMPORTANT DATES AND PERSONAL GOALS
-Choose three timelines from this week, this month, this year, two activity schedules, a milestone with its own start date, and a healthy-age goal you set. The default week, month, and year work without entering any personal dates. Japanese and English are supported.
+Choose from this week, this month, this year, two activity schedules, study days, a milestone with its own start date, and a healthy-age goal you set. The default week, month, and year work without entering personal dates. Japanese and English are supported.
 
 STORED ON THIS MAC
-No account is required. Dates, activity names, times and weekdays, week-start choices, and display settings stay on your Mac and are not sent to the developer. DaysYet has no advertising or analytics SDKs. There is no data sync with iPhone or iPad; each device has its own settings. Delete all saved data from Settings at any time.
+No account is required. Dates, activity names, times and weekdays, study plans, week-start choices, and display settings stay on your Mac and are not sent to the developer. DaysYet has no advertising or analytics SDKs. There is no data sync with iPhone or iPad; each device has its own settings. Delete all saved data from Settings at any time.
 
 The healthy-age goal is a personal planning marker, not medical advice, diagnosis, or a prediction of your health or lifespan. Activity hours count down to the schedules you set; they do not track attendance or report to an employer.

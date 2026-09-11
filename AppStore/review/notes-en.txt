@@ -1,23 +1,27 @@
 DaysYet for iPhone and iPad requires no account or sign-in and has no server-backed features.
 
-To review the Home Screen Widget:
+Home Screen widgets:
 1. Launch the app and complete the three-step onboarding. The milestone is optional.
-2. On the Widget tab, choose three timelines, one of three display layouts, and one of four themes. In Bars mode, progress fills from left to right and the value can be time left, elapsed percentage, or the target date and time.
-3. Add a Small or Medium DaysYet Widget from the Home Screen Widget gallery.
-4. For per-Widget overrides, touch and hold the Widget, choose Edit Widget, disable “Use the three selected in the app,” and select timelines, display layout, value style, and theme.
+2. On the Widget tab, choose three timelines, one of three layouts, and one of four themes. In Bars mode, progress fills left to right; the value can be time left, elapsed percentage, or the target date and time.
+3. Add a Small or Medium DaysYet widget from the Home Screen widget gallery.
+4. For per-widget overrides, touch and hold the widget, choose Edit Widget, disable “Use the three selected in the app,” and select timelines, layout, value style, and theme.
 
-To review the Lock Screen Widget:
-1. Touch and hold the Lock Screen, tap Customize, choose Lock Screen, and tap a Widget area.
+Lock Screen widgets:
+1. Touch and hold the Lock Screen, tap Customize, choose Lock Screen, and tap a widget area.
 2. Add “DaysYet — Lock Screen” in Inline, Circular, or Rectangular format.
-3. Tap the added Widget while customizing to choose its single timeline. By default, it uses the first timeline selected in the app.
+3. Tap the added widget while customizing to choose one timeline. By default, it uses the first timeline selected in the app.
 
-To review activity schedules and week starts:
-1. Open Settings > Time reference points. This is the entry point for editing dates and activity schedules; Times displays the available timelines.
-2. Activity hours 1 and Activity hours 2 each have an editable name, start and end times, and independent active weekdays. For a new user, Daily activity defaults to 07:00–23:00 every day and Work hours to 09:00–18:00 Monday–Friday. Existing users keep their previous work times, daily recurrence, and display selections.
-3. Change either label and toggle weekdays On or Off, then select the activity on the Widget tab or in a Widget’s configuration. The app and Widgets use the saved label, times, and weekdays. All weekdays can be Off to pause an activity.
-4. Schedules repeat in the device’s local time. A daytime schedule shows “Not started” before activity, remaining time during activity, and “Finished” afterward. Inactive days show “Off.” An end time earlier than the start ends the next day, even when that next day is Off; the start day determines whether an activity runs. Equal start and end times define a 24-hour schedule. This feature is a countdown, not attendance tracking or employer reporting.
-5. In Week starts on > First day, choose the device setting or a weekday. This week then runs from local midnight on that weekday to the next occurrence, and the app and Widgets use the same setting.
+New in 0.1.5: Study days:
+1. Open Settings > Time reference points > Choose Study Days. Set a name and start/end dates (both included, maximum 366 days); two-week and four-week shortcuts are available.
+2. Select weekdays, then tap individual calendar dates to add or exclude them. Changing the weekday selection resets individual date adjustments, as stated in the editor. All weekdays can be unselected to choose dates individually. Settings save automatically.
+3. Select Study days on the Widget tab or in a Home/Lock Screen widget's configuration. The remaining count includes today when selected. Progress is past selected days divided by all selected days, not completed study sessions. Empty and fully elapsed plans have distinct states. The count updates with the local date. No device calendar access or permission is used. Existing timeline selections are preserved.
 
-The milestone supports user-selected start and target dates. Birth date, healthy-age goal, milestone name and dates, activity names, times and weekdays, week-start choice, and Widget preferences remain in the on-device App Group shared with the Widget extension. There is no device sync. Settings > Delete all data resets saved entries and preferences. The app makes no application-initiated network requests and includes no analytics, advertising, or third-party runtime SDKs. Public source, Privacy, and Support links open in the system browser only after a user tap.
+Activity schedules and week starts:
+1. Open Settings > Time reference points to edit dates and activities; Times lists the available timelines.
+2. Activity hours 1 and Activity hours 2 each have a name, start/end times, and active weekdays. New users start with Daily activity at 07:00–23:00 every day and Work hours at 09:00–18:00 Monday–Friday. Existing users retain their previous work times, recurrence, and selections.
+3. Rename a schedule, change its times, toggle weekdays On/Off, and select it in the app or a widget. All weekdays can be Off. Schedules use device local time: daytime schedules show “Not started,” time remaining, then “Finished”; inactive days show “Off.” An earlier end time ends the next day, even if that day is Off; the start day determines whether an activity runs. Equal times define 24 hours.
+4. In Week starts on > First day, choose the device setting or a weekday. This week runs from local midnight on that weekday to the next occurrence, in the app and widgets.
 
-“Healthy-age goal” is a user-entered planning marker. It is not based on a health dataset and is not medical advice, diagnosis, health measurement, or a prediction of lifespan.
+Personal dates, goals, milestone name/dates, activity settings, study plan, week-start choice, and widget preferences stay in the on-device App Group shared with the widget extension. There is no device sync. Settings > Delete all data resets saved entries and preferences. The app makes no application-initiated network requests and includes no analytics, advertising, or third-party runtime SDKs. Public source, Privacy, and Support links open in the system browser only after a user tap.
+
+The healthy-age goal is a user-entered planning marker, not based on a health dataset, medical advice, diagnosis, health measurement, or a lifespan prediction. Activity hours are schedule countdowns, not attendance tracking or employer reporting.

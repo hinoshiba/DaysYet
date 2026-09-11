@@ -1,6 +1,10 @@
 # Release readiness
 
-## Current iOS 0.1.4 submission
+## Current 0.1.5 candidate
+
+iOS / iPadOS and macOS 0.1.5 (8) are being prepared together. See the [0.1.5 release record](../releases/0.1.5.md) for the candidate's validation and submission progress. The version-specific records below describe earlier submissions and do not establish the current App Store Connect state. The later 0.1.4 (7) submissions superseding the iOS build 6 candidate are recorded in the [build 7 release record](../releases/0.1.4-build7.md).
+
+## Historical iOS 0.1.4 (6) submission
 
 Final Submit for Review succeeded for iOS 0.1.4 (6) on 2026-09-08 at 07:09 JST. App Store Connect confirmed “1 item submitted,” then showed one submitted item, iOS 0.1.4 (6), Waiting for Review (「審査待ち」), and the same submission date and time in the submission details. Apple approval and public availability of 0.1.4 are pending. This iOS-only update adds two customizable activity schedules and consolidates time editing under Settings. Apple Validate passed all checks, upload completed at 07:03 JST, Apple processing completed, and build 6 was selected and saved before submission. See [the 0.1.4 release record](../releases/0.1.4.md) for the detailed verification record.
 

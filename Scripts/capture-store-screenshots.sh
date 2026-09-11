@@ -89,6 +89,11 @@ capture() {
     # SwiftUI hierarchy is visible; avoid capturing a transient blank frame.
     sleep 4
     xcrun simctl io "${simulator_id}" screenshot --type=png "${screenshot_path}"
+    if [[ -n "${DAYSYET_SCREENSHOT_ORIGINALS_DIRECTORY:-}" ]]; then
+      local original_directory="${DAYSYET_SCREENSHOT_ORIGINALS_DIRECTORY}/${output_directory#${REPOSITORY_ROOT}/AppStore/screenshots/}"
+      mkdir -p "${original_directory}"
+      cp "${screenshot_path}" "${original_directory}/${filename}"
+    fi
     magick "${screenshot_path}" -background black -alpha remove -alpha off "PNG24:${flattened_path}"
     mv "${flattened_path}" "${screenshot_path}"
   }
@@ -98,6 +103,8 @@ capture() {
   take_shot "03-time-library.png" --screenshot-times
   take_shot "04-privacy-settings.png" --screenshot-settings
   take_shot "05-work-hours-week-start.png" --screenshot-edit-times
+  take_shot "06-study-days.png" --screenshot-study-days
+  take_shot "07-study-widget.png" --screenshot-study-widget
   xcrun simctl status_bar "${simulator_id}" clear
 }
 

@@ -1,3 +1,5 @@
-• Set up two activity schedules, such as your whole day and work hours, with custom names, start and end times, and active weekdays.
-• Set individual weekdays to Off and use overnight schedules. Your existing work times and display selections are preserved. Edit schedules in the Timelines tab in Settings.
-• Updated the Mac app icon with rounded corners.
+• Add a study-day countdown. Choose a date range and weekdays, then add or exclude individual dates in the calendar. Remaining days include today when selected; progress reflects scheduled days that have passed, not completed study sessions.
+• Add or remove circles to display 3–8 timelines at either side of your screen. Top placement shows the first three and keeps your other selections saved.
+• Customize the color of each visible timeline, choose from four color templates, and reset individual colors or all colors to the template.
+• Enable Launch at login in Settings > Widget to open DaysYet automatically when you sign in to your Mac.
+• Adjust the side widget's vertical position by dragging it. Settings now point directly to this gesture, and the position is saved when you reopen the app.
