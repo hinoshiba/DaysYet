@@ -8,6 +8,8 @@ The older submission narrative below records the initial Mac release and iOS 0.1
 
 This directory contains the DaysYet App Store Connect metadata, screenshots, and review materials. Japanese is the primary language; English (U.S.) is the secondary localization. The release owner has chosen to add the native Mac app to the existing DaysYet record, Apple ID `6802000765`, with bundle ID `com.hinoshiba.daysyet`. The Mac target and platform configuration remain separate from iPhone / iPad. See [release readiness](review/release-readiness.md) for the current gaps.
 
+On 2026-09-06 at 19:17 JST, the release owner's requested Japanese and English discovery update was saved in App Store Connect. The shared names were updated to **DaysYet - 人生時計とカウントダウン** and **DaysYet: Life & Time Countdown**, with localized subtitles. Both platforms' descriptions, promotional text, and keywords were also updated. All 16 text fields matched the local files as they stood then after navigating away and reading them again. At that time, iOS 0.1.3 (5) and macOS 0.1.2 (3) were Waiting for Review; this historical save confirmation does not establish approval, public availability, or search indexing. This requested change supersedes the name/keyword preservation instructions in the earlier submission record below. See the [discovery and social-link plan](marketing/discovery.md) for the research, selected terms, hashtag sets, and generated campaign links.
+
 ```text
 configuration.yml           Existing iPhone / iPad app identity and categories
 metadata/ja/                Japanese iPhone / iPad metadata
@@ -17,6 +19,7 @@ macos/configuration.yml     Native Mac platform and working candidate version
 macos/metadata/<locale>/    Mac description, promotional text, keywords, initial release notes
 macos/screenshots/<locale>/ Three native Mac screenshots per localization
 review/                     Review instructions, questionnaire answers, and readiness
+marketing/                  Discovery research, localized social copy, and campaign links
 ```
 
 Build and upload the release on the authorized Mac using Xcode. Follow [the local release procedure](../docs/RELEASING.md), then complete the submission in the App Store Connect browser:
