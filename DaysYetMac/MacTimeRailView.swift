@@ -1,15 +1,17 @@
 import AppKit
 import SwiftUI
 
-/// Accent families stay readable on the black desktop surface.
+/// Template accents and optional colors chosen for individual timelines.
 enum MacWidgetStyle {
     // Match the physical camera cutout instead of outlining it in dark gray.
     static let background = Color.black
     static let foreground = Color.white.opacity(0.93)
     static let secondary = Color.white.opacity(0.60)
 
-    static func accent(for kind: MetricKind, theme: WidgetTheme) -> Color {
-        switch theme {
+    static func accent(for kind: MetricKind, theme: WidgetTheme,
+                       customColors: [MetricKind: MacWidgetColor] = [:]) -> Color {
+        if let custom = customColors[kind] { return custom.color }
+        return switch theme {
         case .vividNight:
             switch kind {
             case .week: Color(red: 0.92, green: 0.52, blue: 0.37)
@@ -194,7 +196,8 @@ struct MacTopProgressBarView: View {
                         ZStack(alignment: .leading) {
                             Capsule().fill(.white.opacity(0.16))
                             Capsule()
-                                .fill(MacWidgetStyle.accent(for: kind, theme: store.profile.widgetTheme)
+                                .fill(MacWidgetStyle.accent(for: kind, theme: store.profile.widgetTheme,
+                                    customColors: preferences.customColors)
                                     .opacity(selected ? 1 : 0.86))
                                 .frame(width: width * snapshot.elapsedFraction)
                         }
@@ -267,7 +270,8 @@ struct MacTimeRailView: View {
 
     private func railMetric(_ snapshot: MetricSnapshot) -> some View {
         let selected = controller.isExpanded && controller.selectedMetric == snapshot.kind
-        let accent = MacWidgetStyle.accent(for: snapshot.kind, theme: store.profile.widgetTheme)
+        let accent = MacWidgetStyle.accent(for: snapshot.kind, theme: store.profile.widgetTheme,
+                                          customColors: preferences.customColors)
         return MacPercentageRing(fraction: snapshot.elapsedFraction, accent: accent,
                                  selected: selected, subdued: controller.isExpanded && !selected, isOff: snapshot.isOff)
         .frame(width: 46, height: 50)
@@ -308,7 +312,8 @@ struct MacTimeDetailView: View {
         let mode = store.profile.widgetDisplayMode
         let showsBar = mode != .countdown
         let showsPercentage = mode == .countdownWithPercentage && !snapshot.isOff
-        let accent = MacWidgetStyle.accent(for: snapshot.kind, theme: store.profile.widgetTheme)
+        let accent = MacWidgetStyle.accent(for: snapshot.kind, theme: store.profile.widgetTheme,
+                                          customColors: preferences.customColors)
         return VStack(alignment: top ? .center : .leading, spacing: showsBar ? 2 : 5) {
             HStack(spacing: 5) {
                 Text(snapshot.title)

@@ -168,20 +168,9 @@ struct MacSettingsView: View {
                         }
                         .pickerStyle(.menu)
                     }
-
-                    VStack(alignment: .leading, spacing: 9) {
-                        Text(L10n.text("テーマ", "Theme"))
-                        HStack(spacing: 8) {
-                            ForEach(WidgetTheme.allCases) { theme in
-                                themeButton(theme)
-                            }
-                        }
-                        Text(store.profile.widgetTheme.title)
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                    .padding(.vertical, 2)
                 }
+
+                MacWidgetColorSettings(store: store, preferences: preferences)
             }
             .formStyle(.grouped)
         }
@@ -289,7 +278,8 @@ struct MacSettingsView: View {
                     .foregroundStyle(.secondary)
             }
 
-            MacPlacementPreview(profile: store.profile, edge: preferences.edge, position: preferences.verticalPosition, scale: preferences.scale)
+            MacPlacementPreview(profile: store.profile, edge: preferences.edge, position: preferences.verticalPosition,
+                                scale: preferences.scale, customColors: preferences.customColors)
                 .frame(height: 150)
                 .accessibilityLabel(L10n.text("画面の端に表示するウィジェットのプレビュー", "Preview of the widget at the screen edge"))
 
@@ -627,42 +617,6 @@ struct MacSettingsView: View {
         })
     }
 
-    private func themeButton(_ theme: WidgetTheme) -> some View {
-        let isSelected = store.profile.widgetTheme == theme
-        return Button {
-            store.update { $0.widgetTheme = theme }
-        } label: {
-            HStack(spacing: 6) {
-                ForEach(Array(MetricKind.allCases.prefix(3))) { metric in
-                    ZStack {
-                        Circle().stroke(.white.opacity(0.17), lineWidth: 1.5)
-                        Circle()
-                            .trim(from: 0, to: 0.72)
-                            .stroke(MacWidgetStyle.accent(for: metric, theme: theme), style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
-                            .rotationEffect(.degrees(-90))
-                    }
-                    .frame(width: 11, height: 11)
-                }
-            }
-            .padding(.horizontal, 7)
-            .padding(.vertical, 13)
-            .frame(maxWidth: .infinity)
-            .background(MacWidgetStyle.background, in: RoundedRectangle(cornerRadius: 9))
-            .overlay {
-                RoundedRectangle(cornerRadius: 9)
-                    .strokeBorder(isSelected ? Color.accentColor : .primary.opacity(0.12), lineWidth: isSelected ? 2 : 1)
-            }
-        }
-        .buttonStyle(.plain)
-        .help(theme.title)
-        .accessibilityLabel(theme.title)
-        .accessibilityHint(L10n.text(
-            "黒いウィジェットに、\(theme.title)のアクセントカラー",
-            "\(theme.title) accent colors on a black widget"
-        ))
-        .accessibilityAddTraits(isSelected ? .isSelected : [])
-    }
-
     private var appVersion: String {
         let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "—"
         let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "—"
@@ -765,6 +719,7 @@ private struct MacPlacementPreview: View {
     let edge: MacWidgetEdge
     let position: Double
     let scale: Double
+    let customColors: [MetricKind: MacWidgetColor]
 
     var body: some View {
         GeometryReader { geometry in
@@ -781,7 +736,8 @@ private struct MacPlacementPreview: View {
                     startPoint: .topLeading, endPoint: .bottomTrailing
                 )
                 Circle()
-                    .fill(MacWidgetStyle.accent(for: .month, theme: profile.widgetTheme).opacity(0.22))
+                    .fill(MacWidgetStyle.accent(for: .month, theme: profile.widgetTheme,
+                        customColors: customColors).opacity(0.22))
                     .frame(width: 160, height: 160)
                     .blur(radius: 30)
                     .offset(x: -70, y: 20)
@@ -829,7 +785,8 @@ private struct MacPlacementPreview: View {
                                         Capsule().fill(.white.opacity(0.16))
                                             .overlay(alignment: .leading) {
                                                 Capsule()
-                                                    .fill(MacWidgetStyle.accent(for: kind, theme: profile.widgetTheme))
+                                                    .fill(MacWidgetStyle.accent(for: kind, theme: profile.widgetTheme,
+                                                        customColors: customColors))
                                                     .frame(width: track.size.width * snapshot.elapsedFraction)
                                             }
                                     }
@@ -865,7 +822,7 @@ private struct MacPlacementPreview: View {
 
     private func previewMetric(_ kind: MetricKind) -> some View {
         let snapshot = TimeProgressCalculator.snapshot(for: kind, profile: profile)
-        let accent = MacWidgetStyle.accent(for: kind, theme: profile.widgetTheme)
+        let accent = MacWidgetStyle.accent(for: kind, theme: profile.widgetTheme, customColors: customColors)
         return MacPercentageRing(fraction: snapshot.elapsedFraction, accent: accent, isOff: snapshot.isOff)
             .scaleEffect(0.5625)
             .frame(width: 18, height: 18)

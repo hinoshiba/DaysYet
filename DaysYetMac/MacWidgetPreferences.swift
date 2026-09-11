@@ -34,6 +34,7 @@ final class MacWidgetPreferences: ObservableObject {
     @Published var displayID: String { didSet { defaults.set(displayID, forKey: Key.display) } }
     @Published var keepDetailsOpen: Bool { didSet { defaults.set(keepDetailsOpen, forKey: Key.details) } }
     @Published var scale: Double { didSet { defaults.set(scale, forKey: Key.scale) } }
+    @Published private(set) var customColors: [MetricKind: MacWidgetColor]
 
     private let defaults: UserDefaults
     private enum Key {
@@ -43,6 +44,7 @@ final class MacWidgetPreferences: ObservableObject {
         static let display = "mac-widget-display"
         static let details = "mac-widget-keep-details"
         static let scale = "mac-widget-scale"
+        static let customColors = "mac-widget-custom-colors"
     }
 
     init(defaults: UserDefaults = .standard) {
@@ -54,6 +56,31 @@ final class MacWidgetPreferences: ObservableObject {
         displayID = defaults.string(forKey: Key.display) ?? ""
         keepDetailsOpen = defaults.bool(forKey: Key.details)
         scale = MacWidgetPlacement.clampedScale(defaults.object(forKey: Key.scale) as? Double ?? 1)
+        customColors = (defaults.dictionary(forKey: Key.customColors) ?? [:]).reduce(into: [:]) { colors, entry in
+            guard let kind = MetricKind(rawValue: entry.key), let hex = entry.value as? String,
+                  let color = MacWidgetColor(hex: hex) else { return }
+            colors[kind] = color
+        }
+    }
+
+    func customColor(for kind: MetricKind) -> MacWidgetColor? {
+        customColors[kind]
+    }
+
+    func setCustomColor(_ color: MacWidgetColor?, for kind: MetricKind) {
+        guard customColors[kind] != color else { return }
+        customColors[kind] = color
+        if customColors.isEmpty {
+            defaults.removeObject(forKey: Key.customColors)
+        } else {
+            defaults.set(Dictionary(uniqueKeysWithValues: customColors.map { ($0.key.rawValue, $0.value.hex) }),
+                         forKey: Key.customColors)
+        }
+    }
+
+    func resetCustomColors() {
+        customColors = [:]
+        defaults.removeObject(forKey: Key.customColors)
     }
 
     func reset() {
@@ -63,6 +90,7 @@ final class MacWidgetPreferences: ObservableObject {
         displayID = ""
         keepDetailsOpen = false
         scale = 1
+        resetCustomColors()
         [Key.visible, Key.edge, Key.position, Key.display, Key.details, Key.scale].forEach(defaults.removeObject(forKey:))
     }
 }
