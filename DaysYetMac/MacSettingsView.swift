@@ -6,6 +6,7 @@ struct MacSettingsView: View {
     @ObservedObject var preferences: MacWidgetPreferences
     @ObservedObject var controller: MacWidgetController
 
+    @StateObject private var loginItem = MacLoginItemSettings()
     @State private var showResetConfirmation = false
     @State private var showStudySchedule = MacSettingsView.isStudyScreenshot
     @State private var selectedTab = MacSettingsView.isStudyScreenshot ? 1 : 0
@@ -47,6 +48,14 @@ struct MacSettingsView: View {
             .padding(.bottom, 12)
         }
         .frame(minWidth: 680, idealWidth: 760, minHeight: 560, idealHeight: 620)
+        .onAppear { loginItem.refresh() }
+        .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+            loginItem.refresh()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: NSWindow.didBecomeKeyNotification)) { _ in
+            // The settings window is reused, so onAppear alone is insufficient.
+            loginItem.refresh()
+        }
         .sheet(item: $selectedDocument) { document in
             MacLegalDocumentView(document: document)
         }
@@ -79,6 +88,8 @@ struct MacSettingsView: View {
                 .frame(width: 224)
             Divider()
             Form {
+                loginItemSettings
+
                 Section {
                     Toggle(L10n.text("画面の端に表示", "Show at the screen edge"), isOn: visibilityBinding)
                     if !preferences.isVisible {
@@ -173,6 +184,52 @@ struct MacSettingsView: View {
                 }
             }
             .formStyle(.grouped)
+        }
+    }
+
+    private var loginItemSettings: some View {
+        Section {
+            Toggle(L10n.text("ログイン時に起動", "Launch at login"), isOn: Binding(
+                get: { loginItem.isEnabled },
+                set: { loginItem.setEnabled($0) }
+            ))
+
+            if loginItem.requiresApproval {
+                Label(L10n.text(
+                    "macOSの承認待ちです。ログイン項目の設定でDaysYetを有効にしてください。",
+                    "Waiting for macOS approval. Enable DaysYet in Login Items in System Settings."
+                ), systemImage: "exclamationmark.circle")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            }
+
+            if loginItem.status == .notFound {
+                Label(L10n.text(
+                    "DaysYetのログイン項目が見つかりません。アプリのインストール先を確認して、DaysYetを開き直してください。",
+                    "DaysYet’s login item could not be found. Check where the app is installed and reopen DaysYet."
+                ), systemImage: "exclamationmark.circle")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            }
+
+            if let errorMessage = loginItem.errorMessage {
+                Label(errorMessage, systemImage: "exclamationmark.triangle")
+                    .font(.caption)
+                    .foregroundStyle(.red)
+            }
+
+            if loginItem.requiresApproval || loginItem.errorMessage != nil {
+                Button(L10n.text("ログイン項目の設定を開く…", "Open Login Items Settings…")) {
+                    loginItem.openSystemSettings()
+                }
+            }
+        } header: {
+            Text(L10n.text("起動", "Startup"))
+        } footer: {
+            Text(L10n.text(
+                "有効にすると、Macへのログイン時にDaysYetが自動で起動します。再起動後もウィジェットを表示したい場合におすすめです。",
+                "Automatically open DaysYet when you log in to your Mac. Recommended to keep the widget available after restarting."
+            ))
         }
     }
 
