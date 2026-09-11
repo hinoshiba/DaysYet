@@ -11,4 +11,6 @@ The following development tool is not bundled in the distributed application:
 
 Apple frameworks, system fonts, and SF Symbols are provided by the operating system and are used only in Apple-platform application UI under the applicable Apple developer agreements. They are not redistributed as standalone assets.
 
+The Mac app uses Apple's system-provided ServiceManagement framework (`SMAppService.mainApp`) to let users manage launch at login. It adds no bundled third-party code or network requests; macOS manages registration and any required user approval.
+
 This inventory must be reviewed whenever a dependency, font, image, sound, dataset, or SDK is added.

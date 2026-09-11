@@ -27,6 +27,7 @@
 		4916B55AAAB4AA35C6D34D37 /* ProfileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B04E98B81C6EE39699985B09 /* ProfileStore.swift */; };
 		4A99EB9C683A50BFFB97E3BA /* MacTimeRailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D94F4707A5BA71C438877A9 /* MacTimeRailView.swift */; };
 		4DFC782E74EFE4EF5625A693 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 76A627882BF859D704488EBF /* PrivacyInfo.xcprivacy */; };
+		4E18A1C464C86B6A6F4D2AB7 /* MacLoginItemSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18BD6B2B2B72D2A6012AE9D /* MacLoginItemSettings.swift */; };
 		4E58729CFFB84CB4C1BA1E4E /* ProfileRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D4529A3EAFCABF61CBA729D /* ProfileRepository.swift */; };
 		4EDDD820E2F065C84EB6B5B8 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5077CE484DDB9FA8448530A /* RootView.swift */; };
 		512CFBE061B7440C1ED28ED5 /* THIRD_PARTY_NOTICES.md in Resources */ = {isa = PBXBuildFile; fileRef = 37680AC2C679AD7E5923DC15 /* THIRD_PARTY_NOTICES.md */; };
@@ -50,6 +51,7 @@
 		7EA968CA461D8A76438D7105 /* ActivityScheduleEditorContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = E990ACA6F50800ABD6754B72 /* ActivityScheduleEditorContent.swift */; };
 		80282C52FEDFF23801AAEA57 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 343F8E3BCF1BFAEAEBD45A97 /* Assets.xcassets */; };
 		85EABD42E7FC7E7ADDCA3C2B /* TimeMetric.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787BB50AE053C559748C39E4 /* TimeMetric.swift */; };
+		8884C49053255442004E4076 /* MacLoginItemSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABC46F615264F47CAE996877 /* MacLoginItemSettingsTests.swift */; };
 		8E5C94002BD49BCB08660381 /* StudyScheduleEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBDAAB14865688B102E5DF7 /* StudyScheduleEditor.swift */; };
 		9021D64237A8C956A22F7E6C /* WidgetConfigurationIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F496778F27954462FC180E9 /* WidgetConfigurationIntent.swift */; };
 		943AF5ED0EF0C3BFC7DA2557 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 07705141EA121C9FBCD0F6E8 /* InfoPlist.strings */; };
@@ -187,7 +189,9 @@
 		A5077CE484DDB9FA8448530A /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		A595FB6033234CAF7CA04E0C /* MacWidgetController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetController.swift; sourceTree = "<group>"; };
 		A9E1151ACD8A1E94DF04D3A0 /* DaysYetTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = DaysYetTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		ABC46F615264F47CAE996877 /* MacLoginItemSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacLoginItemSettingsTests.swift; sourceTree = "<group>"; };
 		B04E98B81C6EE39699985B09 /* ProfileStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileStore.swift; sourceTree = "<group>"; };
+		B18BD6B2B2B72D2A6012AE9D /* MacLoginItemSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacLoginItemSettings.swift; sourceTree = "<group>"; };
 		B654EE3C8A3A58D1CA888B91 /* MacWidgetSelectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetSelectionTests.swift; sourceTree = "<group>"; };
 		B76A90071D066FB56C71C5EC /* WidgetStudioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetStudioView.swift; sourceTree = "<group>"; };
 		B76F2990B7B59DF8981C5A3A /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -210,6 +214,7 @@
 			isa = PBXGroup;
 			children = (
 				5FAF5701274AE1606389D2BF /* MacCircleSettingsTests.swift */,
+				ABC46F615264F47CAE996877 /* MacLoginItemSettingsTests.swift */,
 				8FE1F2B7FEEEBC873DF9B2C2 /* MacWidgetDragTests.swift */,
 				B654EE3C8A3A58D1CA888B91 /* MacWidgetSelectionTests.swift */,
 				5850D0BE692A63A71E62BE3E /* MacWidgetTests.swift */,
@@ -250,6 +255,7 @@
 			children = (
 				7EEF11C88A39D6BFF1B4D534 /* Assets.xcassets */,
 				0FCB41C9C9E755B3BEEED6E5 /* DaysYetMacApp.swift */,
+				B18BD6B2B2B72D2A6012AE9D /* MacLoginItemSettings.swift */,
 				A1B11D4C863E5F66FF0D5780 /* MacSettingsView.swift */,
 				9D94F4707A5BA71C438877A9 /* MacTimeRailView.swift */,
 				A595FB6033234CAF7CA04E0C /* MacWidgetController.swift */,
@@ -635,6 +641,7 @@
 				78E35E9D015BD80CA4B4A221 /* DaysYetMacApp.swift in Sources */,
 				6D93E37B71D9C59C5B169118 /* DaysYetTheme.swift in Sources */,
 				FB2992EC52031417A5F16BCD /* L10n.swift in Sources */,
+				4E18A1C464C86B6A6F4D2AB7 /* MacLoginItemSettings.swift in Sources */,
 				D70A37DD7864DF557E54602D /* MacSettingsView.swift in Sources */,
 				4A99EB9C683A50BFFB97E3BA /* MacTimeRailView.swift in Sources */,
 				D6F28DDF872DCCAC2BE34579 /* MacWidgetController.swift in Sources */,
@@ -700,6 +707,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1566FB9383916B66814994CC /* MacCircleSettingsTests.swift in Sources */,
+				8884C49053255442004E4076 /* MacLoginItemSettingsTests.swift in Sources */,
 				FF2EA20E325876F47246EEEB /* MacWidgetDragTests.swift in Sources */,
 				C5FFD3A0BCC08174065295DB /* MacWidgetSelectionTests.swift in Sources */,
 				CFDADD3AD39F8A8248936B23 /* MacWidgetTests.swift in Sources */,
