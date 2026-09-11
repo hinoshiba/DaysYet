@@ -12,7 +12,7 @@ widget_bundle_id: com.hinoshiba.daysyet.widget
 app_group: group.com.hinoshiba.daysyet
 widget_kind: com.hinoshiba.daysyet.widget.progress
 lock_screen_widget_kind: com.hinoshiba.daysyet.widget.lock-screen
-# Source candidate only; no archive, upload, submission, or release for 0.1.5 (8).
+# Release candidate; validation and submission progress are recorded in releases/0.1.5.md.
 # The previous submission is recorded in releases/0.1.4-build7.md.
 version: 0.1.5
 build: 8

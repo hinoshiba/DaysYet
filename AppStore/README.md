@@ -1,8 +1,8 @@
 # App Store submission resources
 
-**iOS / iPadOS and macOS 0.1.4 (7) are both Waiting for Review.** Final submissions succeeded on 2026-09-08 at 08:51 JST for iOS and 08:58 JST for macOS; the earlier iOS build 6 submission was canceled. This release includes two configurable activity schedules and the rounded Mac icon. See the [build 7 release record](releases/0.1.4-build7.md) for the submitted source, validation, and screenshot provenance. All 20 iPhone / iPad images and eight Mac images are attached. Apple approval and public availability are pending; automatic release after approval remains enabled.
+**The current release candidate is iOS / iPadOS and macOS 0.1.5 (8).** The localized metadata and screenshots are being updated for study-day plans, configurable Mac circles and colors, and launch at login. See the [0.1.5 release record](releases/0.1.5.md) for validation and submission progress. Preparing these files does not establish an upload, App Review submission, approval, or public availability.
 
-The older submission narrative below records the initial Mac release and iOS 0.1.3; its statuses and screenshot counts are historical. Use the current release record and [local Xcode release procedure](../docs/RELEASING.md) for this candidate.
+The previous iOS / iPadOS and macOS 0.1.4 (7) submissions were confirmed Waiting for Review on 2026-09-08 at 08:51 JST and 08:58 JST respectively. That record included 20 iPhone / iPad images and eight Mac images; see the [build 7 release record](releases/0.1.4-build7.md). The older submission narrative below records the initial Mac release and iOS 0.1.3. Those statuses and screenshot counts are historical. Use the current release record and [local Xcode release procedure](../docs/RELEASING.md) for this candidate.
 
 ## Earlier submission record
 
@@ -16,8 +16,8 @@ metadata/ja/                Japanese iPhone / iPad metadata
 metadata/en-US/             English (U.S.) iPhone / iPad metadata
 screenshots/<locale>/       iPhone / iPad device-class images
 macos/configuration.yml     Native Mac platform and working candidate version
-macos/metadata/<locale>/    Mac description, promotional text, keywords, initial release notes
-macos/screenshots/<locale>/ Three native Mac screenshots per localization
+macos/metadata/<locale>/    Mac description, promotional text, keywords, update notes
+macos/screenshots/<locale>/ Native Mac screenshots and capture record
 review/                     Review instructions, questionnaire answers, and readiness
 marketing/                  Discovery research, localized social copy, and campaign links
 ```
@@ -46,7 +46,7 @@ Mac screenshots are saved under `macos/screenshots/<locale>/` and attached to th
 
 On 2026-09-06, **Submit for Review** succeeded separately for macOS 0.1.2, build 3. App Store Connect confirmed one submitted item and shows **Waiting for Review** (「審査待ち」), with no draft remaining. That submission contained only the Mac version. The public Mac website update is deployed and verified, and the existing automatic-release-after-approval setting remains selected. Apple has not yet approved the Mac release.
 
-`Scripts/validate-store-assets.py` currently validates the existing iPhone / iPad metadata and screenshots. Its success does not validate `macos/` or establish Mac submission readiness. Check Mac descriptions (4,000 characters), promotional text (170 characters), keywords (100 bytes), empty initial-release notes, screenshot dimensions, and the final native UI separately.
+`Scripts/validate-store-assets.py` validates the iPhone / iPad metadata and screenshots. Its success does not validate `macos/` or establish Mac submission readiness. Check Mac descriptions (4,000 characters), promotional text (170 characters), keywords (100 bytes), update notes, screenshot dimensions, and the final native UI separately.
 
 The release workflow uses local Xcode Archive and Organizer upload.
 
