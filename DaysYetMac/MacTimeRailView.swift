@@ -218,6 +218,8 @@ struct MacTopProgressBarView: View {
 }
 
 struct MacPercentageRing: View {
+    static let hoverScale: CGFloat = 1.35
+
     let fraction: Double
     let accent: Color
     var selected = false
@@ -256,6 +258,7 @@ struct MacTimeRailView: View {
     @ObservedObject var store: ProfileStore
     @ObservedObject var preferences: MacWidgetPreferences
     @ObservedObject var controller: MacWidgetController
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 60)) { context in
@@ -270,10 +273,15 @@ struct MacTimeRailView: View {
 
     private func railMetric(_ snapshot: MetricSnapshot) -> some View {
         let selected = controller.isExpanded && controller.selectedMetric == snapshot.kind
+        let hovered = controller.hoveredMetric == snapshot.kind
         let accent = MacWidgetStyle.accent(for: snapshot.kind, theme: store.profile.widgetTheme,
                                           customColors: preferences.customColors)
         return MacPercentageRing(fraction: snapshot.elapsedFraction, accent: accent,
                                  selected: selected, subdued: controller.isExpanded && !selected, isOff: snapshot.isOff)
+        .scaleEffect(hovered ? MacPercentageRing.hoverScale : 1)
+        .animation(reduceMotion ? nil : .easeOut(duration: 0.16), value: hovered)
+        // Keep the target fixed while the ring grows, so adjacent rows do not
+        // shift or repeatedly enter and exit hover during the animation.
         .frame(width: 46, height: 50)
         .contentShape(Rectangle())
         .onHover { controller.metricHoverChanged(snapshot.kind, hovering: $0) }

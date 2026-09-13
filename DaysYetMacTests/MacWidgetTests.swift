@@ -5,6 +5,42 @@ import XCTest
 final class MacWidgetPlacementTests: XCTestCase {
     private let desktop = NSRect(x: 80, y: 40, width: 1440, height: 900)
 
+    func testMagnifiedRingsStayInsideTheirSurfaceAndFixedHoverRow() {
+        // Include half the 1.5pt stroke outside the 32pt circle's bounds.
+        let radius = (16 + 0.75) * MacPercentageRing.hoverScale
+        for count in 3...MetricKind.allCases.count {
+            for edge in [MacWidgetEdge.left, .right] {
+                for scale in [0.8, 1.0, 1.5] {
+                    for availableHeight in [CGFloat(230), 900] {
+                        let bounds = NSRect(x: -1440, y: 40, width: 1440, height: availableHeight)
+                        for expanded in [false, true] {
+                            let frame = MacWidgetPlacement.frame(in: bounds, edge: edge, position: 0.5,
+                                expanded: expanded, scale: scale, metricCount: count)
+                            let verticalScale = MacWidgetPlacement.sideVerticalScale(in: frame.size,
+                                scale: scale, metricCount: count)
+                            for (index, center) in MacWidgetPlacement.ringCenters(for: count).enumerated() {
+                                for degrees in stride(from: 0, to: 360, by: 5) {
+                                    let angle = CGFloat(degrees) * .pi / 180
+                                    let point = CGPoint(
+                                        x: (edge == .left ? 23 * scale : frame.width - 23 * scale) + cos(angle) * radius * scale,
+                                        y: center * verticalScale + sin(angle) * radius * verticalScale)
+                                    XCTAssertEqual(MacWidgetSurface.sideHoverIndex(at: point, in: frame.size,
+                                        edge: edge, scale: scale, metricCount: count), index)
+                                    // Magnification starts before the detail follows the hovered row.
+                                    for selection in [CGFloat(0), 0.5, CGFloat(count - 1)] {
+                                        XCTAssertTrue(MacWidgetSurface.contains(point, in: frame.size, edge: edge,
+                                            selectedIndex: selection, scale: scale, metricCount: count),
+                                            "Magnification must fit even while another row's details are open.")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     func testAddedCirclesStayInsideTheDisplayAndSelectTheirOwnRows() {
         for count in 3...MetricKind.allCases.count {
             for edge in [MacWidgetEdge.left, .right] {

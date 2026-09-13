@@ -7,6 +7,7 @@ import SwiftUI
 @MainActor
 final class MacWidgetController: ObservableObject {
     @Published private(set) var selectedMetric: MetricKind?
+    @Published private(set) var hoveredMetric: MetricKind?
     @Published private(set) var selectionPosition: CGFloat = 0
     @Published private(set) var isExpanded = false
     @Published private(set) var displays: [MacDisplay] = []
@@ -20,7 +21,6 @@ final class MacWidgetController: ObservableObject {
     private var intentTask: Task<Void, Never>?
     private var selectionTask: Task<Void, Never>?
     private var isHovered = false
-    private var hoveredMetric: MetricKind?
     private var suppressTopHoverUntilExit = false
     private var globalPointerMonitor: Any?
     private var localPointerMonitor: Any?
