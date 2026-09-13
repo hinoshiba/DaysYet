@@ -5,6 +5,72 @@ import XCTest
 
 final class MacWidgetSelectionTests: XCTestCase {
     @MainActor
+    func testSideHoverPublishesImmediatelyAndIgnoresAnOldRowsExit() async throws {
+        for edge in [MacWidgetEdge.left, .right] {
+            try await withController(edge: edge) { controller in
+                var publishedHovers: [MetricKind?] = []
+                let observation = controller.$hoveredMetric.dropFirst().sink {
+                    publishedHovers.append($0)
+                }
+                defer { observation.cancel() }
+
+                controller.metricHoverChanged(.month, hovering: true)
+                XCTAssertEqual(controller.hoveredMetric, .month)
+                XCTAssertEqual(publishedHovers, [.month])
+                XCTAssertNil(controller.selectedMetric)
+                XCTAssertFalse(controller.isExpanded)
+
+                controller.metricHoverChanged(.year, hovering: true)
+                controller.metricHoverChanged(.month, hovering: false)
+                XCTAssertEqual(controller.hoveredMetric, .year)
+                XCTAssertEqual(publishedHovers, [.month, .year])
+                XCTAssertNil(controller.selectedMetric)
+
+                controller.metricHoverChanged(.year, hovering: false)
+                XCTAssertNil(controller.hoveredMetric)
+                XCTAssertEqual(publishedHovers, [.month, .year, nil])
+            }
+        }
+    }
+
+    @MainActor
+    func testLeavingTheRowOrWidgetClearsHoverWhileDetailsStayPinned() async throws {
+        try await withController { controller in
+            controller.preferences.keepDetailsOpen = true
+            let pinned = try await eventually { controller.isExpanded }
+            XCTAssertTrue(pinned)
+
+            controller.metricHoverChanged(.week, hovering: true)
+            XCTAssertEqual(controller.hoveredMetric, .week)
+            controller.metricHoverChanged(.week, hovering: false)
+            XCTAssertNil(controller.hoveredMetric)
+            XCTAssertTrue(controller.isExpanded)
+
+            controller.metricHoverChanged(.month, hovering: true)
+            XCTAssertEqual(controller.hoveredMetric, .month)
+            controller.hoverChanged(false)
+            XCTAssertNil(controller.hoveredMetric)
+            XCTAssertTrue(controller.isExpanded)
+            XCTAssertTrue(controller.preferences.keepDetailsOpen)
+        }
+    }
+
+    @MainActor
+    func testHidingTheWidgetClearsHoverAndCancelsDeferredSelection() async throws {
+        try await withController { controller in
+            controller.metricHoverChanged(.month, hovering: true)
+            XCTAssertEqual(controller.hoveredMetric, .month)
+
+            controller.hideWidget()
+            XCTAssertNil(controller.hoveredMetric)
+            try await Task.sleep(for: .milliseconds(300))
+            XCTAssertNil(controller.hoveredMetric)
+            XCTAssertNil(controller.selectedMetric)
+            XCTAssertFalse(controller.isExpanded)
+        }
+    }
+
+    @MainActor
     func testInitialHoverAndReopeningStartAtTheRequestedRow() async throws {
         try await withController { controller in
             XCTAssertFalse(controller.isExpanded)
@@ -207,8 +273,10 @@ final class MacWidgetSelectionTests: XCTestCase {
         profile.dashboardMetrics = [.week, .month, .year, .healthyLife]
         try await withController(profile: profile) { controller in
             controller.metricHoverChanged(.healthyLife, hovering: true)
+            XCTAssertEqual(controller.hoveredMetric, .healthyLife)
             controller.store.update { $0.dashboardMetrics = [.week, .month, .year] }
             try await Task.sleep(for: .milliseconds(300))
+            XCTAssertNil(controller.hoveredMetric)
             XCTAssertFalse(controller.isExpanded)
             XCTAssertEqual(controller.selectedMetric, .week)
             XCTAssertEqual(controller.selectionPosition, 0)
@@ -216,6 +284,7 @@ final class MacWidgetSelectionTests: XCTestCase {
             // A late SwiftUI hover callback for the removed view is also ignored.
             controller.metricHoverChanged(.healthyLife, hovering: true)
             try await Task.sleep(for: .milliseconds(300))
+            XCTAssertNil(controller.hoveredMetric)
             XCTAssertFalse(controller.isExpanded)
             XCTAssertEqual(controller.selectedMetric, .week)
         }
@@ -258,8 +327,10 @@ final class MacWidgetSelectionTests: XCTestCase {
         profile.dashboardMetrics = [.week, .month, .year, .healthyLife]
         try await withController(profile: profile) { controller in
             controller.metricHoverChanged(.healthyLife, hovering: true)
+            XCTAssertEqual(controller.hoveredMetric, .healthyLife)
             controller.preferences.edge = .top
             try await Task.sleep(for: .milliseconds(300))
+            XCTAssertNil(controller.hoveredMetric)
             XCTAssertFalse(controller.isExpanded)
             XCTAssertEqual(controller.activeMetrics, [.week, .month, .year])
             XCTAssertEqual(controller.selectedMetric, .week)
@@ -269,11 +340,12 @@ final class MacWidgetSelectionTests: XCTestCase {
 
     @MainActor
     private func withController(profile: UserProfile = .initial,
+                                edge: MacWidgetEdge = .left,
                                 _ body: @MainActor (MacWidgetController) async throws -> Void) async throws {
         let suiteName = "com.hinoshiba.daysyet.mac.selection.tests.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
         let preferences = MacWidgetPreferences(defaults: defaults)
-        preferences.edge = .left
+        preferences.edge = edge
         // Inject both reads and writes, and never start a panel or reset the
         // repository: these tests cannot modify the user's saved profile.
         let store = ProfileStore(profile: profile, saveProfile: { _ in })
