@@ -1,3 +1,3 @@
-• Count the study days left in a short-term plan. Choose weekdays, then add or exclude individual dates in a calendar.
-• Give your study plan a name and set its start and end dates. Two-week and four-week shortcuts make it easy to get started.
-• Show Study days in the app, Home Screen widgets, and Lock Screen widgets. The countdown includes today when selected; progress reflects scheduled days that have passed, not completed study sessions.
+• Bars and circles now count down from 100% to 0%, showing the time you have left. Bars shrink from right to left; circles empty clockwise from 12 o’clock.
+• Percentages and accessibility descriptions now describe time remaining. Small positive amounts remain distinct from 0% at the end.
+• Updated explanations and headings focus on your remaining life tokens. Your saved dates and display settings are preserved.

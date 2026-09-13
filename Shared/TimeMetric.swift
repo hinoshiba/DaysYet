@@ -72,7 +72,7 @@ enum WidgetDisplayMode: String, Codable, CaseIterable, Identifiable, Sendable {
     var title: String {
         switch self {
         case .countdown: L10n.text("カウントダウン", "Countdown")
-        case .countdownWithPercentage: L10n.text("時間＋経過割合＋バー", "Time + elapsed % + bar")
+        case .countdownWithPercentage: L10n.text("時間＋残り割合＋バー", "Time + remaining % + bar")
         case .progressBars: L10n.text("プログレスバー", "Progress bars")
         }
     }
@@ -138,7 +138,7 @@ enum MetricValueStyle: String, Codable, CaseIterable, Identifiable, Sendable {
     var title: String {
         switch self {
         case .remaining: L10n.text("残り時間", "Time left")
-        case .percentage: L10n.text("経過割合", "Elapsed percentage")
+        case .percentage: L10n.text("残り割合", "Remaining percentage")
         case .targetDate: L10n.text("終了日時", "End date")
         }
     }
@@ -331,6 +331,26 @@ struct CountdownPresentation: Equatable, Sendable {
     }
 }
 
+enum RemainingPercentage {
+    static func text(for fraction: Double) -> String {
+        let percentage = min(max(fraction, 0), 1) * 100
+        if percentage > 0, percentage < 0.1 { return "<0.1%" }
+        return String(format: "%.1f%%", percentage)
+    }
+
+    static func compactNumber(for fraction: Double) -> String {
+        let percentage = min(max(fraction, 0), 1) * 100
+        if percentage > 0, percentage < 1 { return "<1" }
+        // Nearest rounding avoids subtractive floating-point error turning
+        // an exact 10% remaining balance into a displayed 9%.
+        return String(Int(percentage.rounded()))
+    }
+
+    static func compactText(for fraction: Double) -> String {
+        "\(compactNumber(for: fraction))%"
+    }
+}
+
 struct MetricSnapshot: Identifiable, Equatable, Sendable {
     let kind: MetricKind
     let title: String
@@ -339,13 +359,20 @@ struct MetricSnapshot: Identifiable, Equatable, Sendable {
     let elapsedFraction: Double
     let targetDate: Date
     var isOff: Bool = false
+    var hasScheduledTime: Bool = true
 
     var id: String { kind.rawValue }
     var remainingText: String { countdown.plainText }
-    var percentageText: String { isOff ? "Off" : String(format: "%.1f%%", elapsedFraction * 100) }
+    /// The available portion of the period. An empty study plan has no budget,
+    /// while an upcoming scheduled period still has its full budget remaining.
+    var remainingFraction: Double {
+        guard !isOff, hasScheduledTime else { return 0 }
+        return 1 - min(max(elapsedFraction, 0), 1)
+    }
+    var percentageText: String { isOff ? "Off" : RemainingPercentage.text(for: remainingFraction) }
 
-    var percentageElapsedText: String {
-        isOff ? "Off" : L10n.text("\(percentageText)経過", "\(percentageText) elapsed")
+    var percentageRemainingText: String {
+        isOff ? "Off" : L10n.text("残り\(percentageText)", "\(percentageText) left")
     }
 
     func valueText(style: MetricValueStyle, compact: Bool = false) -> String {
@@ -354,7 +381,7 @@ struct MetricSnapshot: Identifiable, Equatable, Sendable {
         case .remaining:
             return compact ? compactRemainingText : remainingText
         case .percentage:
-            return percentageElapsedText
+            return percentageRemainingText
         case .targetDate:
             return targetDateText(compact: compact)
         }
@@ -385,17 +412,17 @@ struct MetricSnapshot: Identifiable, Equatable, Sendable {
         if isOff { return context }
         switch style {
         case .remaining:
-            return "\(percentageElapsedText) · \(targetDateText())"
+            return "\(percentageRemainingText) · \(targetDateText())"
         case .percentage:
             return "\(remainingText) · \(targetDateText())"
         case .targetDate:
-            return "\(remainingText) · \(percentageElapsedText)"
+            return "\(remainingText) · \(percentageRemainingText)"
         }
     }
 
     var accessibilitySummary: String {
         if isOff { return "\(title)。Off。\(context)。" }
-        return "\(title)。\(remainingText)。\(percentageElapsedText)。\(targetDateText())。"
+        return "\(title)。\(remainingText)。\(percentageRemainingText)。\(targetDateText())。"
     }
 
     private var compactRemainingText: String {
@@ -576,7 +603,8 @@ enum TimeProgressCalculator {
             context: context,
             countdown: presentation,
             elapsedFraction: selectedDays.isEmpty ? 0 : Double(elapsedCount) / Double(selectedDays.count),
-            targetDate: schedule.endDate(in: calendar)
+            targetDate: schedule.endDate(in: calendar),
+            hasScheduledTime: !selectedDays.isEmpty
         )
     }
 

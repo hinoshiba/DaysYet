@@ -206,11 +206,13 @@ struct MacTopProgressBarView: View {
                         let thickness = min(2 * MacWidgetPlacement.clampedScale(preferences.scale), geometry.size.height)
                         ZStack(alignment: .leading) {
                             Capsule().fill(.white.opacity(0.16))
-                            Capsule()
-                                .fill(MacWidgetStyle.accent(for: kind, theme: store.profile.widgetTheme,
-                                    customColors: preferences.customColors)
-                                    .opacity(selected ? 1 : 0.86))
-                                .frame(width: width * snapshot.elapsedFraction)
+                            if snapshot.remainingFraction > 0 {
+                                Capsule()
+                                    .fill(MacWidgetStyle.accent(for: kind, theme: store.profile.widgetTheme,
+                                        customColors: preferences.customColors)
+                                        .opacity(selected ? 1 : 0.86))
+                                    .frame(width: width * snapshot.remainingFraction)
+                            }
                         }
                         .frame(width: width, height: thickness)
                         .frame(width: geometry.size.width / 3, height: geometry.size.height)
@@ -229,6 +231,7 @@ struct MacTopProgressBarView: View {
 }
 
 struct MacPercentageRing: View {
+    /// The unconsumed portion, from 1 at the start to 0 at the target.
     let fraction: Double
     let accent: Color
     var selected = false
@@ -239,10 +242,12 @@ struct MacPercentageRing: View {
         ZStack {
             ZStack {
                 Circle().stroke(.white.opacity(0.10), lineWidth: 1.5)
-                Circle()
-                    .trim(from: 0, to: fraction)
-                    .stroke(accent, style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
+                if fraction > 0 {
+                    Circle()
+                        .trim(from: 1 - fraction, to: 1)
+                        .stroke(accent, style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
+                        .rotationEffect(.degrees(-90))
+                }
             }
             .opacity(selected ? 1 : (subdued ? 0.68 : 0.80))
             HStack(alignment: .firstTextBaseline, spacing: 0.5) {
@@ -250,7 +255,7 @@ struct MacPercentageRing: View {
                     Text("Off")
                         .font(.system(size: 9, weight: .medium))
                 } else {
-                    Text("\(Int((fraction * 100).rounded(.down)))")
+                    Text(RemainingPercentage.compactNumber(for: fraction))
                         .font(.system(size: 10, weight: .semibold))
                         .monospacedDigit()
                     Text("%")
@@ -285,7 +290,7 @@ struct MacTimeRailView: View {
         let shift = MacWidgetPlacement.inwardShift(for: magnification) * (preferences.edge == .right ? -1 : 1)
         let accent = MacWidgetStyle.accent(for: snapshot.kind, theme: store.profile.widgetTheme,
                                           customColors: preferences.customColors)
-        return MacPercentageRing(fraction: snapshot.elapsedFraction, accent: accent,
+        return MacPercentageRing(fraction: snapshot.remainingFraction, accent: accent,
                                  selected: selected, subdued: controller.isExpanded && !selected, isOff: snapshot.isOff)
         .scaleEffect(magnification)
         .offset(x: shift)
@@ -376,9 +381,11 @@ struct MacTimeDetailView: View {
                 GeometryReader { geometry in
                     ZStack(alignment: .leading) {
                         Capsule().fill(.white.opacity(0.16))
-                        Capsule()
-                            .fill(accent)
-                            .frame(width: geometry.size.width * snapshot.elapsedFraction)
+                        if snapshot.remainingFraction > 0 {
+                            Capsule()
+                                .fill(accent)
+                                .frame(width: geometry.size.width * snapshot.remainingFraction)
+                        }
                     }
                 }
                 .frame(height: 3)

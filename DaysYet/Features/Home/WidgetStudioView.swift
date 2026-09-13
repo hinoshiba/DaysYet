@@ -111,7 +111,7 @@ struct WidgetStudioView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 6) {
             EyebrowLabel(text: L10n.text("DaysYet · 3つの時間", "DaysYet · Three timelines"))
-            Text(L10n.text("時間を、積み重ねる。\n今日を選ぶ。", "Every day adds up.\nChoose today."))
+            Text(L10n.text("人生のTokenを、\n大切なことへ。", "Life’s tokens.\nMake them count."))
                 .font(.system(.largeTitle, design: .rounded, weight: .bold))
                 .tracking(-0.7)
             Text(L10n.text("選んだ内容はウィジェットに反映されます。更新時刻はiOSが調整します。", "Your choices appear in the widget; refresh timing is controlled by iOS."))
@@ -162,9 +162,9 @@ struct WidgetStudioView: View {
 
     private var valueStyleEditor: some View {
         VStack(alignment: .leading, spacing: 10) {
-            EyebrowLabel(text: L10n.text("バーの値", "Progress bar value"))
+            EyebrowLabel(text: L10n.text("バーの値", "Bar value"))
             Picker(
-                L10n.text("バーの値", "Progress bar value"),
+                L10n.text("バーの値", "Bar value"),
                 selection: Binding(
                     get: { store.profile.dashboardValueStyle },
                     set: { style in store.update { $0.dashboardValueStyle = style } }
@@ -178,8 +178,8 @@ struct WidgetStudioView: View {
             .accessibilityHint(L10n.text("3本すべての右側に表示する値を選びます", "Chooses the value shown at the right of all three bars"))
 
             Text(L10n.text(
-                "バーは経過時間を左から表示します。ここでは右側の値だけを選べます。",
-                "Bars always show elapsed time from left to right; this only changes the value on the right."
+                "バーは残り時間を表し、100%から0%へ右端が左に縮みます。ここでは右側に表示する値を選べます。",
+                "Bars show time remaining, shrinking from right to left as they count down from 100% to 0%. Choose the value displayed on the right."
             ))
             .font(.caption)
             .foregroundStyle(.secondary)

@@ -133,8 +133,8 @@ struct MacSettingsView: View {
 
                     if preferences.edge == .top {
                         Text(L10n.text(
-                            "カメラの切り欠きの下に、サイズに合わせた厚みの進捗バーを表示します。バーのすぐ上でも項目を選べます。ノッチにポインタを重ねると詳細が開きます。切り欠きのない画面では、上端の中央に表示します。",
-                            "A progress strip sits below the camera notch, with thickness controlled by the widget size. You can select a timeline just above its bar, too. Hover over the notch to open details. Displays without a notch use the top center."
+                            "カメラの切り欠きの下に、サイズに合わせた厚みの残り時間バーを表示します。バーのすぐ上でも項目を選べます。ノッチにポインタを重ねると詳細が開きます。切り欠きのない画面では、上端の中央に表示します。",
+                            "A time-remaining strip sits below the camera notch, with thickness controlled by the widget size. You can select a timeline just above its bar, too. Hover over the notch to open details. Displays without a notch use the top center."
                         ))
                         .font(.caption)
                         .foregroundStyle(.secondary)
@@ -174,6 +174,13 @@ struct MacSettingsView: View {
                         }
                         .pickerStyle(.menu)
                     }
+
+                    Text(L10n.text(
+                        "色のついた部分は残り時間を表し、100%から0%へ減ります。バーは右端が左へ縮み、サークルは12時の位置から時計回りに色が消えていきます。",
+                        "The colored portion shows time remaining and decreases from 100% to 0%. Bars shrink from right to left; circles empty clockwise from the 12 o’clock position."
+                    ))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
                 }
 
                 MacWidgetColorSettings(store: store, preferences: preferences)
@@ -491,8 +498,8 @@ struct MacSettingsView: View {
                 Text(L10n.text("大切な日（任意）", "Milestone (optional)"))
             } footer: {
                 Text(L10n.text(
-                    "起算日の午前0時から目標日時までの経過を表示します。設定は自動で保存されます。",
-                    "Progress runs from midnight on the start date to the target time. Changes save automatically."
+                    "起算日の午前0時を100%として、目標日時に0%となる残り時間を表示します。設定は自動で保存されます。",
+                    "Time remaining starts at 100% at midnight on the start date and reaches 0% at the target time. Changes save automatically."
                 ))
             }
         }
@@ -573,7 +580,7 @@ struct MacSettingsView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     LabeledContent(L10n.text("現在", "Now"), value: snapshot.remainingText)
                     if !snapshot.isOff {
-                        ProgressView(value: snapshot.elapsedFraction)
+                        ProgressView(value: snapshot.remainingFraction)
                     }
                 }
                 .accessibilityElement(children: .ignore)
@@ -864,10 +871,12 @@ private struct MacPlacementPreview: View {
                                     GeometryReader { track in
                                         Capsule().fill(.white.opacity(0.16))
                                             .overlay(alignment: .leading) {
-                                                Capsule()
-                                                    .fill(MacWidgetStyle.accent(for: kind, theme: profile.widgetTheme,
-                                                        customColors: customColors))
-                                                    .frame(width: track.size.width * snapshot.elapsedFraction)
+                                                if snapshot.remainingFraction > 0 {
+                                                    Capsule()
+                                                        .fill(MacWidgetStyle.accent(for: kind, theme: profile.widgetTheme,
+                                                            customColors: customColors))
+                                                        .frame(width: track.size.width * snapshot.remainingFraction)
+                                                }
                                             }
                                     }
                                 }
@@ -903,7 +912,7 @@ private struct MacPlacementPreview: View {
     private func previewMetric(_ kind: MetricKind) -> some View {
         let snapshot = TimeProgressCalculator.snapshot(for: kind, profile: profile)
         let accent = MacWidgetStyle.accent(for: kind, theme: profile.widgetTheme, customColors: customColors)
-        return MacPercentageRing(fraction: snapshot.elapsedFraction, accent: accent, isOff: snapshot.isOff)
+        return MacPercentageRing(fraction: snapshot.remainingFraction, accent: accent, isOff: snapshot.isOff)
             .scaleEffect(0.5625)
             .frame(width: 18, height: 18)
     }

@@ -99,7 +99,7 @@
     },
     "widget.configuration.value_style" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Progress bar value" } },
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Bar value" } },
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "バーの値" } }
       }
     },
@@ -135,8 +135,8 @@
     },
     "widget.lock_screen.gallery.description" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Keep one timeline and its progress at a glance on the Lock Screen." } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "選んだ1つの時間と進み具合をロック画面で確認できます。" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "See how much time remains at a glance on the Lock Screen." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "選んだ1つの時間の残りをロック画面で確認できます。" } }
       }
     },
     "widget.lock_screen.gallery.title" : {
@@ -171,8 +171,8 @@
     },
     "widget.display_mode.countdown_with_percentage" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Time + elapsed % + bar" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "時間＋経過割合＋バー" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Time + remaining % + bar" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "時間＋残り割合＋バー" } }
       }
     },
     "widget.display_mode.progress_bars" : {
@@ -231,8 +231,8 @@
     },
     "widget.value_style.percentage" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Elapsed percentage" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "経過割合" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Remaining percentage" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "残り割合" } }
       }
     },
     "widget.value_style.remaining" : {

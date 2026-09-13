@@ -1,8 +1,8 @@
 # Release readiness
 
-## Current 0.1.5 candidate
+## Current 0.1.6 (10) candidate
 
-iOS / iPadOS and macOS 0.1.5 (8) are being prepared together. See the [0.1.5 release record](../releases/0.1.5.md) for the candidate's validation and submission progress. The version-specific records below describe earlier submissions and do not establish the current App Store Connect state. The later 0.1.4 (7) submissions superseding the iOS build 6 candidate are recorded in the [build 7 release record](../releases/0.1.4-build7.md).
+iOS / iPadOS and macOS 0.1.6 (10) are being prepared together with percentages, bars, and circles showing time remaining. See the [0.1.6 countdown release record](../releases/0.1.6-countdown.md) for the candidate's validation and submission progress. The version-specific records below describe earlier submissions and do not establish the current App Store Connect state. Earlier candidates are recorded in the [0.1.5 release record](../releases/0.1.5.md), [Mac 0.1.6 (9) release record](../releases/0.1.6-macos.md), and [0.1.4 (7) release record](../releases/0.1.4-build7.md).
 
 ## Historical iOS 0.1.4 (6) submission
 

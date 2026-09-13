@@ -107,8 +107,8 @@ struct ProfileEditorView: View {
                 Text(L10n.text("大切な日", "Milestone"))
             } footer: {
                 Text(L10n.text(
-                    "起算日を0%として、目標日時に100%となる経過割合を計算します。",
-                    "Progress starts at 0% on the start date and reaches 100% at the target."
+                    "起算日を100%として、目標日時に0%となる残りの割合を計算します。",
+                    "The remaining percentage starts at 100% on the start date and reaches 0% at the target."
                 ))
             }
 
@@ -177,7 +177,7 @@ struct ProfileEditorView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     LabeledContent(L10n.text("現在", "Now"), value: snapshot.remainingText)
                     if !snapshot.isOff {
-                        ProgressView(value: snapshot.elapsedFraction)
+                        ProgressView(value: snapshot.remainingFraction)
                     }
                 }
                 .accessibilityElement(children: .ignore)

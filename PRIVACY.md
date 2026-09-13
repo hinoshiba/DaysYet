@@ -1,18 +1,18 @@
 # Privacy Policy / プライバシーポリシー
 
-最終更新 / Last updated: 2026-09-09
+最終更新 / Last updated: 2026-09-13
 
 ## 日本語
 
 ### 保存する情報と目的
 
-DaysYetは、利用者が入力した生年月日、健康でいたい年齢、目標名、目標の起算日と目標日時、2種類の活動時間のラベル名・開始終了時刻・有効な曜日、学習計画の名前・開始終了日・学習できる曜日・日付ごとの追加と除外、週の始まりの設定、ウィジェットに表示する項目、表示モード、値の形式、テーマを保存します。「活動時間」の表示は任意で、ラベル名は表示に、時刻と曜日は端末の現地時刻に基づくカウントダウンとOffの判定に使います。学習計画は残りの学習日数と経過割合の表示に使います。Mac版では、常駐パネルの表示・非表示、表示先ディスプレイ、画面端の配置、左右配置時の上下位置、アイコン・文字を含むサイズ、詳細を開いたままにする設定も保存します。これらは時間の計算、アプリ画面、ウィジェット・常駐パネル表示にだけ使います。
+DaysYetは、利用者が入力した生年月日、健康でいたい年齢、目標名、目標の起算日と目標日時、2種類の活動時間のラベル名・開始終了時刻・有効な曜日、学習計画の名前・開始終了日・学習できる曜日・日付ごとの追加と除外、週の始まりの設定、ウィジェットに表示する項目、表示モード、値の形式、テーマを保存します。「活動時間」の表示は任意で、ラベル名は表示に、時刻と曜日は端末の現地時刻に基づくカウントダウンとOffの判定に使います。学習計画は残りの学習日数と残り割合の表示に使います。Mac版では、常駐パネルの表示・非表示、表示先ディスプレイ、画面端の配置、左右配置時の上下位置、アイコン・文字を含むサイズ、詳細を開いたままにする設定も保存します。これらは時間の計算、アプリ画面、ウィジェット・常駐パネル表示にだけ使います。
 
 ### 保存場所と共有範囲
 
 情報は端末内だけに保存します。iPhone / iPad版はAppleのApp Group機能を使い、DaysYetアプリとWidget Extensionが共有する専用領域へ保存します。Mac版はMacアプリ専用のサンドボックス内の設定領域へ保存します。端末間での同期は行いません。開発者のサーバー、クラウド、分析サービス、広告事業者、その他第三者へ送信しません。アカウントは作成しません。
 
-ウィジェットをホーム画面またはロック画面に置く、またはMacの常駐パネルを表示すると、選択したタイトル、残り期間、経過割合、終了日時が端末を見ることのできる人の目に触れる場合があります。ロック画面のウィジェットは、端末がロックされている間も表示される場合があります。
+ウィジェットをホーム画面またはロック画面に置く、またはMacの常駐パネルを表示すると、選択したタイトル、残り期間、残り割合、終了日時が端末を見ることのできる人の目に触れる場合があります。ロック画面のウィジェットは、端末がロックされている間も表示される場合があります。
 
 ### 追跡・広告・分析
 
@@ -38,13 +38,13 @@ DaysYetは追跡、行動分析、広告、第三者SDKを使用しません。A
 
 ### Data stored and purpose
 
-DaysYet stores the birth date, healthy-age goal, milestone name, start and target dates, labels, start and end times, and enabled weekdays for two activity schedules, a study plan's name, start and end dates, available weekdays, individual date additions and exclusions, week-start preference, widget selections, display mode, value-display style, and theme entered or selected by the user. Showing activity hours is optional; labels are used for display, and times and weekdays are used for countdowns and Off status based on the device’s local time. Study plans are used to display available study days remaining and elapsed progress. The Mac app also stores panel visibility, selected display, screen edge, vertical position, size including icons and text, and the preference to keep details open. The data is used only to calculate and display timelines in the app, widget, and desktop panel.
+DaysYet stores the birth date, healthy-age goal, milestone name, start and target dates, labels, start and end times, and enabled weekdays for two activity schedules, a study plan's name, start and end dates, available weekdays, individual date additions and exclusions, week-start preference, widget selections, display mode, value-display style, and theme entered or selected by the user. Showing activity hours is optional; labels are used for display, and times and weekdays are used for countdowns and Off status based on the device’s local time. Study plans are used to display available study days remaining and remaining percentage. The Mac app also stores panel visibility, selected display, screen edge, vertical position, size including icons and text, and the preference to keep details open. The data is used only to calculate and display timelines in the app, widget, and desktop panel.
 
 ### Storage and sharing
 
 The data stays on the device. On iPhone and iPad it is stored in an App Group container shared by the DaysYet app and its widget extension. On Mac it is stored in preferences within the Mac app’s own sandbox. Data does not sync between devices. It is not sent to the developer, a server, cloud service, analytics provider, advertising provider, or any other third party. DaysYet does not create user accounts.
 
-If a widget is placed on the Home Screen or Lock Screen, or the Mac desktop panel is shown, its title, time left, elapsed percentage, or target date may be visible to anyone who can view the device. A Lock Screen widget may remain visible while the device is locked.
+If a widget is placed on the Home Screen or Lock Screen, or the Mac desktop panel is shown, its title, time left, remaining percentage, or target date may be visible to anyone who can view the device. A Lock Screen widget may remain visible while the device is locked.
 
 ### Tracking, advertising, and analytics
 

@@ -58,7 +58,7 @@ final class StudyScheduleTests: XCTestCase {
         XCTAssertFalse(schedule.isSelected(try date(21), calendar: calendar))
     }
 
-    func testRemainingDaysIncludeTodayAndProgressCountsOnlyElapsedSelectedDays() throws {
+    func testRemainingDaysAndPercentageIncludeTodayAndCountOnlySelectedDays() throws {
         var profile = UserProfile.initial
         profile.studySchedule = try schedule()
         for hour in [0, 12, 23] {
@@ -67,6 +67,8 @@ final class StudyScheduleTests: XCTestCase {
             )
             XCTAssertEqual(snapshot.countdown.components.map(\.value), [5])
             XCTAssertEqual(snapshot.elapsedFraction, 1.0 / 6, accuracy: 0.000_001)
+            XCTAssertEqual(snapshot.remainingFraction, 5.0 / 6, accuracy: 0.000_001)
+            XCTAssertEqual(snapshot.percentageText, "83.3%")
             XCTAssertNil(snapshot.countdown.terminalText)
             XCTAssertEqual(snapshot.targetDate, try date(20))
         }
@@ -75,6 +77,8 @@ final class StudyScheduleTests: XCTestCase {
         )
         XCTAssertEqual(restDay.countdown.components.map(\.value), [4])
         XCTAssertEqual(restDay.elapsedFraction, 2.0 / 6, accuracy: 0.000_001)
+        XCTAssertEqual(restDay.remainingFraction, 4.0 / 6, accuracy: 0.000_001)
+        XCTAssertEqual(restDay.percentageText, "66.7%")
         XCTAssertFalse(restDay.isOff)
     }
 
@@ -86,10 +90,15 @@ final class StudyScheduleTests: XCTestCase {
         )
         XCTAssertEqual(before.countdown.components.map(\.value), [6])
         XCTAssertEqual(before.elapsedFraction, 0)
+        XCTAssertTrue(before.hasScheduledTime)
+        XCTAssertEqual(before.remainingFraction, 1)
+        XCTAssertEqual(before.percentageText, "100.0%")
         let after = TimeProgressCalculator.snapshot(
             for: .study, profile: profile, now: try date(19), calendar: calendar
         )
         XCTAssertEqual(after.elapsedFraction, 1)
+        XCTAssertEqual(after.remainingFraction, 0)
+        XCTAssertEqual(after.percentageText, "0.0%")
         XCTAssertNotNil(after.countdown.terminalText)
         XCTAssertEqual(after.valueText(style: .remaining, compact: true), after.countdown.terminalText)
         XCTAssertFalse(after.remainingText.contains("-"))
@@ -103,6 +112,11 @@ final class StudyScheduleTests: XCTestCase {
         )
         XCTAssertEqual(snapshot.elapsedFraction, 0)
         XCTAssertTrue(snapshot.elapsedFraction.isFinite)
+        XCTAssertFalse(snapshot.hasScheduledTime)
+        XCTAssertEqual(snapshot.remainingFraction, 0)
+        XCTAssertTrue(snapshot.remainingFraction.isFinite)
+        XCTAssertEqual(snapshot.percentageText, "0.0%")
+        XCTAssertTrue(snapshot.accessibilitySummary.contains(snapshot.percentageRemainingText))
         XCTAssertTrue(snapshot.countdown.components.isEmpty)
         XCTAssertNotNil(snapshot.countdown.terminalText)
         XCTAssertEqual(snapshot.valueText(style: .remaining, compact: true), snapshot.countdown.terminalText)
@@ -118,16 +132,37 @@ final class StudyScheduleTests: XCTestCase {
         )
         XCTAssertEqual(during.countdown.components.map(\.value), [1])
         XCTAssertEqual(during.elapsedFraction, 0)
+        XCTAssertEqual(during.remainingFraction, 1)
+        XCTAssertEqual(during.percentageText, "100.0%")
         let after = TimeProgressCalculator.snapshot(
             for: .study, profile: profile, now: try date(8), calendar: calendar
         )
         XCTAssertEqual(after.elapsedFraction, 1)
+        XCTAssertEqual(after.remainingFraction, 0)
         XCTAssertNotNil(after.countdown.terminalText)
         let interval = TimeProgressCalculator.dateInterval(
             for: .study, profile: profile, now: try date(7), calendar: calendar
         )
         XCTAssertEqual(interval.start, try date(7))
         XCTAssertEqual(interval.end, try date(8))
+    }
+
+    func testFinalSelectedDayOfLongPlanDoesNotShowZeroPercent() throws {
+        var profile = UserProfile.initial
+        profile.studySchedule = StudySchedule(
+            startDate: try date(1, month: 1, year: 2024),
+            endDate: try date(31, month: 12, year: 2024),
+            activeWeekdays: Set(1...7), calendar: calendar
+        )
+        let snapshot = TimeProgressCalculator.snapshot(
+            for: .study, profile: profile,
+            now: try date(31, month: 12, year: 2024, hour: 23), calendar: calendar
+        )
+
+        XCTAssertEqual(snapshot.countdown.components.map(\.value), [1])
+        XCTAssertEqual(snapshot.remainingFraction, 1.0 / 366, accuracy: 0.000_001)
+        XCTAssertEqual(snapshot.percentageText, "0.3%")
+        XCTAssertEqual(RemainingPercentage.compactText(for: snapshot.remainingFraction), "<1%")
     }
 
     func testDayCountsAndWidgetMidnightTransitionsSurviveBothDSTChanges() throws {
@@ -149,6 +184,7 @@ final class StudyScheduleTests: XCTestCase {
             )
             XCTAssertEqual(snapshot.countdown.components.map(\.value), [2])
             XCTAssertEqual(snapshot.elapsedFraction, 1.0 / 3, accuracy: 0.000_001)
+            XCTAssertEqual(snapshot.remainingFraction, 2.0 / 3, accuracy: 0.000_001)
             XCTAssertEqual(TimeProgressCalculator.transitionDates(
                 for: .study, profile: profile, after: changeDay.addingTimeInterval(-1),
                 through: nextDay, calendar: local
@@ -181,6 +217,7 @@ final class StudyScheduleTests: XCTestCase {
         )
         XCTAssertEqual(snapshot.countdown.components.map(\.value), [1])
         XCTAssertEqual(snapshot.elapsedFraction, 2.0 / 3, accuracy: 0.000_001)
+        XCTAssertEqual(snapshot.remainingFraction, 1.0 / 3, accuracy: 0.000_001)
 
         profile.studySchedule = StudySchedule(
             startDate: firstDay, endDate: skippedMidnight,
@@ -288,6 +325,7 @@ final class StudyScheduleTests: XCTestCase {
         )
         XCTAssertEqual(unconfigured.countdown.terminalText, L10n.text("学習日を選択", "Select study days"))
         XCTAssertTrue(unconfigured.countdown.components.isEmpty)
+        XCTAssertEqual(unconfigured.remainingFraction, 0)
 
         profile.studySchedule.name = "Exam prep"
         profile.studySchedule.toggleDate(try date(12), calendar: calendar)

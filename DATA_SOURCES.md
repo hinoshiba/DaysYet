@@ -7,6 +7,8 @@ The metric shown as “健康でいたい年齢 / Healthy-age goal” is calcula
 - the birth date entered by the user; and
 - the target age explicitly accepted or changed by the user during onboarding.
 
+The remaining percentage counts down from 100% at the birth date to 0% at the chosen target age. It expresses time available within the user’s chosen planning period.
+
 The initial slider position of 75 is a UI starting value, not a population statistic, diagnosis, or prediction. The app does not infer sex, health condition, or mortality risk. The UI and privacy documentation must continue to state this distinction.
 
 The optional “勤務時間 / Work hours” timeline uses start and end times configured by the user and the device’s local date and time. The default 09:00–18:00 schedule is an editable starting value. It repeats daily, supports overnight shifts, and treats matching start and end times as a 24-hour shift. No employer, calendar, attendance, or external work-schedule data is imported or transmitted.

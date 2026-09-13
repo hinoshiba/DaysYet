@@ -34,7 +34,7 @@ final class WeekStartTests: XCTestCase {
         }
     }
 
-    func testChangingWeekdayChangesBothCountdownAndElapsedProgress() throws {
+    func testChangingWeekdayChangesBothCountdownAndRemainingFraction() throws {
         let now = try date(9, 12)
         for (weekday, elapsedDays, remaining) in [
             (WeekStartDay.saturday, 4.5, [2, 12]),
@@ -45,6 +45,7 @@ final class WeekStartTests: XCTestCase {
             profile.weekStartDay = weekday
             let result = TimeProgressCalculator.snapshot(for: .week, profile: profile, now: now, calendar: calendar)
             XCTAssertEqual(result.elapsedFraction, elapsedDays / 7, accuracy: 0.000_001)
+            XCTAssertEqual(result.remainingFraction, (7 - elapsedDays) / 7, accuracy: 0.000_001)
             XCTAssertEqual(result.countdown.components.map(\.value), remaining)
             XCTAssertNil(result.countdown.terminalText)
         }
@@ -61,6 +62,10 @@ final class WeekStartTests: XCTestCase {
         XCTAssertEqual(before.targetDate, boundary)
         XCTAssertGreaterThan(before.elapsedFraction, 0.999)
         XCTAssertEqual(atBoundary.elapsedFraction, 0)
+        XCTAssertLessThan(before.remainingFraction, 0.001)
+        XCTAssertGreaterThan(before.remainingFraction, 0)
+        XCTAssertEqual(atBoundary.remainingFraction, 1)
+        XCTAssertEqual(atBoundary.percentageText, "100.0%")
         XCTAssertEqual(atBoundary.targetDate, try date(14))
         XCTAssertEqual(atBoundary.countdown.components.map(\.value), [7, 0])
     }

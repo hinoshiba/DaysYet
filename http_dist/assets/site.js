@@ -44,10 +44,6 @@
   const contour = preview.querySelector('[data-mac-contour]');
   const detail = preview.querySelector('[data-mac-detail]');
   const detailContent = preview.querySelector('[data-mac-detail-content]');
-  const name = preview.querySelector('[data-mac-name]');
-  const days = preview.querySelector('[data-mac-days]');
-  const hours = preview.querySelector('[data-mac-hours]');
-  const percentage = preview.querySelector('[data-mac-percentage]');
   const bar = preview.querySelector('[data-mac-progress]');
   const metricButtons = [...preview.querySelectorAll('[data-mac-metric]')];
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -231,12 +227,13 @@
 
   const renderContent = () => {
     const metric = metricButtons[selected];
-    name.textContent = metric.dataset.name;
-    days.textContent = metric.dataset.days;
-    hours.textContent = metric.dataset.hours;
-    percentage.textContent = `${metric.dataset.percentage}%`;
+    // Language changes replace this inline markup, so use its current nodes.
+    preview.querySelector('[data-mac-name]').textContent = metric.dataset.name;
+    preview.querySelector('[data-mac-days]').textContent = metric.dataset.days;
+    preview.querySelector('[data-mac-hours]').textContent = metric.dataset.hours;
+    preview.querySelector('[data-mac-percentage]').textContent = `${metric.dataset.percentage}%`;
     detail.style.setProperty('--detail-accent', metric.dataset.color);
-    detail.style.setProperty('--detail-progress', `${metric.dataset.percentage}%`);
+    detail.style.setProperty('--detail-remaining', `${metric.dataset.percentage}%`);
     bar.setAttribute('aria-valuenow', metric.dataset.percentage);
     detailContent.dataset.changing = 'false';
   };
