@@ -58,6 +58,173 @@ final class MacWidgetSelectionTests: XCTestCase {
     }
 
     @MainActor
+    func testEnabledSideHoverSelectsAndOpensDetailsWithoutWaiting() async throws {
+        for edge in [MacWidgetEdge.left, .right] {
+            try await withController(edge: edge) { controller in
+                controller.preferences.magnifiesOnHover = true
+
+                controller.metricHoverChanged(.month, hovering: true)
+                XCTAssertEqual(controller.hoveredMetric, .month)
+                XCTAssertEqual(controller.selectedMetric, .month)
+                XCTAssertEqual(controller.selectionPosition, 1)
+                XCTAssertTrue(controller.isExpanded, "Details must open with the initial magnification.")
+
+                controller.metricHoverChanged(.year, hovering: true)
+                controller.metricHoverChanged(.month, hovering: false)
+                XCTAssertEqual(controller.hoveredMetric, .year)
+                XCTAssertEqual(controller.selectedMetric, .year, "Details must change with the newly hovered circle.")
+                XCTAssertTrue(controller.isExpanded)
+            }
+        }
+    }
+
+    @MainActor
+    func testEnabledSideHoverClosesDetailsImmediatelyUnlessPinned() async throws {
+        for edge in [MacWidgetEdge.left, .right] {
+            for pinned in [false, true] {
+                try await withController(edge: edge) { controller in
+                    controller.preferences.magnifiesOnHover = true
+                    controller.preferences.keepDetailsOpen = pinned
+                    controller.metricHoverChanged(.month, hovering: true)
+                    XCTAssertTrue(controller.isExpanded)
+                    let magnified = try await eventually {
+                        controller.hoverMagnifications[.month] == controller.preferences.hoverScale
+                    }
+                    XCTAssertTrue(magnified)
+
+                    controller.hoverChanged(false)
+                    XCTAssertNil(controller.hoveredMetric)
+                    XCTAssertEqual(controller.isExpanded, pinned,
+                                   "Unpinned details must start closing when magnification starts shrinking.")
+                    let settled = try await eventually { controller.hoverMagnifications.isEmpty }
+                    XCTAssertTrue(settled)
+                    XCTAssertEqual(controller.isExpanded, pinned)
+                    XCTAssertEqual(controller.selectedMetric, .month)
+                }
+            }
+        }
+    }
+
+    @MainActor
+    func testExplicitlyClosedMagnifiedDetailsStayClosedWhileStillHovered() async throws {
+        for edge in [MacWidgetEdge.left, .right] {
+            try await withController(edge: edge) { controller in
+                controller.preferences.magnifiesOnHover = true
+                controller.metricHoverChanged(.month, hovering: true)
+                let magnified = try await eventually {
+                    controller.hoverMagnifications[.month] == controller.preferences.hoverScale
+                }
+                XCTAssertTrue(magnified)
+
+                var synchronized = false
+                var reopened = false
+                let configurationObservation = controller.$displays.dropFirst().sink { _ in
+                    synchronized = true
+                }
+                let expansionObservation = controller.$isExpanded.dropFirst().sink {
+                    if $0 { reopened = true }
+                }
+                defer {
+                    configurationObservation.cancel()
+                    expansionObservation.cancel()
+                }
+
+                controller.closeDetails()
+                XCTAssertFalse(controller.isExpanded)
+                XCTAssertEqual(controller.hoveredMetric, .month)
+                // Closing queues a preference notification. Wait until its
+                // synchronization has run without guessing a timer duration.
+                let drained = try await eventually { synchronized }
+                XCTAssertTrue(drained)
+                await Task.yield()
+                await Task.yield()
+                XCTAssertFalse(reopened, "A preference notification must not reopen explicitly closed details.")
+                XCTAssertFalse(controller.isExpanded)
+                XCTAssertEqual(controller.hoveredMetric, .month)
+                XCTAssertEqual(controller.selectedMetric, .month)
+            }
+        }
+    }
+
+    @MainActor
+    func testEnablingMagnificationCommitsPendingHoverAndKeepsTheLatestSelection() async throws {
+        for edge in [MacWidgetEdge.left, .right] {
+            try await withController(edge: edge) { controller in
+                controller.metricHoverChanged(.year, hovering: true)
+                XCTAssertNil(controller.selectedMetric)
+                XCTAssertFalse(controller.isExpanded)
+
+                controller.preferences.magnifiesOnHover = true
+                // Apply the preference synchronously through the public widget
+                // action, without making the test depend on the hover timeout.
+                controller.showWidget()
+                XCTAssertEqual(controller.selectedMetric, .year)
+                XCTAssertTrue(controller.isExpanded)
+
+                var laterSelections: [MetricKind?] = []
+                let observation = controller.$selectedMetric.dropFirst().sink {
+                    laterSelections.append($0)
+                }
+                defer { observation.cancel() }
+                controller.metricHoverChanged(.month, hovering: true)
+                controller.metricHoverChanged(.year, hovering: false)
+                XCTAssertEqual(controller.selectedMetric, .month)
+                let settled = try await eventually {
+                    controller.selectionPosition == 1
+                        && controller.hoverMagnifications[.month] == controller.preferences.hoverScale
+                }
+                XCTAssertTrue(settled)
+                XCTAssertEqual(controller.hoveredMetric, .month)
+                XCTAssertEqual(controller.selectedMetric, .month)
+                XCTAssertEqual(laterSelections, [.month], "A pending hover must not restore the previous row.")
+            }
+        }
+    }
+
+    @MainActor
+    func testEnabledMagnificationRetargetsDuringMovementToTheLatestHover() async throws {
+        try requireMotion()
+        for edge in [MacWidgetEdge.left, .right] {
+            try await withController(edge: edge) { controller in
+                controller.preferences.magnifiesOnHover = true
+                try await openFirstRow(controller)
+                var retargeted = false
+                var laterSelections: [MetricKind?] = []
+                let selectionObservation = controller.$selectedMetric.dropFirst().sink {
+                    if retargeted { laterSelections.append($0) }
+                }
+                let positionObservation = controller.$selectionPosition.dropFirst().sink { position in
+                    guard !retargeted, controller.selectedMetric == .year,
+                          position > 0, position < 2 else { return }
+                    retargeted = true
+                    // Retarget on an actual animation frame rather than after
+                    // a sleep that may run before or after the movement.
+                    controller.metricHoverChanged(.month, hovering: true)
+                    controller.metricHoverChanged(.year, hovering: false)
+                    XCTAssertEqual(controller.hoveredMetric, .month)
+                    XCTAssertEqual(controller.selectedMetric, .month)
+                }
+                defer {
+                    selectionObservation.cancel()
+                    positionObservation.cancel()
+                }
+
+                controller.metricHoverChanged(.year, hovering: true)
+                XCTAssertEqual(controller.selectedMetric, .year)
+                let settled = try await eventually {
+                    retargeted && controller.selectedMetric == .month && controller.selectionPosition == 1
+                        && controller.hoverMagnifications == [.month: controller.preferences.hoverScale]
+                }
+                XCTAssertTrue(settled)
+                XCTAssertTrue(retargeted)
+                XCTAssertTrue(controller.isExpanded)
+                XCTAssertEqual(controller.hoveredMetric, .month)
+                XCTAssertEqual(laterSelections, [.month])
+            }
+        }
+    }
+
+    @MainActor
     func testDisablingMagnificationWhileHoveringPreservesDetailInteraction() async throws {
         try await withController { controller in
             controller.preferences.magnifiesOnHover = true
