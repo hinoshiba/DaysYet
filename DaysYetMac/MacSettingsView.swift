@@ -152,7 +152,13 @@ struct MacSettingsView: View {
                     }
                 }
 
+                if preferences.edge != .top {
+                    hoverMagnificationSettings
+                }
+
                 Section(L10n.text("表示", "Appearance")) {
+                    detailSizeControl
+
                     Picker(L10n.text("詳細の表示モード", "Detail display mode"), selection: binding(\.widgetDisplayMode)) {
                         ForEach(WidgetDisplayMode.allCases) { mode in
                             Text(mode.title).tag(mode)
@@ -264,6 +270,80 @@ struct MacSettingsView: View {
                 .monospacedDigit()
                 .foregroundStyle(.secondary)
             }
+        }
+        .padding(.vertical, 2)
+    }
+
+    private var hoverMagnificationSettings: some View {
+        Section {
+            Toggle(L10n.text("ポインタを重ねたグラフを拡大", "Enlarge the graph under the pointer"),
+                   isOn: $preferences.magnifiesOnHover)
+                .accessibilityIdentifier("widget.hover.enabled")
+                .accessibilityLabel(L10n.text("ポインタを重ねたグラフを拡大", "Enlarge the graph under the pointer"))
+
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Text(L10n.text("拡大率", "Magnification"))
+                    Spacer()
+                    Text("\(Int((preferences.hoverScale * 100).rounded()))%")
+                        .monospacedDigit()
+                        .foregroundStyle(.secondary)
+                }
+                Slider(value: $preferences.hoverScale, in: 1.1...1.8, step: 0.05) {
+                    Text(L10n.text("ポインタを重ねたグラフの拡大率", "Graph magnification on hover"))
+                } minimumValueLabel: {
+                    Text("110%").font(.caption)
+                } maximumValueLabel: {
+                    Text("180%").font(.caption)
+                }
+                .labelsHidden()
+                .accessibilityIdentifier("widget.hover.scale")
+                .accessibilityLabel(L10n.text("ポインタを重ねたグラフの拡大率", "Graph magnification on hover"))
+                .accessibilityValue("\(Int((preferences.hoverScale * 100).rounded()))%")
+            }
+            .disabled(!preferences.magnifiesOnHover)
+            .padding(.vertical, 2)
+        } header: {
+            Text(L10n.text("グラフの拡大", "Graph magnification"))
+        } footer: {
+            Text(L10n.text(
+                "拡大するときは画面の中央側へ少し移動し、端で見切れないようにします。初期設定はオフです。macOSの「視差効果を減らす」が有効な場合は、アニメーションなしで切り替わります。",
+                "The graph moves slightly toward the screen center as it grows to stay within the edge. Off by default. When Reduce Motion is enabled in macOS, changes happen without animation."
+            ))
+        }
+    }
+
+    private var detailSizeControl: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text(L10n.text("詳細のサイズ", "Detail size"))
+                Spacer()
+                Text("\(Int((preferences.detailScale * 100).rounded()))%")
+                    .monospacedDigit()
+                    .foregroundStyle(.secondary)
+                Button(L10n.text("標準に戻す", "Reset Size")) { preferences.detailScale = 1 }
+                    .controlSize(.small)
+                    .disabled(abs(preferences.detailScale - 1) < 0.001)
+                    .accessibilityLabel(L10n.text("詳細のサイズを標準に戻す", "Reset detail size"))
+                    .help(L10n.text("詳細のサイズを100%に戻します", "Reset detail size to 100%"))
+            }
+            Slider(value: $preferences.detailScale, in: 1...1.5, step: 0.1) {
+                Text(L10n.text("詳細のサイズ", "Detail size"))
+            } minimumValueLabel: {
+                Text("100%").font(.caption)
+            } maximumValueLabel: {
+                Text("150%").font(.caption)
+            }
+            .labelsHidden()
+            .accessibilityIdentifier("widget.detail.scale")
+            .accessibilityLabel(L10n.text("詳細のサイズ", "Detail size"))
+            .accessibilityValue("\(Int((preferences.detailScale * 100).rounded()))%")
+            Text(L10n.text(
+                "詳細の文字やバーを、ウィジェット全体のサイズに対してさらに拡大します。左右・上端のどの配置でも使えます。",
+                "Enlarge detail text and bars further relative to the widget size. Available at the left, right, and top edges."
+            ))
+            .font(.caption)
+            .foregroundStyle(.secondary)
         }
         .padding(.vertical, 2)
     }

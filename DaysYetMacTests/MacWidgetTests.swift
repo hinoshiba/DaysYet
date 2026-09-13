@@ -6,36 +6,161 @@ final class MacWidgetPlacementTests: XCTestCase {
     private let desktop = NSRect(x: 80, y: 40, width: 1440, height: 900)
 
     func testMagnifiedRingsStayInsideTheirSurfaceAndFixedHoverRow() {
-        // Include half the 1.5pt stroke outside the 32pt circle's bounds.
-        let radius = (16 + 0.75) * MacPercentageRing.hoverScale
-        for count in 3...MetricKind.allCases.count {
+        // Cover a normal rail and the most compressed supported row count.
+        for (count, availableHeight) in [(3, CGFloat(900)), (MetricKind.allCases.count, CGFloat(230))] {
+            let bounds = NSRect(x: -1440, y: 40, width: 1440, height: availableHeight)
             for edge in [MacWidgetEdge.left, .right] {
                 for scale in [0.8, 1.0, 1.5] {
-                    for availableHeight in [CGFloat(230), 900] {
-                        let bounds = NSRect(x: -1440, y: 40, width: 1440, height: availableHeight)
-                        for expanded in [false, true] {
-                            let frame = MacWidgetPlacement.frame(in: bounds, edge: edge, position: 0.5,
-                                expanded: expanded, scale: scale, metricCount: count)
-                            let verticalScale = MacWidgetPlacement.sideVerticalScale(in: frame.size,
-                                scale: scale, metricCount: count)
-                            for (index, center) in MacWidgetPlacement.ringCenters(for: count).enumerated() {
-                                for degrees in stride(from: 0, to: 360, by: 5) {
-                                    let angle = CGFloat(degrees) * .pi / 180
-                                    let point = CGPoint(
-                                        x: (edge == .left ? 23 * scale : frame.width - 23 * scale) + cos(angle) * radius * scale,
-                                        y: center * verticalScale + sin(angle) * radius * verticalScale)
-                                    XCTAssertEqual(MacWidgetSurface.sideHoverIndex(at: point, in: frame.size,
-                                        edge: edge, scale: scale, metricCount: count), index)
-                                    // Magnification starts before the detail follows the hovered row.
-                                    for selection in [CGFloat(0), 0.5, CGFloat(count - 1)] {
-                                        XCTAssertTrue(MacWidgetSurface.contains(point, in: frame.size, edge: edge,
-                                            selectedIndex: selection, scale: scale, metricCount: count),
-                                            "Magnification must fit even while another row's details are open.")
+                    for hoverScale in [1.1, 1.35, 1.8] {
+                        let closed = MacWidgetPlacement.frame(in: bounds, edge: edge, position: 0.5,
+                            expanded: false, scale: scale, metricCount: count, hoverScale: hoverScale, detailScale: 1.5)
+                        let open = MacWidgetPlacement.frame(in: bounds, edge: edge, position: 0.5,
+                            expanded: true, scale: scale, metricCount: count, hoverScale: hoverScale, detailScale: 1.5)
+                        XCTAssertTrue(bounds.contains(closed))
+                        XCTAssertTrue(bounds.contains(open))
+                        for progress in [CGFloat(0), 0.5, 1] {
+                            let size = CGSize(width: closed.width + (open.width - closed.width) * progress,
+                                              height: closed.height)
+                            for index in [0, count - 1] {
+                                let magnifications = [index: CGFloat(hoverScale)]
+                                let ring = MacWidgetPlacement.sideRingFrame(in: size, edge: edge, index: index,
+                                    scale: scale, metricCount: count, magnification: hoverScale)
+                                let normal = MacWidgetPlacement.sideRingFrame(in: size, edge: edge, index: index,
+                                    scale: scale, metricCount: count)
+                                let edgeMargin = edge == .left ? ring.minX : size.width - ring.maxX
+                                XCTAssertEqual(edgeMargin, 6.25 * scale, accuracy: 0.0001)
+                                XCTAssertEqual(ring.midY, normal.midY, accuracy: 0.0001)
+                                XCTAssertGreaterThan(edge == .left ? ring.midX : -ring.midX,
+                                                     edge == .left ? normal.midX : -normal.midX)
+                                // The newly hovered circle can enlarge before details change rows.
+                                for selection in [CGFloat(count - 1 - index), 0.5] {
+                                    let surface = MacWidgetSurface.path(in: size, edge: edge,
+                                        selectedIndex: selection, scale: scale, metricCount: count,
+                                        hoverScale: hoverScale, detailScale: 1.5, magnifications: magnifications)
+                                    for degrees in stride(from: 0, to: 360, by: 30) {
+                                        let angle = CGFloat(degrees) * .pi / 180
+                                        let point = CGPoint(x: ring.midX + cos(angle) * ring.width / 2,
+                                                            y: ring.midY + sin(angle) * ring.height / 2)
+                                        XCTAssertTrue(CGRect(origin: .zero, size: size).contains(point))
+                                        XCTAssertTrue(surface.contains(point),
+                                            "edge=\(edge), count=\(count), scale=\(scale), hover=\(hoverScale), progress=\(progress), row=\(index)")
+                                    }
+                                    let inwardPoint = CGPoint(x: edge == .left ? ring.maxX - 0.5 * scale : ring.minX + 0.5 * scale,
+                                                              y: ring.midY)
+                                    XCTAssertTrue(MacWidgetSurface.contains(inwardPoint, in: size, edge: edge,
+                                        selectedIndex: selection, scale: scale, metricCount: count,
+                                        hoverScale: hoverScale, detailScale: 1.5, magnifications: magnifications))
+                                    XCTAssertEqual(MacWidgetSurface.sideHoverIndex(at: inwardPoint, in: size,
+                                        edge: edge, scale: scale, metricCount: count, magnifications: magnifications), index)
+                                    let inwardDepth = edge == .left ? inwardPoint.x : size.width - inwardPoint.x
+                                    if inwardDepth > 46 * scale {
+                                        XCTAssertNil(MacWidgetSurface.sideHoverIndex(at: inwardPoint, in: size,
+                                            edge: edge, scale: scale, metricCount: count))
                                     }
                                 }
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+
+    func testMagnificationPreservesNeighborSelectionAndTransparentClickThrough() {
+        for edge in [MacWidgetEdge.left, .right] {
+            for scale in [0.8, 1.0, 1.5] {
+                let frame = MacWidgetPlacement.frame(in: desktop, edge: edge, position: 0.5,
+                    expanded: false, scale: scale, hoverScale: 1.8)
+                let size = frame.size
+                let magnifications: [Int: CGFloat] = [0: 1.8]
+                // Even when the enlarged circle crosses the row boundary, that
+                // neighboring row remains an unambiguous target for its own metric.
+                let neighbor = CGPoint(x: edge == .left ? 23 * scale : size.width - 23 * scale,
+                                       y: 82 * scale)
+                XCTAssertEqual(MacWidgetSurface.sideHoverIndex(at: neighbor, in: size, edge: edge,
+                    scale: scale, magnifications: magnifications), 1)
+                let unused = CGPoint(x: edge == .left ? size.width - scale : scale, y: 156 * scale)
+                XCTAssertTrue(CGRect(origin: .zero, size: size).contains(unused))
+                XCTAssertFalse(MacWidgetSurface.contains(unused, in: size, edge: edge,
+                    selectedIndex: 0, scale: scale, hoverScale: 1.8, magnifications: magnifications))
+                XCTAssertNil(MacWidgetSurface.sideHoverIndex(at: unused, in: size, edge: edge,
+                    scale: scale, magnifications: magnifications))
+                let inward = MacWidgetPlacement.sideRingFrame(in: size, edge: edge, index: 0,
+                    scale: scale, magnification: 1.8)
+                let overflow = CGPoint(x: edge == .left ? inward.maxX - scale : inward.minX + scale, y: inward.midY)
+                XCTAssertFalse(MacWidgetSurface.contains(overflow, in: size, edge: edge,
+                    selectedIndex: 0, scale: scale, hoverScale: 1.8))
+            }
+        }
+    }
+
+    func testLargerSideDetailsFitEndRowsAndClearMagnifiedCircles() {
+        for count in [3, MetricKind.allCases.count] {
+            for availableHeight in [CGFloat(230), 900] {
+                let bounds = NSRect(x: -1440, y: 40, width: 1440, height: availableHeight)
+                for edge in [MacWidgetEdge.left, .right] {
+                    for scale in [0.8, 1.0, 1.5] {
+                        let frame = MacWidgetPlacement.frame(in: bounds, edge: edge, position: 0,
+                            expanded: true, scale: scale, metricCount: count, hoverScale: 1.8, detailScale: 1.5)
+                        for selection in [CGFloat(0), 0.5, CGFloat(count - 1)] {
+                            let detail = MacWidgetPlacement.sideDetailFrame(in: frame.size, edge: edge,
+                                selectedIndex: selection, scale: scale, metricCount: count,
+                                hoverScale: 1.8, detailScale: 1.5)
+                            let surface = MacWidgetSurface.path(in: frame.size, edge: edge,
+                                selectedIndex: selection, scale: scale, metricCount: count,
+                                hoverScale: 1.8, detailScale: 1.5)
+                            XCTAssertTrue(CGRect(origin: .zero, size: frame.size).contains(detail))
+                            XCTAssertEqual(detail.width, 186 * scale, accuracy: 0.0001)
+                            for x in [detail.minX, detail.midX, detail.maxX] {
+                                for y in [detail.minY, detail.midY, detail.maxY] {
+                                    XCTAssertTrue(surface.contains(CGPoint(x: x, y: y)),
+                                        "Details must fit without the hover circle supplying any of their background.")
+                                }
+                            }
+                            for index in [0, count - 1] {
+                                let ring = MacWidgetPlacement.sideRingFrame(in: frame.size, edge: edge,
+                                    index: index, scale: scale, metricCount: count, magnification: 1.8)
+                                XCTAssertFalse(detail.intersects(ring))
+                                let gap = edge == .left ? detail.minX - ring.maxX : ring.minX - detail.maxX
+                                XCTAssertGreaterThanOrEqual(gap, 12 * scale)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    func testLargerTopDetailsRemainBelowCameraAndInsideSurface() {
+        for scale in [0.8, 1.0, 1.5] {
+            for detailScale in [1.0, 1.25, 1.5] {
+                for (inset, notchWidth) in [(CGFloat(0), CGFloat(0)), (32, 0), (32, 185)] {
+                    let info = MacTopNotchInfo(cameraInset: inset, notchWidth: notchWidth, centerX: desktop.midX)
+                    let closed = MacWidgetPlacement.frame(in: desktop, edge: .top, position: 0,
+                        expanded: false, scale: scale, topInfo: info, detailScale: detailScale)
+                    let frame = MacWidgetPlacement.frame(in: desktop, edge: .top, position: 0,
+                        expanded: true, scale: scale, topInfo: info, detailScale: detailScale)
+                    let detail = MacWidgetPlacement.topDetailFrame(in: frame.size,
+                        cameraInset: inset, scale: scale, detailScale: detailScale)
+                    let surface = MacWidgetSurface.path(in: frame.size, edge: .top, selectedIndex: 0,
+                        scale: scale, topCameraInset: inset, topNotchWidth: notchWidth, detailScale: detailScale)
+                    XCTAssertEqual(detail.height, 52 * scale * detailScale, accuracy: 0.0001)
+                    XCTAssertGreaterThan(detail.minY, inset + 8 * scale)
+                    XCTAssertTrue(CGRect(origin: .zero, size: frame.size).contains(detail))
+                    for x in [detail.minX, detail.midX, detail.maxX] {
+                        for y in [detail.minY, detail.midY, detail.maxY] {
+                            XCTAssertTrue(surface.contains(CGPoint(x: x, y: y)),
+                                "scale=\(scale), details=\(detailScale), inset=\(inset), notch=\(notchWidth)")
+                        }
+                    }
+                    let baseline = MacWidgetPlacement.frame(in: desktop, edge: .top, position: 0,
+                        expanded: false, scale: scale, topInfo: info)
+                    XCTAssertEqual(closed, baseline)
+                    let closedStrip = MacWidgetSurface.topProgressFrame(in: closed.size, scale: scale,
+                        topCameraInset: inset, topNotchWidth: notchWidth)
+                    let openStrip = MacWidgetSurface.topProgressFrame(in: frame.size, scale: scale,
+                        topCameraInset: inset, topNotchWidth: notchWidth)
+                    XCTAssertEqual(closedStrip.size, openStrip.size)
                 }
             }
         }
@@ -661,6 +786,17 @@ final class MacWidgetPlacementTests: XCTestCase {
 
 final class MacWidgetPreferencesTests: XCTestCase {
     @MainActor
+    func testMagnificationAndDetailSizeDefaults() throws {
+        try withDefaults { defaults in
+            let preferences = MacWidgetPreferences(defaults: defaults)
+
+            XCTAssertFalse(preferences.magnifiesOnHover)
+            XCTAssertEqual(preferences.hoverScale, 1.35)
+            XCTAssertEqual(preferences.detailScale, 1)
+        }
+    }
+
+    @MainActor
     func testPreferencesRestoreAfterRelaunch() throws {
         try withDefaults { defaults in
             let preferences = MacWidgetPreferences(defaults: defaults)
@@ -670,6 +806,9 @@ final class MacWidgetPreferencesTests: XCTestCase {
             preferences.displayID = "secondary-display"
             preferences.keepDetailsOpen = true
             preferences.scale = 1.35
+            preferences.magnifiesOnHover = true
+            preferences.hoverScale = 1.7
+            preferences.detailScale = 1.4
 
             let restored = MacWidgetPreferences(defaults: defaults)
 
@@ -679,6 +818,54 @@ final class MacWidgetPreferencesTests: XCTestCase {
             XCTAssertEqual(restored.displayID, "secondary-display")
             XCTAssertTrue(restored.keepDetailsOpen)
             XCTAssertEqual(restored.scale, 1.35)
+            XCTAssertTrue(restored.magnifiesOnHover)
+            XCTAssertEqual(restored.hoverScale, 1.7)
+            XCTAssertEqual(restored.detailScale, 1.4)
+        }
+    }
+
+    @MainActor
+    func testStoredMagnificationAndDetailSizesUseBoundsAndSafeFallbacks() throws {
+        try withDefaults { defaults in
+            let cases: [(input: Double, hover: Double, detail: Double)] = [
+                (-1, 1.1, 1), (0, 1.1, 1), (1, 1.1, 1), (1.1, 1.1, 1.1),
+                (1.35, 1.35, 1.35), (1.5, 1.5, 1.5), (1.8, 1.8, 1.5), (2, 1.8, 1.5),
+                (.nan, 1.35, 1), (.infinity, 1.35, 1), (-.infinity, 1.35, 1)
+            ]
+
+            for value in cases {
+                defaults.set(value.input, forKey: "mac-widget-hover-scale")
+                defaults.set(value.input, forKey: "mac-widget-detail-scale")
+                let preferences = MacWidgetPreferences(defaults: defaults)
+
+                XCTAssertEqual(preferences.hoverScale, value.hover, "Stored hover scale \(value.input)")
+                XCTAssertEqual(preferences.detailScale, value.detail, "Stored detail scale \(value.input)")
+            }
+        }
+    }
+
+    @MainActor
+    func testAssignedMagnificationAndDetailSizesPersistOnlySafeValues() throws {
+        try withDefaults { defaults in
+            let preferences = MacWidgetPreferences(defaults: defaults)
+            let cases: [(input: Double, hover: Double, detail: Double)] = [
+                (-1, 1.1, 1), (0, 1.1, 1), (1, 1.1, 1), (1.1, 1.1, 1.1),
+                (1.35, 1.35, 1.35), (1.5, 1.5, 1.5), (1.8, 1.8, 1.5), (2, 1.8, 1.5),
+                (.nan, 1.35, 1), (.infinity, 1.35, 1), (-.infinity, 1.35, 1)
+            ]
+
+            for value in cases {
+                preferences.hoverScale = value.input
+                preferences.detailScale = value.input
+                let restored = MacWidgetPreferences(defaults: defaults)
+
+                for result in [preferences, restored] {
+                    XCTAssertEqual(result.hoverScale, value.hover, "Assigned hover scale \(value.input)")
+                    XCTAssertEqual(result.detailScale, value.detail, "Assigned detail scale \(value.input)")
+                }
+                XCTAssertEqual(defaults.double(forKey: "mac-widget-hover-scale"), value.hover)
+                XCTAssertEqual(defaults.double(forKey: "mac-widget-detail-scale"), value.detail)
+            }
         }
     }
 
@@ -725,6 +912,9 @@ final class MacWidgetPreferencesTests: XCTestCase {
             preferences.displayID = "secondary-display"
             preferences.keepDetailsOpen = true
             preferences.scale = 1.5
+            preferences.magnifiesOnHover = true
+            preferences.hoverScale = 1.8
+            preferences.detailScale = 1.5
 
             preferences.reset()
             let restored = MacWidgetPreferences(defaults: defaults)
@@ -736,9 +926,15 @@ final class MacWidgetPreferencesTests: XCTestCase {
                 XCTAssertEqual(result.displayID, "")
                 XCTAssertFalse(result.keepDetailsOpen)
                 XCTAssertEqual(result.scale, 1)
+                XCTAssertFalse(result.magnifiesOnHover)
+                XCTAssertEqual(result.hoverScale, 1.35)
+                XCTAssertEqual(result.detailScale, 1)
             }
             XCTAssertNil(defaults.object(forKey: "mac-widget-position"))
             XCTAssertNil(defaults.object(forKey: "mac-widget-scale"))
+            XCTAssertNil(defaults.object(forKey: "mac-widget-magnifies-on-hover"))
+            XCTAssertNil(defaults.object(forKey: "mac-widget-hover-scale"))
+            XCTAssertNil(defaults.object(forKey: "mac-widget-detail-scale"))
             XCTAssertEqual(defaults.string(forKey: "unrelated-setting"), "preserve")
         }
     }

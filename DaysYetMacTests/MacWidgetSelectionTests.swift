@@ -5,6 +5,134 @@ import XCTest
 
 final class MacWidgetSelectionTests: XCTestCase {
     @MainActor
+    func testDefaultHoverOpensDetailsWithoutMagnifying() async throws {
+        for edge in [MacWidgetEdge.left, .right] {
+            try await withController(edge: edge) { controller in
+                XCTAssertFalse(controller.preferences.magnifiesOnHover)
+                var magnifications: [[MetricKind: CGFloat]] = []
+                let observation = controller.$hoverMagnifications.sink { magnifications.append($0) }
+                defer { observation.cancel() }
+
+                try await openFirstRow(controller)
+                XCTAssertEqual(controller.hoveredMetric, .week)
+                controller.hoverChanged(false)
+                let closed = try await eventually { !controller.isExpanded }
+
+                XCTAssertTrue(closed)
+                XCTAssertTrue(magnifications.allSatisfy(\.isEmpty))
+            }
+        }
+    }
+
+    @MainActor
+    func testEnabledMagnificationFollowsTheHoveredRowAndClearsOnExit() async throws {
+        for edge in [MacWidgetEdge.left, .right] {
+            try await withController(edge: edge) { controller in
+                controller.preferences.magnifiesOnHover = true
+                controller.preferences.hoverScale = 1.8
+                controller.metricHoverChanged(.month, hovering: true)
+                let opened = try await eventually {
+                    controller.hoverMagnifications[.month] == 1.8 && controller.selectedMetric == .month
+                        && controller.isExpanded
+                }
+                XCTAssertTrue(opened)
+
+                controller.metricHoverChanged(.year, hovering: true)
+                controller.metricHoverChanged(.month, hovering: false)
+                let moved = try await eventually {
+                    controller.hoverMagnifications[.year] == 1.8
+                        && (controller.hoverMagnifications[.month] ?? 1) == 1
+                        && controller.selectedMetric == .year
+                }
+                XCTAssertTrue(moved)
+                XCTAssertEqual(controller.hoveredMetric, .year)
+
+                controller.hoverChanged(false)
+                let closed = try await eventually {
+                    controller.hoverMagnifications.isEmpty && !controller.isExpanded
+                }
+                XCTAssertTrue(closed)
+                XCTAssertNil(controller.hoveredMetric)
+            }
+        }
+    }
+
+    @MainActor
+    func testDisablingMagnificationWhileHoveringPreservesDetailInteraction() async throws {
+        try await withController { controller in
+            controller.preferences.magnifiesOnHover = true
+            controller.preferences.hoverScale = 1.8
+            try await openFirstRow(controller)
+            let magnified = try await eventually { controller.hoverMagnifications[.week] == 1.8 }
+            XCTAssertTrue(magnified)
+
+            controller.preferences.magnifiesOnHover = false
+            let restored = try await eventually { controller.hoverMagnifications.isEmpty }
+            XCTAssertTrue(restored)
+            XCTAssertEqual(controller.hoveredMetric, .week)
+            XCTAssertEqual(controller.selectedMetric, .week)
+            XCTAssertTrue(controller.isExpanded)
+
+            controller.metricHoverChanged(.month, hovering: true)
+            let selected = try await eventually { controller.selectedMetric == .month }
+            XCTAssertTrue(selected)
+            XCTAssertEqual(controller.hoveredMetric, .month)
+            XCTAssertTrue(controller.isExpanded)
+            XCTAssertTrue(controller.hoverMagnifications.isEmpty)
+
+            controller.hoverChanged(false)
+            let closed = try await eventually { !controller.isExpanded }
+            XCTAssertTrue(closed)
+        }
+    }
+
+    @MainActor
+    func testChangingMagnificationWhileHoveringUsesTheNewSize() async throws {
+        try await withController { controller in
+            controller.preferences.magnifiesOnHover = true
+            controller.preferences.hoverScale = 1.8
+            try await openFirstRow(controller)
+            let magnified = try await eventually { controller.hoverMagnifications[.week] == 1.8 }
+            XCTAssertTrue(magnified)
+
+            controller.preferences.hoverScale = 1.1
+            let resized = try await eventually { controller.hoverMagnifications[.week] == 1.1 }
+
+            XCTAssertTrue(resized)
+            XCTAssertEqual(controller.hoveredMetric, .week)
+            XCTAssertTrue(controller.isExpanded)
+        }
+    }
+
+    @MainActor
+    func testHidingOrChangingEdgesClearsMagnification() async throws {
+        // A nil destination hides the widget; the others move it to a new edge.
+        for destination: MacWidgetEdge? in [nil, .right, .top] {
+            try await withController { controller in
+                controller.preferences.magnifiesOnHover = true
+                controller.preferences.hoverScale = 1.8
+                controller.metricHoverChanged(.month, hovering: true)
+                let magnified = try await eventually { controller.hoverMagnifications[.month] == 1.8 }
+                XCTAssertTrue(magnified)
+
+                if let destination {
+                    controller.preferences.edge = destination
+                } else {
+                    controller.hideWidget()
+                }
+                let cleared = try await eventually {
+                    controller.hoverMagnifications.isEmpty && controller.hoveredMetric == nil && !controller.isExpanded
+                }
+                XCTAssertTrue(cleared)
+                try await Task.sleep(for: .milliseconds(200))
+                XCTAssertTrue(controller.hoverMagnifications.isEmpty)
+                XCTAssertNil(controller.hoveredMetric)
+                XCTAssertFalse(controller.isExpanded)
+            }
+        }
+    }
+
+    @MainActor
     func testSideHoverPublishesImmediatelyAndIgnoresAnOldRowsExit() async throws {
         for edge in [MacWidgetEdge.left, .right] {
             try await withController(edge: edge) { controller in

@@ -7,7 +7,10 @@ import SwiftUI
 @MainActor
 final class MacWidgetController: ObservableObject {
     @Published private(set) var selectedMetric: MetricKind?
-    @Published private(set) var hoveredMetric: MetricKind?
+    @Published private(set) var hoveredMetric: MetricKind? {
+        didSet { if oldValue != hoveredMetric { updateMagnification() } }
+    }
+    @Published private(set) var hoverMagnifications: [MetricKind: CGFloat] = [:]
     @Published private(set) var selectionPosition: CGFloat = 0
     @Published private(set) var isExpanded = false
     @Published private(set) var displays: [MacDisplay] = []
@@ -20,6 +23,7 @@ final class MacWidgetController: ObservableObject {
     private var closeTask: Task<Void, Never>?
     private var intentTask: Task<Void, Never>?
     private var selectionTask: Task<Void, Never>?
+    private var magnificationTask: Task<Void, Never>?
     private var isHovered = false
     private var suppressTopHoverUntilExit = false
     private var globalPointerMonitor: Any?
@@ -31,6 +35,48 @@ final class MacWidgetController: ObservableObject {
 
     var activeMetrics: [MetricKind] {
         store.profile.macWidgetMetrics(for: preferences.edge)
+    }
+
+    var hoverScaleLimit: Double {
+        preferences.magnifiesOnHover && preferences.edge != .top ? preferences.hoverScale : 1
+    }
+
+    var indexedMagnifications: [Int: CGFloat] {
+        Dictionary(uniqueKeysWithValues: activeMetrics.enumerated().compactMap { index, metric in
+            hoverMagnifications[metric].map { (index, $0) }
+        })
+    }
+
+    private func updateMagnification(animated: Bool = true) {
+        magnificationTask?.cancel()
+        let target: [MetricKind: CGFloat]
+        if hoverScaleLimit > 1, preferences.isVisible, let metric = hoveredMetric, activeMetrics.contains(metric) {
+            target = [metric: hoverScaleLimit]
+        } else {
+            target = [:]
+        }
+        guard animated, !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion,
+              preferences.edge != .top, hoverMagnifications != target else {
+            if hoverMagnifications != target { hoverMagnifications = target }
+            return
+        }
+        let origin = hoverMagnifications
+        let metrics = Set(origin.keys).union(target.keys)
+        let start = ProcessInfo.processInfo.systemUptime
+        magnificationTask = Task { [weak self] in
+            while !Task.isCancelled {
+                guard let self else { return }
+                let progress = min((ProcessInfo.processInfo.systemUptime - start) / 0.16, 1)
+                let eased = 1 - pow(1 - progress, 3)
+                self.hoverMagnifications = progress >= 1 ? target : Dictionary(uniqueKeysWithValues: metrics.map { metric in
+                    let from = origin[metric] ?? 1
+                    return (metric, from + ((target[metric] ?? 1) - from) * eased)
+                })
+                self.updatePointerAcceptance()
+                if progress >= 1 { return }
+                try? await Task.sleep(for: .milliseconds(16))
+            }
+        }
     }
 
     init(store: ProfileStore, preferences: MacWidgetPreferences) {
@@ -255,6 +301,9 @@ final class MacWidgetController: ObservableObject {
 
     private func synchronize(animated: Bool = false) {
         let metricsChanged = reconcileMetricConfiguration()
+        // Preference changes resize the reserved canvas; settle magnification
+        // in the same update to avoid clipping an old, larger circle.
+        updateMagnification(animated: false)
         // Preference notifications already queued when the press began must
         // not animate the panel back to its previous saved position.
         if pointerInteraction.isPressed {
@@ -334,7 +383,8 @@ final class MacWidgetController: ObservableObject {
                                                    position: preferences.verticalPosition,
                                                    expanded: isExpanded, scale: preferences.scale,
                                                    screenFrame: screen.frame, topInfo: info,
-                                                   metricCount: activeMetrics.count)
+                                                   metricCount: activeMetrics.count,
+                                                   hoverScale: hoverScaleLimit, detailScale: preferences.detailScale)
         animationPointerTimer?.invalidate()
         if animated && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion {
             let duration = isExpanded ? 0.24 : 0.18
@@ -382,7 +432,9 @@ final class MacWidgetController: ObservableObject {
         let inside = panel.frame.contains(pointer) && MacWidgetSurface.contains(local, in: panel.frame.size,
                                                edge: preferences.edge, selectedIndex: selectionPosition,
                                                scale: preferences.scale, topCameraInset: topInfo.cameraInset,
-                                               topNotchWidth: topInfo.notchWidth, metricCount: activeMetrics.count)
+                                               topNotchWidth: topInfo.notchWidth, metricCount: activeMetrics.count,
+                                               hoverScale: hoverScaleLimit, detailScale: preferences.detailScale,
+                                               magnifications: indexedMagnifications)
         // Transparent corners and the unused space beside the moving detail must
         // allow clicks to reach the application underneath the widget.
         panel.ignoresMouseEvents = !inside
@@ -409,6 +461,14 @@ final class MacWidgetController: ObservableObject {
             }
         } else {
             setHovered(inside)
+            if inside, let index = MacWidgetSurface.sideHoverIndex(at: local, in: panel.frame.size,
+                edge: preferences.edge, scale: preferences.scale, metricCount: activeMetrics.count,
+                magnifications: indexedMagnifications) {
+                beginMetricHover(activeMetrics[index])
+            } else if hoveredMetric != nil {
+                hoveredMetric = nil
+                intentTask?.cancel()
+            }
         }
     }
 
@@ -433,7 +493,8 @@ final class MacWidgetController: ObservableObject {
             guard MacWidgetSurface.contains(local, in: panel.frame.size, edge: preferences.edge,
                     selectedIndex: selectionPosition, scale: preferences.scale,
                     topCameraInset: topInfo.cameraInset, topNotchWidth: topInfo.notchWidth,
-                    metricCount: activeMetrics.count) else { return false }
+                    metricCount: activeMetrics.count, hoverScale: hoverScaleLimit,
+                    detailScale: preferences.detailScale, magnifications: indexedMagnifications) else { return false }
             closeTask?.cancel()
             intentTask?.cancel()
             hoveredMetric = nil
@@ -486,10 +547,11 @@ final class MacWidgetController: ObservableObject {
         let local = CGPoint(x: pointer.x - panel.frame.minX, y: panel.frame.maxY - pointer.y)
         let metrics = activeMetrics
         guard let index = MacWidgetSurface.sideHoverIndex(at: local, in: panel.frame.size,
-                edge: preferences.edge, scale: scale, metricCount: metrics.count),
+                edge: preferences.edge, scale: scale, metricCount: metrics.count, magnifications: indexedMagnifications),
               MacWidgetSurface.contains(local, in: panel.frame.size,
                 edge: preferences.edge, selectedIndex: selectionPosition, scale: scale,
-                metricCount: metrics.count) else { return }
+                metricCount: metrics.count, hoverScale: hoverScaleLimit, detailScale: preferences.detailScale,
+                magnifications: indexedMagnifications) else { return }
         if metrics.indices.contains(index) { beginMetricHover(metrics[index]) }
     }
 
@@ -498,6 +560,7 @@ final class MacWidgetController: ObservableObject {
         if let localPointerMonitor { NSEvent.removeMonitor(localPointerMonitor) }
         animationPointerTimer?.invalidate()
         selectionTask?.cancel()
+        magnificationTask?.cancel()
         closeTask?.cancel()
         intentTask?.cancel()
     }
