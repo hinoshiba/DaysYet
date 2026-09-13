@@ -153,14 +153,21 @@ struct MacDesktopWidgetView: View {
     private func sideContent(width: CGFloat, height: CGFloat) -> some View {
         let expansion = MacWidgetPlacement.sideExpansion(in: CGSize(width: width, height: height), scale: 1,
             hoverScale: controller.hoverScaleLimit, detailScale: preferences.detailScale)
-        let reveal = min(max((expansion - 0.42) / 0.50, 0), 1)
+        let reveal = controller.hoverScaleLimit > 1 ? expansion : min(max((expansion - 0.42) / 0.50, 0), 1)
         let detail = MacWidgetPlacement.sideDetailFrame(in: CGSize(width: width, height: height),
             edge: preferences.edge, selectedIndex: controller.selectionPosition, scale: 1,
             metricCount: controller.activeMetrics.count, hoverScale: controller.hoverScaleLimit, detailScale: preferences.detailScale)
+        let contentProgress = controller.hoverScaleLimit > 1 ? expansion : 1
+        // Grow the complete text and its padding with the surface so neither
+        // edge reveals clipped fragments before the circle finishes growing.
+        let inset = (14 + MacWidgetPlacement.hoverOutset(for: controller.hoverScaleLimit)) * (1 - contentProgress)
+        let detailX = preferences.edge == .right
+            ? detail.maxX + inset - detail.width * contentProgress
+            : detail.minX - inset
         return ZStack(alignment: .topLeading) {
             detailContent(width: detail.width / preferences.detailScale)
-                .scaleEffect(preferences.detailScale, anchor: .topLeading)
-                .offset(x: detail.minX, y: detail.minY)
+                .scaleEffect(preferences.detailScale * contentProgress, anchor: .topLeading)
+                .offset(x: detailX, y: detail.midY - detail.height * contentProgress / 2)
                 .opacity(reveal)
                 .accessibilityHidden(!controller.isExpanded)
             MacTimeRailView(store: store, preferences: preferences, controller: controller)

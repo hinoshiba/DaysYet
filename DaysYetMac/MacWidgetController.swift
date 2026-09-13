@@ -6,6 +6,8 @@ import SwiftUI
 
 @MainActor
 final class MacWidgetController: ObservableObject {
+    private static let sideHoverAnimationDuration: TimeInterval = 0.18
+
     @Published private(set) var selectedMetric: MetricKind?
     @Published private(set) var hoveredMetric: MetricKind? {
         didSet { if oldValue != hoveredMetric { updateMagnification() } }
@@ -66,7 +68,7 @@ final class MacWidgetController: ObservableObject {
         magnificationTask = Task { [weak self] in
             while !Task.isCancelled {
                 guard let self else { return }
-                let progress = min((ProcessInfo.processInfo.systemUptime - start) / 0.16, 1)
+                let progress = min((ProcessInfo.processInfo.systemUptime - start) / Self.sideHoverAnimationDuration, 1)
                 let eased = 1 - pow(1 - progress, 3)
                 self.hoverMagnifications = progress >= 1 ? target : Dictionary(uniqueKeysWithValues: metrics.map { metric in
                     let from = origin[metric] ?? 1
@@ -146,6 +148,7 @@ final class MacWidgetController: ObservableObject {
             if hoveredMetric == metric {
                 hoveredMetric = nil
                 intentTask?.cancel()
+                intentTask = nil
             }
             return
         }
@@ -158,17 +161,31 @@ final class MacWidgetController: ObservableObject {
         guard hoveredMetric != metric else { return }
         hoveredMetric = metric
         intentTask?.cancel()
+        intentTask = nil
         guard !isExpanded || selectedMetric != metric else { return }
+        if hoverScaleLimit > 1 {
+            showHoveredDetails(for: metric)
+            return
+        }
         let delay = isExpanded ? 80 : 160
         intentTask = Task { [weak self] in
             try? await Task.sleep(for: .milliseconds(delay))
-            guard !Task.isCancelled, let self, self.isHovered,
-                  self.hoveredMetric == metric, self.preferences.isVisible,
-                  self.activeMetrics.contains(metric) else { return }
-            self.setSelection(metric)
-            self.setExpanded(true)
-            self.updatePointerAcceptance()
+            guard !Task.isCancelled, let self else { return }
+            self.intentTask = nil
+            self.showHoveredDetails(for: metric)
         }
+    }
+
+    private func showHoveredDetails(for metric: MetricKind) {
+        guard isHovered, hoveredMetric == metric, preferences.isVisible,
+              !pointerInteraction.isPressed, activeMetrics.contains(metric) else { return }
+        setSelection(metric)
+        // Selection rechecks the pointer synchronously. Do not reopen a panel
+        // after that check has moved the pointer out or onto another circle.
+        guard isHovered, hoveredMetric == metric, preferences.isVisible,
+              !pointerInteraction.isPressed, activeMetrics.contains(metric) else { return }
+        setExpanded(true)
+        updatePointerAcceptance()
     }
 
     func hoverChanged(_ hovering: Bool) {
@@ -183,8 +200,13 @@ final class MacWidgetController: ObservableObject {
         if !hovering {
             hoveredMetric = nil
             intentTask?.cancel()
+            intentTask = nil
         }
         if !hovering, !preferences.keepDetailsOpen {
+            if hoverScaleLimit > 1 {
+                setExpanded(false)
+                return
+            }
             closeTask = Task { [weak self] in
                 try? await Task.sleep(for: .milliseconds(180))
                 guard !Task.isCancelled, let self, !self.isHovered, !self.preferences.keepDetailsOpen else { return }
@@ -196,6 +218,7 @@ final class MacWidgetController: ObservableObject {
     func closeDetails() {
         closeTask?.cancel()
         intentTask?.cancel()
+        intentTask = nil
         if preferences.edge == .top {
             suppressTopHoverUntilExit = true
             hoveredMetric = nil
@@ -213,6 +236,7 @@ final class MacWidgetController: ObservableObject {
         pointerInteraction.cancel()
         closeTask?.cancel()
         intentTask?.cancel()
+        intentTask = nil
         selectionTask?.cancel()
         isHovered = false
         hoveredMetric = nil
@@ -278,7 +302,7 @@ final class MacWidgetController: ObservableObject {
         selectionTask = Task { [weak self] in
             while !Task.isCancelled {
                 guard let self else { return }
-                let elapsed = (ProcessInfo.processInfo.systemUptime - start) / 0.18
+                let elapsed = (ProcessInfo.processInfo.systemUptime - start) / Self.sideHoverAnimationDuration
                 let progress = min(max(elapsed, 0), 1)
                 let eased = 1 - pow(1 - progress, 3)
                 self.selectionPosition = origin + (destination - origin) * eased
@@ -293,6 +317,7 @@ final class MacWidgetController: ObservableObject {
         pointerInteraction.cancel()
         closeTask?.cancel()
         intentTask?.cancel()
+        intentTask = nil
         isHovered = false
         hoveredMetric = nil
         suppressTopHoverUntilExit = false
@@ -301,9 +326,6 @@ final class MacWidgetController: ObservableObject {
 
     private func synchronize(animated: Bool = false) {
         let metricsChanged = reconcileMetricConfiguration()
-        // Preference changes resize the reserved canvas; settle magnification
-        // in the same update to avoid clipping an old, larger circle.
-        updateMagnification(animated: false)
         // Preference notifications already queued when the press began must
         // not animate the panel back to its previous saved position.
         if pointerInteraction.isPressed {
@@ -312,6 +334,14 @@ final class MacWidgetController: ObservableObject {
         }
         displays = NSScreen.screens.map { MacDisplay(id: displayID(for: $0), name: $0.localizedName) }
         if preferences.isVisible {
+            if hoverScaleLimit > 1, intentTask != nil, isHovered, let metric = hoveredMetric, activeMetrics.contains(metric) {
+                // Enabling magnification during a deferred hover must not leave
+                // the enlarged circle waiting for the old detail delay.
+                intentTask?.cancel()
+                intentTask = nil
+                setSelection(metric)
+                if isHovered, hoveredMetric == metric { isExpanded = true }
+            }
             if !preferences.keepDetailsOpen { releasePanelFocus() }
             if preferences.keepDetailsOpen {
                 if selectedMetric == nil { setSelection(activeMetrics.first) }
@@ -320,6 +350,9 @@ final class MacWidgetController: ObservableObject {
                 isExpanded = false
                 setSelection(selectedMetric)
             }
+            // Settle against the committed selection before resizing the
+            // reserved canvas, including when enabling a deferred hover.
+            updateMagnification(animated: false)
             // A new row count or edge changes the coordinate system itself.
             // Apply that frame together with its selection and hit-test layout.
             positionPanel(animated: animated && !metricsChanged && panel?.isVisible == true)
@@ -328,11 +361,13 @@ final class MacWidgetController: ObservableObject {
         } else {
             closeTask?.cancel()
             intentTask?.cancel()
+            intentTask = nil
             animationPointerTimer?.invalidate()
             isHovered = false
             hoveredMetric = nil
             suppressTopHoverUntilExit = false
             isExpanded = false
+            updateMagnification(animated: false)
             panel?.allowsKeyboardFocus = false
             panel?.orderOut(nil)
             setSelection(selectedMetric)
@@ -348,6 +383,7 @@ final class MacWidgetController: ObservableObject {
         // A queued hover or an in-flight row animation refers to the old list.
         // Settle the selection before the contour changes size or placement.
         intentTask?.cancel()
+        intentTask = nil
         selectionTask?.cancel()
         closeTask?.cancel()
         pointerInteraction.cancel()
@@ -387,10 +423,14 @@ final class MacWidgetController: ObservableObject {
                                                    hoverScale: hoverScaleLimit, detailScale: preferences.detailScale)
         animationPointerTimer?.invalidate()
         if animated && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion {
-            let duration = isExpanded ? 0.24 : 0.18
+            let synchronizedHover = hoverScaleLimit > 1
+            let duration = synchronizedHover ? Self.sideHoverAnimationDuration : (isExpanded ? 0.24 : 0.18)
             NSAnimationContext.runAnimationGroup { context in
                 context.duration = duration
-                context.timingFunction = CAMediaTimingFunction(controlPoints: 0.2, 0.8, 0.2, 1)
+                // Linear x and cubic ease-out y match the circle and row tasks.
+                context.timingFunction = synchronizedHover
+                    ? CAMediaTimingFunction(controlPoints: 1.0 / 3, 1, 2.0 / 3, 1)
+                    : CAMediaTimingFunction(controlPoints: 0.2, 0.8, 0.2, 1)
                 panel.animator().setFrame(destination, display: true)
             }
             // Track the changing contour even when the pointer is stationary.
@@ -458,6 +498,7 @@ final class MacWidgetController: ObservableObject {
             } else {
                 hoveredMetric = nil
                 intentTask?.cancel()
+                intentTask = nil
             }
         } else {
             setHovered(inside)
@@ -468,6 +509,7 @@ final class MacWidgetController: ObservableObject {
             } else if hoveredMetric != nil {
                 hoveredMetric = nil
                 intentTask?.cancel()
+                intentTask = nil
             }
         }
     }
@@ -497,6 +539,7 @@ final class MacWidgetController: ObservableObject {
                     detailScale: preferences.detailScale, magnifications: indexedMagnifications) else { return false }
             closeTask?.cancel()
             intentTask?.cancel()
+            intentTask = nil
             hoveredMetric = nil
             isHovered = true
             selectionTask?.cancel()
@@ -563,6 +606,7 @@ final class MacWidgetController: ObservableObject {
         magnificationTask?.cancel()
         closeTask?.cancel()
         intentTask?.cancel()
+        intentTask = nil
     }
 }
 
