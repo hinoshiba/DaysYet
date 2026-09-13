@@ -46,7 +46,7 @@ struct MetricCard: View {
             }
 
             ProgressBar(
-                fraction: snapshot.elapsedFraction,
+                fraction: snapshot.remainingFraction,
                 colors: DaysYetTheme.colors(for: snapshot.kind, theme: theme)
             )
 

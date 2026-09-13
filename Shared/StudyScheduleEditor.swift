@@ -62,7 +62,7 @@ struct StudyScheduleEditor: View {
                 } header: {
                     Text(L10n.text("選んだ学習日", "Your study days"))
                 } footer: {
-                    Text(progressHelp)
+                    Text(remainingHelp)
                 }
             }
             .formStyle(.grouped)
@@ -281,7 +281,7 @@ struct StudyScheduleEditor: View {
         } footer: {
             VStack(alignment: .leading, spacing: 6) {
                 Text(dateSelectionHelp)
-                Text(progressHelp)
+                Text(remainingHelp)
             }
         }
     }
@@ -474,10 +474,10 @@ struct StudyScheduleEditor: View {
 #endif
     }
 
-    private var progressHelp: String {
+    private var remainingHelp: String {
         L10n.text(
-            "残り日数には今日を含みます。進捗は選んだ日が過ぎた割合で、学習の完了記録ではありません。",
-            "Remaining days include today. Progress measures selected days that have passed, not completed study sessions."
+            "残り日数には今日を含みます。残り割合は選んだ全学習日のうち、まだ残っている日数の割合です。学習の完了記録ではありません。",
+            "Remaining days include today. The percentage shows selected study days still available out of all selected days, not completed study sessions."
         )
     }
 

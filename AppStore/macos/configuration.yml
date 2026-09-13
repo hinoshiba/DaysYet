@@ -1,5 +1,5 @@
 # Native macOS update on the existing DaysYet App Store record.
-# Release candidate; see ../releases/0.1.6-macos.md for preparation notes.
+# Release candidate; see ../releases/0.1.6-countdown.md for preparation notes.
 # Retain the record's existing shared name, categories, pricing, availability,
 # and release settings. Do not create a separate SKU or App Store record.
 app_name: DaysYet
@@ -13,7 +13,7 @@ bundle_id: com.hinoshiba.daysyet
 scheme: DaysYetMac
 # The previous submission is recorded in ../releases/0.1.5.md.
 version: 0.1.6
-build: 9
+build: 10
 initial_release: false
 minimum_os: "14.0"
 standard_eula: true

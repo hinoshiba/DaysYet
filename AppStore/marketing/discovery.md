@@ -2,9 +2,9 @@
 
 調査・採用値の確認日: 2026-09-06
 
-この文書は2026-09-06時点の調査・保存確認の記録。説明文・プロモーション文はその後のリリースで更新されている。以降の提出状況は[App Storeリリース記録](../README.md)を参照し、投稿前に公開バージョンと機能を再確認する。
+この文書は2026-09-06時点の調査・保存確認の記録。説明文・プロモーション文はその後のリリースで更新されている。2026-09-13にDaysYetの説明とキーワードを残り時間のカウントダウンに合わせて更新した。以降の提出状況は[App Storeリリース記録](../README.md)を参照し、投稿前に公開バージョンと機能を再確認する。
 
-日本語は「人生時計」「カウントダウン」、英語は「Life Countdown」「Time Countdown」を名称の入口とする。副題でウィジェットと用途を伝え、キーワード欄では残り日数、目標、進捗、勤務時間など実際の機能を補う。英語の `memento mori` は人生の時間を意識する文脈への入口として採用する。
+日本語は「人生時計」「カウントダウン」、英語は「Life Countdown」「Time Countdown」を名称の入口とする。副題でウィジェットと用途を伝え、キーワード欄では残り日数、目標、残り割合、勤務時間など実際の機能を補う。英語の `memento mori` は人生の時間を意識する文脈への入口として採用する。
 
 この判断は、実際の製品掲載・開発元の一次資料とDaysYetの機能の一致に基づく。検索volume、Apple AdsのSearch Popularity、ハッシュタグ投稿量、直近のバズの規模は測定していない。「最も人気」「検索上位になる」「バズる」といった保証をするものではない。
 
@@ -21,10 +21,10 @@
 
 | 言語・プラットフォーム | キーワード | UTF-8 bytes |
 | --- | --- | ---: |
-| 日本語・iOS / iPadOS | `残り日数,目標日,勤務時間,ロック画面,ホーム画面,時間管理,進捗率,記念日` | 100 |
-| 日本語・macOS | `残り日数,目標日,勤務時間,時間管理,デスクトップ,進捗率,記念日,締め切り` | 100 |
-| English (U.S.)・iOS / iPadOS | `memento mori,progress,clock,week,month,year,deadline,work,hours,remaining,left,lock,home,screen` | 95 |
-| English (U.S.)・macOS | `memento mori,progress,clock,week,month,year,deadline,work,hours,remaining,left,desktop,display` | 94 |
+| 日本語・iOS / iPadOS | `残り日数,目標日,勤務時間,ロック画面,ホーム画面,時間管理,残り率,記念日` | 100 |
+| 日本語・macOS | `残り日数,目標日,勤務時間,時間管理,デスクトップ,残り率,記念日,締め切り` | 100 |
+| English (U.S.)・iOS / iPadOS | `memento mori,countdown,clock,week,month,year,deadline,work,hours,remaining,left,lock,home,screen` | 96 |
+| English (U.S.)・macOS | `memento mori,countdown,clock,week,month,year,deadline,work,hours,remaining,left,desktop,display` | 95 |
 
 英語では `clock` がLife Clock、`left` がTime Leftの検索意図を補う。`lock,home,screen` として `screen` の重複を避ける。MacにはHome Screen / Lock Screenを入れず、常駐パネルの用途を `desktop,display` で表す。Mac版はmacOSのウィジェットギャラリーから追加するWidgetKit拡張ではない。
 
@@ -36,7 +36,7 @@ Appleは名称・副題・キーワード・カテゴリとの関連性などを
 
 | 用語 | 判断 | 根拠・期待される意味 |
 | --- | --- | --- |
-| 人生時計 | 日本語名称に採用 | 生年月日や本人が決めた人生の目標をもとに、残り時間・経過を可視化する用例がある。DaysYetでは健康でいたい年齢を本人が設定し、残りと進捗を表示する。24時間の時計に換算する画面を備えるという説明はしない。 |
+| 人生時計 | 日本語名称に採用 | 生年月日や本人が決めた人生の目標をもとに、残り時間・経過を可視化する用例がある。DaysYetでは健康でいたい年齢を本人が設定し、残り時間と残り割合を表示する。24時間の時計に換算する画面を備えるという説明はしない。 |
 | カウントダウン・残り日数・時間管理 | 機能語として採用 | 年月週、目標日、勤務終了までの時間という利用目的を具体的に表せる。 |
 | Life Countdown / Time Countdown | 英語名称に採用 | 英語App Storeで人生の時間・節目・ウィジェットの文脈に実例があり、日常の時間も含むDaysYetの用途を伝えられる。 |
 | Memento Mori | 英語キーワード・内容に合う英語SNS投稿で採用 | 有限の時間を意識して日々を選ぶ文化的な文脈がある。名言配信・ストア派哲学の学習機能を提供するという意味では使用しない。 |
@@ -58,7 +58,7 @@ Life Tokenが暗号資産の名称で使われる例と、Death Clockが寿命�
 
 Xは `#DaysYet` を共通のブランドタグとし、その投稿の内容を表すタグを1個加える。X公式も1投稿2個以下を推奨している。無関係な流行タグは使わない。[X: How to use hashtags](https://help.x.com/en/using-x/how-to-use-hashtags)
 
-プロフィールのリンクは、日本語アカウント・日本語中心のプロフィールなら [日本語サイト](https://daysyet.hinoshiba.com/)、英語中心なら [Englishサイト](https://daysyet.hinoshiba.com/en/) を指定する。両言語を扱う場合は、プロフィールに日英のリンクを併記するか、サイトの言語切り替えで移動できるよう案内する。プロフィール案は「人生時計とカウントダウン。残り時間を見える化するDaysYet。」／「Life countdowns and everyday time progress. Make time visible with DaysYet.」。
+プロフィールのリンクは、日本語アカウント・日本語中心のプロフィールなら [日本語サイト](https://daysyet.hinoshiba.com/)、英語中心なら [Englishサイト](https://daysyet.hinoshiba.com/en/) を指定する。両言語を扱う場合は、プロフィールに日英のリンクを併記するか、サイトの言語切り替えで移動できるよう案内する。プロフィール案は「人生時計とカウントダウン。残り時間を見える化するDaysYet。」／「Life countdowns and everyday time remaining. Make time visible with DaysYet.」。
 
 機能を見せる投稿にはその言語・端末の実画面を添え、投稿内は下記のキャンペーンリンクでApp Storeへ直接案内する。リンクは名称変更の影響を受けないアプリIDを使う。App Storeは利用者の地域に応じたストアへ案内する。[Apple: Campaign links](https://developer.apple.com/help/app-store-connect-analytics/acquisition/campaign-links)
 
@@ -82,7 +82,7 @@ Xは `#DaysYet` を共通のブランドタグとし、その投稿の内容を�
 
 ## 投稿案と公開条件
 
-以下は2026-09-06時点の機能に合わせた投稿用の下書きであり、投稿・プロフィール変更を実施した記録ではない。掲載時にはApp Storeの公開バージョン、機能、リンク先を再確認する。
+以下は2026-09-06に用意し、2026-09-13に残り時間の表示へ文言を更新した投稿用の下書きであり、投稿・プロフィール変更を実施した記録ではない。掲載時にはApp Storeの公開バージョン、機能、リンク先を再確認する。
 
 2026-09-06の作業前のリリース記録では、公開済みiOSは0.1.2 (4)、勤務時間を含むiOS 0.1.3 (5)と初回macOS 0.1.2 (3)は審査待ち。勤務時間の投稿はiOS 0.1.3の公開後、Macの投稿はMac版が実際にダウンロード可能になってから使う。審査で承認されたことと、ストアで公開されたことは分けて確認する。[リリース記録](../README.md)
 
@@ -103,13 +103,13 @@ https://apps.apple.com/app/apple-store/id6802000765?pt=129139420&ct=en_x_memento
 ### ホーム画面の使い方
 
 ```text
-今週、今年、大切な日まで。DaysYetなら、3つの残り時間と進み具合をホーム画面にひとまとめ。ウィジェットごとに、表示する時間やテーマを選べます。
+今週、今年、大切な日まで。DaysYetなら、3つの残り時間と残り割合をホーム画面にひとまとめ。ウィジェットごとに、表示する時間やテーマを選べます。
 https://apps.apple.com/app/apple-store/id6802000765?pt=129139420&ct=ja_x_widgets&mt=8
 #DaysYet #ウィジェット
 ```
 
 ```text
-Your week. Your year. Your next milestone. See time left and progress together in one Home Screen widget. Choose the three timelines that matter to you.
+Your week. Your year. Your next milestone. See time left and the percentage remaining together in one Home Screen widget. Choose the three timelines that matter to you.
 https://apps.apple.com/app/apple-store/id6802000765?pt=129139420&ct=en_x_widgets&mt=8
 #DaysYet #iOSWidgets
 ```
@@ -131,7 +131,7 @@ https://apps.apple.com/app/apple-store/id6802000765?pt=129139420&ct=en_x_workday
 ### Macの常駐表示（Mac版公開後）
 
 ```text
-今週、今月、今年の進み具合を、Macの画面端に。DaysYetは3つの時間を小さく表示し、ポインタを合わせると詳細が開きます。左右と上端から置き場所を選べます。
+今週、今月、今年の残り時間を、Macの画面端に。DaysYetは3つの時間を小さく表示し、ポインタを合わせると詳細が開きます。左右と上端から置き場所を選べます。
 https://apps.apple.com/app/apple-store/id6802000765?pt=129139420&ct=ja_x_mac&mt=8
 #DaysYet #Macアプリ
 ```

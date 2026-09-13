@@ -170,7 +170,7 @@ private struct WidgetPreviewMetricRow: View {
 
     private func combinedProgressBar(height: CGFloat) -> some View {
         ProgressBar(
-            fraction: snapshot.elapsedFraction,
+            fraction: snapshot.remainingFraction,
             colors: palette.colors(for: snapshot.kind),
             height: height,
             trackColor: palette.track
@@ -193,7 +193,7 @@ private struct WidgetPreviewMetricRow: View {
             .font(.system(.caption, design: .rounded, weight: .semibold))
 
             ProgressBar(
-                fraction: snapshot.elapsedFraction,
+                fraction: snapshot.remainingFraction,
                 colors: palette.colors(for: snapshot.kind),
                 height: compact ? 5 : 6,
                 trackColor: palette.track

@@ -122,15 +122,26 @@ struct DaysYetLockScreenWidgetEntryView: View {
     }
 
     private var circularView: some View {
-        Gauge(value: snapshot.elapsedFraction) {
-            Image(systemName: snapshot.kind.symbolName)
-        } currentValueLabel: {
-            Text(roundedPercentageText)
-                .font(.system(.caption2, design: .rounded, weight: .bold))
-                .minimumScaleFactor(0.7)
-                .monospacedDigit()
+        ZStack {
+            Circle()
+                .stroke(.primary.opacity(0.2), lineWidth: 4)
+            if snapshot.remainingFraction > 0 {
+                Circle()
+                    .trim(from: 1 - snapshot.remainingFraction, to: 1)
+                    .stroke(.primary, style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                    .rotationEffect(.degrees(-90))
+            }
+            VStack(spacing: 1) {
+                Image(systemName: snapshot.kind.symbolName)
+                    .font(.caption2)
+                Text(roundedPercentageText)
+                    .font(.system(.caption2, design: .rounded, weight: .bold))
+                    .minimumScaleFactor(0.7)
+                    .monospacedDigit()
+            }
+            .padding(6)
         }
-        .gaugeStyle(.accessoryCircular)
+        .padding(2)
         .widgetAccentable()
     }
 
@@ -155,7 +166,7 @@ struct DaysYetLockScreenWidgetEntryView: View {
                 .allowsTightening(true)
                 .monospacedDigit()
 
-            ProgressView(value: snapshot.elapsedFraction)
+            ProgressView(value: snapshot.remainingFraction)
                 .progressViewStyle(.linear)
                 .widgetAccentable()
                 .accessibilityHidden(true)
@@ -163,7 +174,7 @@ struct DaysYetLockScreenWidgetEntryView: View {
     }
 
     private var roundedPercentageText: String {
-        snapshot.isOff ? "Off" : "\(Int((snapshot.elapsedFraction * 100).rounded()))%"
+        snapshot.isOff ? "Off" : RemainingPercentage.compactText(for: snapshot.remainingFraction)
     }
 }
 

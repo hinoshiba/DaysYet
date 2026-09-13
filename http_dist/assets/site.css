@@ -454,7 +454,8 @@ figure { margin: 0; }
   height: 32px;
   border-radius: 50%;
   color: var(--metric-color);
-  background: conic-gradient(var(--metric-color) var(--progress), #34363c var(--progress));
+  /* The spent portion advances clockwise from 12 o'clock. */
+  background: conic-gradient(#34363c calc(100% - var(--remaining)), var(--metric-color) calc(100% - var(--remaining)));
 }
 
 .mac-ring::before { content: ""; position: absolute; inset: 1.5px; border-radius: 50%; background: #000; }
@@ -481,7 +482,7 @@ figure { margin: 0; }
 .mac-detail-header .mac-detail-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .mac-detail-percentage { flex: none; color: #c4c7ce; font-size: max(10px, calc(10px / var(--demo-scale))); line-height: 1; font-variant-numeric: tabular-nums; }
 .mac-detail-progress { height: 3px; margin-top: 2px; overflow: hidden; border-radius: 3px; background: #34363c; }
-.mac-detail-progress > span { display: block; width: var(--detail-progress, 79%); height: 100%; border-radius: inherit; background: var(--detail-accent, #ef9868); }
+.mac-detail-progress > span { display: block; width: var(--detail-remaining, 21%); height: 100%; border-radius: inherit; background: var(--detail-accent, #ef9868); }
 .mac-detail-name { display: block; color: color-mix(in srgb, var(--detail-accent, #aeb0b8) 45%, #aeb0b8); font-size: max(11.5px, calc(10px / var(--demo-scale))); font-weight: 500; line-height: 1.2; white-space: nowrap; }
 .mac-countdown { display: block; margin-top: 2px; font-size: 22px; font-weight: 550; line-height: 1.2; font-variant-numeric: tabular-nums; letter-spacing: -.035em; white-space: nowrap; }
 .mac-countdown > small { margin: 0 3px 0 2px; color: #b3b5bd; font-size: 11px; font-weight: 500; }

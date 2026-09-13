@@ -307,7 +307,7 @@ private struct WidgetMetricRow: View {
 
     private func metricProgressBar(height: CGFloat) -> some View {
         GeometryReader { geometry in
-            let width = geometry.size.width * snapshot.elapsedFraction
+            let width = geometry.size.width * snapshot.remainingFraction
             ZStack(alignment: .leading) {
                 Capsule().fill(trackStyle)
                 if width > 0 {

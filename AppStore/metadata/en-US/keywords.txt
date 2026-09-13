@@ -1,1 +1,1 @@
-memento mori,progress,clock,week,month,year,deadline,work,hours,remaining,left,lock,home,screen
+memento mori,countdown,clock,week,month,year,deadline,work,hours,remaining,left,lock,home,screen

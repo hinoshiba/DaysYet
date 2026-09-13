@@ -27,6 +27,38 @@ final class WorkHoursTests: XCTestCase {
         TimeProgressCalculator.snapshot(for: .workday, profile: profile ?? dailyWorkProfile, now: now, calendar: calendar)
     }
 
+    func testBothActivitySchedulesCountDownFromFullAndHaveNoBalanceOnOffDays() throws {
+        for kind in MetricKind.activityKinds {
+            var profile = UserProfile.initial
+            profile.updateActivitySchedule(for: kind) {
+                $0.startMinute = 9 * 60
+                $0.endMinute = 17 * 60
+                $0.activeWeekdays = [2]
+            }
+            for (now, remaining, percentage) in [
+                (try date(7, 8, 59), 1.0, "100.0%"),
+                (try date(7, 9), 1.0, "100.0%"),
+                (try date(7, 11), 0.75, "75.0%"),
+                (try date(7, 17), 0.0, "0.0%"),
+                (try date(7, 23, 59), 0.0, "0.0%")
+            ] {
+                let result = TimeProgressCalculator.snapshot(
+                    for: kind, profile: profile, now: now, calendar: calendar
+                )
+                XCTAssertFalse(result.isOff, kind.rawValue)
+                XCTAssertEqual(result.remainingFraction, remaining, accuracy: 0.000_001, kind.rawValue)
+                XCTAssertEqual(result.percentageText, percentage, kind.rawValue)
+                XCTAssertTrue(result.accessibilitySummary.contains(result.percentageRemainingText), kind.rawValue)
+            }
+            let off = TimeProgressCalculator.snapshot(
+                for: kind, profile: profile, now: try date(8, 12), calendar: calendar
+            )
+            XCTAssertTrue(off.isOff, kind.rawValue)
+            XCTAssertEqual(off.remainingFraction, 0, kind.rawValue)
+            XCTAssertEqual(off.percentageText, "Off", kind.rawValue)
+        }
+    }
+
     func testDayShiftBeforeStartHasNoMisleadingCountdownToEnd() throws {
         let before = snapshot(at: try date(5, 8, 59))
         XCTAssertEqual(before.elapsedFraction, 0)
@@ -58,6 +90,8 @@ final class WorkHoursTests: XCTestCase {
         XCTAssertEqual(afterEnd.countdown.terminalText, atEnd.countdown.terminalText)
         XCTAssertEqual(afterEnd.elapsedFraction, 1)
         XCTAssertEqual(nextDay.elapsedFraction, 0)
+        XCTAssertEqual(afterEnd.remainingFraction, 0)
+        XCTAssertEqual(nextDay.remainingFraction, 1)
         XCTAssertNotEqual(nextDay.countdown.terminalText, atEnd.countdown.terminalText)
         XCTAssertEqual(nextDay.targetDate, try date(6, 18))
     }
@@ -82,6 +116,8 @@ final class WorkHoursTests: XCTestCase {
         XCTAssertEqual(evening.targetDate, try date(6, 6))
         XCTAssertEqual(morning.targetDate, evening.targetDate)
         XCTAssertEqual(evening.elapsedFraction, 1.0 / 8.0, accuracy: 0.000_001)
+        XCTAssertEqual(evening.remainingFraction, 7.0 / 8.0, accuracy: 0.000_001)
+        XCTAssertEqual(evening.percentageText, "87.5%")
         XCTAssertEqual(morning.elapsedFraction, 0.5, accuracy: 0.000_001)
         XCTAssertEqual(morning.countdown.components.map(\.value), [4, 0])
     }
@@ -93,11 +129,13 @@ final class WorkHoursTests: XCTestCase {
         for now in [try date(6, 6), try date(6, 21, 59)] {
             let completed = snapshot(profile, at: now)
             XCTAssertEqual(completed.elapsedFraction, 1)
+            XCTAssertEqual(completed.remainingFraction, 0)
             XCTAssertNotNil(completed.countdown.terminalText)
             XCTAssertEqual(completed.targetDate, try date(6, 6))
         }
         let nextStart = snapshot(profile, at: try date(6, 22))
         XCTAssertEqual(nextStart.elapsedFraction, 0)
+        XCTAssertEqual(nextStart.remainingFraction, 1)
         XCTAssertNil(nextStart.countdown.terminalText)
         XCTAssertEqual(nextStart.targetDate, try date(7, 6))
     }
@@ -121,6 +159,9 @@ final class WorkHoursTests: XCTestCase {
         XCTAssertEqual(beforeReset.countdown.components.map(\.value), [0, 1])
         XCTAssertEqual(beforeReset.targetDate, try date(6, 9))
         XCTAssertEqual(atReset.elapsedFraction, 0)
+        XCTAssertLessThan(beforeReset.remainingFraction, 0.001)
+        XCTAssertGreaterThan(beforeReset.remainingFraction, 0)
+        XCTAssertEqual(atReset.remainingFraction, 1)
         XCTAssertNil(atReset.countdown.terminalText)
         XCTAssertEqual(atReset.countdown.components.map(\.value), [24, 0])
         XCTAssertEqual(atReset.targetDate, try date(7, 9))
@@ -151,6 +192,7 @@ final class WorkHoursTests: XCTestCase {
         let result = TimeProgressCalculator.snapshot(for: .workday, profile: profile, now: now, calendar: local)
         XCTAssertTrue(result.elapsedFraction.isFinite)
         XCTAssertEqual(result.elapsedFraction, 1)
+        XCTAssertEqual(result.remainingFraction, 0)
         XCTAssertNotNil(result.countdown.terminalText)
     }
 
@@ -311,8 +353,9 @@ final class WorkHoursTests: XCTestCase {
         XCTAssertTrue(result.isOff)
         XCTAssertEqual(result.remainingText, "Off")
         XCTAssertEqual(result.percentageText, "Off")
-        XCTAssertEqual(result.percentageElapsedText, "Off")
+        XCTAssertEqual(result.percentageRemainingText, "Off")
         XCTAssertEqual(result.elapsedFraction, 0)
+        XCTAssertEqual(result.remainingFraction, 0)
         XCTAssertEqual(result.targetDate, now)
         XCTAssertTrue(result.countdown.components.isEmpty)
         for style in MetricValueStyle.allCases {

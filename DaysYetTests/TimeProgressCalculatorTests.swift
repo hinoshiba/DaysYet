@@ -27,7 +27,7 @@ final class TimeProgressCalculatorTests: XCTestCase {
         XCTAssertEqual(interval.duration, 29 * 24 * 60 * 60, accuracy: 0.5)
     }
 
-    func testYearElapsedFractionAtLeapYearMidpoint() throws {
+    func testYearHasHalfRemainingAtLeapYearMidpoint() throws {
         let now = try XCTUnwrap(calendar.date(from: DateComponents(year: 2024, month: 7, day: 2)))
         let snapshot = TimeProgressCalculator.snapshot(
             for: .year,
@@ -37,9 +37,10 @@ final class TimeProgressCalculatorTests: XCTestCase {
         )
 
         XCTAssertEqual(snapshot.elapsedFraction, 0.5, accuracy: 0.002)
+        XCTAssertEqual(snapshot.remainingFraction, 0.5, accuracy: 0.002)
     }
 
-    func testPastHealthyTargetClampsElapsedProgressToOne() throws {
+    func testPastHealthyTargetClampsRemainingFractionToZero() throws {
         var profile = UserProfile.initial
         profile.birthDate = try XCTUnwrap(calendar.date(from: DateComponents(year: 1900, month: 1, day: 1)))
         profile.healthyLifeYears = 50
@@ -53,10 +54,12 @@ final class TimeProgressCalculatorTests: XCTestCase {
         )
 
         XCTAssertEqual(snapshot.elapsedFraction, 1)
+        XCTAssertEqual(snapshot.remainingFraction, 0)
+        XCTAssertEqual(snapshot.percentageText, "0.0%")
         XCTAssertFalse(snapshot.remainingText.contains("-"))
     }
 
-    func testHealthyTargetIsFullyElapsedAtConfiguredAge() throws {
+    func testHealthyTargetHasNothingRemainingAtConfiguredAge() throws {
         var profile = UserProfile.initial
         profile.birthDate = try XCTUnwrap(calendar.date(from: DateComponents(year: 1950, month: 1, day: 1)))
         profile.healthyLifeYears = 75
@@ -70,7 +73,68 @@ final class TimeProgressCalculatorTests: XCTestCase {
         )
 
         XCTAssertEqual(snapshot.elapsedFraction, 1)
-        XCTAssertEqual(snapshot.percentageText, "100.0%")
+        XCTAssertEqual(snapshot.remainingFraction, 0)
+        XCTAssertEqual(snapshot.percentageText, "0.0%")
+    }
+
+    func testHealthyTargetCountsDownFromFullAtBirth() throws {
+        var profile = UserProfile.initial
+        let birthDate = try XCTUnwrap(calendar.date(from: DateComponents(year: 2000, month: 1, day: 1)))
+        profile.birthDate = birthDate
+        profile.healthyLifeYears = 80
+        let interval = TimeProgressCalculator.dateInterval(
+            for: .healthyLife, profile: profile, now: birthDate, calendar: calendar
+        )
+
+        for (now, expected, percentage) in [
+            (birthDate.addingTimeInterval(-1), 1.0, "100.0%"),
+            (birthDate, 1.0, "100.0%"),
+            (birthDate.addingTimeInterval(interval.duration * 0.25), 0.75, "75.0%"),
+            (interval.end, 0.0, "0.0%"),
+            (interval.end.addingTimeInterval(1), 0.0, "0.0%")
+        ] {
+            let snapshot = TimeProgressCalculator.snapshot(
+                for: .healthyLife, profile: profile, now: now, calendar: calendar
+            )
+            XCTAssertEqual(snapshot.remainingFraction, expected, accuracy: 0.000_001)
+            XCTAssertEqual(snapshot.percentageText, percentage)
+        }
+    }
+
+    func testCalendarPeriodsCountDownAndRefillAtTheirNextBoundary() throws {
+        var profile = UserProfile.initial
+        profile.weekStartDay = .monday
+        let now = try XCTUnwrap(calendar.date(from: DateComponents(year: 2026, month: 9, day: 9)))
+
+        for kind in [MetricKind.week, .month, .year] {
+            let interval = TimeProgressCalculator.dateInterval(
+                for: kind, profile: profile, now: now, calendar: calendar
+            )
+            let start = TimeProgressCalculator.snapshot(
+                for: kind, profile: profile, now: interval.start, calendar: calendar
+            )
+            let quarterElapsed = TimeProgressCalculator.snapshot(
+                for: kind, profile: profile,
+                now: interval.start.addingTimeInterval(interval.duration * 0.25), calendar: calendar
+            )
+            let beforeEnd = TimeProgressCalculator.snapshot(
+                for: kind, profile: profile, now: interval.end.addingTimeInterval(-1), calendar: calendar
+            )
+            let nextPeriod = TimeProgressCalculator.snapshot(
+                for: kind, profile: profile, now: interval.end, calendar: calendar
+            )
+
+            XCTAssertEqual(start.remainingFraction, 1, kind.rawValue)
+            XCTAssertEqual(start.percentageText, "100.0%", kind.rawValue)
+            XCTAssertEqual(quarterElapsed.remainingFraction, 0.75, accuracy: 0.000_001, kind.rawValue)
+            XCTAssertEqual(quarterElapsed.percentageText, "75.0%", kind.rawValue)
+            XCTAssertGreaterThan(beforeEnd.remainingFraction, 0, kind.rawValue)
+            XCTAssertLessThan(beforeEnd.remainingFraction, 0.001, kind.rawValue)
+            XCTAssertEqual(beforeEnd.targetDate, interval.end, kind.rawValue)
+            XCTAssertEqual(nextPeriod.remainingFraction, 1, kind.rawValue)
+            XCTAssertEqual(nextPeriod.percentageText, "100.0%", kind.rawValue)
+            XCTAssertGreaterThan(nextPeriod.targetDate, interval.end, kind.rawValue)
+        }
     }
 
     func testDashboardAlwaysReturnsThreeUniqueMetrics() {
@@ -190,8 +254,9 @@ final class TimeProgressCalculatorTests: XCTestCase {
         XCTAssertEqual(decoded.widgetTheme, .vividNight)
     }
 
-    func testSnapshotSupportsElapsedPercentageRemainingTimeAndEndDateValues() throws {
-        let now = try XCTUnwrap(calendar.date(from: DateComponents(year: 2026, month: 8, day: 15, hour: 12)))
+    func testSnapshotPercentageAndAccessibilityDescribeTheRemainingAmount() throws {
+        // September has 30 days, so 7.5 elapsed days leave exactly 75%.
+        let now = try XCTUnwrap(calendar.date(from: DateComponents(year: 2026, month: 9, day: 8, hour: 12)))
         let snapshot = TimeProgressCalculator.snapshot(
             for: .month,
             profile: .initial,
@@ -199,11 +264,86 @@ final class TimeProgressCalculatorTests: XCTestCase {
             calendar: calendar
         )
 
-        XCTAssertTrue(snapshot.valueText(style: .percentage).contains("%"))
-        XCTAssertNotEqual(snapshot.valueText(style: .percentage), snapshot.percentageText)
+        let remainingPercentage = L10n.text("残り75.0%", "75.0% left")
+        XCTAssertEqual(snapshot.percentageText, "75.0%")
+        XCTAssertEqual(snapshot.percentageRemainingText, remainingPercentage)
+        XCTAssertEqual(snapshot.valueText(style: .percentage), remainingPercentage)
+        XCTAssertEqual(snapshot.valueText(style: .percentage, compact: true), remainingPercentage)
         XCTAssertFalse(snapshot.valueText(style: .remaining).isEmpty)
         XCTAssertFalse(snapshot.valueText(style: .targetDate).isEmpty)
-        XCTAssertTrue(snapshot.accessibilitySummary.contains(snapshot.percentageText))
+        XCTAssertTrue(snapshot.accessibilitySummary.contains(remainingPercentage))
+        XCTAssertTrue(snapshot.secondarySummary(excluding: .remaining).contains(remainingPercentage))
+        XCTAssertTrue(snapshot.secondarySummary(excluding: .targetDate).contains(remainingPercentage))
+    }
+
+    func testCompactPercentageDoesNotLoseOneAtAnExactRemainingPercentage() throws {
+        let now = try XCTUnwrap(calendar.date(from: DateComponents(year: 2026, month: 9, day: 28)))
+        let snapshot = TimeProgressCalculator.snapshot(
+            for: .month, profile: .initial, now: now, calendar: calendar
+        )
+
+        XCTAssertEqual(snapshot.remainingFraction, 0.1, accuracy: 0.000_001)
+        XCTAssertEqual(snapshot.percentageText, "10.0%")
+        XCTAssertEqual(RemainingPercentage.compactNumber(for: snapshot.remainingFraction), "10")
+        XCTAssertEqual(RemainingPercentage.compactText(for: snapshot.remainingFraction), "10%")
+    }
+
+    func testHealthyGoalKeepsPositiveTinyBalanceDistinctFromDepletedBalance() throws {
+        var profile = UserProfile.initial
+        profile.birthDate = try XCTUnwrap(calendar.date(from: DateComponents(year: 2000, month: 1, day: 1)))
+        profile.healthyLifeYears = 75
+        let target = try XCTUnwrap(calendar.date(from: DateComponents(year: 2075, month: 1, day: 1)))
+        let tenDaysBeforeTarget = try XCTUnwrap(calendar.date(byAdding: .day, value: -10, to: target))
+        let before = TimeProgressCalculator.snapshot(
+            for: .healthyLife, profile: profile, now: tenDaysBeforeTarget, calendar: calendar
+        )
+        let atTarget = TimeProgressCalculator.snapshot(
+            for: .healthyLife, profile: profile, now: target, calendar: calendar
+        )
+
+        XCTAssertGreaterThan(before.remainingFraction, 0)
+        XCTAssertEqual(before.percentageText, "<0.1%")
+        XCTAssertEqual(RemainingPercentage.compactText(for: before.remainingFraction), "<1%")
+        XCTAssertTrue(before.accessibilitySummary.contains(L10n.text("残り<0.1%", "<0.1% left")))
+        XCTAssertEqual(atTarget.percentageText, "0.0%")
+        XCTAssertEqual(RemainingPercentage.compactText(for: atTarget.remainingFraction), "0%")
+    }
+
+    func testRemainingPercentagePrecisionThresholdsAndRounding() {
+        for (fraction, detailed, compact) in [
+            (0.0, "0.0%", "0%"),
+            (0.000_999, "<0.1%", "<1%"),
+            (0.001, "0.1%", "<1%"),
+            (0.009_99, "1.0%", "<1%"),
+            (0.01, "1.0%", "1%"),
+            (0.256, "25.6%", "26%"),
+            (1.0, "100.0%", "100%")
+        ] {
+            XCTAssertEqual(RemainingPercentage.text(for: fraction), detailed)
+            XCTAssertEqual(RemainingPercentage.compactText(for: fraction), compact)
+        }
+    }
+
+    func testExistingPercentageAndProgressBarSettingsKeepTheirSavedValuesAndShowRemaining() throws {
+        var profile = UserProfile.initial
+        let start = try XCTUnwrap(calendar.date(from: DateComponents(year: 2026, month: 1, day: 1)))
+        profile.customTargetStartDate = start
+        profile.customTargetDate = start.addingTimeInterval(4 * 24 * 60 * 60)
+        var object = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(profile)) as? [String: Any])
+        object["dashboardValueStyle"] = "percentage"
+        object["widgetDisplayMode"] = "progressBars"
+        let decoded = try JSONDecoder().decode(UserProfile.self, from: JSONSerialization.data(withJSONObject: object))
+        let encoded = try XCTUnwrap(JSONSerialization.jsonObject(with: JSONEncoder().encode(decoded)) as? [String: Any])
+        let snapshot = TimeProgressCalculator.snapshot(
+            for: .customLife, profile: decoded, now: start.addingTimeInterval(24 * 60 * 60), calendar: calendar
+        )
+
+        XCTAssertEqual(decoded.dashboardValueStyle, .percentage)
+        XCTAssertEqual(decoded.widgetDisplayMode, .progressBars)
+        XCTAssertEqual(encoded["dashboardValueStyle"] as? String, "percentage")
+        XCTAssertEqual(encoded["widgetDisplayMode"] as? String, "progressBars")
+        XCTAssertEqual(snapshot.percentageText, "75.0%")
+        XCTAssertEqual(snapshot.valueText(style: decoded.dashboardValueStyle), snapshot.percentageRemainingText)
     }
 
     func testCountdownPresentationKeepsNumbersSeparateFromUnitLabels() throws {
@@ -308,7 +448,7 @@ final class TimeProgressCalculatorTests: XCTestCase {
     func testCustomTargetUsesConfiguredStartAndClampsAcrossItsInterval() throws {
         var profile = UserProfile.initial
         let start = try XCTUnwrap(calendar.date(from: DateComponents(year: 2026, month: 1, day: 1)))
-        let midpoint = try XCTUnwrap(calendar.date(from: DateComponents(year: 2026, month: 1, day: 6)))
+        let quarterElapsed = try XCTUnwrap(calendar.date(from: DateComponents(year: 2026, month: 1, day: 3, hour: 12)))
         let target = try XCTUnwrap(calendar.date(from: DateComponents(year: 2026, month: 1, day: 11)))
         let beforeStart = try XCTUnwrap(calendar.date(from: DateComponents(year: 2025, month: 12, day: 31)))
         let afterTarget = try XCTUnwrap(calendar.date(from: DateComponents(year: 2026, month: 1, day: 12)))
@@ -318,7 +458,7 @@ final class TimeProgressCalculatorTests: XCTestCase {
         let interval = TimeProgressCalculator.dateInterval(
             for: .customLife,
             profile: profile,
-            now: midpoint,
+            now: quarterElapsed,
             calendar: calendar
         )
         let beforeSnapshot = TimeProgressCalculator.snapshot(
@@ -327,10 +467,22 @@ final class TimeProgressCalculatorTests: XCTestCase {
             now: beforeStart,
             calendar: calendar
         )
-        let midpointSnapshot = TimeProgressCalculator.snapshot(
+        let startSnapshot = TimeProgressCalculator.snapshot(
             for: .customLife,
             profile: profile,
-            now: midpoint,
+            now: start,
+            calendar: calendar
+        )
+        let quarterElapsedSnapshot = TimeProgressCalculator.snapshot(
+            for: .customLife,
+            profile: profile,
+            now: quarterElapsed,
+            calendar: calendar
+        )
+        let targetSnapshot = TimeProgressCalculator.snapshot(
+            for: .customLife,
+            profile: profile,
+            now: target,
             calendar: calendar
         )
         let afterSnapshot = TimeProgressCalculator.snapshot(
@@ -343,8 +495,16 @@ final class TimeProgressCalculatorTests: XCTestCase {
         XCTAssertEqual(interval.start, start)
         XCTAssertEqual(interval.end, target)
         XCTAssertEqual(beforeSnapshot.elapsedFraction, 0)
-        XCTAssertEqual(midpointSnapshot.elapsedFraction, 0.5, accuracy: 0.000_001)
+        XCTAssertEqual(beforeSnapshot.remainingFraction, 1)
+        XCTAssertEqual(startSnapshot.remainingFraction, 1)
+        XCTAssertEqual(startSnapshot.percentageText, "100.0%")
+        XCTAssertEqual(quarterElapsedSnapshot.elapsedFraction, 0.25, accuracy: 0.000_001)
+        XCTAssertEqual(quarterElapsedSnapshot.remainingFraction, 0.75, accuracy: 0.000_001)
+        XCTAssertEqual(quarterElapsedSnapshot.percentageText, "75.0%")
+        XCTAssertEqual(targetSnapshot.remainingFraction, 0)
+        XCTAssertEqual(targetSnapshot.percentageText, "0.0%")
         XCTAssertEqual(afterSnapshot.elapsedFraction, 1)
+        XCTAssertEqual(afterSnapshot.remainingFraction, 0)
     }
 
     func testCustomTargetWithStartAtOrAfterTargetRemainsFinite() throws {
@@ -373,6 +533,8 @@ final class TimeProgressCalculatorTests: XCTestCase {
             XCTAssertEqual(interval.duration, 1, accuracy: 0.000_001)
             XCTAssertTrue(snapshot.elapsedFraction.isFinite)
             XCTAssertEqual(snapshot.elapsedFraction, 0)
+            XCTAssertTrue(snapshot.remainingFraction.isFinite)
+            XCTAssertEqual(snapshot.remainingFraction, 1)
         }
     }
 
@@ -412,6 +574,7 @@ final class TimeProgressCalculatorTests: XCTestCase {
         )
 
         XCTAssertEqual(snapshot.elapsedFraction, 1)
+        XCTAssertEqual(snapshot.remainingFraction, 0)
         XCTAssertFalse(snapshot.remainingText.contains("-"))
     }
 }

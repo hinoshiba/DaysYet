@@ -56,7 +56,7 @@ struct OnboardingView: View {
                 .frame(width: 180, height: 180)
             VStack(spacing: 12) {
                 EyebrowLabel(text: "DAYSYET")
-                Text(L10n.text("時間を、積み重ねる。\n今日を選ぶ。", "Every day adds up.\nChoose today."))
+                Text(L10n.text("人生のTokenを、\n大切なことへ。", "Life’s tokens.\nMake them count."))
                     .font(.system(size: 38, weight: .bold, design: .rounded))
                     .multilineTextAlignment(.center)
                     .tracking(-0.8)
