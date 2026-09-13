@@ -5,11 +5,14 @@ Use it as a quiet memento mori: a reminder to be intentional with your time. Set
 YOUR TIMELINES AT THE EDGE
 Start with three small progress circles on the left or right and add up to eight different timelines. Remove circles to return to a minimum of three. Top placement shows three thin bars for the first three timelines in your list and keeps the other selections saved. Hover to expand the black panel and reveal a timeline's details. On either side, the details follow the circle you select.
 
+Optional Graph magnification enlarges the hovered side circle to 110–180% (default 135%; off by default), moving it slightly toward the screen center. Enlargement and detail animations start together. Reduce Motion changes them without animation.
+
 FIT YOUR WORKSPACE
 Choose left, right, or top placement and the display to use. Drag a side widget up or down; DaysYet saves its position. Adjust the size from 80–150%. Choose from four color templates or customize each visible timeline's color, with individual and full resets to the template. Double-click to open settings, where you can show, hide, or quit the app. Enable Launch at login to start DaysYet when you sign in to your Mac.
 
 CHOOSE YOUR LEVEL OF DETAIL
 Pick a large time-left countdown, a combined view of time left, elapsed percentage, and a bar, or a progress-bar view. In the progress-bar view, choose time left, elapsed percentage, or the end date as the value. Details close when you move away, or you can keep them open from settings.
+Set Detail size to 100–150% (default 100%) independently of widget size at the left, right, or top edge.
 
 COUNT YOUR AVAILABLE STUDY DAYS
 Name a plan and choose a date range of up to 366 days, including both endpoints. Select weekdays, then add or exclude individual dates in the calendar. Two-week and four-week shortcuts help you get started. Select Study days as a timeline to see how many chosen days remain, including today when selected. Progress reflects scheduled days that have passed, not completed study sessions. This feature does not access your Mac's calendar. Open Settings > Timelines > Choose Study Days to edit the plan.
