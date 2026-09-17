@@ -102,7 +102,7 @@ capture() {
   take_shot "02-widget-target-date.png" --screenshot-time-and-percentage --screenshot-quiet-forest
   take_shot "03-time-library.png" --screenshot-times
   take_shot "04-privacy-settings.png" --screenshot-settings
-  take_shot "05-work-hours-week-start.png" --screenshot-edit-times
+  take_shot "05-work-hours.png" --screenshot-edit-times
   take_shot "06-study-days.png" --screenshot-study-days
   take_shot "07-study-widget.png" --screenshot-study-widget
   xcrun simctl status_bar "${simulator_id}" clear
