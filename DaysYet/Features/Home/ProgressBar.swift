@@ -29,6 +29,8 @@ struct MetricCard: View {
     let snapshot: MetricSnapshot
     let valueStyle: MetricValueStyle
     var theme: WidgetTheme = .vividNight
+    /// Shown when tapping the card opens the settings this time keeps to itself.
+    var showsSettingsAffordance = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
@@ -43,6 +45,11 @@ struct MetricCard: View {
                     .minimumScaleFactor(0.72)
                     .monospacedDigit()
                     .layoutPriority(1)
+                if showsSettingsAffordance {
+                    Image(systemName: "chevron.right")
+                        .font(.caption.bold())
+                        .foregroundStyle(.secondary)
+                }
             }
 
             ProgressBar(
@@ -62,7 +69,11 @@ struct MetricCard: View {
             RoundedRectangle(cornerRadius: 24, style: .continuous)
                 .stroke(.primary.opacity(0.06), lineWidth: 1)
         }
+        .contentShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(snapshot.accessibilitySummary)
+        .accessibilityHint(showsSettingsAffordance
+            ? L10n.text("この時間の設定を開きます", "Opens this timer’s settings")
+            : "")
     }
 }

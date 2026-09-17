@@ -6,15 +6,28 @@ struct SettingsView: View {
 
     var body: some View {
         Form {
+            weekStartSection
+
             Section {
-                NavigationLink {
-                    ProfileEditorView()
-                } label: {
-                    Label(L10n.text("時間の基準", "Time reference points"), systemImage: "calendar.badge.clock")
+                Label {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(L10n.text("「時間」タブから設定", "Set from the Times tab"))
+                            .font(.body.weight(.semibold))
+                        Text(L10n.text(
+                            "活動時間・学習日・大切な日・健康でいたい年齢は、カードをタップして設定します。",
+                            "Tap a card to set activity hours, study days, milestones, and the healthy-age goal."
+                        ))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    }
+                } icon: {
+                    Image(systemName: "hand.tap")
+                        .foregroundStyle(.secondary)
                 }
-                .accessibilityIdentifier("settings.editTimes")
+                .accessibilityIdentifier("settings.perTimeHint")
             } header: {
-                Text(L10n.text("表示", "Display"))
+                Text(L10n.text("時間の設定", "Time settings"))
             }
 
             Section {
@@ -74,6 +87,34 @@ struct SettingsView: View {
             Button(L10n.text("消去", "Delete"), role: .destructive) { store.reset() }
             Button(L10n.text("キャンセル", "Cancel"), role: .cancel) {}
         }
+    }
+
+    /// The week start orders both “This week” and the study-day weekdays, so it
+    /// stays here rather than moving to a single time’s settings.
+    private var weekStartSection: some View {
+        let weekday = store.profile.weekStartDay.resolvedTitle()
+        return Section {
+            Picker(L10n.text("開始曜日", "First day"), selection: weekStartBinding) {
+                ForEach(WeekStartDay.allCases) { day in
+                    Text(day.title).tag(day)
+                }
+            }
+            .accessibilityIdentifier("settings.weekStart")
+        } header: {
+            Text(L10n.text("週の始まり", "Week starts on"))
+        } footer: {
+            Text(L10n.text(
+                "\(weekday)の午前0時から、翌週の\(weekday)の午前0時までを「今週」として表示します。学習日の曜日の並びにも使います。",
+                "“This week” runs from midnight on \(weekday) to midnight on the following \(weekday). It also orders the weekdays in Study days."
+            ))
+        }
+    }
+
+    private var weekStartBinding: Binding<WeekStartDay> {
+        Binding(
+            get: { store.profile.weekStartDay },
+            set: { value in store.update { $0.weekStartDay = value } }
+        )
     }
 
     private var appVersion: String {

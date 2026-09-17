@@ -1,5 +1,17 @@
 import SwiftUI
 
+extension MetricKind {
+    /// Settings this time keeps to itself, reachable by tapping its card.
+    /// Shared settings, such as the week start that also orders the study-day
+    /// weekdays, stay on the Settings tab instead.
+    var hasOwnSettings: Bool {
+        switch self {
+        case .week, .month, .year: false
+        case .healthyLife, .customLife, .activity, .workday, .study: true
+        }
+    }
+}
+
 struct TimeLibraryView: View {
     @EnvironmentObject private var store: ProfileStore
 
@@ -14,13 +26,16 @@ struct TimeLibraryView: View {
                             Text(L10n.text("いまを、いくつもの\n距離から見る。", "See time across\ndifferent horizons."))
                                 .font(.system(.largeTitle, design: .rounded, weight: .bold))
                                 .tracking(-0.7)
-                            Text(L10n.text("ウィジェットに置く3本は、ウィジェットタブで選べます。", "Choose the three shown in your widget from the Widget tab."))
-                                .foregroundStyle(.secondary)
+                            Text(L10n.text(
+                                "カードをタップすると、その時間だけの設定を開けます。ウィジェットに置く3本は、ウィジェットタブで選べます。",
+                                "Tap a card to edit that time’s own settings. Choose the three shown in your widget from the Widget tab."
+                            ))
+                            .foregroundStyle(.secondary)
                         }
                         .padding(.bottom, 8)
 
                         ForEach(MetricKind.allCases) { metric in
-                            MetricCard(
+                            MetricLibraryRow(
                                 snapshot: TimeProgressCalculator.snapshot(
                                     for: metric,
                                     profile: store.profile,
@@ -42,102 +57,130 @@ struct TimeLibraryView: View {
     }
 }
 
-struct ProfileEditorView: View {
-    @EnvironmentObject private var store: ProfileStore
+private struct MetricLibraryRow: View {
+    let snapshot: MetricSnapshot
+    let valueStyle: MetricValueStyle
+    let theme: WidgetTheme
 
     var body: some View {
-        Form {
-            weekStartSection
-
-            Section {
-                NavigationLink {
-                    StudyScheduleScreen()
-                } label: {
-                    Label(L10n.text("学習日を選ぶ", "Choose study days"), systemImage: "calendar.badge.checkmark")
-                }
-                .accessibilityIdentifier("study.openEditor")
-                Text(L10n.text(
-                    "期間内の曜日や日付を選び、学習できる残りの日数を表示します。",
-                    "Choose weekdays and dates in a short period to count your remaining study days."
-                ))
-                .font(.footnote)
-                .foregroundStyle(.secondary)
-            } header: {
-                Text(MetricKind.study.title)
-            }
-
-            ForEach(MetricKind.activityKinds) { kind in
-                activityHoursSection(for: kind)
-            }
-
-            Section(L10n.text("人生の基準", "Life reference points")) {
-                DatePicker(
-                    L10n.text("生年月日", "Birth date"),
-                    selection: binding(\.birthDate),
-                    in: earliestBirthDate ... Date.now,
-                    displayedComponents: .date
+        if snapshot.kind.hasOwnSettings {
+            NavigationLink {
+                MetricSettingsView(kind: snapshot.kind)
+            } label: {
+                MetricCard(
+                    snapshot: snapshot,
+                    valueStyle: valueStyle,
+                    theme: theme,
+                    showsSettingsAffordance: true
                 )
-
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        Text(L10n.text("健康でいたい年齢", "Healthy-age goal"))
-                        Spacer()
-                        Text("\(Int(store.profile.healthyLifeYears))")
-                            .monospacedDigit()
-                    }
-                    Slider(value: binding(\.healthyLifeYears), in: 50...110, step: 1)
-                }
             }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("times.metric.\(snapshot.kind.rawValue)")
+        } else {
+            MetricCard(snapshot: snapshot, valueStyle: valueStyle, theme: theme)
+        }
+    }
+}
 
-            Section {
-                TextField(L10n.text("名前", "Name"), text: binding(\.customTargetName))
-                DatePicker(
-                    L10n.text("起算日", "Start date"),
-                    selection: milestoneStartDateBinding,
-                    in: earliestMilestoneDate ... latestStartDate,
-                    displayedComponents: .date
-                )
-                DatePicker(
-                    L10n.text("目標日時", "Target date and time"),
-                    selection: binding(\.customTargetDate),
-                    in: minimumTargetDate ... latestTargetDate,
-                    displayedComponents: [.date, .hourAndMinute]
-                )
-            } header: {
-                Text(L10n.text("大切な日", "Milestone"))
-            } footer: {
-                Text(L10n.text(
-                    "起算日を100%として、目標日時に0%となる残りの割合を計算します。",
-                    "The remaining percentage starts at 100% on the start date and reaches 0% at the target."
-                ))
-            }
+/// The settings that belong to a single time, opened from its card in Times.
+struct MetricSettingsView: View {
+    @EnvironmentObject private var store: ProfileStore
+    let kind: MetricKind
 
-            Section {
-                Label(
-                    L10n.text("「健康でいたい年齢」のバーは、ご自身で決める計画上の目標です。医学的な診断、健康状態、実際の寿命を示すものではありません。", "The healthy-age bar is a personal planning marker. It is not medical advice and does not predict health or lifespan."),
-                    systemImage: "info.circle"
+    var body: some View {
+        Group {
+            switch kind {
+            case .study:
+                StudyScheduleEditor(
+                    schedule: Binding(
+                        get: { store.profile.studySchedule },
+                        set: { value in store.update { $0.studySchedule = value } }
+                    ),
+                    weekStartDay: store.profile.weekStartDay
                 )
-                .font(.footnote)
-                .foregroundStyle(.secondary)
+            case .activity, .workday:
+                Form { activityHoursSection(for: kind) }
+            case .healthyLife:
+                Form { healthyLifeSection }
+            case .customLife:
+                Form { milestoneSection }
+            case .week, .month, .year:
+                Form { sharedSettingsNotice }
             }
         }
-        .navigationTitle(L10n.text("時間を編集", "Edit Times"))
+        .navigationTitle(kind.title(profile: store.profile))
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.hidden, for: .tabBar)
     }
 
-    private var weekStartSection: some View {
-        let weekday = store.profile.weekStartDay.resolvedTitle()
-        return Section {
-            Picker(L10n.text("開始曜日", "First day"), selection: binding(\.weekStartDay)) {
-                ForEach(WeekStartDay.allCases) { day in
-                    Text(day.title).tag(day)
+    private var sharedSettingsNotice: some View {
+        Section {
+            Label(
+                L10n.text(
+                    "この時間に固有の設定はありません。週の始まりなど、複数の時間に関わる設定は設定タブにあります。",
+                    "This time has no settings of its own. Settings shared by several times, such as the week start, live on the Settings tab."
+                ),
+                systemImage: "info.circle"
+            )
+            .font(.footnote)
+            .foregroundStyle(.secondary)
+        }
+    }
+
+    private var healthyLifeSection: some View {
+        Section {
+            DatePicker(
+                L10n.text("生年月日", "Birth date"),
+                selection: binding(\.birthDate),
+                in: earliestBirthDate ... Date.now,
+                displayedComponents: .date
+            )
+            .accessibilityIdentifier("healthyLife.birthDate")
+
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Text(L10n.text("健康でいたい年齢", "Healthy-age goal"))
+                    Spacer()
+                    Text("\(Int(store.profile.healthyLifeYears))")
+                        .monospacedDigit()
                 }
+                Slider(value: binding(\.healthyLifeYears), in: 50...110, step: 1)
+                    .accessibilityIdentifier("healthyLife.years")
             }
         } header: {
-            Text(L10n.text("週の始まり", "Week starts on"))
+            Text(L10n.text("人生の基準", "Life reference points"))
         } footer: {
             Text(L10n.text(
-                "\(weekday)の午前0時から、翌週の\(weekday)の午前0時までを「今週」として表示します。",
-                "“This week” runs from midnight on \(weekday) to midnight on the following \(weekday)."
+                "「健康でいたい年齢」は、ご自身で決める計画上の目標です。医学的な診断、健康状態、実際の寿命を示すものではありません。",
+                "The healthy-age goal is a personal planning marker. It is not medical advice and does not predict health or lifespan."
+            ))
+        }
+    }
+
+    private var milestoneSection: some View {
+        Section {
+            TextField(L10n.text("名前", "Name"), text: binding(\.customTargetName))
+                .accessibilityIdentifier("customLife.name")
+            DatePicker(
+                L10n.text("起算日", "Start date"),
+                selection: milestoneStartDateBinding,
+                in: earliestMilestoneDate ... latestStartDate,
+                displayedComponents: .date
+            )
+            .accessibilityIdentifier("customLife.startDate")
+            DatePicker(
+                L10n.text("目標日時", "Target date and time"),
+                selection: binding(\.customTargetDate),
+                in: minimumTargetDate ... latestTargetDate,
+                displayedComponents: [.date, .hourAndMinute]
+            )
+            .accessibilityIdentifier("customLife.targetDate")
+        } header: {
+            Text(L10n.text("大切な日", "Milestone"))
+        } footer: {
+            Text(L10n.text(
+                "起算日を100%として、目標日時に0%となる残りの割合を計算します。",
+                "The remaining percentage starts at 100% on the start date and reaches 0% at the target."
             ))
         }
     }
@@ -270,22 +313,5 @@ struct ProfileEditorView: View {
 
     private var latestTargetDate: Date {
         Calendar.current.date(byAdding: .year, value: 100, to: .now) ?? .distantFuture
-    }
-}
-
-struct StudyScheduleScreen: View {
-    @EnvironmentObject private var store: ProfileStore
-
-    var body: some View {
-        StudyScheduleEditor(
-            schedule: Binding(
-                get: { store.profile.studySchedule },
-                set: { value in store.update { $0.studySchedule = value } }
-            ),
-            weekStartDay: store.profile.weekStartDay
-        )
-        .navigationTitle(L10n.text("学習日", "Study days"))
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar(.hidden, for: .tabBar)
     }
 }
