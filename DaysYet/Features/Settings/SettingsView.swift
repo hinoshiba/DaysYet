@@ -11,28 +11,6 @@ struct SettingsView: View {
             Section {
                 Label {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(L10n.text("「時間」タブから設定", "Set from the Times tab"))
-                            .font(.body.weight(.semibold))
-                        Text(L10n.text(
-                            "活動時間・学習日・大切な日・健康でいたい年齢は、カードをタップして設定します。",
-                            "Tap a card to set activity hours, study days, milestones, and the healthy-age goal."
-                        ))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .fixedSize(horizontal: false, vertical: true)
-                    }
-                } icon: {
-                    Image(systemName: "hand.tap")
-                        .foregroundStyle(.secondary)
-                }
-                .accessibilityIdentifier("settings.perTimeHint")
-            } header: {
-                Text(L10n.text("時間の設定", "Time settings"))
-            }
-
-            Section {
-                Label {
-                    VStack(alignment: .leading, spacing: 4) {
                         Text(L10n.text("この端末だけ", "On device only"))
                             .font(.body.weight(.semibold))
                         Text(L10n.text("入力した日付を送信せず、分析SDKや広告も使いません。", "Entered dates are never sent; no analytics SDKs or ads."))
