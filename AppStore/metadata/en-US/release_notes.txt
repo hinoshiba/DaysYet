@@ -1,3 +1,3 @@
-• Bars and circles now count down from 100% to 0%, showing the time you have left. Bars shrink from right to left; circles empty clockwise from 12 o’clock.
-• Percentages and accessibility descriptions now describe time remaining. Small positive amounts remain distinct from 0% at the end.
-• Updated explanations and headings focus on your remaining life tokens. Your saved dates and display settings are preserved.
+• Tap a card on the Times tab to open that time’s own settings. Activity hours, study days, milestones, and the healthy-age goal are now edited right where you see them.
+• Settings no longer has a combined Time reference points screen. It keeps the week start, the one choice that shapes both This week and the study-day weekdays.
+• This week, this month, and this year have no settings of their own, so their cards are not tappable. Your saved dates, schedules, and display settings are preserved.
