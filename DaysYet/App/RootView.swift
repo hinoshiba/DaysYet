@@ -4,18 +4,18 @@ struct RootView: View {
     @EnvironmentObject private var store: ProfileStore
     @State private var selectedTab: Int
 #if DEBUG
-    @State private var screenshotEditTimesPresented: Bool
+    @State private var screenshotMetricSettingsPresented: Bool
 #endif
 
     init() {
 #if DEBUG
         let arguments = ProcessInfo.processInfo.arguments
-        let editsTimes = arguments.contains("--screenshot-edit-times") || arguments.contains("--screenshot-study-days")
-        let initialTab = arguments.contains("--screenshot-settings") || editsTimes
+        let editsMetric = arguments.contains("--screenshot-edit-times") || arguments.contains("--screenshot-study-days")
+        let initialTab = arguments.contains("--screenshot-settings")
             ? 2
-            : arguments.contains("--screenshot-times") ? 1 : 0
+            : arguments.contains("--screenshot-times") || editsMetric ? 1 : 0
         _selectedTab = State(initialValue: initialTab)
-        _screenshotEditTimesPresented = State(initialValue: editsTimes)
+        _screenshotMetricSettingsPresented = State(initialValue: editsMetric)
 #else
         _selectedTab = State(initialValue: 0)
 #endif
@@ -31,21 +31,17 @@ struct RootView: View {
 
             NavigationStack {
                 TimeLibraryView()
+#if DEBUG
+                    .navigationDestination(isPresented: $screenshotMetricSettingsPresented) {
+                        MetricSettingsView(kind: screenshotMetricKind)
+                    }
+#endif
             }
             .tabItem { Label(L10n.text("時間", "Times"), systemImage: "circle.dotted") }
             .tag(1)
 
             NavigationStack {
                 SettingsView()
-#if DEBUG
-                    .navigationDestination(isPresented: $screenshotEditTimesPresented) {
-                        if ProcessInfo.processInfo.arguments.contains("--screenshot-study-days") {
-                            StudyScheduleScreen()
-                        } else {
-                            ProfileEditorView()
-                        }
-                    }
-#endif
             }
             .tabItem { Label(L10n.text("設定", "Settings"), systemImage: "slider.horizontal.3") }
             .tag(2)
@@ -55,6 +51,12 @@ struct RootView: View {
                 .environmentObject(store)
         }
     }
+
+#if DEBUG
+    private var screenshotMetricKind: MetricKind {
+        ProcessInfo.processInfo.arguments.contains("--screenshot-study-days") ? .study : .workday
+    }
+#endif
 
     private var onboardingPresented: Binding<Bool> {
         Binding(

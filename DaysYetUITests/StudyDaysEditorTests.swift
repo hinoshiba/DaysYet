@@ -36,21 +36,35 @@ final class StudyDaysEditorTests: XCTestCase {
     }
 
     @MainActor
-    func testEditorIsReachableFromSettingsAndKeepsChanges() {
+    func testEditorIsReachableFromTimesAndKeepsChanges() {
         let app = XCUIApplication()
         app.launchArguments = ["--screenshot-mode", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
         app.launch()
-        app.tabBars.buttons["Settings"].tap()
-        app.buttons["settings.editTimes"].tap()
-        app.buttons["study.openEditor"].tap()
+        app.tabBars.buttons["Times"].tap()
+        let card = app.buttons["times.metric.study"]
+        reveal(card, in: app)
+        card.tap()
         let weekday = app.buttons["study.weekday.2"]
         reveal(weekday, in: app)
         weekday.tap()
         let changedValue = weekday.value as? String
         app.navigationBars.buttons.element(boundBy: 0).tap()
-        app.buttons["study.openEditor"].tap()
+        reveal(card, in: app)
+        card.tap()
         reveal(weekday, in: app)
         XCTAssertEqual(weekday.value as? String, changedValue)
+    }
+
+    @MainActor
+    func testTimesWithoutOwnSettingsAreNotTappable() {
+        let app = XCUIApplication()
+        app.launchArguments = ["--screenshot-mode", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        app.launch()
+        app.tabBars.buttons["Times"].tap()
+        XCTAssertTrue(app.buttons["times.metric.customLife"].waitForExistence(timeout: 10))
+        for metric in ["week", "month", "year"] {
+            XCTAssertFalse(app.buttons["times.metric.\(metric)"].exists)
+        }
     }
 
     @MainActor
