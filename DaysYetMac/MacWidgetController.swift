@@ -193,6 +193,21 @@ final class MacWidgetController: ObservableObject {
         setHovered(hovering)
     }
 
+    func sideHoverChanged(inside: Bool, metric: MetricKind?) {
+        guard preferences.edge != .top, !pointerInteraction.isPressed else { return }
+        setHovered(inside)
+        // The expanded surface and its circle share one hover state, including
+        // the space between them. A directly hovered row still takes priority.
+        let metric = metric ?? (isExpanded ? selectedMetric : nil)
+        if inside, let metric {
+            beginMetricHover(metric)
+        } else if hoveredMetric != nil {
+            hoveredMetric = nil
+            intentTask?.cancel()
+            intentTask = nil
+        }
+    }
+
     private func setHovered(_ hovering: Bool) {
         guard hovering != isHovered else { return }
         isHovered = hovering
@@ -501,16 +516,10 @@ final class MacWidgetController: ObservableObject {
                 intentTask = nil
             }
         } else {
-            setHovered(inside)
-            if inside, let index = MacWidgetSurface.sideHoverIndex(at: local, in: panel.frame.size,
+            let index = MacWidgetSurface.sideHoverIndex(at: local, in: panel.frame.size,
                 edge: preferences.edge, scale: preferences.scale, metricCount: activeMetrics.count,
-                magnifications: indexedMagnifications) {
-                beginMetricHover(activeMetrics[index])
-            } else if hoveredMetric != nil {
-                hoveredMetric = nil
-                intentTask?.cancel()
-                intentTask = nil
-            }
+                magnifications: indexedMagnifications)
+            sideHoverChanged(inside: inside, metric: index.map { activeMetrics[$0] })
         }
     }
 

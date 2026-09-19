@@ -58,6 +58,100 @@ final class MacWidgetSelectionTests: XCTestCase {
     }
 
     @MainActor
+    func testSideDetailsKeepTheSelectedCircleMagnifiedUntilThePointerLeaves() async throws {
+        for edge in [MacWidgetEdge.left, .right] {
+            try await withController(edge: edge) { controller in
+                controller.preferences.magnifiesOnHover = true
+                controller.preferences.hoverScale = 1.8
+                controller.sideHoverChanged(inside: true, metric: .month)
+                let opened = try await eventually {
+                    controller.isExpanded && controller.hoverMagnifications == [.month: 1.8]
+                }
+                XCTAssertTrue(opened)
+
+                // The detail surface is inside the widget without directly
+                // hovering any circle's fixed row or magnified overflow.
+                controller.sideHoverChanged(inside: true, metric: nil)
+                XCTAssertEqual(controller.hoveredMetric, .month)
+                XCTAssertEqual(controller.selectedMetric, .month)
+                XCTAssertEqual(controller.hoverMagnifications, [.month: 1.8])
+                XCTAssertTrue(controller.isExpanded)
+
+                controller.sideHoverChanged(inside: true, metric: .year)
+                controller.sideHoverChanged(inside: true, metric: nil)
+                XCTAssertEqual(controller.hoveredMetric, .year)
+                XCTAssertEqual(controller.selectedMetric, .year)
+                let moved = try await eventually {
+                    controller.hoverMagnifications == [.year: 1.8] && controller.selectionPosition == 2
+                }
+                XCTAssertTrue(moved, "Moving into the new details must keep magnifying their circle.")
+                XCTAssertTrue(controller.isExpanded)
+
+                controller.sideHoverChanged(inside: false, metric: nil)
+                XCTAssertNil(controller.hoveredMetric)
+                XCTAssertFalse(controller.isExpanded)
+                let settled = try await eventually { controller.hoverMagnifications.isEmpty }
+                XCTAssertTrue(settled)
+            }
+        }
+    }
+
+    @MainActor
+    func testEnteringPinnedSideDetailsMagnifiesTheSelectedCircleAgain() async throws {
+        for edge in [MacWidgetEdge.left, .right] {
+            try await withController(edge: edge) { controller in
+                controller.preferences.magnifiesOnHover = true
+                controller.preferences.keepDetailsOpen = true
+                controller.sideHoverChanged(inside: true, metric: .month)
+                let opened = try await eventually {
+                    controller.hoverMagnifications[.month] == controller.preferences.hoverScale
+                }
+                XCTAssertTrue(opened)
+
+                controller.sideHoverChanged(inside: false, metric: nil)
+                XCTAssertNil(controller.hoveredMetric)
+                XCTAssertTrue(controller.isExpanded)
+                let settled = try await eventually { controller.hoverMagnifications.isEmpty }
+                XCTAssertTrue(settled)
+
+                controller.sideHoverChanged(inside: true, metric: nil)
+                XCTAssertEqual(controller.hoveredMetric, .month)
+                XCTAssertEqual(controller.selectedMetric, .month)
+                XCTAssertTrue(controller.isExpanded)
+                let magnified = try await eventually {
+                    controller.hoverMagnifications[.month] == controller.preferences.hoverScale
+                }
+                XCTAssertTrue(magnified)
+                controller.sideHoverChanged(inside: false, metric: nil)
+            }
+        }
+    }
+
+    @MainActor
+    func testClosedSideSurfaceDoesNotRestoreThePreviousDetailHover() async throws {
+        for edge in [MacWidgetEdge.left, .right] {
+            try await withController(edge: edge) { controller in
+                controller.preferences.magnifiesOnHover = true
+                controller.sideHoverChanged(inside: true, metric: .month)
+                XCTAssertTrue(controller.isExpanded)
+                XCTAssertEqual(controller.selectedMetric, .month)
+
+                controller.sideHoverChanged(inside: false, metric: nil)
+                let settled = try await eventually { controller.hoverMagnifications.isEmpty }
+                XCTAssertTrue(settled)
+                XCTAssertFalse(controller.isExpanded)
+
+                controller.sideHoverChanged(inside: true, metric: nil)
+                XCTAssertNil(controller.hoveredMetric)
+                XCTAssertEqual(controller.selectedMetric, .month)
+                XCTAssertFalse(controller.isExpanded)
+                XCTAssertTrue(controller.hoverMagnifications.isEmpty)
+                controller.sideHoverChanged(inside: false, metric: nil)
+            }
+        }
+    }
+
+    @MainActor
     func testEnabledSideHoverSelectsAndOpensDetailsWithoutWaiting() async throws {
         for edge in [MacWidgetEdge.left, .right] {
             try await withController(edge: edge) { controller in
