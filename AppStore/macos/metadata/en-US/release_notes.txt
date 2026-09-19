@@ -1,5 +1,3 @@
-• Bars and circles now show time remaining from 100% down to 0%. Bars shrink from right to left; circles drain clockwise from the top.
-• Add optional graph magnification for left and right placement. Turn on Enlarge the graph under the pointer in Settings > Widget and choose 110–180% magnification (135% by default). The option is off by default.
-• Circles move slightly toward the screen center as they grow to stay within the edge. Enlargement and detail opening, closing, and movement start together; detail text grows with the panel.
-• Adjust Detail size to 100–150% (100% by default), independently of the overall widget size. Available at the left, right, and top edges.
-• With Reduce Motion enabled in macOS, magnification and details change without animation.
+• At the left and right edges, moving the pointer onto an enlarged circle’s details now keeps that circle magnified and its details open, including while crossing the gap between them.
+• Moving to another timeline’s details moves the selection and the magnification to that circle. Leaving the widget restores the circle’s size and closes details that are not pinned.
+• With Keep details open selected, returning to the details magnifies the selected circle again. Top placement is unchanged.
