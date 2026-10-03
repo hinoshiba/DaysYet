@@ -101,7 +101,7 @@ struct MacDesktopWidgetView: View {
                 scale: scale, topCameraInset: controller.topInfo.cameraInset,
                 topNotchWidth: controller.topInfo.notchWidth, metricCount: controller.activeMetrics.count,
                 hoverScale: controller.hoverScaleLimit, detailScale: preferences.detailScale,
-                magnifications: controller.indexedMagnifications
+                magnifications: controller.indexedMagnifications, sideExpansion: controller.sideHoverExpansion
             ))
             ZStack(alignment: .topLeading) {
                 surface.fill(MacWidgetStyle.background)
@@ -151,7 +151,8 @@ struct MacDesktopWidgetView: View {
     }
 
     private func sideContent(width: CGFloat, height: CGFloat) -> some View {
-        let expansion = MacWidgetPlacement.sideExpansion(in: CGSize(width: width, height: height), scale: 1,
+        let expansion = controller.sideHoverExpansion ?? MacWidgetPlacement.sideExpansion(
+            in: CGSize(width: width, height: height), scale: 1,
             hoverScale: controller.hoverScaleLimit, detailScale: preferences.detailScale)
         let reveal = controller.hoverScaleLimit > 1 ? expansion : min(max((expansion - 0.42) / 0.50, 0), 1)
         let detail = MacWidgetPlacement.sideDetailFrame(in: CGSize(width: width, height: height),

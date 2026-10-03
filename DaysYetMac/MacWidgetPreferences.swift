@@ -351,7 +351,8 @@ enum MacWidgetSurface {
 
     static func path(in size: CGSize, edge: MacWidgetEdge, selectedIndex: CGFloat, scale: Double,
                      topCameraInset: CGFloat = 0, topNotchWidth: CGFloat = 0, metricCount: Int = 3,
-                     hoverScale: Double = 1, detailScale: Double = 1, magnifications: [Int: CGFloat] = [:]) -> CGPath {
+                     hoverScale: Double = 1, detailScale: Double = 1, magnifications: [Int: CGFloat] = [:],
+                     sideExpansion: CGFloat? = nil) -> CGPath {
         let path = CGMutablePath()
         guard size.width > 0, size.height > 0 else { return path }
         let factor = CGFloat(MacWidgetPlacement.clampedScale(scale))
@@ -392,8 +393,10 @@ enum MacWidgetSurface {
         let w = size.width / factor
         let h = size.height / factor
         let base = min(MacWidgetPlacement.railSize.width, w)
-        let expansion = MacWidgetPlacement.sideExpansion(in: size, scale: factor, hoverScale: hoverScale, detailScale: detailScale)
-        let bodyWidth = max(base, w - MacWidgetPlacement.hoverOutset(for: hoverScale) * (1 - expansion))
+        let expansion = sideExpansion.map { min(max($0, 0), 1) }
+            ?? MacWidgetPlacement.sideExpansion(in: size, scale: factor, hoverScale: hoverScale, detailScale: detailScale)
+        let bodyWidth = sideExpansion != nil ? base + (w - base) * expansion
+            : max(base, w - MacWidgetPlacement.hoverOutset(for: hoverScale) * (1 - expansion))
         let extensionWidth = max(bodyWidth - base, 0)
         let verticalFactor = min(h / MacWidgetPlacement.railHeight(for: metricCount), 1)
         let shoulder = min(29 * verticalFactor, h / 5)
@@ -541,13 +544,14 @@ enum MacWidgetSurface {
     static func contains(_ point: CGPoint, in size: CGSize, edge: MacWidgetEdge, selectedIndex: CGFloat,
                          scale: Double, topCameraInset: CGFloat = 0, topNotchWidth: CGFloat = 0,
                          metricCount: Int = 3, hoverScale: Double = 1, detailScale: Double = 1,
-                         magnifications: [Int: CGFloat] = [:]) -> Bool {
+                         magnifications: [Int: CGFloat] = [:], sideExpansion: CGFloat? = nil) -> Bool {
         if edge == .top, point.y < topCameraInset {
             return topCameraHoverFrame(in: size, scale: scale, topCameraInset: topCameraInset,
                                        topNotchWidth: topNotchWidth).contains(point)
         }
         return path(in: size, edge: edge, selectedIndex: selectedIndex, scale: scale,
                     topCameraInset: topCameraInset, topNotchWidth: topNotchWidth, metricCount: metricCount,
-                    hoverScale: hoverScale, detailScale: detailScale, magnifications: magnifications).contains(point)
+                    hoverScale: hoverScale, detailScale: detailScale, magnifications: magnifications,
+                    sideExpansion: sideExpansion).contains(point)
     }
 }

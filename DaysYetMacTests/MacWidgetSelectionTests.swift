@@ -10,7 +10,7 @@ final class MacWidgetSelectionTests: XCTestCase {
             try await withController(edge: edge) { controller in
                 XCTAssertFalse(controller.preferences.magnifiesOnHover)
                 var magnifications: [[MetricKind: CGFloat]] = []
-                let observation = controller.$hoverMagnifications.sink { magnifications.append($0) }
+                let observation = controller.$sideHoverPresentation.sink { magnifications.append($0.magnifications) }
                 defer { observation.cancel() }
 
                 try await openFirstRow(controller)
@@ -772,5 +772,162 @@ final class MacWidgetSelectionTests: XCTestCase {
         // it just to exercise interpolation. State/cancellation tests still run.
         try XCTSkipIf(NSWorkspace.shared.accessibilityDisplayShouldReduceMotion,
                       "Interpolation is intentionally disabled while Reduce Motion is enabled.")
+    }
+}
+
+
+final class MacSideHoverPresentationTests: XCTestCase {
+    func testEveryEnterAndExitFrameUsesOneProgressForTheCircleAndDetails() {
+        for scale in [1.1, 1.35, 1.8] {
+            let closed = MacSideHoverPresentation()
+            let open = MacSideHoverPresentation(magnifications: [.month: scale], expansion: 1)
+            for (origin, target) in [(closed, open), (open, closed)] {
+                for progress in stride(from: 0.0, through: 1, by: 0.05) {
+                    let frame = origin.interpolated(to: target, progress: progress)
+                    XCTAssertEqual(((frame.magnifications[.month] ?? 1) - 1) / (scale - 1),
+                                   frame.expansion, accuracy: 0.000001)
+                }
+                XCTAssertEqual(origin.interpolated(to: target, progress: 1), target)
+            }
+        }
+    }
+
+    func testInterruptedExitAndReentryContinueFromTheVisiblePresentation() {
+        let closed = MacSideHoverPresentation()
+        let open = MacSideHoverPresentation(magnifications: [.month: 1.8], expansion: 1)
+        let entering = closed.interpolated(to: open, progress: 0.15)
+        let exiting = entering.interpolated(to: closed, progress: 0.2)
+        XCTAssertEqual(entering.interpolated(to: closed, progress: 0), entering)
+        XCTAssertEqual(exiting.interpolated(to: open, progress: 0), exiting)
+        for progress in stride(from: 0.0, through: 1, by: 0.05) {
+            let frame = exiting.interpolated(to: open, progress: progress)
+            XCTAssertEqual(((frame.magnifications[.month] ?? 1) - 1) / 0.8,
+                           frame.expansion, accuracy: 0.000001)
+            XCTAssertGreaterThanOrEqual(frame.expansion, exiting.expansion)
+        }
+    }
+
+    func testFixedCanvasAcceptsOnlyTheVisibleContourThroughoutExit() {
+        for edge in [MacWidgetEdge.left, .right] {
+            for scale in [0.8, 1.0, 1.5] {
+                for detailScale in [1.0, 1.5] {
+                    let canvas = MacWidgetPlacement.frame(in: CGRect(x: 0, y: 0, width: 1200, height: 900),
+                        edge: edge, position: 0.5, expanded: true, scale: scale,
+                        hoverScale: 1.8, detailScale: detailScale)
+                    for progress in stride(from: 0.0, through: 1, by: 0.1) {
+                        let frame = MacSideHoverPresentation(magnifications: [.month: 1.8], expansion: 1)
+                            .interpolated(to: MacSideHoverPresentation(), progress: progress)
+                        let ring = MacWidgetPlacement.sideRingFrame(in: canvas.size, edge: edge,
+                            index: 1, scale: scale, magnification: frame.magnifications[.month] ?? 1)
+                        XCTAssertTrue(MacWidgetSurface.contains(CGPoint(x: ring.midX, y: ring.midY),
+                            in: canvas.size, edge: edge, selectedIndex: 1, scale: scale,
+                            hoverScale: 1.8, detailScale: detailScale, magnifications: [1: frame.magnifications[.month] ?? 1],
+                            sideExpansion: frame.expansion))
+                        // The unused canvas far from the visible detail must pass clicks through.
+                        let blank = CGPoint(x: edge == .left ? canvas.width - 1 : 1, y: 2)
+                        XCTAssertFalse(MacWidgetSurface.contains(blank, in: canvas.size, edge: edge,
+                            selectedIndex: 1, scale: scale, hoverScale: 1.8, detailScale: detailScale,
+                            magnifications: [1: frame.magnifications[.month] ?? 1], sideExpansion: frame.expansion))
+                    }
+                    let detail = MacWidgetPlacement.sideDetailFrame(in: canvas.size, edge: edge,
+                        selectedIndex: 1, scale: scale, hoverScale: 1.8, detailScale: detailScale)
+                    let center = CGPoint(x: detail.midX, y: detail.midY)
+                    XCTAssertTrue(MacWidgetSurface.contains(center, in: canvas.size, edge: edge,
+                        selectedIndex: 1, scale: scale, hoverScale: 1.8, detailScale: detailScale, sideExpansion: 1))
+                    XCTAssertFalse(MacWidgetSurface.contains(center, in: canvas.size, edge: edge,
+                        selectedIndex: 1, scale: scale, hoverScale: 1.8, detailScale: detailScale, sideExpansion: 0),
+                        "A closed widget must not intercept clicks in its transparent detail canvas.")
+                }
+            }
+        }
+    }
+
+    @MainActor
+    func testControllerKeepsExitFramesSynchronizedAndCanReenterClosingDetails() async throws {
+        try XCTSkipIf(NSWorkspace.shared.accessibilityDisplayShouldReduceMotion,
+                      "Interpolation is intentionally disabled while Reduce Motion is enabled.")
+        for edge in [MacWidgetEdge.left, .right] {
+            try await withController(edge: edge) { controller in
+                controller.sideHoverChanged(inside: true, metric: .month)
+                try await assertEventually { controller.sideHoverPresentation.expansion == 1 }
+                var exitFrames = 0
+                let observation = controller.$sideHoverPresentation.dropFirst().sink { frame in
+                    guard controller.hoveredMetric == nil, frame.expansion > 0, frame.expansion < 1 else { return }
+                    exitFrames += 1
+                    XCTAssertEqual(((frame.magnifications[.month] ?? 1) - 1) / 0.8,
+                                   frame.expansion, accuracy: 0.000001)
+                }
+                defer { observation.cancel() }
+                controller.sideHoverChanged(inside: false, metric: nil)
+                XCTAssertFalse(controller.isExpanded)
+                try await assertEventually { exitFrames > 0 }
+                // Returning to the still-visible details reverses the current
+                // presentation instead of waiting for a circle hover callback.
+                let previous = controller.sideHoverPresentation
+                controller.sideHoverChanged(inside: true, metric: nil)
+                XCTAssertTrue(controller.isExpanded)
+                XCTAssertEqual(controller.hoveredMetric, .month)
+                XCTAssertEqual(controller.sideHoverPresentation, previous)
+                try await assertEventually { controller.sideHoverPresentation.expansion == 1 }
+                controller.sideHoverChanged(inside: false, metric: nil)
+                try await assertEventually { controller.sideHoverPresentation == MacSideHoverPresentation() }
+                XCTAssertGreaterThan(exitFrames, 0)
+            }
+        }
+    }
+
+    @MainActor
+    func testReduceMotionSettlesCircleAndDetailsTogetherIncludingPinnedExit() async throws {
+        for edge in [MacWidgetEdge.left, .right] {
+            for pinned in [false, true] {
+                try await withController(edge: edge, reducesMotion: { true }) { controller in
+                    controller.preferences.keepDetailsOpen = pinned
+                    controller.showWidget()
+                    controller.sideHoverChanged(inside: true, metric: .month)
+                    XCTAssertEqual(controller.sideHoverPresentation,
+                                   MacSideHoverPresentation(magnifications: [.month: 1.8], expansion: 1))
+                    controller.sideHoverChanged(inside: true, metric: nil)
+                    XCTAssertEqual(controller.hoveredMetric, .month)
+                    controller.sideHoverChanged(inside: false, metric: nil)
+                    XCTAssertEqual(controller.sideHoverPresentation,
+                                   MacSideHoverPresentation(expansion: pinned ? 1 : 0))
+                    XCTAssertEqual(controller.isExpanded, pinned)
+                }
+            }
+        }
+    }
+
+    @MainActor
+    private func withController(edge: MacWidgetEdge, reducesMotion: @escaping () -> Bool = {
+        NSWorkspace.shared.accessibilityDisplayShouldReduceMotion
+    }, _ body: @MainActor (MacWidgetController) async throws -> Void) async throws {
+        let suiteName = "com.hinoshiba.daysyet.mac.hover.presentation.tests.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suiteName))
+        let preferences = MacWidgetPreferences(defaults: defaults)
+        preferences.edge = edge
+        preferences.magnifiesOnHover = true
+        preferences.hoverScale = 1.8
+        let controller = MacWidgetController(store: ProfileStore(profile: .initial, saveProfile: { _ in }),
+                                             preferences: preferences, reducesMotion: reducesMotion)
+        // Drain queued preference notifications before observing animated frames.
+        controller.showWidget()
+        await Task.yield()
+        await Task.yield()
+        defer {
+            controller.closeDetails()
+            defaults.removePersistentDomain(forName: suiteName)
+        }
+        try await body(controller)
+    }
+
+    @MainActor
+    private func assertEventually(file: StaticString = #filePath, line: UInt = #line,
+                                  _ condition: @MainActor () -> Bool) async throws {
+        let clock = ContinuousClock()
+        let deadline = clock.now.advanced(by: .seconds(2))
+        while !condition(), clock.now < deadline {
+            try await Task.sleep(for: .milliseconds(5))
+        }
+        XCTAssertTrue(condition(), file: file, line: line)
     }
 }
