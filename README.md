@@ -6,7 +6,7 @@
 
 iPhone / iPad版は[App Store](https://apps.apple.com/jp/app/id6802000765)、Mac版は[Mac App Store](https://apps.apple.com/jp/app/id6802000765?platform=mac)で提供しています。Mac版はこのリポジトリからビルドすることもできます。
 
-このREADMEはソース上のiPhone / iPad 0.1.7 (11)とMac 0.1.6 (10)を説明しています。今回の更新はiPhone / iPadのみで、時間ごとの設定を「時間」タブの各カードへ移しました。詳しくは[0.1.7リリース記録](AppStore/releases/0.1.7.md)をご覧ください。
+このREADMEは準備中のiPhone / iPad・Mac **0.1.8 (12)** のソースを説明しています。iPhone / iPadに4つのサークルを表示するホーム画面ウィジェットを追加し、Macではサークルと詳細のアニメーション、クリック・ダブルクリック時の拡大を修正しました。アップロード・審査提出・公開の確認は[0.1.8リリース記録](AppStore/releases/0.1.8.md)に記載します。
 
 ## Features
 

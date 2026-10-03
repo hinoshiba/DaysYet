@@ -1,5 +1,21 @@
 # Submission checklist
 
+## Current 0.1.8 (12) preparation
+
+- [x] iOS / iPadOS, Widget, and Mac version sources are prepared as 0.1.8 (12).
+- [x] Japanese and English submission text describes the Four circles widget and Mac animation/click fixes.
+- [ ] Verify the proposed build number against existing App Store Connect uploads for each platform.
+- [ ] Complete candidate unsigned builds/tests, localized UI and screenshot checks, and release compliance.
+- [ ] Publish and verify CI on the exact release source commit before archiving it.
+- [ ] Create and validate both platform archives in local Xcode with the existing authorized distribution identities.
+- [ ] Upload, verify processing, and select the exact platform/version/build in App Store Connect.
+- [ ] Save and verify localized metadata, screenshots, and platform review notes.
+- [ ] Verify App Privacy, age rating, export compliance, review contact, and existing commercial/release settings.
+- [ ] Add both prepared platform versions for review and verify their submission receipts.
+- [ ] Record Apple approval and public availability after confirmation.
+
+See the [0.1.8 release record](../releases/0.1.8.md) for current verified progress. The remaining sections record historical submissions.
+
 ## iOS 0.1.3 (5)
 
 - [x] The release owner separately authorized the iPhone / iPad update on 2026-09-06.

@@ -1,8 +1,8 @@
 # Release readiness
 
-## Current 0.1.6 (10) candidate
+## Current 0.1.8 (12) candidate
 
-iOS / iPadOS and macOS 0.1.6 (10) are being prepared together with percentages, bars, and circles showing time remaining. See the [0.1.6 countdown release record](../releases/0.1.6-countdown.md) for the candidate's validation and submission progress. The version-specific records below describe earlier submissions and do not establish the current App Store Connect state. Earlier candidates are recorded in the [0.1.5 release record](../releases/0.1.5.md), [Mac 0.1.6 (9) release record](../releases/0.1.6-macos.md), and [0.1.4 (7) release record](../releases/0.1.4-build7.md).
+iOS / iPadOS, its Widget extension, and macOS are being prepared as 0.1.8 (12). The iOS update adds Four circles; the Mac update fixes circle/detail animation synchronization and clicks that reduced magnification. Version sources and localized submission text are prepared; candidate QA, App Store Connect build-number verification, archive, upload, processing, and App Review submission are not established by that preparation. See the [0.1.8 release record](../releases/0.1.8.md) for verified progress. The version-specific records below are historical and do not establish the current App Store Connect state. Previous submissions are recorded in [iOS 0.1.7](../releases/0.1.7.md) and [Mac 0.1.7](../releases/0.1.7-macos.md).
 
 ## Historical iOS 0.1.4 (6) submission
 
