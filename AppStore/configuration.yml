@@ -11,6 +11,7 @@ bundle_id: com.hinoshiba.daysyet
 widget_bundle_id: com.hinoshiba.daysyet.widget
 app_group: group.com.hinoshiba.daysyet
 widget_kind: com.hinoshiba.daysyet.widget.progress
+circle_widget_kind: com.hinoshiba.daysyet.widget.circles
 lock_screen_widget_kind: com.hinoshiba.daysyet.widget.lock-screen
 # Release candidate; see releases/0.1.7.md.
 # The previous submission is recorded in releases/0.1.6-countdown.md.

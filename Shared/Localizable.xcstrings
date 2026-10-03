@@ -49,6 +49,54 @@
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "今年" } }
       }
     },
+    "widget.circle.configuration.title" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Four circles settings" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "4つのサークルの設定" } }
+      }
+    },
+    "widget.circle.configuration.description" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Choose four timelines, center values, and a theme." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "4つの時間、中央の値、テーマを選びます。" } }
+      }
+    },
+    "widget.circle.configuration.first_metric" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Top-left timeline" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "左上の時間" } }
+      }
+    },
+    "widget.circle.configuration.second_metric" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Top-right timeline" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "右上の時間" } }
+      }
+    },
+    "widget.circle.configuration.third_metric" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Bottom-left timeline" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "左下の時間" } }
+      }
+    },
+    "widget.circle.configuration.fourth_metric" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Bottom-right timeline" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "右下の時間" } }
+      }
+    },
+    "widget.circle.gallery.title" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Four circles" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "4つのサークル" } }
+      }
+    },
+    "widget.circle.gallery.description" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "See the time left on four timelines in a 2×2 circle grid." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "4つの時間の残りを、2×2のサークルで表示します。" } }
+      }
+    },
     "widget.configuration.description" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Choose timelines, display mode, values, and colors. Activity hours use the labels and weekdays set in the app." } },
