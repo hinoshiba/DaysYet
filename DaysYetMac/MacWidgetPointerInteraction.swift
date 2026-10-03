@@ -27,6 +27,7 @@ struct MacWidgetPointerInteraction {
     private var press: Press?
     private var previousClick: (point: NSPoint, timestamp: TimeInterval)?
     var isPressed: Bool { press != nil }
+    var isDragging: Bool { press?.crossedThreshold == true }
 
     /// Quartz and AppKit share global point units, but opposite vertical axes.
     static func appKitPoint(fromQuartz point: CGPoint, primaryScreenMaxY: CGFloat) -> NSPoint {
