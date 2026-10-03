@@ -1,11 +1,11 @@
 Make time for what matters. DaysYet keeps life and everyday countdowns at the edge of your Mac display. See time left and the percentage remaining for your week, month, year, activities, study days, and personal milestones while you work.
 
-Use it as a quiet memento mori: a reminder to be intentional with your time. Set your own healthy-age goal as a personal planning milestone. DaysYet counts down to the age you choose; it does not predict your health or lifespan.
+Use it as a quiet memento mori: a reminder to be intentional with your time. Set your own healthy-age goal as a planning milestone. DaysYet counts down to that age; it does not predict health or lifespan.
 
 YOUR TIMELINES AT THE EDGE
 Start with three small remaining-time circles on the left or right and add up to eight different timelines. Top placement shows bars for the first three timelines and saves the other selections. The colored portion counts down from 100% to 0%: circles drain clockwise from the top, and bars keep their left edge fixed as they shrink from right to left. Hover to expand the black panel and reveal a timeline's details. On either side, the details follow the circle you select.
 
-Optional Graph magnification enlarges the hovered side circle to 110–180% (default 135%; off by default), moving it slightly toward the screen center. Enlargement and detail animations start together. Reduce Motion changes them without animation.
+Optional Graph magnification enlarges the hovered side circle to 110–180% (default 135%; off by default), moving it slightly toward the screen center. Circles and details expand/close together. Returning during closing reopens smoothly. Clicks preserve magnification. Reduce Motion skips animation.
 
 FIT YOUR WORKSPACE
 Choose left, right, or top placement and the display to use. Drag a side widget up or down; DaysYet saves its position. Adjust the size from 80–150%. Choose from four color templates or customize each visible timeline's color, with individual and full resets to the template. Double-click to open settings, where you can show, hide, or quit the app. Enable Launch at login to start DaysYet when you sign in to your Mac.
@@ -24,6 +24,6 @@ IMPORTANT DATES AND PERSONAL GOALS
 Choose from this week, this month, this year, two activity schedules, study days, a milestone with its own start date, and a healthy-age goal you set. Week, month, and year need no personal dates. Japanese and English are supported.
 
 STORED ON THIS MAC
-No account is required. Dates, activity names, times and weekdays, study plans, week-start choices, and display settings stay on your Mac and are not sent to the developer. DaysYet has no advertising or analytics SDKs. There is no data sync with iPhone or iPad; each device has its own settings. Delete all saved data from Settings at any time.
+No account is required. Dates, activity names, times and weekdays, study plans, week-start choices, and display settings stay on your Mac and are not sent to the developer. DaysYet has no advertising or analytics SDKs. Each device has separate settings, without iPhone/iPad sync. Delete all saved data from Settings at any time.
 
 The healthy-age goal is a personal planning marker, not medical advice, diagnosis, or a prediction of your health or lifespan. Activity hours count down to the schedules you set; they do not track attendance or report to an employer.

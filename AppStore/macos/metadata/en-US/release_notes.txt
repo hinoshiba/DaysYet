@@ -1,3 +1,4 @@
-• At the left and right edges, moving the pointer onto an enlarged circle’s details now keeps that circle magnified and its details open, including while crossing the gap between them.
-• Moving to another timeline’s details moves the selection and the magnification to that circle. Leaving the widget restores the circle’s size and closes details that are not pinned.
-• With Keep details open selected, returning to the details magnifies the selected circle again. Top placement is unchanged.
+• With graph magnification enabled at the left or right edge, circle enlargement and shrinking now stay in step with details opening and closing. Fixed cases where the circle shrank before its details closed.
+• Returning the pointer during closing smoothly reopens from the current size. Moving to the details keeps the circle magnified.
+• Fixed circles shrinking when clicked or double-clicked. Double-click still opens settings, and dragging still moves the panel.
+• Your saved dates, schedules, and display settings are preserved.

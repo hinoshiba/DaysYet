@@ -1,1 +1,1 @@
-How many of life’s tokens remain? Bars and circles count down from 100% to 0% at the edge of your Mac display. Hover for details. Your plans stay on this Mac.
+Keep time left at your Mac’s edge. Hover to expand circles and details together, double-click for settings, and drag to position the panel. Plans stay on this Mac.
