@@ -249,6 +249,12 @@ private struct WidgetGuideView: View {
                         guideRow("1", L10n.text("ホーム画面を長押し", "Touch and hold the Home Screen"), "hand.tap")
                         guideRow("2", L10n.text("編集 → ウィジェットを追加", "Choose Edit → Add Widget"), "plus.square")
                         guideRow("3", L10n.text("DaysYetを検索して追加", "Search for DaysYet and add it"), "magnifyingglass")
+                        Text(L10n.text(
+                            "「4つのサークル」は小・大サイズで追加できます。追加後に長押し → ウィジェットを編集で、左上・右上・左下・右下の時間、値、テーマを選べます。",
+                            "Choose Four circles in Small or Large. After adding it, touch and hold → Edit Widget to choose the top-left, top-right, bottom-left, and bottom-right timelines, values, and theme."
+                        ))
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                     }
 
                     Divider()

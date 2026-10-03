@@ -5,6 +5,7 @@ import WidgetKit
 struct DaysYetWidgetBundle: WidgetBundle {
     var body: some Widget {
         DaysYetWidget()
+        DaysYetCircleWidget()
         DaysYetLockScreenWidget()
     }
 }

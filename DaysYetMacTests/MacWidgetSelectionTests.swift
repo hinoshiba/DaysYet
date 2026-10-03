@@ -778,7 +778,8 @@ final class MacWidgetSelectionTests: XCTestCase {
 
 final class MacSideHoverPresentationTests: XCTestCase {
     func testEveryEnterAndExitFrameUsesOneProgressForTheCircleAndDetails() {
-        for scale in [1.1, 1.35, 1.8] {
+        let scales: [CGFloat] = [1.1, 1.35, 1.8]
+        for scale in scales {
             let closed = MacSideHoverPresentation()
             let open = MacSideHoverPresentation(magnifications: [.month: scale], expansion: 1)
             for (origin, target) in [(closed, open), (open, closed)] {
