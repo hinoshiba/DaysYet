@@ -4,6 +4,23 @@ import ColorSync
 import QuartzCore
 import SwiftUI
 
+/// One presentation frame keeps the circle and its details on the same clock.
+struct MacSideHoverPresentation: Equatable {
+    var magnifications: [MetricKind: CGFloat] = [:]
+    var expansion: CGFloat = 0
+
+    func interpolated(to target: Self, progress: Double) -> Self {
+        let progress = min(max(progress, 0), 1)
+        guard progress < 1 else { return target }
+        let eased = 1 - pow(1 - progress, 3)
+        let metrics = Set(magnifications.keys).union(target.magnifications.keys)
+        return Self(magnifications: Dictionary(uniqueKeysWithValues: metrics.map { metric in
+            let from = magnifications[metric] ?? 1
+            return (metric, from + ((target.magnifications[metric] ?? 1) - from) * eased)
+        }), expansion: expansion + (target.expansion - expansion) * eased)
+    }
+}
+
 @MainActor
 final class MacWidgetController: ObservableObject {
     private static let sideHoverAnimationDuration: TimeInterval = 0.18
@@ -12,7 +29,7 @@ final class MacWidgetController: ObservableObject {
     @Published private(set) var hoveredMetric: MetricKind? {
         didSet { if oldValue != hoveredMetric { updateMagnification() } }
     }
-    @Published private(set) var hoverMagnifications: [MetricKind: CGFloat] = [:]
+    @Published private(set) var sideHoverPresentation = MacSideHoverPresentation()
     @Published private(set) var selectionPosition: CGFloat = 0
     @Published private(set) var isExpanded = false
     @Published private(set) var displays: [MacDisplay] = []
@@ -34,6 +51,7 @@ final class MacWidgetController: ObservableObject {
     private var pointerInteraction = MacWidgetPointerInteraction()
     private var previousMetrics: [MetricKind]
     private var previousEdge: MacWidgetEdge
+    private let reducesMotion: () -> Bool
 
     var activeMetrics: [MetricKind] {
         store.profile.macWidgetMetrics(for: preferences.edge)
@@ -41,6 +59,12 @@ final class MacWidgetController: ObservableObject {
 
     var hoverScaleLimit: Double {
         preferences.magnifiesOnHover && preferences.edge != .top ? preferences.hoverScale : 1
+    }
+
+    var hoverMagnifications: [MetricKind: CGFloat] { sideHoverPresentation.magnifications }
+
+    var sideHoverExpansion: CGFloat? {
+        hoverScaleLimit > 1 ? sideHoverPresentation.expansion : nil
     }
 
     var indexedMagnifications: [Int: CGFloat] {
@@ -51,29 +75,22 @@ final class MacWidgetController: ObservableObject {
 
     private func updateMagnification(animated: Bool = true) {
         magnificationTask?.cancel()
-        let target: [MetricKind: CGFloat]
+        var target = MacSideHoverPresentation(expansion: isExpanded ? 1 : 0)
         if hoverScaleLimit > 1, preferences.isVisible, let metric = hoveredMetric, activeMetrics.contains(metric) {
-            target = [metric: hoverScaleLimit]
-        } else {
-            target = [:]
+            target.magnifications = [metric: hoverScaleLimit]
         }
-        guard animated, !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion,
-              preferences.edge != .top, hoverMagnifications != target else {
-            if hoverMagnifications != target { hoverMagnifications = target }
+        guard animated, hoverScaleLimit > 1, !reducesMotion(),
+              preferences.edge != .top, sideHoverPresentation != target else {
+            if sideHoverPresentation != target { sideHoverPresentation = target }
             return
         }
-        let origin = hoverMagnifications
-        let metrics = Set(origin.keys).union(target.keys)
+        let origin = sideHoverPresentation
         let start = ProcessInfo.processInfo.systemUptime
         magnificationTask = Task { [weak self] in
             while !Task.isCancelled {
                 guard let self else { return }
                 let progress = min((ProcessInfo.processInfo.systemUptime - start) / Self.sideHoverAnimationDuration, 1)
-                let eased = 1 - pow(1 - progress, 3)
-                self.hoverMagnifications = progress >= 1 ? target : Dictionary(uniqueKeysWithValues: metrics.map { metric in
-                    let from = origin[metric] ?? 1
-                    return (metric, from + ((target[metric] ?? 1) - from) * eased)
-                })
+                self.sideHoverPresentation = origin.interpolated(to: target, progress: progress)
                 self.updatePointerAcceptance()
                 if progress >= 1 { return }
                 try? await Task.sleep(for: .milliseconds(16))
@@ -81,9 +98,11 @@ final class MacWidgetController: ObservableObject {
         }
     }
 
-    init(store: ProfileStore, preferences: MacWidgetPreferences) {
+    init(store: ProfileStore, preferences: MacWidgetPreferences,
+         reducesMotion: @escaping () -> Bool = { NSWorkspace.shared.accessibilityDisplayShouldReduceMotion }) {
         self.store = store
         self.preferences = preferences
+        self.reducesMotion = reducesMotion
         previousMetrics = store.profile.macWidgetMetrics(for: preferences.edge)
         previousEdge = preferences.edge
         // Observe configuration independently of the panel's lifetime. Delivery
@@ -198,7 +217,7 @@ final class MacWidgetController: ObservableObject {
         setHovered(inside)
         // The expanded surface and its circle share one hover state, including
         // the space between them. A directly hovered row still takes priority.
-        let metric = metric ?? (isExpanded ? selectedMetric : nil)
+        let metric = metric ?? (isExpanded || (sideHoverExpansion ?? 0) > 0 ? selectedMetric : nil)
         if inside, let metric {
             beginMetricHover(metric)
         } else if hoveredMetric != nil {
@@ -283,6 +302,7 @@ final class MacWidgetController: ObservableObject {
         if !expanded { releasePanelFocus() }
         guard preferences.isVisible, isExpanded != expanded else { return }
         isExpanded = expanded
+        updateMagnification()
         if !expanded { setSelection(selectedMetric) }
         positionPanel(animated: true)
     }
@@ -304,7 +324,7 @@ final class MacWidgetController: ObservableObject {
         let destination = CGFloat(metric.flatMap { metrics.firstIndex(of: $0) } ?? 0)
         selectionTask?.cancel()
         guard animated, isExpanded, preferences.edge != .top,
-              !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion,
+              !reducesMotion(),
               selectionPosition != destination else {
             if selectionPosition != destination { selectionPosition = destination }
             updatePointerAcceptance()
@@ -432,20 +452,19 @@ final class MacWidgetController: ObservableObject {
         panel.attachesToPhysicalTop = preferences.edge == .top
         let destination = MacWidgetPlacement.frame(in: screen.visibleFrame, edge: preferences.edge,
                                                    position: preferences.verticalPosition,
-                                                   expanded: isExpanded, scale: preferences.scale,
+                                                   expanded: isExpanded || hoverScaleLimit > 1, scale: preferences.scale,
                                                    screenFrame: screen.frame, topInfo: info,
                                                    metricCount: activeMetrics.count,
                                                    hoverScale: hoverScaleLimit, detailScale: preferences.detailScale)
         animationPointerTimer?.invalidate()
-        if animated && !NSWorkspace.shared.accessibilityDisplayShouldReduceMotion {
-            let synchronizedHover = hoverScaleLimit > 1
-            let duration = synchronizedHover ? Self.sideHoverAnimationDuration : (isExpanded ? 0.24 : 0.18)
+        // Magnified side widgets keep a transparent canvas large enough for
+        // the full transition. Its visible contour and text use the same
+        // published presentation as the circle instead of a window animator.
+        if animated && hoverScaleLimit == 1 && !reducesMotion() {
+            let duration = isExpanded ? 0.24 : 0.18
             NSAnimationContext.runAnimationGroup { context in
                 context.duration = duration
-                // Linear x and cubic ease-out y match the circle and row tasks.
-                context.timingFunction = synchronizedHover
-                    ? CAMediaTimingFunction(controlPoints: 1.0 / 3, 1, 2.0 / 3, 1)
-                    : CAMediaTimingFunction(controlPoints: 0.2, 0.8, 0.2, 1)
+                context.timingFunction = CAMediaTimingFunction(controlPoints: 0.2, 0.8, 0.2, 1)
                 panel.animator().setFrame(destination, display: true)
             }
             // Track the changing contour even when the pointer is stationary.
@@ -489,7 +508,7 @@ final class MacWidgetController: ObservableObject {
                                                scale: preferences.scale, topCameraInset: topInfo.cameraInset,
                                                topNotchWidth: topInfo.notchWidth, metricCount: activeMetrics.count,
                                                hoverScale: hoverScaleLimit, detailScale: preferences.detailScale,
-                                               magnifications: indexedMagnifications)
+                                               magnifications: indexedMagnifications, sideExpansion: sideHoverExpansion)
         // Transparent corners and the unused space beside the moving detail must
         // allow clicks to reach the application underneath the widget.
         panel.ignoresMouseEvents = !inside
@@ -545,7 +564,8 @@ final class MacWidgetController: ObservableObject {
                     selectedIndex: selectionPosition, scale: preferences.scale,
                     topCameraInset: topInfo.cameraInset, topNotchWidth: topInfo.notchWidth,
                     metricCount: activeMetrics.count, hoverScale: hoverScaleLimit,
-                    detailScale: preferences.detailScale, magnifications: indexedMagnifications) else { return false }
+                    detailScale: preferences.detailScale, magnifications: indexedMagnifications,
+                    sideExpansion: sideHoverExpansion) else { return false }
             closeTask?.cancel()
             intentTask?.cancel()
             intentTask = nil
@@ -603,7 +623,7 @@ final class MacWidgetController: ObservableObject {
               MacWidgetSurface.contains(local, in: panel.frame.size,
                 edge: preferences.edge, selectedIndex: selectionPosition, scale: scale,
                 metricCount: metrics.count, hoverScale: hoverScaleLimit, detailScale: preferences.detailScale,
-                magnifications: indexedMagnifications) else { return }
+                magnifications: indexedMagnifications, sideExpansion: sideHoverExpansion) else { return }
         if metrics.indices.contains(index) { beginMetricHover(metrics[index]) }
     }
 
