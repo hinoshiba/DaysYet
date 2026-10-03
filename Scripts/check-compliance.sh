@@ -14,6 +14,7 @@ readonly EXPECTED_MAC_APP_ID="${EXPECTED_APP_ID}"
 readonly EXPECTED_MAC_TEST_ID="${EXPECTED_APP_ID}.mac.tests"
 readonly EXPECTED_APP_GROUP="group.${EXPECTED_APP_ID}"
 readonly EXPECTED_WIDGET_KIND="${EXPECTED_WIDGET_ID}.progress"
+readonly EXPECTED_CIRCLE_WIDGET_KIND="${EXPECTED_WIDGET_ID}.circles"
 readonly EXPECTED_LOCK_SCREEN_WIDGET_KIND="${EXPECTED_WIDGET_ID}.lock-screen"
 readonly REVERSED_APP_ID="$(printf '%s.%s.%s' daysyet hinoshiba com)"
 
@@ -226,11 +227,13 @@ assert_contains Shared/ProfileRepository.swift "${EXPECTED_APP_GROUP}"
 assert_contains DaysYet/DaysYet.entitlements "${EXPECTED_APP_GROUP}"
 assert_contains DaysYetWidget/DaysYetWidget.entitlements "${EXPECTED_APP_GROUP}"
 assert_contains DaysYetWidget/DaysYetWidget.swift "${EXPECTED_WIDGET_KIND}"
+assert_contains DaysYetWidget/DaysYetCircleWidget.swift "${EXPECTED_CIRCLE_WIDGET_KIND}"
 assert_contains DaysYetWidget/DaysYetLockScreenWidget.swift "${EXPECTED_LOCK_SCREEN_WIDGET_KIND}"
 assert_line AppStore/configuration.yml "bundle_id: ${EXPECTED_APP_ID}"
 assert_line AppStore/configuration.yml "widget_bundle_id: ${EXPECTED_WIDGET_ID}"
 assert_line AppStore/configuration.yml "app_group: ${EXPECTED_APP_GROUP}"
 assert_line AppStore/configuration.yml "widget_kind: ${EXPECTED_WIDGET_KIND}"
+assert_line AppStore/configuration.yml "circle_widget_kind: ${EXPECTED_CIRCLE_WIDGET_KIND}"
 assert_line AppStore/configuration.yml "lock_screen_widget_kind: ${EXPECTED_LOCK_SCREEN_WIDGET_KIND}"
 
 identifier_files=(
@@ -239,6 +242,7 @@ identifier_files=(
   DaysYet/DaysYet.entitlements
   DaysYetWidget/DaysYetWidget.entitlements
   DaysYetWidget/DaysYetWidget.swift
+  DaysYetWidget/DaysYetCircleWidget.swift
   DaysYetWidget/DaysYetLockScreenWidget.swift
   AppStore/configuration.yml
   AppStore/review/submission-checklist.md
