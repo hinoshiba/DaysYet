@@ -13,7 +13,7 @@ app_group: group.com.hinoshiba.daysyet
 widget_kind: com.hinoshiba.daysyet.widget.progress
 circle_widget_kind: com.hinoshiba.daysyet.widget.circles
 lock_screen_widget_kind: com.hinoshiba.daysyet.widget.lock-screen
-# Release candidate in preparation; see releases/0.1.8.md.
+# Submitted and Waiting for Review; see releases/0.1.8.md.
 # The previous iOS submission is recorded in releases/0.1.7.md.
 version: 0.1.8
 build: 12
