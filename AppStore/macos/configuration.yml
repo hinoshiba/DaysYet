@@ -1,5 +1,5 @@
 # Native macOS update on the existing DaysYet App Store record.
-# Release candidate in preparation; see ../releases/0.1.8.md.
+# Submitted and Waiting for Review; see ../releases/0.1.8.md.
 # Retain the record's existing shared name, categories, pricing, availability,
 # and release settings. Do not create a separate SKU or App Store record.
 app_name: DaysYet

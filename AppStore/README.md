@@ -1,6 +1,6 @@
 # App Store submission resources
 
-**iOS / iPadOS and macOS 0.1.8 (12) are in preparation.** The iOS update adds the configurable Four circles widget; the Mac update synchronizes circle/detail animations and preserves magnification during clicks and double-clicks. Version sources and localized submission text are prepared. Candidate QA, build-number verification, archive, upload, App Review, and public availability are recorded only after confirmation in the [0.1.8 release record](releases/0.1.8.md).
+**iOS / iPadOS and macOS 0.1.8 (12) are Waiting for Review.** Both archives passed Organizer validation and were uploaded, processed, and submitted on 2026-10-03. The iOS update adds the configurable Four circles widget; the Mac update synchronizes circle/detail animations and preserves magnification during clicks and double-clicks. Apple approval and public availability remain unconfirmed. See the [0.1.8 release record](releases/0.1.8.md) for the source tags, submission status, and measured checks.
 
 The previous iOS / iPadOS and macOS 0.1.4 (7) submissions were confirmed Waiting for Review on 2026-09-08 at 08:51 JST and 08:58 JST respectively. That record included 20 iPhone / iPad images and eight Mac images; see the [build 7 release record](releases/0.1.4-build7.md). The older submission narrative below records the initial Mac release and iOS 0.1.3. Those statuses and screenshot counts are historical. Use the current release record and [local Xcode release procedure](../docs/RELEASING.md) for this candidate.
 

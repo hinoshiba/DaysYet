@@ -1,8 +1,8 @@
 # Release readiness
 
-## Current 0.1.8 (12) candidate
+## Current 0.1.8 (12) submission
 
-iOS / iPadOS, its Widget extension, and macOS are being prepared as 0.1.8 (12). The iOS update adds Four circles; the Mac update fixes circle/detail animation synchronization and clicks that reduced magnification. Version sources and localized submission text are prepared; candidate QA, App Store Connect build-number verification, archive, upload, processing, and App Review submission are not established by that preparation. See the [0.1.8 release record](../releases/0.1.8.md) for verified progress. The version-specific records below are historical and do not establish the current App Store Connect state. Previous submissions are recorded in [iOS 0.1.7](../releases/0.1.7.md) and [Mac 0.1.7](../releases/0.1.7-macos.md).
+iOS / iPadOS and macOS 0.1.8 (12) were submitted on 2026-10-03 and are Waiting for Review: macOS at 16:53 JST and iOS at 17:03 JST. Both archives passed Organizer validation and the exact builds were uploaded, processed, and selected. Both versions will release automatically after approval, without phased release. The iOS update adds Four circles; the Mac update fixes circle/detail animation synchronization and clicks that reduced magnification. Apple approval and public availability remain unconfirmed. See the [0.1.8 release record](../releases/0.1.8.md) for source tags, verified metadata/screenshots, and remaining native UI checks. The version-specific records below are historical. Previous submissions are recorded in [iOS 0.1.7](../releases/0.1.7.md) and [Mac 0.1.7](../releases/0.1.7-macos.md).
 
 ## Historical iOS 0.1.4 (6) submission
 

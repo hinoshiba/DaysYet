@@ -6,7 +6,7 @@
 
 iPhone / iPad版は[App Store](https://apps.apple.com/jp/app/id6802000765)、Mac版は[Mac App Store](https://apps.apple.com/jp/app/id6802000765?platform=mac)で提供しています。Mac版はこのリポジトリからビルドすることもできます。
 
-このREADMEは準備中のiPhone / iPad・Mac **0.1.8 (12)** のソースを説明しています。iPhone / iPadに4つのサークルを表示するホーム画面ウィジェットを追加し、Macではサークルと詳細のアニメーション、クリック・ダブルクリック時の拡大を修正しました。アップロード・審査提出・公開の確認は[0.1.8リリース記録](AppStore/releases/0.1.8.md)に記載します。
+このREADMEはiPhone / iPad・Mac **0.1.8 (12)** のソースを説明しています。iPhone / iPadに4つのサークルを表示するホーム画面ウィジェットを追加し、Macではサークルと詳細のアニメーション、クリック・ダブルクリック時の拡大を修正しました。2026-10-03時点で両版とも審査待ちです。承認後に自動公開する設定で提出し、Appleによる承認・公開は未確認です。[0.1.8リリース記録](AppStore/releases/0.1.8.md)
 
 ## Features
 
