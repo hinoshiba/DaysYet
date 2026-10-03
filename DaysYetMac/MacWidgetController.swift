@@ -566,12 +566,6 @@ final class MacWidgetController: ObservableObject {
                     metricCount: activeMetrics.count, hoverScale: hoverScaleLimit,
                     detailScale: preferences.detailScale, magnifications: indexedMagnifications,
                     sideExpansion: sideHoverExpansion) else { return false }
-            closeTask?.cancel()
-            intentTask?.cancel()
-            intentTask = nil
-            hoveredMetric = nil
-            isHovered = true
-            selectionTask?.cancel()
             animationPointerTimer?.invalidate()
             // Stop a resize already in flight before taking its drag anchor.
             let currentFrame = panel.frame
@@ -579,20 +573,20 @@ final class MacWidgetController: ObservableObject {
                 context.duration = 0
                 panel.animator().setFrame(currentFrame, display: true)
             }
-            pointerInteraction.begin(at: pointer, frame: currentFrame,
+            beginPointerPress(at: pointer, frame: currentFrame,
                 bounds: preferences.edge == .top ? nil : selectedScreen?.visibleFrame,
-                position: preferences.verticalPosition, clickCount: event.clickCount, timestamp: event.timestamp)
+                clickCount: event.clickCount, timestamp: event.timestamp)
             panel.ignoresMouseEvents = false
             return true
         case .leftMouseDragged:
             guard pointerInteraction.isPressed else { return false }
-            if let placement = pointerInteraction.update(at: pointer) {
+            if let placement = updatePointerPress(at: pointer) {
                 panel.setFrame(placement.frame, display: true)
             }
             return true
         case .leftMouseUp:
             guard pointerInteraction.isPressed else { return false }
-            let completion = pointerInteraction.finish(at: pointer, doubleClickInterval: NSEvent.doubleClickInterval)
+            let completion = finishPointerPress(at: pointer, doubleClickInterval: NSEvent.doubleClickInterval)
             if case .drag(let placement) = completion {
                 panel.setFrame(placement.frame, display: true)
                 preferences.verticalPosition = placement.position
@@ -611,6 +605,34 @@ final class MacWidgetController: ObservableObject {
         default:
             return false
         }
+    }
+
+    func beginPointerPress(at point: NSPoint, frame: NSRect, bounds: NSRect?,
+                           clickCount: Int, timestamp: TimeInterval) {
+        closeTask?.cancel()
+        intentTask?.cancel()
+        intentTask = nil
+        // A press is still a possible click. Keep the side circle enlarged
+        // until movement establishes a drag, including between double clicks.
+        if hoverScaleLimit <= 1 { hoveredMetric = nil }
+        isHovered = true
+        selectionTask?.cancel()
+        magnificationTask?.cancel()
+        pointerInteraction.begin(at: point, frame: frame, bounds: bounds,
+            position: preferences.verticalPosition, clickCount: clickCount, timestamp: timestamp)
+    }
+
+    func updatePointerPress(at point: NSPoint) -> MacWidgetPointerInteraction.Placement? {
+        let placement = pointerInteraction.update(at: point)
+        if pointerInteraction.isDragging { hoveredMetric = nil }
+        return placement
+    }
+
+    func finishPointerPress(at point: NSPoint, doubleClickInterval: TimeInterval) -> MacWidgetPointerInteraction.Completion {
+        // Mouse-up can be the first event beyond the drag threshold.
+        let completion = pointerInteraction.finish(at: point, doubleClickInterval: doubleClickInterval)
+        if case .drag = completion { hoveredMetric = nil }
+        return completion
     }
 
     private func resumeMetricHover(at pointer: NSPoint) {
