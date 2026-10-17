@@ -6,6 +6,17 @@ struct SettingsView: View {
 
     var body: some View {
         Form {
+            Section {
+                NavigationLink {
+                    CircleWidgetSettingsView()
+                } label: {
+                    Label(L10n.text("4つのサークル", "Four circles"), systemImage: "circle.grid.2x2")
+                }
+                .accessibilityIdentifier("settings.fourCircles")
+            } header: {
+                Text(L10n.text("ウィジェット", "Widgets"))
+            }
+
             weekStartSection
 
             Section {

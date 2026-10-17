@@ -13,6 +13,32 @@ struct WidgetStudioView: View {
                 VStack(alignment: .leading, spacing: 24) {
                     header
 
+                    NavigationLink {
+                        CircleWidgetSettingsView()
+                    } label: {
+                        HStack(spacing: 12) {
+                            Image(systemName: "circle.grid.2x2")
+                                .font(.title2)
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(L10n.text("4つのサークル", "Four circles"))
+                                    .font(.headline)
+                                Text(L10n.text("プレビュー・追加と設定の方法", "Preview, add, and configure"))
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer(minLength: 4)
+                            Image(systemName: "chevron.right")
+                                .font(.caption.bold())
+                                .foregroundStyle(.secondary)
+                        }
+                        .padding(16)
+                        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityIdentifier("widget.fourCircles")
+
+                    EyebrowLabel(text: L10n.text("3つの行", "Three rows"))
+
                     WidgetPreview(profile: store.profile)
                         .aspectRatio(2.05, contentMode: .fit)
                         .accessibilityLabel(L10n.text("ウィジェットプレビュー", "Widget preview"))
@@ -110,11 +136,11 @@ struct WidgetStudioView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 6) {
-            EyebrowLabel(text: L10n.text("DaysYet · 3つの時間", "DaysYet · Three timelines"))
+            EyebrowLabel(text: L10n.text("DaysYet · ウィジェット", "DaysYet · Widgets"))
             Text(L10n.text("人生のTokenを、\n大切なことへ。", "Life’s tokens.\nMake them count."))
                 .font(.system(.largeTitle, design: .rounded, weight: .bold))
                 .tracking(-0.7)
-            Text(L10n.text("選んだ内容はウィジェットに反映されます。更新時刻はiOSが調整します。", "Your choices appear in the widget; refresh timing is controlled by iOS."))
+            Text(L10n.text("3つの行、または4つのサークルで残り時間を表示できます。", "See time remaining in three rows or four circles."))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
         }
@@ -186,6 +212,71 @@ struct WidgetStudioView: View {
         }
     }
 
+}
+
+struct CircleWidgetSettingsView: View {
+    @EnvironmentObject private var store: ProfileStore
+
+    var body: some View {
+        Form {
+            Section {
+                TimelineView(.periodic(from: .now, by: 60)) { context in
+                    let configuration = DaysYetCircleConfigurationIntent()
+                    CircleWidgetGrid(
+                        snapshots: configuration.resolvedMetrics(profile: store.profile).map {
+                            TimeProgressCalculator.snapshot(for: $0, profile: store.profile, now: context.date)
+                        },
+                        valueStyle: configuration.valueStyle.resolved(profileStyle: store.profile.dashboardValueStyle),
+                        theme: store.profile.widgetTheme,
+                        compact: false
+                    )
+                    .padding(16)
+                    .aspectRatio(1, contentMode: .fit)
+                    .frame(maxWidth: 340)
+                    .background(store.profile.widgetTheme.palette.background, in: RoundedRectangle(cornerRadius: 24))
+                    .frame(maxWidth: .infinity)
+                }
+                .listRowBackground(Color.clear)
+            } header: {
+                Text(L10n.text("標準設定のプレビュー", "Default preview"))
+            } footer: {
+                Text(L10n.text(
+                    "小・大サイズで、4つの時間を2×2に表示します。追加済みウィジェットの個別設定は、このプレビューには反映されません。",
+                    "Available in Small and Large, with four timelines in a 2×2 grid. This preview does not show custom settings from widgets you have already added."
+                ))
+            }
+
+            Section {
+                Label(L10n.text("ホーム画面を長押しし、編集 → ウィジェットを追加", "Touch and hold the Home Screen, then choose Edit → Add Widget"), systemImage: "1.circle")
+                Label(L10n.text("DaysYetを検索し、「4つのサークル」の小・大サイズを追加", "Search for DaysYet and add Four circles in Small or Large"), systemImage: "2.circle")
+            } header: {
+                Text(L10n.text("ホーム画面に追加", "Add to the Home Screen"))
+            } footer: {
+                Text(L10n.text(
+                    "3つの行とは別のウィジェットです。ホーム画面のウィジェット一覧で「4つのサークル」を選んで追加してください。",
+                    "Four circles is a separate widget. Choose it from the Home Screen widget gallery to add it."
+                ))
+            }
+
+            Section {
+                Label(L10n.text("追加したウィジェットを長押し → ウィジェットを編集", "Touch and hold the added widget → Edit Widget"), systemImage: "hand.tap")
+                Text(L10n.text(
+                    "左上・右上・左下・右下の時間、中央の値（残り割合・残り時間・終了日時）、テーマをウィジェットごとに選べます。",
+                    "Choose each corner’s timeline, the center value (percentage, time left, or end date), and the theme for each widget."
+                ))
+            } header: {
+                Text(L10n.text("4つの時間・値・テーマの設定", "Timelines, values, and theme"))
+            } footer: {
+                Text(L10n.text(
+                    "テーマは標準でアプリの「ウィジェット」タブの設定に合わせます。時間や日付は「時間」タブで編集できます。更新時刻はiOSが調整します。",
+                    "By default, the theme follows the app’s Widget tab. Edit schedules and dates in Times. Refresh timing is controlled by iOS."
+                ))
+            }
+        }
+        .navigationTitle(L10n.text("4つのサークル", "Four circles"))
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar(.visible, for: .navigationBar)
+    }
 }
 
 private struct ThemeChoiceCard: View {

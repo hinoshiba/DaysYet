@@ -10,6 +10,8 @@ iPhone / iPadのホーム画面ウィジェットに「4つのサークル」を
 2. DaysYetを検索し、「4つのサークル」の小・大サイズを選んで追加します。
 3. 追加したウィジェットを長押し → ウィジェットを編集から、左上・右上・左下・右下の時間、値、テーマを選びます。
 
+アプリ内の「ウィジェット」タブと「設定」タブの「4つのサークル」から、標準設定のプレビューと追加・編集方法を確認できます。ホーム画面には3行表示とは別に追加します。各ウィジェットの設定は、ホーム画面の「ウィジェットを編集」で変更します。
+
 既存の3行表示とロック画面ウィジェットも引き続き使用できます。iOS / iPadOS 17以降に対応し、保存済みプロフィールの移行は不要です。小サイズではラベルを1行に短縮し、大サイズでは最大2行に表示します。VoiceOverは各サークルの省略されていない名前、残り時間、残り割合、終了日時を読み上げます。更新時刻はiOSが調整します。既存の端末内データだけを使用し、外部送信や追加の権限はありません。
 
 ## Release notes
@@ -17,3 +19,5 @@ iPhone / iPadのホーム画面ウィジェットに「4つのサークル」を
 Added a Four circles Home Screen widget for iPhone and iPad, with Small and Large sizes showing a 2×2 grid. The colored arc represents the remaining percentage. The four independent timelines default to This week, This month, This year, and Daily activity. Edit Widget lets you select each position, choose percentage/time left/end date for the center value, and follow the app's theme or override it.
 
 Touch and hold the Home Screen → Edit → Add Widget → search DaysYet → choose Four circles. After adding it, touch and hold the widget → Edit Widget to configure it. Existing three-row and Lock Screen widgets remain available. Requires iOS / iPadOS 17 or later; no profile migration is needed. Small labels use one line and Large labels use up to two lines. VoiceOver reads each full label and its time details. Days off display Off; an empty study plan asks you to select study days. Refresh timing is controlled by iOS. No new permission, external service, or third-party asset is used.
+
+Open Four circles from the app’s Widget or Settings tab to see the default preview and instructions for adding and editing it. Add it separately from Three rows; configure each widget with Edit Widget on the Home Screen.
