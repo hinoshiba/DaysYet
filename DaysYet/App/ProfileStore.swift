@@ -88,6 +88,7 @@ final class ProfileStore: ObservableObject {
 #else
         updated.dashboardMetrics = updated.normalizedDashboardMetrics
 #endif
+        updated.circleWidgetSettings.metrics = updated.circleWidgetSettings.normalizedMetrics
         updated.dailyActivity = updated.dailyActivity.normalized
         updated.workActivity = updated.workActivity.normalized
         updated.studySchedule = updated.studySchedule.normalized
@@ -116,6 +117,13 @@ final class ProfileStore: ObservableObject {
             metrics[index] = metric
         }
         update { $0.dashboardMetrics = metrics }
+    }
+
+    func setCircleWidgetMetric(_ metric: MetricKind, at index: Int) {
+        var metrics = profile.circleWidgetSettings.normalizedMetrics
+        guard metrics.indices.contains(index) else { return }
+        metrics[index] = metric
+        update { $0.circleWidgetSettings.metrics = metrics }
     }
 
 #if os(macOS)

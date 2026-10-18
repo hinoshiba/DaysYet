@@ -3,9 +3,19 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject private var store: ProfileStore
     @State private var showResetConfirmation = false
+    let openWidgetSettings: () -> Void
 
     var body: some View {
         Form {
+            Section {
+                Button(action: openWidgetSettings) {
+                    Label(L10n.text("ウィジェットの設定", "Widget settings"), systemImage: "square.grid.2x2")
+                }
+                .accessibilityIdentifier("settings.widgets")
+            } header: {
+                Text(L10n.text("ウィジェット", "Widgets"))
+            }
+
             weekStartSection
 
             Section {

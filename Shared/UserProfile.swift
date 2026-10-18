@@ -77,6 +77,54 @@ struct ActivitySchedule: Codable, Equatable, Sendable {
     }
 }
 
+struct CircleWidgetSettings: Codable, Equatable, Sendable {
+    static let defaultMetrics: [MetricKind] = [.week, .month, .year, .activity]
+
+    var metrics: [MetricKind]
+    var valueStyle: MetricValueStyle
+    /// A nil theme follows the app's overall theme.
+    var theme: WidgetTheme?
+
+    init(
+        metrics: [MetricKind] = Self.defaultMetrics,
+        valueStyle: MetricValueStyle = .percentage,
+        theme: WidgetTheme? = nil
+    ) {
+        self.metrics = metrics
+        self.valueStyle = valueStyle
+        self.theme = theme
+    }
+
+    /// Preserve repeated selections and the position of each of the four slots.
+    var normalizedMetrics: [MetricKind] {
+        Self.defaultMetrics.indices.map { index in
+            metrics.indices.contains(index) ? metrics[index] : Self.defaultMetrics[index]
+        }
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case metrics, valueStyle, theme
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let storedMetrics = (try? container.decode([String].self, forKey: .metrics)) ?? []
+        metrics = Self.defaultMetrics.indices.map { index in
+            guard storedMetrics.indices.contains(index) else { return Self.defaultMetrics[index] }
+            return MetricKind(rawValue: storedMetrics[index]) ?? Self.defaultMetrics[index]
+        }
+        valueStyle = (try? container.decode(MetricValueStyle.self, forKey: .valueStyle)) ?? .percentage
+        theme = try? container.decode(WidgetTheme.self, forKey: .theme)
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(normalizedMetrics, forKey: .metrics)
+        try container.encode(valueStyle, forKey: .valueStyle)
+        try container.encodeIfPresent(theme, forKey: .theme)
+    }
+}
+
 struct UserProfile: Codable, Equatable, Sendable {
     var birthDate: Date
     var healthyLifeYears: Double
@@ -91,6 +139,7 @@ struct UserProfile: Codable, Equatable, Sendable {
     var widgetDisplayMode: WidgetDisplayMode
     var dashboardValueStyle: MetricValueStyle
     var widgetTheme: WidgetTheme
+    var circleWidgetSettings: CircleWidgetSettings
     var isConfigured: Bool
 
     // Preserve existing editor and migration call sites while storing one schedule.
@@ -158,6 +207,7 @@ struct UserProfile: Codable, Equatable, Sendable {
         case widgetDisplayMode
         case dashboardValueStyle
         case widgetTheme
+        case circleWidgetSettings
         case isConfigured
     }
 
@@ -177,7 +227,8 @@ struct UserProfile: Codable, Equatable, Sendable {
         weekStartDay: WeekStartDay = .system,
         dailyActivity: ActivitySchedule = .daily,
         workActivity: ActivitySchedule? = nil,
-        studySchedule: StudySchedule = .initial
+        studySchedule: StudySchedule = .initial,
+        circleWidgetSettings: CircleWidgetSettings = CircleWidgetSettings()
     ) {
         self.birthDate = birthDate
         self.healthyLifeYears = healthyLifeYears
@@ -194,6 +245,7 @@ struct UserProfile: Codable, Equatable, Sendable {
         self.widgetDisplayMode = widgetDisplayMode
         self.dashboardValueStyle = dashboardValueStyle
         self.widgetTheme = widgetTheme
+        self.circleWidgetSettings = circleWidgetSettings
         self.isConfigured = isConfigured
     }
 
@@ -223,6 +275,8 @@ struct UserProfile: Codable, Equatable, Sendable {
         widgetDisplayMode = (try? container.decode(WidgetDisplayMode.self, forKey: .widgetDisplayMode)) ?? .progressBars
         dashboardValueStyle = (try? container.decode(MetricValueStyle.self, forKey: .dashboardValueStyle)) ?? .remaining
         widgetTheme = (try? container.decode(WidgetTheme.self, forKey: .widgetTheme)) ?? .vividNight
+        circleWidgetSettings = (try? container.decode(CircleWidgetSettings.self, forKey: .circleWidgetSettings))
+            ?? CircleWidgetSettings()
         isConfigured = try container.decode(Bool.self, forKey: .isConfigured)
     }
 
@@ -244,6 +298,7 @@ struct UserProfile: Codable, Equatable, Sendable {
         try container.encode(widgetDisplayMode, forKey: .widgetDisplayMode)
         try container.encode(dashboardValueStyle, forKey: .dashboardValueStyle)
         try container.encode(widgetTheme, forKey: .widgetTheme)
+        try container.encode(circleWidgetSettings, forKey: .circleWidgetSettings)
         try container.encode(isConfigured, forKey: .isConfigured)
     }
 

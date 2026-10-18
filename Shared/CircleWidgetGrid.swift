@@ -3,10 +3,13 @@ import WidgetKit
 
 /// Shared with the app target so the actual widget layout can be rendered in QA.
 struct CircleWidgetGrid: View {
+    @Environment(\.showsWidgetContainerBackground) private var widgetShowsContainerBackground
     let snapshots: [MetricSnapshot]
     let valueStyle: MetricValueStyle
     let theme: WidgetTheme
     let compact: Bool
+    /// App previews draw their own background; widgets use the host's environment.
+    var showsContainerBackground: Bool? = nil
 
     var body: some View {
         GeometryReader { geometry in
@@ -24,7 +27,8 @@ struct CircleWidgetGrid: View {
                                     snapshot: snapshots[index],
                                     valueStyle: valueStyle,
                                     theme: theme,
-                                    compact: compact
+                                    compact: compact,
+                                    showsContainerBackground: showsContainerBackground ?? widgetShowsContainerBackground
                                 )
                                 .frame(width: cellWidth, height: cellHeight)
                             }
@@ -46,8 +50,12 @@ private struct CircleWidgetMetric: View {
     let valueStyle: MetricValueStyle
     let theme: WidgetTheme
     let compact: Bool
+    let showsContainerBackground: Bool
 
     private var palette: WidgetThemePalette { theme.palette }
+    private var usesThemeForeground: Bool {
+        renderingMode == .fullColor && showsContainerBackground
+    }
 
     var body: some View {
         GeometryReader { geometry in
@@ -99,7 +107,7 @@ private struct CircleWidgetMetric: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .foregroundStyle(renderingMode == .fullColor ? AnyShapeStyle(palette.foreground) : AnyShapeStyle(Color.primary))
+        .foregroundStyle(usesThemeForeground ? AnyShapeStyle(palette.foreground) : AnyShapeStyle(Color.primary))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(snapshot.accessibilitySummary)
         .privacySensitive(snapshot.kind == .healthyLife || snapshot.kind == .customLife)
@@ -117,13 +125,13 @@ private struct CircleWidgetMetric: View {
     }
 
     private var labelStyle: AnyShapeStyle {
-        renderingMode == .fullColor
+        usesThemeForeground
             ? AnyShapeStyle(palette.secondaryForeground)
             : AnyShapeStyle(HierarchicalShapeStyle.secondary)
     }
 
     private var trackStyle: AnyShapeStyle {
-        renderingMode == .fullColor
+        usesThemeForeground
             ? AnyShapeStyle(palette.track)
             : AnyShapeStyle(Color.primary.opacity(0.14))
     }

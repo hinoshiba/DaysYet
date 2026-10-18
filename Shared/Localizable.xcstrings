@@ -55,6 +55,12 @@
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "4つのサークルの設定" } }
       }
     },
+    "widget.circle.configuration.value_style" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Center value" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "中央の値" } }
+      }
+    },
     "widget.circle.configuration.description" : {
       "localizations" : {
         "en" : { "stringUnit" : { "state" : "translated", "value" : "Choose four timelines, center values, and a theme." } },

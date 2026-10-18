@@ -153,6 +153,7 @@ enum MetricValueStyle: String, Codable, CaseIterable, Identifiable, Sendable {
 }
 
 enum WidgetMetricOption: String, AppEnum, CaseIterable {
+    case appSetting
     case week
     case month
     case year
@@ -164,6 +165,7 @@ enum WidgetMetricOption: String, AppEnum, CaseIterable {
 
     static let typeDisplayRepresentation = TypeDisplayRepresentation(name: "widget.metric.type")
     static let caseDisplayRepresentations: [WidgetMetricOption: DisplayRepresentation] = [
+        .appSetting: "widget.option.app_setting",
         .week: "metric.week",
         .month: "metric.month",
         .year: "metric.year",
@@ -176,6 +178,10 @@ enum WidgetMetricOption: String, AppEnum, CaseIterable {
 
     var metricKind: MetricKind {
         MetricKind(rawValue: rawValue) ?? .month
+    }
+
+    func resolved(appMetric: MetricKind) -> MetricKind {
+        self == .appSetting ? appMetric : metricKind
     }
 }
 
