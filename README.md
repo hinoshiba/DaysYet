@@ -6,7 +6,7 @@
 
 iPhone / iPad版は[App Store](https://apps.apple.com/jp/app/id6802000765)、Mac版は[Mac App Store](https://apps.apple.com/jp/app/id6802000765?platform=mac)で提供しています。Mac版はこのリポジトリからビルドすることもできます。
 
-このREADMEは再提出を準備中のiPhone / iPad **0.1.9 (14)**・Mac **0.1.8 (12)** のソースを説明しています。iPhone / iPadでは3行と4サークルの編集を統一し、項目ごとの色設定と円内の名前表示を追加しました。0.1.9 (13)は2026-10-18 10:43 JSTにApp Reviewへ提出しましたが、追加のUI調整を含めるため取り下げ、同日18:22 JSTに「デベロッパにより却下済み」を確認しました。build 14のArchive・アップロード・再提出は準備中で、0.1.9の承認・公開は未確認です。Macは0.1.8 (12)のままで、同日にApp Store ConnectのReady for Distributionを確認しています。[build 14再提出準備記録](AppStore/releases/0.1.9-build14.md) / [build 13提出履歴](AppStore/releases/0.1.9.md)
+このREADMEはiPhone / iPad **0.1.9 (14)**・Mac **0.1.8 (12)** のソースを説明しています。iPhone / iPadでは3行と4サークルの編集を統一し、項目ごとの色設定と円内の名前表示を追加しました。0.1.9 (13)は2026-10-18 10:43 JSTにApp Reviewへ提出しましたが、追加のUI調整を含めるため取り下げ、同日18:22 JSTに「デベロッパにより却下済み」を確認しました。build 14はArchive・Apple Validate・アップロード・Apple側の処理を完了し、19:02 JSTに選択・保存、19:03 JSTに再提出しました。提出内容はiOS 0.1.9 (14)の1件で、「審査待ち」を確認しています。承認後に全ユーザーへ自動公開する設定ですが、0.1.9の承認・公開は未確認です。Macは0.1.8 (12)のままで、同日にApp Store ConnectのReady for Distributionを確認しています。[build 14再提出記録](AppStore/releases/0.1.9-build14.md) / [build 13提出履歴](AppStore/releases/0.1.9.md)
 
 build 14では、iPhone / iPadの「時間」「設定」の見出しと背景を「ウィジェット」に統一しました。「時間」は大きなコピーを短い操作説明に整理し、文字サイズをアクセシビリティサイズにするとカードの項目名と値を縦に並べ、折り返して表示します。標語は初回案内と「このアプリについて」に残しています。この調整はbuild 13には含まれません。
 
