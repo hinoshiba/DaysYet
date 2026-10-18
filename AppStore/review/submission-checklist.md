@@ -1,6 +1,8 @@
 # Submission checklist
 
-## Current 0.1.8 (12) preparation
+Current iOS 0.1.9 (14) resubmission progress and remaining checks are recorded in the [build 14 release record](../releases/0.1.9-build14.md). The checklists below are historical.
+
+## Historical 0.1.8 (12) preparation
 
 - [x] iOS / iPadOS, Widget, and Mac version sources are prepared as 0.1.8 (12).
 - [x] Japanese and English submission text describes the Four circles widget and Mac animation/click fixes.
@@ -14,7 +16,7 @@
 - [ ] Add both prepared platform versions for review and verify their submission receipts.
 - [ ] Record Apple approval and public availability after confirmation.
 
-See the [0.1.8 release record](../releases/0.1.8.md) for current verified progress. The remaining sections record historical submissions.
+See the [0.1.8 release record](../releases/0.1.8.md) for that release's verified progress. The remaining sections record earlier submissions.
 
 ## iOS 0.1.3 (5)
 
