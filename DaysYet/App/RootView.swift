@@ -5,6 +5,7 @@ struct RootView: View {
     @State private var selectedTab: Int
 #if DEBUG
     @State private var screenshotMetricSettingsPresented: Bool
+    @State private var screenshotColorsPresented: Bool
 #endif
 
     init() {
@@ -16,6 +17,7 @@ struct RootView: View {
             : arguments.contains("--screenshot-times") || editsMetric ? 1 : 0
         _selectedTab = State(initialValue: initialTab)
         _screenshotMetricSettingsPresented = State(initialValue: editsMetric)
+        _screenshotColorsPresented = State(initialValue: arguments.contains("--screenshot-colors"))
 #else
         _selectedTab = State(initialValue: 0)
 #endif
@@ -25,6 +27,11 @@ struct RootView: View {
         TabView(selection: $selectedTab) {
             NavigationStack {
                 WidgetStudioView()
+#if DEBUG
+                    .navigationDestination(isPresented: $screenshotColorsPresented) {
+                        WidgetColorSettingsView(layout: .circles)
+                    }
+#endif
             }
             .tabItem { Label(L10n.text("ウィジェット", "Widget"), systemImage: "square.grid.2x2") }
             .tag(0)

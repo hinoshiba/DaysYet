@@ -1,8 +1,12 @@
 # Release readiness
 
-## Current 0.1.8 (12) submission
+## Current iOS 0.1.9 (13) candidate
 
-iOS / iPadOS and macOS 0.1.8 (12) were submitted on 2026-10-03 and are Waiting for Review: macOS at 16:53 JST and iOS at 17:03 JST. Both archives passed Organizer validation and the exact builds were uploaded, processed, and selected. Both versions will release automatically after approval, without phased release. The iOS update adds Four circles; the Mac update fixes circle/detail animation synchronization and clicks that reduced magnification. Apple approval and public availability remain unconfirmed. See the [0.1.8 release record](../releases/0.1.8.md) for source tags, verified metadata/screenshots, and remaining native UI checks. The version-specific records below are historical. Previous submissions are recorded in [iOS 0.1.7](../releases/0.1.7.md) and [Mac 0.1.7](../releases/0.1.7-macos.md).
+iOS / iPadOS 0.1.9 (13) is being prepared for release. The update unifies Three rows and Four circles in one editor, adds app-stored circle settings and individual timeline colors, places each circle name inside its ring above the value, and improves readability when iOS removes widget backgrounds. The shared Colors entry contains a preview, four palette templates, and native color pickers; row and circle colors can be configured separately.
+
+Local tests passed: 113 iOS and 228 Mac. Independent source review reported no findings. Six QA images verified long Japanese/English names at maximum text size, all three value styles, and Small/Large ring containment. Native color selection, immediate preview updates, same-template reset, and the English Colors screen at maximum text size were checked. The 36 Store images (nine per language/device set) have been captured; visual review and time-library recapture remain in progress. App Store Connect has the iOS 0.1.9 version and saved Japanese/English text and review notes; readback verification is pending. Exact release source/CI recording, Archive, validation, upload, build selection, and App Review submission remain pending. No 0.1.9 archive or upload has been confirmed. See the [0.1.9 candidate record](../releases/0.1.9.md).
+
+On 2026-10-18, App Store Connect showed both iOS and macOS 0.1.8 as Ready for Distribution. The [0.1.8 release record](../releases/0.1.8.md) preserves the October 3 submission evidence. This candidate is iOS-only; the Mac version remains 0.1.8 (12). Earlier version-specific records below are historical.
 
 ## Historical iOS 0.1.4 (6) submission
 

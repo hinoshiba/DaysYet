@@ -3,8 +3,16 @@ import SwiftUI
 struct WidgetStudioView: View {
     @EnvironmentObject private var store: ProfileStore
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @State private var selectedLayout: WidgetEditorLayout = .rows
+    @State private var selectedLayout: WidgetEditorLayout
     @State private var showWidgetGuide = false
+
+    init() {
+#if DEBUG
+        _selectedLayout = State(initialValue: ProcessInfo.processInfo.arguments.contains("--screenshot-circles") ? .circles : .rows)
+#else
+        _selectedLayout = State(initialValue: .rows)
+#endif
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -86,21 +94,24 @@ struct WidgetStudioView: View {
                         .accessibilityIdentifier("widget.valueStyle")
                     }
 
-                    WidgetSettingPicker(
-                        L10n.text("テーマ", "Theme"),
-                        selection: themeBinding,
-                        selectedValue: themeBinding.wrappedValue?.title
-                            ?? L10n.text("3行表示と同じ", "Same as Three rows")
-                    ) {
-                        if selectedLayout == .circles {
-                            Text(L10n.text("3行表示と同じ", "Same as Three rows"))
-                                .tag(Optional<WidgetTheme>.none)
-                        }
-                        ForEach(WidgetTheme.allCases) { theme in
-                            Text(theme.title).tag(Optional(theme))
+                    NavigationLink {
+                        WidgetColorSettingsView(layout: selectedLayout)
+                    } label: {
+                        ViewThatFits(in: .horizontal) {
+                            HStack {
+                                Text(L10n.text("カラー", "Colors"))
+                                Spacer()
+                                Text(selectedLayout.colorSummary(profile: store.profile))
+                                    .foregroundStyle(.secondary)
+                            }
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text(L10n.text("カラー", "Colors"))
+                                Text(selectedLayout.colorSummary(profile: store.profile))
+                                    .foregroundStyle(.secondary)
+                            }
                         }
                     }
-                    .accessibilityIdentifier("widget.theme")
+                    .accessibilityIdentifier("widget.colors")
                 } header: {
                     Text(L10n.text("表示", "Display"))
                 }
@@ -137,30 +148,8 @@ struct WidgetStudioView: View {
         .accessibilityIdentifier("widget.layout")
     }
 
-    @ViewBuilder
     private var preview: some View {
-        if selectedLayout == .rows {
-            WidgetPreview(profile: store.profile)
-                .aspectRatio(2.05, contentMode: .fit)
-                .frame(maxWidth: 360)
-        } else {
-            TimelineView(.periodic(from: .now, by: 60)) { context in
-                let configuration = DaysYetCircleConfigurationIntent()
-                CircleWidgetGrid(
-                    snapshots: configuration.resolvedMetrics(profile: store.profile).map {
-                        TimeProgressCalculator.snapshot(for: $0, profile: store.profile, now: context.date)
-                    },
-                    valueStyle: configuration.resolvedValueStyle(profile: store.profile),
-                    theme: configuration.resolvedTheme(profile: store.profile),
-                    compact: false,
-                    showsContainerBackground: true
-                )
-                .padding(12)
-                .frame(width: 224, height: 224)
-                .background(configuration.resolvedTheme(profile: store.profile).palette.background,
-                            in: RoundedRectangle(cornerRadius: 24))
-            }
-        }
+        WidgetEditorPreview(profile: store.profile, layout: selectedLayout)
     }
 
     private var selectedMetrics: [MetricKind] {
@@ -201,24 +190,6 @@ struct WidgetStudioView: View {
                         $0.dashboardValueStyle = value
                     } else {
                         $0.circleWidgetSettings.valueStyle = value
-                    }
-                }
-            }
-        )
-    }
-
-    private var themeBinding: Binding<WidgetTheme?> {
-        let layout = selectedLayout
-        return Binding(
-            get: {
-                layout == .rows ? store.profile.widgetTheme : store.profile.circleWidgetSettings.theme
-            },
-            set: { value in
-                store.update {
-                    if layout == .rows, let value {
-                        $0.widgetTheme = value
-                    } else if layout == .circles {
-                        $0.circleWidgetSettings.theme = value
                     }
                 }
             }
@@ -279,7 +250,7 @@ private struct WidgetSettingPicker<Selection: Hashable, Content: View>: View {
     }
 }
 
-private enum WidgetEditorLayout: String, CaseIterable, Identifiable {
+enum WidgetEditorLayout: String, CaseIterable, Identifiable {
     case rows, circles
 
     var id: String { rawValue }
