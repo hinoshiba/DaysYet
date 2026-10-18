@@ -22,7 +22,7 @@ struct WidgetStudioView: View {
                             VStack(alignment: .leading, spacing: 4) {
                                 Text(L10n.text("4つのサークル", "Four circles"))
                                     .font(.headline)
-                                Text(L10n.text("プレビュー・追加と設定の方法", "Preview, add, and configure"))
+                                Text(L10n.text("4つの時間・中央の値・テーマ", "Timelines, center value, and theme"))
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
                             }
@@ -226,24 +226,69 @@ struct CircleWidgetSettingsView: View {
                         snapshots: configuration.resolvedMetrics(profile: store.profile).map {
                             TimeProgressCalculator.snapshot(for: $0, profile: store.profile, now: context.date)
                         },
-                        valueStyle: configuration.valueStyle.resolved(profileStyle: store.profile.dashboardValueStyle),
-                        theme: store.profile.widgetTheme,
-                        compact: false
+                        valueStyle: configuration.resolvedValueStyle(profile: store.profile),
+                        theme: configuration.resolvedTheme(profile: store.profile),
+                        compact: false,
+                        showsContainerBackground: true
                     )
                     .padding(16)
                     .aspectRatio(1, contentMode: .fit)
                     .frame(maxWidth: 340)
-                    .background(store.profile.widgetTheme.palette.background, in: RoundedRectangle(cornerRadius: 24))
+                    .background(configuration.resolvedTheme(profile: store.profile).palette.background, in: RoundedRectangle(cornerRadius: 24))
                     .frame(maxWidth: .infinity)
                 }
                 .listRowBackground(Color.clear)
             } header: {
-                Text(L10n.text("標準設定のプレビュー", "Default preview"))
+                Text(L10n.text("プレビュー", "Preview"))
             } footer: {
                 Text(L10n.text(
-                    "小・大サイズで、4つの時間を2×2に表示します。追加済みウィジェットの個別設定は、このプレビューには反映されません。",
-                    "Available in Small and Large, with four timelines in a 2×2 grid. This preview does not show custom settings from widgets you have already added."
+                    "ここで選んだ内容は「アプリの設定」を使うサークルウィジェットに反映されます。更新時刻はiOSが調整します。",
+                    "These choices apply to circle widgets using App setting. Refresh timing is controlled by iOS."
                 ))
+            }
+
+            Section {
+                ForEach(0..<4) { index in
+                    Picker(positionTitle(index), selection: metricBinding(at: index)) {
+                        ForEach(MetricKind.allCases) { metric in
+                            Text(metric.title(profile: store.profile)).tag(metric)
+                        }
+                    }
+                    .accessibilityIdentifier("circle.metric.\(index)")
+                }
+            } header: {
+                Text(L10n.text("4つの時間", "Four timelines"))
+            } footer: {
+                Text(L10n.text(
+                    "3行表示とは別に保存します。活動時間や日付そのものは「時間」タブで編集できます。",
+                    "Saved separately from Three rows. Edit schedules and dates in the Times tab."
+                ))
+            }
+
+            Section {
+                Picker(L10n.text("中央の値", "Center value"), selection: Binding(
+                    get: { store.profile.circleWidgetSettings.valueStyle },
+                    set: { value in store.update { $0.circleWidgetSettings.valueStyle = value } }
+                )) {
+                    ForEach(MetricValueStyle.allCases) { style in
+                        Text(style.title).tag(style)
+                    }
+                }
+                .accessibilityIdentifier("circle.valueStyle")
+
+                Picker(L10n.text("テーマ", "Theme"), selection: Binding(
+                    get: { store.profile.circleWidgetSettings.theme },
+                    set: { value in store.update { $0.circleWidgetSettings.theme = value } }
+                )) {
+                    Text(L10n.text("3行表示と同じ", "Same as Three rows"))
+                        .tag(Optional<WidgetTheme>.none)
+                    ForEach(WidgetTheme.allCases) { theme in
+                        Text(theme.title).tag(Optional(theme))
+                    }
+                }
+                .accessibilityIdentifier("circle.theme")
+            } header: {
+                Text(L10n.text("表示", "Display"))
             }
 
             Section {
@@ -261,21 +306,37 @@ struct CircleWidgetSettingsView: View {
             Section {
                 Label(L10n.text("追加したウィジェットを長押し → ウィジェットを編集", "Touch and hold the added widget → Edit Widget"), systemImage: "hand.tap")
                 Text(L10n.text(
-                    "左上・右上・左下・右下の時間、中央の値（残り割合・残り時間・終了日時）、テーマをウィジェットごとに選べます。",
-                    "Choose each corner’s timeline, the center value (percentage, time left, or end date), and the theme for each widget."
+                    "以前に追加したウィジェットや個別に変更した項目は、その設定を維持します。この画面の設定を使うには、各項目を「アプリの設定」に変更してください。",
+                    "Previously added widgets and individually customized fields keep their choices. Set each field to App setting to use the choices on this screen."
                 ))
             } header: {
-                Text(L10n.text("4つの時間・値・テーマの設定", "Timelines, values, and theme"))
+                Text(L10n.text("追加済みウィジェットに反映するには", "Apply to existing widgets"))
             } footer: {
                 Text(L10n.text(
-                    "テーマは標準でアプリの「ウィジェット」タブの設定に合わせます。時間や日付は「時間」タブで編集できます。更新時刻はiOSが調整します。",
-                    "By default, the theme follows the app’s Widget tab. Edit schedules and dates in Times. Refresh timing is controlled by iOS."
+                    "新しく追加するサークルウィジェットは、標準でこの画面の設定を使います。ホーム画面やスタンバイで個別の設定に変更することもできます。",
+                    "New circle widgets use these settings by default. You can also customize each widget on the Home Screen or in StandBy."
                 ))
             }
         }
         .navigationTitle(L10n.text("4つのサークル", "Four circles"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.visible, for: .navigationBar)
+    }
+
+    private func metricBinding(at index: Int) -> Binding<MetricKind> {
+        Binding(
+            get: { store.profile.circleWidgetSettings.normalizedMetrics[index] },
+            set: { store.setCircleWidgetMetric($0, at: index) }
+        )
+    }
+
+    private func positionTitle(_ index: Int) -> String {
+        switch index {
+        case 0: L10n.text("左上", "Top left")
+        case 1: L10n.text("右上", "Top right")
+        case 2: L10n.text("左下", "Bottom left")
+        default: L10n.text("右下", "Bottom right")
+        }
     }
 }
 

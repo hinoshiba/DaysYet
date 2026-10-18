@@ -62,8 +62,8 @@ struct DaysYetCircleTimelineProvider: AppIntentTimelineProvider {
             date: date,
             profile: profile,
             metrics: configuration.resolvedMetrics(profile: profile),
-            valueStyle: configuration.valueStyle.resolved(profileStyle: profile.dashboardValueStyle),
-            theme: configuration.theme.resolved(profileTheme: profile.widgetTheme)
+            valueStyle: configuration.resolvedValueStyle(profile: profile),
+            theme: configuration.resolvedTheme(profile: profile)
         )
     }
 }

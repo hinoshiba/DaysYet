@@ -81,9 +81,9 @@ struct DaysYetTimelineProvider: AppIntentTimelineProvider {
             requestedMetrics = profile.normalizedDashboardMetrics
         } else {
             requestedMetrics = [
-                configuration.firstMetric.metricKind,
-                configuration.secondMetric.metricKind,
-                configuration.thirdMetric.metricKind
+                configuration.firstMetric.resolved(appMetric: profile.normalizedDashboardMetrics[0]),
+                configuration.secondMetric.resolved(appMetric: profile.normalizedDashboardMetrics[1]),
+                configuration.thirdMetric.resolved(appMetric: profile.normalizedDashboardMetrics[2])
             ]
         }
         // Calendar periods and the default work schedule are usable before
@@ -110,6 +110,7 @@ struct DaysYetTimelineProvider: AppIntentTimelineProvider {
 struct DaysYetWidgetEntryView: View {
     @Environment(\.widgetFamily) private var family
     @Environment(\.widgetRenderingMode) private var renderingMode
+    @Environment(\.showsWidgetContainerBackground) private var showsContainerBackground
     let entry: DaysYetTimelineEntry
 
     private var palette: WidgetThemePalette { entry.theme.palette }
@@ -132,7 +133,7 @@ struct DaysYetWidgetEntryView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             }
         }
-        .foregroundStyle(renderingMode == .fullColor ? AnyShapeStyle(palette.foreground) : AnyShapeStyle(Color.primary))
+        .foregroundStyle(renderingMode == .fullColor && showsContainerBackground ? AnyShapeStyle(palette.foreground) : AnyShapeStyle(Color.primary))
         .containerBackground(for: .widget) {
             ZStack {
                 palette.background
@@ -149,6 +150,7 @@ struct DaysYetWidgetEntryView: View {
 
 private struct WidgetMetricRow: View {
     @Environment(\.widgetRenderingMode) private var renderingMode
+    @Environment(\.showsWidgetContainerBackground) private var showsContainerBackground
     @ScaledMetric(relativeTo: .caption2) private var tightCaptionSize: CGFloat = 10
     let snapshot: MetricSnapshot
     let mode: WidgetDisplayMode
@@ -157,6 +159,7 @@ private struct WidgetMetricRow: View {
     let compact: Bool
 
     private var palette: WidgetThemePalette { theme.palette }
+    private var usesThemeForeground: Bool { renderingMode == .fullColor && showsContainerBackground }
 
     var body: some View {
         Group {
@@ -220,7 +223,7 @@ private struct WidgetMetricRow: View {
                     : .system(compact ? .caption2 : .caption, design: .rounded, weight: .semibold)
             )
             .foregroundStyle(
-                renderingMode == .fullColor
+                usesThemeForeground
                     ? AnyShapeStyle(palette.secondaryForeground)
                     : AnyShapeStyle(HierarchicalShapeStyle.secondary)
             )
@@ -269,7 +272,7 @@ private struct WidgetMetricRow: View {
                 )
                 .monospacedDigit()
                 .foregroundStyle(
-                    renderingMode == .fullColor
+                    usesThemeForeground
                         ? AnyShapeStyle(palette.foreground)
                         : AnyShapeStyle(Color.primary)
                 )
@@ -280,7 +283,7 @@ private struct WidgetMetricRow: View {
     }
 
     private var badgeBackground: AnyShapeStyle {
-        if renderingMode == .fullColor {
+        if usesThemeForeground {
             return AnyShapeStyle(palette.accent.opacity(0.18))
         }
         return AnyShapeStyle(Color.primary.opacity(0.14))
@@ -323,7 +326,7 @@ private struct WidgetMetricRow: View {
     }
 
     private var trackStyle: AnyShapeStyle {
-        if renderingMode == .fullColor {
+        if usesThemeForeground {
             return AnyShapeStyle(palette.track)
         }
         return AnyShapeStyle(Color.primary.opacity(0.14))
