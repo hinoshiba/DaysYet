@@ -3,16 +3,15 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject private var store: ProfileStore
     @State private var showResetConfirmation = false
+    let openWidgetSettings: () -> Void
 
     var body: some View {
         Form {
             Section {
-                NavigationLink {
-                    CircleWidgetSettingsView()
-                } label: {
-                    Label(L10n.text("4つのサークル", "Four circles"), systemImage: "circle.grid.2x2")
+                Button(action: openWidgetSettings) {
+                    Label(L10n.text("ウィジェットの設定", "Widget settings"), systemImage: "square.grid.2x2")
                 }
-                .accessibilityIdentifier("settings.fourCircles")
+                .accessibilityIdentifier("settings.widgets")
             } header: {
                 Text(L10n.text("ウィジェット", "Widgets"))
             }

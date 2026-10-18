@@ -4,7 +4,9 @@
 
 iPhone / iPadのホーム画面ウィジェットに「4つのサークル」を追加しました。小・大サイズで4つの円を2×2に表示します。色のある円弧が残り割合を表し、中央には標準で残り割合を表示します。円の配置と描画はDaysYet独自の実装で、外部のコード・画像・フォントは追加していません。
 
-標準の時間は左上から今週・今月・今年・1日の活動です。アプリ内の「ウィジェット」または「設定」→「4つのサークル」で4枠の時間、中央の値、専用テーマを設定できます。3行表示とは別に保存し、プレビューへすぐ反映します。値は残り割合・残り時間・終了日時から選べます。テーマは3行表示と同じ配色、または専用の配色を選べます。勤務のない日はOff、学習日を未選択の場合は日付を選ぶ案内を表示します。
+「ウィジェット」タブの「編集するウィジェット」で「3つの行」「4つのサークル」を切り替えます。どちらも同じ位置にプレビューを表示し、「表示する時間」で各位置の時間を選び、「表示」で表示方法・値・テーマを編集する順に統一しました。「設定」には「ウィジェットの設定」ボタンを1つ置き、このタブへ移動します。別の編集画面や重複した案内カードを整理し、追加・反映の手順は共通のツールバー項目「追加・反映方法」にまとめました。
+
+サークルの標準の時間は左上から今週・今月・今年・1日の活動です。4枠の時間、中央の値、専用テーマは3行表示とは別に保存し、プレビューへすぐ反映します。値は残り割合・残り時間・終了日時から選べます。テーマは3行表示と同じ配色、または専用の配色を選べます。勤務のない日はOff、学習日を未選択の場合は日付を選ぶ案内を表示します。
 
 1. ホーム画面を長押しし、編集 → ウィジェットを追加を選びます。
 2. DaysYetを検索し、「4つのサークル」の小・大サイズを選んで追加します。
@@ -22,6 +24,8 @@ Added a Four circles Home Screen widget for iPhone and iPad, with Small and Larg
 
 Touch and hold the Home Screen → Edit → Add Widget → search DaysYet → choose Four circles. After adding it, touch and hold the widget → Edit Widget to configure it. Existing three-row and Lock Screen widgets remain available. Requires iOS / iPadOS 17 or later; no profile migration is needed. Small labels use one line and Large labels use up to two lines. VoiceOver reads each full label and its time details. Days off display Off; an empty study plan asks you to select study days. Refresh timing is controlled by iOS. No new permission, external service, or third-party asset is used.
 
-Open Four circles from the app’s Widget or Settings tab to edit all four timelines, the center value, and a dedicated theme with an immediate preview. These settings are saved separately from Three rows. New widgets follow them by default; previously customized fields can be changed to App setting through Edit Widget. Individual overrides remain available. Existing profiles receive the circle defaults without changing their three-row settings. A circle widget whose value already used App setting now follows the dedicated circle value setting, initially Remaining percentage.
+In the Widget tab, switch between Three rows and Four circles. Both editors use the same layout: preview, timeline pickers for each position, then display mode, value, and theme controls. The Widget settings button in Settings opens this tab. Separate editing screens and repeated instruction cards have been removed; shared help for adding widgets and applying changes is available in the toolbar.
+
+The four circle timelines, center value, and dedicated theme are saved separately from Three rows and update the preview immediately. New widgets follow them by default; previously customized fields can be changed to App setting through Edit Widget. Individual overrides remain available. Existing profiles receive the circle defaults without changing their three-row settings. A circle widget whose value already used App setting now follows the dedicated circle value setting, initially Remaining percentage.
 
 Small widgets also support StandBy. When iOS removes the background, text and tracks use system colors while rings retain their theme when full-color rendering is available. iOS controls translucent backgrounds, monochrome Lock Screen rendering, and red StandBy Night Mode; the app cannot force arbitrary full color on the iPhone Lock Screen.

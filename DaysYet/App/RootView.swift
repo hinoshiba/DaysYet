@@ -41,7 +41,7 @@ struct RootView: View {
             .tag(1)
 
             NavigationStack {
-                SettingsView()
+                SettingsView(openWidgetSettings: { selectedTab = 0 })
             }
             .tabItem { Label(L10n.text("設定", "Settings"), systemImage: "slider.horizontal.3") }
             .tag(2)
