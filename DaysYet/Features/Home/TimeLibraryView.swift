@@ -16,44 +16,36 @@ struct TimeLibraryView: View {
     @EnvironmentObject private var store: ProfileStore
 
     var body: some View {
-        ZStack {
-            DaysYetBackground(theme: store.profile.widgetTheme)
-            TimelineView(.periodic(from: .now, by: 60)) { context in
-                ScrollView {
-                    LazyVStack(alignment: .leading, spacing: 14) {
-                        VStack(alignment: .leading, spacing: 6) {
-                            EyebrowLabel(text: L10n.text("時間の一覧", "Time library"))
-                            Text(L10n.text("いまを、いくつもの\n距離から見る。", "See time across\ndifferent horizons."))
-                                .font(.system(.largeTitle, design: .rounded, weight: .bold))
-                                .tracking(-0.7)
-                            Text(L10n.text(
-                                "カードをタップすると、その時間だけの設定を開けます。ウィジェットに表示する項目は、ウィジェットタブで選べます。",
-                                "Tap a card to edit that time’s own settings. Choose the timelines shown in your widget from the Widget tab."
-                            ))
-                            .foregroundStyle(.secondary)
-                        }
+        TimelineView(.periodic(from: .now, by: 60)) { context in
+            ScrollView {
+                LazyVStack(alignment: .leading, spacing: 14) {
+                    Text(L10n.text(
+                        "活動時間や日付は、各カードから編集できます。",
+                        "Edit schedules and dates from their cards."
+                    ))
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
                         .padding(.bottom, 8)
 
-                        ForEach(MetricKind.allCases) { metric in
-                            MetricLibraryRow(
-                                snapshot: TimeProgressCalculator.snapshot(
-                                    for: metric,
-                                    profile: store.profile,
-                                    now: context.date
-                                ),
-                                valueStyle: store.profile.dashboardValueStyle,
-                                theme: store.profile.widgetTheme
-                            )
-                        }
-
+                    ForEach(MetricKind.allCases) { metric in
+                        MetricLibraryRow(
+                            snapshot: TimeProgressCalculator.snapshot(
+                                for: metric,
+                                profile: store.profile,
+                                now: context.date
+                            ),
+                            valueStyle: store.profile.dashboardValueStyle,
+                            theme: store.profile.widgetTheme
+                        )
                     }
-                    .padding(20)
-                    .padding(.bottom, 24)
                 }
+                .padding(20)
+                .padding(.bottom, 24)
             }
         }
-        .navigationTitle("")
-        .toolbar(.hidden, for: .navigationBar)
+        .background(Color(.systemGroupedBackground))
+        .navigationTitle(L10n.text("時間", "Times"))
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 

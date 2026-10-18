@@ -67,6 +67,7 @@ struct SettingsView: View {
             }
         }
         .navigationTitle(L10n.text("設定", "Settings"))
+        .navigationBarTitleDisplayMode(.inline)
         .confirmationDialog(
             L10n.text("端末内の設定をすべて消去しますか？", "Delete all on-device settings?"),
             isPresented: $showResetConfirmation,

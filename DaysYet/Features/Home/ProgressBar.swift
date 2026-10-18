@@ -26,6 +26,7 @@ struct ProgressBar: View {
 }
 
 struct MetricCard: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     let snapshot: MetricSnapshot
     let valueStyle: MetricValueStyle
     var theme: WidgetTheme = .vividNight
@@ -34,21 +35,21 @@ struct MetricCard: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            HStack(alignment: .firstTextBaseline) {
-                Label(snapshot.title, systemImage: snapshot.kind.symbolName)
-                    .font(.headline)
-                    .lineLimit(1)
-                Spacer(minLength: 12)
-                Text(snapshot.valueText(style: valueStyle))
-                    .font(.system(.subheadline, design: .rounded, weight: .bold))
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.72)
-                    .monospacedDigit()
-                    .layoutPriority(1)
-                if showsSettingsAffordance {
-                    Image(systemName: "chevron.right")
-                        .font(.caption.bold())
-                        .foregroundStyle(.secondary)
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack(alignment: .firstTextBaseline) {
+                        title
+                        Spacer(minLength: 8)
+                        settingsAffordance
+                    }
+                    value
+                }
+            } else {
+                HStack(alignment: .firstTextBaseline) {
+                    title
+                    Spacer(minLength: 12)
+                    value.layoutPriority(1)
+                    settingsAffordance
                 }
             }
 
@@ -60,20 +61,42 @@ struct MetricCard: View {
             Text(snapshot.secondarySummary(excluding: valueStyle))
                 .font(.caption)
                 .foregroundStyle(.secondary)
-                .lineLimit(2)
+                .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
+                .fixedSize(horizontal: false, vertical: true)
                 .monospacedDigit()
         }
         .padding(18)
-        .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .stroke(.primary.opacity(0.06), lineWidth: 1)
-        }
+        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 24, style: .continuous))
         .contentShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(snapshot.accessibilitySummary)
         .accessibilityHint(showsSettingsAffordance
             ? L10n.text("この時間の設定を開きます", "Opens this timer’s settings")
             : "")
+    }
+
+    private var title: some View {
+        Label(snapshot.title, systemImage: snapshot.kind.symbolName)
+            .font(.headline)
+            .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+            .fixedSize(horizontal: false, vertical: true)
+    }
+
+    private var value: some View {
+        Text(snapshot.valueText(style: valueStyle))
+            .font(.system(.subheadline, design: .rounded, weight: .bold))
+            .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+            .minimumScaleFactor(dynamicTypeSize.isAccessibilitySize ? 1 : 0.72)
+            .fixedSize(horizontal: false, vertical: true)
+            .monospacedDigit()
+    }
+
+    @ViewBuilder
+    private var settingsAffordance: some View {
+        if showsSettingsAffordance {
+            Image(systemName: "chevron.right")
+                .font(.caption.bold())
+                .foregroundStyle(.secondary)
+        }
     }
 }
