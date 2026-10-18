@@ -1,16 +1,16 @@
-DaysYet for iPhone and iPad needs no account or sign-in and has no server-backed features.
+DaysYet for iPhone and iPad needs no account or sign-in.
 
-New in 0.1.9: Three rows and Four circles share an editor. Circle timelines, values, themes, and colors can be saved in the app. Names sit inside the rings above the values; long names truncate visually but VoiceOver reads them in full. Text and tracks adapt when iOS removes widget backgrounds.
+New in 0.1.9: Three rows and Four circles share an editor with saved timelines, values, themes, and colors. Names sit inside rings above values; long names truncate visually but VoiceOver reads them in full. Text and tracks adapt when iOS removes widget backgrounds. Build 14 also aligns Times and Settings titles/backgrounds with Widget. At accessibility text sizes, time cards stack titles above values and wrap text. Navigation and saved settings are unchanged.
 
 Editor and colors:
-1. Complete onboarding; the milestone is optional. On the Widget tab, select Three rows or Four circles. Both use preview, timelines, then display settings. Settings > Widget settings opens this same tab. The selector edits a design; it does not change a placed widget's type.
-2. Open Colors for the current design's preview, four palette templates, and native color pickers for its visible timelines. Changes save immediately. Reset controls appear for customized colors. Selecting a template clears that design's individual colors, including hidden timelines.
-3. Row/circle colors are saved separately. Circles can follow the row palette and colors, with their own overrides, or use an independent template. Colors belong to each timeline, so repeated circle selections share one color. System color pickers allow arbitrary opaque colors.
+1. Complete onboarding; the milestone is optional. On Widget, select Three rows or Four circles: preview, timelines, then display settings. Settings > Widget settings opens the same tab. This selector does not change a placed widget's type.
+2. Colors contains the preview, four templates, and native pickers for visible timelines. Changes save immediately. Reset controls appear for custom colors. Selecting a template clears that design's individual colors, including hidden timelines.
+3. Row/circle colors save separately. Circles can follow the row palette/colors with their own overrides or use an independent template. Repeated circle timelines share one color. Pickers allow arbitrary opaque colors.
 
 Home Screen widgets:
 Touch and hold the Home Screen > Edit > Add Widget > DaysYet. Three rows supports Small/Medium; Four circles supports Small/Large. Each colored arc shows the remaining percentage; center values can be percentage, time left, or end date.
 
-New circle widgets follow app settings. For an existing circle widget, touch and hold > Edit Widget and set each position, Value style, and Theme to App setting. Explicit choices remain available. Defaults are This week, This month, This year, Daily activity, and Remaining percentage; the palette initially follows Three rows. A center value already using App setting now refers to the dedicated circle value rather than the row value.
+New circle widgets follow app settings. For an existing widget, touch and hold > Edit Widget and set each position, Value style, and Theme to App setting. Explicit choices remain available. Defaults: This week/month/year, Daily activity, Remaining percentage, and the Three rows palette. A center value already using App setting now follows the dedicated circle value instead of the row value.
 
 For Three rows, Edit Widget > enable Use the three selected in the app to follow app timelines; choose App setting for layout, values, and theme. Disable the switch for separate timelines. For either design, Theme = App setting includes the app's custom colors; an explicit theme uses its unmodified template. iOS controls refresh timing. Toolbar help covers installation and applying changes.
 
