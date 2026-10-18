@@ -8,6 +8,7 @@ struct DaysYetCircleTimelineEntry: TimelineEntry {
     let metrics: [MetricKind]
     let valueStyle: MetricValueStyle
     let theme: WidgetTheme
+    let customColors: [MetricKind: WidgetColor]
 }
 
 struct DaysYetCircleTimelineProvider: AppIntentTimelineProvider {
@@ -63,7 +64,8 @@ struct DaysYetCircleTimelineProvider: AppIntentTimelineProvider {
             profile: profile,
             metrics: configuration.resolvedMetrics(profile: profile),
             valueStyle: configuration.resolvedValueStyle(profile: profile),
-            theme: configuration.resolvedTheme(profile: profile)
+            theme: configuration.resolvedTheme(profile: profile),
+            customColors: configuration.resolvedCustomColors(profile: profile)
         )
     }
 }
@@ -79,7 +81,8 @@ struct DaysYetCircleWidgetEntryView: View {
             },
             valueStyle: entry.valueStyle,
             theme: entry.theme,
-            compact: family == .systemSmall
+            compact: family == .systemSmall,
+            customColors: entry.customColors
         )
         .containerBackground(for: .widget) {
             entry.theme.palette.background

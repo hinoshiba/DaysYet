@@ -10,6 +10,7 @@ struct CircleWidgetGrid: View {
     let compact: Bool
     /// App previews draw their own background; widgets use the host's environment.
     var showsContainerBackground: Bool? = nil
+    var customColors: [MetricKind: WidgetColor] = [:]
 
     var body: some View {
         GeometryReader { geometry in
@@ -28,7 +29,8 @@ struct CircleWidgetGrid: View {
                                     valueStyle: valueStyle,
                                     theme: theme,
                                     compact: compact,
-                                    showsContainerBackground: showsContainerBackground ?? widgetShowsContainerBackground
+                                    showsContainerBackground: showsContainerBackground ?? widgetShowsContainerBackground,
+                                    customColors: customColors
                                 )
                                 .frame(width: cellWidth, height: cellHeight)
                             }
@@ -42,15 +44,16 @@ struct CircleWidgetGrid: View {
 
 private struct CircleWidgetMetric: View {
     @Environment(\.widgetRenderingMode) private var renderingMode
-    @ScaledMetric(relativeTo: .caption2) private var compactValueSize: CGFloat = 11
-    @ScaledMetric(relativeTo: .title3) private var largeValueSize: CGFloat = 20
-    @ScaledMetric(relativeTo: .caption2) private var compactLabelSize: CGFloat = 11
+    @ScaledMetric(relativeTo: .caption) private var compactValueSize: CGFloat = 14
+    @ScaledMetric(relativeTo: .title2) private var largeValueSize: CGFloat = 24
+    @ScaledMetric(relativeTo: .caption2) private var compactLabelSize: CGFloat = 9
     @ScaledMetric(relativeTo: .caption) private var largeLabelSize: CGFloat = 12
     let snapshot: MetricSnapshot
     let valueStyle: MetricValueStyle
     let theme: WidgetTheme
     let compact: Bool
     let showsContainerBackground: Bool
+    let customColors: [MetricKind: WidgetColor]
 
     private var palette: WidgetThemePalette { theme.palette }
     private var usesThemeForeground: Bool {
@@ -59,52 +62,64 @@ private struct CircleWidgetMetric: View {
 
     var body: some View {
         GeometryReader { geometry in
-            let labelHeight = min(compact ? 16.0 : 36.0, geometry.size.height * 0.25)
-            let spacing: CGFloat = compact ? 2 : 6
-            let diameter = max(0, min(geometry.size.width, geometry.size.height - labelHeight - spacing))
+            let diameter = max(0, min(geometry.size.width, geometry.size.height))
             let lineWidth: CGFloat = compact ? 4 : 7
+            // An inscribed square keeps even two-line values inside the ring.
+            let contentSize = max(0, (diameter - lineWidth * 2) / sqrt(2))
+            let labelSize = min(compact ? compactLabelSize : largeLabelSize, diameter * 0.15)
+            // Reserve the same title space in every circle so wrapping does not
+            // shift the percentage relative to its neighbors.
+            let labelHeight = min(labelSize * (compact ? 1.25 : 2.4), contentSize * (compact ? 0.3 : 0.42))
+            let spacing = min(compact ? 1.0 : 3.0, contentSize * 0.05)
+            let valueSize = min(compact ? compactValueSize : largeValueSize, diameter * 0.24)
+            let valueLineLimit = snapshot.isOff || (valueStyle == .percentage && snapshot.hasScheduledTime) ? 1 : 2
+            let valueHeight = max(0, min(valueSize * CGFloat(valueLineLimit) * 1.3, contentSize - labelHeight - spacing))
 
-            VStack(spacing: spacing) {
-                ZStack {
+            ZStack {
+                Circle()
+                    .inset(by: lineWidth / 2)
+                    .stroke(trackStyle, lineWidth: lineWidth)
+                if snapshot.remainingFraction > 0 {
                     Circle()
                         .inset(by: lineWidth / 2)
-                        .stroke(trackStyle, lineWidth: lineWidth)
-                    if snapshot.remainingFraction > 0 {
-                        Circle()
-                            .inset(by: lineWidth / 2)
-                            .trim(from: 1 - snapshot.remainingFraction, to: 1)
-                            .stroke(ringStyle, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
-                            .rotationEffect(.degrees(-90))
-                            .widgetAccentable()
-                    }
+                        .trim(from: 1 - snapshot.remainingFraction, to: 1)
+                        .stroke(ringStyle, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
+                        .rotationEffect(.degrees(-90))
+                        .widgetAccentable()
+                }
+                VStack(spacing: spacing) {
+                    Text(snapshot.title)
+                        .font(.system(
+                            size: labelSize,
+                            weight: .semibold,
+                            design: .rounded
+                        ))
+                        .foregroundStyle(labelStyle)
+                        .lineLimit(compact ? 1 : 2)
+                        .truncationMode(.tail)
+                        .minimumScaleFactor(0.7)
+                        .allowsTightening(true)
+                        .frame(width: contentSize, height: labelHeight, alignment: .bottom)
+                        .clipped()
                     Text(valueText)
                         .font(.system(
-                            size: min(compact ? compactValueSize : largeValueSize, diameter * 0.3),
+                            size: valueSize,
                             weight: .bold,
                             design: .rounded
                         ))
                         .monospacedDigit()
-                        .multilineTextAlignment(.center)
-                        .lineLimit(valueStyle == .percentage && snapshot.hasScheduledTime ? 1 : 2)
+                        .lineLimit(valueLineLimit)
+                        .truncationMode(.tail)
                         .minimumScaleFactor(0.5)
                         .allowsTightening(true)
-                        .padding(lineWidth + (compact ? 2 : 6))
+                        .frame(width: contentSize, height: valueHeight)
+                        .clipped()
                 }
-                .frame(width: diameter, height: diameter)
-
-                Text(snapshot.title)
-                    .font(.system(
-                        size: min(compact ? compactLabelSize : largeLabelSize, labelHeight * (compact ? 0.75 : 0.38)),
-                        weight: .semibold,
-                        design: .rounded
-                    ))
-                    .foregroundStyle(labelStyle)
-                    .multilineTextAlignment(.center)
-                    .lineLimit(compact ? 1 : 2)
-                    .minimumScaleFactor(0.6)
-                    .frame(maxWidth: .infinity)
-                    .frame(height: labelHeight)
+                .multilineTextAlignment(.center)
+                .frame(width: contentSize, height: contentSize)
+                .clipped()
             }
+            .frame(width: diameter, height: diameter)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .foregroundStyle(usesThemeForeground ? AnyShapeStyle(palette.foreground) : AnyShapeStyle(Color.primary))
@@ -138,7 +153,9 @@ private struct CircleWidgetMetric: View {
 
     private var ringStyle: AnyShapeStyle {
         if renderingMode == .fullColor {
-            return AnyShapeStyle(AngularGradient(colors: palette.colors(for: snapshot.kind), center: .center))
+            return AnyShapeStyle(AngularGradient(
+                colors: palette.colors(for: snapshot.kind, customColors: customColors), center: .center
+            ))
         }
         return AnyShapeStyle(Color.primary)
     }

@@ -59,4 +59,9 @@ struct DaysYetCircleConfigurationIntent: WidgetConfigurationIntent {
     func resolvedTheme(profile: UserProfile) -> WidgetTheme {
         theme.resolved(profileTheme: profile.circleWidgetSettings.theme ?? profile.widgetTheme)
     }
+
+    func resolvedCustomColors(profile: UserProfile) -> [MetricKind: WidgetColor] {
+        // An explicitly selected widget template keeps its original colors.
+        theme == .appSetting ? profile.resolvedCircleWidgetCustomColors : [:]
+    }
 }

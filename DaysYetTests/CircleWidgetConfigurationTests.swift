@@ -106,6 +106,38 @@ final class CircleWidgetConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.resolvedMetrics(profile: profile), [.week, .month, .study, .activity])
     }
 
+    func testCustomColorsFollowAppSettingsWithoutChangingExplicitWidgetTemplates() throws {
+        var profile = UserProfile.initial
+        let rowColor = try XCTUnwrap(WidgetColor(hex: "#1278FE"))
+        let circleColor = try XCTUnwrap(WidgetColor(hex: "#A04BCD"))
+        profile.widgetCustomColors = [.week: rowColor]
+        profile.circleWidgetSettings.customColors = [.month: circleColor]
+        let configuration = DaysYetCircleConfigurationIntent()
+        XCTAssertEqual(configuration.resolvedCustomColors(profile: profile), [.week: rowColor, .month: circleColor])
+
+        for option in WidgetThemeOption.allCases where option != .appSetting {
+            configuration.theme = option
+            XCTAssertTrue(configuration.resolvedCustomColors(profile: profile).isEmpty)
+        }
+
+        configuration.theme = .appSetting
+        profile.circleWidgetSettings.theme = .softDawn
+        XCTAssertEqual(configuration.resolvedCustomColors(profile: profile), [.month: circleColor])
+        XCTAssertEqual(profile.widgetCustomColors, [.week: rowColor])
+    }
+
+    func testCustomPaletteColorChangesOnlyItsTimelineAndKeepsTemplateGradients() throws {
+        let custom = try XCTUnwrap(WidgetColor(hex: "#12ABEF"))
+        for theme in WidgetTheme.allCases {
+            let palette = theme.palette
+            XCTAssertEqual(palette.colors(for: .week, customColors: [.week: custom]), [custom.color, custom.color])
+            for kind in MetricKind.allCases where kind != .week {
+                XCTAssertEqual(palette.colors(for: kind, customColors: [.week: custom]), palette.colors(for: kind))
+            }
+            XCTAssertEqual(palette.colors(for: .week, customColors: [:]), palette.colors(for: .week))
+        }
+    }
+
     func testDedicatedSettingsRoundTripWithRepeatedMetricsAndThemeInheritance() throws {
         var profile = UserProfile.initial
         profile.circleWidgetSettings = CircleWidgetSettings(

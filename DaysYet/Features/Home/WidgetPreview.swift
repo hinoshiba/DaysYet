@@ -16,7 +16,8 @@ struct WidgetPreview: View {
                         mode: profile.widgetDisplayMode,
                         valueStyle: profile.dashboardValueStyle,
                         theme: profile.widgetTheme,
-                        compact: compact
+                        compact: compact,
+                        customColors: profile.widgetCustomColors
                     )
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 }
@@ -52,6 +53,7 @@ private struct WidgetPreviewMetricRow: View {
     let valueStyle: MetricValueStyle
     let theme: WidgetTheme
     let compact: Bool
+    let customColors: [MetricKind: WidgetColor]
 
     private var palette: WidgetThemePalette { theme.palette }
 
@@ -171,7 +173,7 @@ private struct WidgetPreviewMetricRow: View {
     private func combinedProgressBar(height: CGFloat) -> some View {
         ProgressBar(
             fraction: snapshot.remainingFraction,
-            colors: palette.colors(for: snapshot.kind),
+            colors: palette.colors(for: snapshot.kind, customColors: customColors),
             height: height,
             trackColor: palette.track
         )
@@ -194,7 +196,7 @@ private struct WidgetPreviewMetricRow: View {
 
             ProgressBar(
                 fraction: snapshot.remainingFraction,
-                colors: palette.colors(for: snapshot.kind),
+                colors: palette.colors(for: snapshot.kind, customColors: customColors),
                 height: compact ? 5 : 6,
                 trackColor: palette.track
             )
