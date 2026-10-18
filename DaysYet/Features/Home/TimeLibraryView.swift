@@ -27,8 +27,8 @@ struct TimeLibraryView: View {
                                 .font(.system(.largeTitle, design: .rounded, weight: .bold))
                                 .tracking(-0.7)
                             Text(L10n.text(
-                                "カードをタップすると、その時間だけの設定を開けます。ウィジェットに置く3本は、ウィジェットタブで選べます。",
-                                "Tap a card to edit that time’s own settings. Choose the three shown in your widget from the Widget tab."
+                                "カードをタップすると、その時間だけの設定を開けます。ウィジェットに表示する項目は、ウィジェットタブで選べます。",
+                                "Tap a card to edit that time’s own settings. Choose the timelines shown in your widget from the Widget tab."
                             ))
                             .foregroundStyle(.secondary)
                         }

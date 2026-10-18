@@ -105,6 +105,8 @@ capture() {
   take_shot "05-work-hours.png" --screenshot-edit-times
   take_shot "06-study-days.png" --screenshot-study-days
   take_shot "07-study-widget.png" --screenshot-study-widget
+  take_shot "08-four-circles.png" --screenshot-circles
+  take_shot "09-colors.png" --screenshot-circles --screenshot-colors
   xcrun simctl status_bar "${simulator_id}" clear
 }
 

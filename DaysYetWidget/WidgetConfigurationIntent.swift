@@ -35,4 +35,9 @@ struct DaysYetConfigurationIntent: WidgetConfigurationIntent {
         displayMode = .appSetting
         theme = .appSetting
     }
+
+    func resolvedCustomColors(profile: UserProfile) -> [MetricKind: WidgetColor] {
+        // An explicitly selected widget template keeps its original colors.
+        theme == .appSetting ? profile.widgetCustomColors : [:]
+    }
 }

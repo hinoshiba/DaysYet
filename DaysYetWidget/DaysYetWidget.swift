@@ -10,6 +10,7 @@ struct DaysYetTimelineEntry: TimelineEntry {
     let displayMode: WidgetDisplayMode
     let valueStyle: MetricValueStyle
     let theme: WidgetTheme
+    let customColors: [MetricKind: WidgetColor]
 }
 
 struct DaysYetTimelineProvider: AppIntentTimelineProvider {
@@ -22,7 +23,8 @@ struct DaysYetTimelineProvider: AppIntentTimelineProvider {
             metrics: [.week, .month, .year],
             displayMode: .progressBars,
             valueStyle: .remaining,
-            theme: .vividNight
+            theme: .vividNight,
+            customColors: [:]
         )
     }
 
@@ -102,7 +104,8 @@ struct DaysYetTimelineProvider: AppIntentTimelineProvider {
             metrics: metrics,
             displayMode: configuration.displayMode.resolved(profileMode: profile.widgetDisplayMode),
             valueStyle: configuration.valueStyle.resolved(profileStyle: profile.dashboardValueStyle),
-            theme: configuration.theme.resolved(profileTheme: profile.widgetTheme)
+            theme: configuration.theme.resolved(profileTheme: profile.widgetTheme),
+            customColors: configuration.resolvedCustomColors(profile: profile)
         )
     }
 }
@@ -128,7 +131,8 @@ struct DaysYetWidgetEntryView: View {
                     mode: entry.displayMode,
                     valueStyle: entry.valueStyle,
                     theme: entry.theme,
-                    compact: family == .systemSmall
+                    compact: family == .systemSmall,
+                    customColors: entry.customColors
                 )
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             }
@@ -157,6 +161,7 @@ private struct WidgetMetricRow: View {
     let valueStyle: MetricValueStyle
     let theme: WidgetTheme
     let compact: Bool
+    let customColors: [MetricKind: WidgetColor]
 
     private var palette: WidgetThemePalette { theme.palette }
     private var usesThemeForeground: Bool { renderingMode == .fullColor && showsContainerBackground }
@@ -335,7 +340,10 @@ private struct WidgetMetricRow: View {
     private var barStyle: AnyShapeStyle {
         if renderingMode == .fullColor {
             return AnyShapeStyle(
-                LinearGradient(colors: palette.colors(for: snapshot.kind), startPoint: .leading, endPoint: .trailing)
+                LinearGradient(
+                    colors: palette.colors(for: snapshot.kind, customColors: customColors),
+                    startPoint: .leading, endPoint: .trailing
+                )
             )
         }
         return AnyShapeStyle(Color.primary)

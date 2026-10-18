@@ -84,15 +84,18 @@ struct CircleWidgetSettings: Codable, Equatable, Sendable {
     var valueStyle: MetricValueStyle
     /// A nil theme follows the app's overall theme.
     var theme: WidgetTheme?
+    var customColors: [MetricKind: WidgetColor]
 
     init(
         metrics: [MetricKind] = Self.defaultMetrics,
         valueStyle: MetricValueStyle = .percentage,
-        theme: WidgetTheme? = nil
+        theme: WidgetTheme? = nil,
+        customColors: [MetricKind: WidgetColor] = [:]
     ) {
         self.metrics = metrics
         self.valueStyle = valueStyle
         self.theme = theme
+        self.customColors = customColors
     }
 
     /// Preserve repeated selections and the position of each of the four slots.
@@ -103,7 +106,7 @@ struct CircleWidgetSettings: Codable, Equatable, Sendable {
     }
 
     private enum CodingKeys: String, CodingKey {
-        case metrics, valueStyle, theme
+        case metrics, valueStyle, theme, customColors
     }
 
     init(from decoder: Decoder) throws {
@@ -115,6 +118,7 @@ struct CircleWidgetSettings: Codable, Equatable, Sendable {
         }
         valueStyle = (try? container.decode(MetricValueStyle.self, forKey: .valueStyle)) ?? .percentage
         theme = try? container.decode(WidgetTheme.self, forKey: .theme)
+        customColors = (try? container.decode(WidgetColorMap.self, forKey: .customColors))?.colors ?? [:]
     }
 
     func encode(to encoder: Encoder) throws {
@@ -122,6 +126,7 @@ struct CircleWidgetSettings: Codable, Equatable, Sendable {
         try container.encode(normalizedMetrics, forKey: .metrics)
         try container.encode(valueStyle, forKey: .valueStyle)
         try container.encodeIfPresent(theme, forKey: .theme)
+        try container.encode(WidgetColorMap(customColors), forKey: .customColors)
     }
 }
 
@@ -139,6 +144,7 @@ struct UserProfile: Codable, Equatable, Sendable {
     var widgetDisplayMode: WidgetDisplayMode
     var dashboardValueStyle: MetricValueStyle
     var widgetTheme: WidgetTheme
+    var widgetCustomColors: [MetricKind: WidgetColor]
     var circleWidgetSettings: CircleWidgetSettings
     var isConfigured: Bool
 
@@ -207,6 +213,7 @@ struct UserProfile: Codable, Equatable, Sendable {
         case widgetDisplayMode
         case dashboardValueStyle
         case widgetTheme
+        case widgetCustomColors
         case circleWidgetSettings
         case isConfigured
     }
@@ -228,7 +235,8 @@ struct UserProfile: Codable, Equatable, Sendable {
         dailyActivity: ActivitySchedule = .daily,
         workActivity: ActivitySchedule? = nil,
         studySchedule: StudySchedule = .initial,
-        circleWidgetSettings: CircleWidgetSettings = CircleWidgetSettings()
+        circleWidgetSettings: CircleWidgetSettings = CircleWidgetSettings(),
+        widgetCustomColors: [MetricKind: WidgetColor] = [:]
     ) {
         self.birthDate = birthDate
         self.healthyLifeYears = healthyLifeYears
@@ -245,6 +253,7 @@ struct UserProfile: Codable, Equatable, Sendable {
         self.widgetDisplayMode = widgetDisplayMode
         self.dashboardValueStyle = dashboardValueStyle
         self.widgetTheme = widgetTheme
+        self.widgetCustomColors = widgetCustomColors
         self.circleWidgetSettings = circleWidgetSettings
         self.isConfigured = isConfigured
     }
@@ -275,6 +284,7 @@ struct UserProfile: Codable, Equatable, Sendable {
         widgetDisplayMode = (try? container.decode(WidgetDisplayMode.self, forKey: .widgetDisplayMode)) ?? .progressBars
         dashboardValueStyle = (try? container.decode(MetricValueStyle.self, forKey: .dashboardValueStyle)) ?? .remaining
         widgetTheme = (try? container.decode(WidgetTheme.self, forKey: .widgetTheme)) ?? .vividNight
+        widgetCustomColors = (try? container.decode(WidgetColorMap.self, forKey: .widgetCustomColors))?.colors ?? [:]
         circleWidgetSettings = (try? container.decode(CircleWidgetSettings.self, forKey: .circleWidgetSettings))
             ?? CircleWidgetSettings()
         isConfigured = try container.decode(Bool.self, forKey: .isConfigured)
@@ -298,8 +308,15 @@ struct UserProfile: Codable, Equatable, Sendable {
         try container.encode(widgetDisplayMode, forKey: .widgetDisplayMode)
         try container.encode(dashboardValueStyle, forKey: .dashboardValueStyle)
         try container.encode(widgetTheme, forKey: .widgetTheme)
+        try container.encode(WidgetColorMap(widgetCustomColors), forKey: .widgetCustomColors)
         try container.encode(circleWidgetSettings, forKey: .circleWidgetSettings)
         try container.encode(isConfigured, forKey: .isConfigured)
+    }
+
+    /// Following the row theme also inherits its colors, unless a circle overrides one.
+    var resolvedCircleWidgetCustomColors: [MetricKind: WidgetColor] {
+        guard circleWidgetSettings.theme == nil else { return circleWidgetSettings.customColors }
+        return widgetCustomColors.merging(circleWidgetSettings.customColors) { _, circle in circle }
     }
 
     var normalizedDashboardMetrics: [MetricKind] {

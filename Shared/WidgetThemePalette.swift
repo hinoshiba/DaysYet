@@ -11,8 +11,9 @@ struct WidgetThemePalette {
     let accent: Color
     private let metricGradients: [[Color]]
 
-    func colors(for kind: MetricKind) -> [Color] {
-        switch kind {
+    func colors(for kind: MetricKind, customColors: [MetricKind: WidgetColor] = [:]) -> [Color] {
+        if let custom = customColors[kind] { return [custom.color, custom.color] }
+        return switch kind {
         case .week: metricGradients[0]
         case .month: metricGradients[1]
         case .year: metricGradients[2]

@@ -1,3 +1,10 @@
-• Added the Four circles Home Screen widget. Small and Large sizes show four timelines in a 2×2 grid.
-• Choose the top-left, top-right, bottom-left, and bottom-right timelines, center values (remaining percentage, time left, or end date), and theme for each widget. Defaults are This week, This month, This year, and Daily activity.
-• Supports Japanese, English, Dynamic Type, and VoiceOver. Existing three-row and Lock Screen widgets and your saved settings remain available.
+• Three rows and Four circles now share one in-app editor. Switch designs and follow the same order: preview, timelines, then display settings. You can also open it from Settings.
+• Save the four circle timelines, center value, and theme in the app. Newly added circle widgets use these settings; individual widget overrides remain available.
+• Colors brings together a preview, four palette templates, and a color picker for each timeline. Customize colors and reset them individually or together. Row and circle colors are saved separately, and circles can follow row colors.
+• Circle names now sit inside each ring, in smaller text above the value.
+• Improved text and track readability when iOS removes widget backgrounds, including in StandBy.
+• Consolidated instructions for adding widgets and applying changes in the toolbar help.
+
+To apply app settings to an existing circle widget, touch and hold it > Edit Widget and set each field to App setting. A center value already using App setting now follows the dedicated circle value setting, initially Remaining percentage. Your saved Three rows settings are preserved.
+
+Custom widget colors apply when Theme is App setting; an explicit theme uses its template. iOS controls Lock Screen and StandBy color and background rendering.

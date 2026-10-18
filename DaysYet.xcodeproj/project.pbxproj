@@ -19,8 +19,11 @@
 		15A96E0DCAECA58CA0D5ECE7 /* MacWidgetPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69813457F6DD4D80042683BE /* MacWidgetPreferences.swift */; };
 		173E528C30D166D165D41436 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 80602A41F91F2981A51EBE0E /* LICENSE */; };
 		199AEA4664CC59225B6C8F18 /* MacWidgetColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623E80015A8D443AD9E367E5 /* MacWidgetColorTests.swift */; };
+		1E3D4DA264DBA3723DE53BC8 /* WidgetColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4989462490B5F91F83AAD1D6 /* WidgetColor.swift */; };
 		212802DA1BF8E955FAA43C6B /* StudySchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD354587144C454884BB8828 /* StudySchedule.swift */; };
 		24DD53A121D0DA6BD9F70460 /* THIRD_PARTY_NOTICES.md in Resources */ = {isa = PBXBuildFile; fileRef = 37680AC2C679AD7E5923DC15 /* THIRD_PARTY_NOTICES.md */; };
+		2862772DC20692F87A366086 /* WidgetColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3495553E4DDA731CE2CDA3 /* WidgetColorTests.swift */; };
+		2D84F53A7CF010A2A3893412 /* WidgetColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3495553E4DDA731CE2CDA3 /* WidgetColorTests.swift */; };
 		2DCBD464C37F81B7F4FC236D /* ProfileRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D4529A3EAFCABF61CBA729D /* ProfileRepository.swift */; };
 		35AC664734EEEB4F383A996F /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA91CAA558C93AA58DF6FEB8 /* ProgressBar.swift */; };
 		39DAA55E95A5E78EE50BDFE7 /* WorkHoursTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9662ABB4E73AFBAA5B22B82D /* WorkHoursTests.swift */; };
@@ -42,6 +45,8 @@
 		589088BF6B0D2D21B1E42601 /* TimeMetric.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787BB50AE053C559748C39E4 /* TimeMetric.swift */; };
 		59E7DD6A4423C0C77B0382B1 /* StudyScheduleEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBDAAB14865688B102E5DF7 /* StudyScheduleEditor.swift */; };
 		5E8645B190857C3DCBBA3076 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969922BBF414097227DF1A0E /* OnboardingView.swift */; };
+		60C26FDE0EA4172214E9C8A2 /* WidgetColorProfileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC95FF2A482B9838CD22226F /* WidgetColorProfileTests.swift */; };
+		61CA9ED550A8388B4BBDE72E /* WidgetColorProfileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC95FF2A482B9838CD22226F /* WidgetColorProfileTests.swift */; };
 		6414D35FF6013C7BE2C90A0D /* ActivityScheduleEditorContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = E990ACA6F50800ABD6754B72 /* ActivityScheduleEditorContent.swift */; };
 		6588473D3F42BFD5BF6AF326 /* WidgetStudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B76A90071D066FB56C71C5EC /* WidgetStudioView.swift */; };
 		6D93E37B71D9C59C5B169118 /* DaysYetTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40CE81B58E035A5129E7D2E /* DaysYetTheme.swift */; };
@@ -57,6 +62,7 @@
 		7EA968CA461D8A76438D7105 /* ActivityScheduleEditorContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = E990ACA6F50800ABD6754B72 /* ActivityScheduleEditorContent.swift */; };
 		80282C52FEDFF23801AAEA57 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 343F8E3BCF1BFAEAEBD45A97 /* Assets.xcassets */; };
 		85EABD42E7FC7E7ADDCA3C2B /* TimeMetric.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787BB50AE053C559748C39E4 /* TimeMetric.swift */; };
+		87B6D0840A107FE4F22AD04E /* WidgetColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4989462490B5F91F83AAD1D6 /* WidgetColor.swift */; };
 		8884C49053255442004E4076 /* MacLoginItemSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABC46F615264F47CAE996877 /* MacLoginItemSettingsTests.swift */; };
 		8E5C94002BD49BCB08660381 /* StudyScheduleEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBDAAB14865688B102E5DF7 /* StudyScheduleEditor.swift */; };
 		9021D64237A8C956A22F7E6C /* WidgetConfigurationIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F496778F27954462FC180E9 /* WidgetConfigurationIntent.swift */; };
@@ -85,12 +91,14 @@
 		CFDADD3AD39F8A8248936B23 /* MacWidgetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5850D0BE692A63A71E62BE3E /* MacWidgetTests.swift */; };
 		D140799DC3B11E6C4B49AD2E /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 80602A41F91F2981A51EBE0E /* LICENSE */; };
 		D489FE92E2B47F6A316C4761 /* CircleWidgetConfigurationIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88F7DC2D8F30DFB87A613B7 /* CircleWidgetConfigurationIntent.swift */; };
+		D4F916CEA9DB0F2C620E96A7 /* WidgetColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4989462490B5F91F83AAD1D6 /* WidgetColor.swift */; };
 		D6F28DDF872DCCAC2BE34579 /* MacWidgetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A595FB6033234CAF7CA04E0C /* MacWidgetController.swift */; };
 		D70A37DD7864DF557E54602D /* MacSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B11D4C863E5F66FF0D5780 /* MacSettingsView.swift */; };
 		D9C9A244E134300DD9AE6CDC /* DaysYetCircleWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978165861780CE67270437AE /* DaysYetCircleWidget.swift */; };
 		D9DF23D0950A358548E83792 /* DATA_SOURCES.md in Resources */ = {isa = PBXBuildFile; fileRef = 4F043AFA52F194DBD59AF711 /* DATA_SOURCES.md */; };
 		DAC14362DD93C6EAD812EDAD /* CircleWidgetConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B41D138481FF74278B3C1E4 /* CircleWidgetConfigurationTests.swift */; };
 		DBF3257F4C9FB8F300DC21C0 /* CountdownValueLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0618C16198637FB983104639 /* CountdownValueLabel.swift */; };
+		DEA855224782A82C4E93C99B /* WidgetColorSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19A9E6B143F4543BF250C55 /* WidgetColorSettingsView.swift */; };
 		DFAB566A99FE9D4C3B9DF254 /* WidgetThemePalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223C8EC7373FA0756EAB7C3B /* WidgetThemePalette.swift */; };
 		E3E2174926AFE6402CD2BCBC /* WeekStartTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62BD112C3BA9417B89662401 /* WeekStartTests.swift */; };
 		E599D0FABAA625A46424AD4D /* WidgetThemePalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223C8EC7373FA0756EAB7C3B /* WidgetThemePalette.swift */; };
@@ -168,7 +176,9 @@
 		223C8EC7373FA0756EAB7C3B /* WidgetThemePalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetThemePalette.swift; sourceTree = "<group>"; };
 		343F8E3BCF1BFAEAEBD45A97 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		37680AC2C679AD7E5923DC15 /* THIRD_PARTY_NOTICES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = THIRD_PARTY_NOTICES.md; sourceTree = "<group>"; };
+		3A3495553E4DDA731CE2CDA3 /* WidgetColorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetColorTests.swift; sourceTree = "<group>"; };
 		42CD64EF0BE487E467E8EE54 /* L10n.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = L10n.swift; sourceTree = "<group>"; };
+		4989462490B5F91F83AAD1D6 /* WidgetColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetColor.swift; sourceTree = "<group>"; };
 		4F043AFA52F194DBD59AF711 /* DATA_SOURCES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = DATA_SOURCES.md; sourceTree = "<group>"; };
 		4F18863FE1366766444715E8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		5850D0BE692A63A71E62BE3E /* MacWidgetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetTests.swift; sourceTree = "<group>"; };
@@ -199,6 +209,7 @@
 		969922BBF414097227DF1A0E /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		978165861780CE67270437AE /* DaysYetCircleWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysYetCircleWidget.swift; sourceTree = "<group>"; };
 		9D94F4707A5BA71C438877A9 /* MacTimeRailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacTimeRailView.swift; sourceTree = "<group>"; };
+		A19A9E6B143F4543BF250C55 /* WidgetColorSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetColorSettingsView.swift; sourceTree = "<group>"; };
 		A1B11D4C863E5F66FF0D5780 /* MacSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSettingsView.swift; sourceTree = "<group>"; };
 		A40CE81B58E035A5129E7D2E /* DaysYetTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysYetTheme.swift; sourceTree = "<group>"; };
 		A5077CE484DDB9FA8448530A /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -219,6 +230,7 @@
 		CDFFE9A3383E27B646F2AEDD /* MacWidgetColorSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetColorSettings.swift; sourceTree = "<group>"; };
 		D0B4316388958D185FAD4CCF /* DaysYetLockScreenWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysYetLockScreenWidget.swift; sourceTree = "<group>"; };
 		D10E6E3ADE87F9484D9C78A2 /* DaysYetUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = DaysYetUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DC95FF2A482B9838CD22226F /* WidgetColorProfileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetColorProfileTests.swift; sourceTree = "<group>"; };
 		E990ACA6F50800ABD6754B72 /* ActivityScheduleEditorContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityScheduleEditorContent.swift; sourceTree = "<group>"; };
 		ED60161D9CC07517DAD83D7C /* CircleWidgetGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleWidgetGrid.swift; sourceTree = "<group>"; };
 		F2218EE8FA923E98D18516D4 /* TimeLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLibraryView.swift; sourceTree = "<group>"; };
@@ -250,6 +262,8 @@
 				643338F9F52FABE2D2989A81 /* StudyScheduleTests.swift */,
 				091F1E00C9DBA9A030F1A29D /* TimeProgressCalculatorTests.swift */,
 				62BD112C3BA9417B89662401 /* WeekStartTests.swift */,
+				DC95FF2A482B9838CD22226F /* WidgetColorProfileTests.swift */,
+				3A3495553E4DDA731CE2CDA3 /* WidgetColorTests.swift */,
 				9662ABB4E73AFBAA5B22B82D /* WorkHoursTests.swift */,
 			);
 			path = DaysYetTests;
@@ -344,6 +358,7 @@
 			children = (
 				CA91CAA558C93AA58DF6FEB8 /* ProgressBar.swift */,
 				F2218EE8FA923E98D18516D4 /* TimeLibraryView.swift */,
+				A19A9E6B143F4543BF250C55 /* WidgetColorSettingsView.swift */,
 				00AAA44E592AAC3BF808D773 /* WidgetPreview.swift */,
 				B76A90071D066FB56C71C5EC /* WidgetStudioView.swift */,
 			);
@@ -419,6 +434,7 @@
 				5BBDAAB14865688B102E5DF7 /* StudyScheduleEditor.swift */,
 				787BB50AE053C559748C39E4 /* TimeMetric.swift */,
 				785E00C0D2C2EA34EB0A2AA4 /* UserProfile.swift */,
+				4989462490B5F91F83AAD1D6 /* WidgetColor.swift */,
 				223C8EC7373FA0756EAB7C3B /* WidgetThemePalette.swift */,
 			);
 			path = Shared;
@@ -656,6 +672,7 @@
 				3BF43F4237015ECD92A5C738 /* StudyScheduleEditor.swift in Sources */,
 				85EABD42E7FC7E7ADDCA3C2B /* TimeMetric.swift in Sources */,
 				FB226A76DFBF9E8165F7AD29 /* UserProfile.swift in Sources */,
+				1E3D4DA264DBA3723DE53BC8 /* WidgetColor.swift in Sources */,
 				9021D64237A8C956A22F7E6C /* WidgetConfigurationIntent.swift in Sources */,
 				DFAB566A99FE9D4C3B9DF254 /* WidgetThemePalette.swift in Sources */,
 			);
@@ -686,6 +703,7 @@
 				59E7DD6A4423C0C77B0382B1 /* StudyScheduleEditor.swift in Sources */,
 				589088BF6B0D2D21B1E42601 /* TimeMetric.swift in Sources */,
 				B420EAFB604CA21AEF3D34B5 /* UserProfile.swift in Sources */,
+				D4F916CEA9DB0F2C620E96A7 /* WidgetColor.swift in Sources */,
 				E599D0FABAA625A46424AD4D /* WidgetThemePalette.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -720,6 +738,8 @@
 				B488AE222EA19AF5F4AA42DC /* TimeLibraryView.swift in Sources */,
 				567336EF98496F222B1AB276 /* TimeMetric.swift in Sources */,
 				11CE4CE5C819962411E0E55D /* UserProfile.swift in Sources */,
+				87B6D0840A107FE4F22AD04E /* WidgetColor.swift in Sources */,
+				DEA855224782A82C4E93C99B /* WidgetColorSettingsView.swift in Sources */,
 				457E6915E9DD0A4DA516C1D8 /* WidgetPreview.swift in Sources */,
 				6588473D3F42BFD5BF6AF326 /* WidgetStudioView.swift in Sources */,
 				EF5AEE0C2965F4F18F9B096F /* WidgetThemePalette.swift in Sources */,
@@ -734,6 +754,8 @@
 				F1C690026702A4AAC963828E /* StudyScheduleTests.swift in Sources */,
 				B5DAF61685AE2120FC34313D /* TimeProgressCalculatorTests.swift in Sources */,
 				C8E7D8C6C12AE8C965D8F11A /* WeekStartTests.swift in Sources */,
+				60C26FDE0EA4172214E9C8A2 /* WidgetColorProfileTests.swift in Sources */,
+				2D84F53A7CF010A2A3893412 /* WidgetColorTests.swift in Sources */,
 				39DAA55E95A5E78EE50BDFE7 /* WorkHoursTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -753,6 +775,8 @@
 				7D931002DC755EF2AD7D7F44 /* StudyScheduleTests.swift in Sources */,
 				F12A599B4D7C4566D140AFA1 /* TimeProgressCalculatorTests.swift in Sources */,
 				E3E2174926AFE6402CD2BCBC /* WeekStartTests.swift in Sources */,
+				61CA9ED550A8388B4BBDE72E /* WidgetColorProfileTests.swift in Sources */,
+				2862772DC20692F87A366086 /* WidgetColorTests.swift in Sources */,
 				78A8590AFB6B87F956553E70 /* WorkHoursTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -819,7 +843,7 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_ENTITLEMENTS = DaysYetWidget/DaysYetWidget.entitlements;
 				CODE_SIGN_IDENTITY = "$(inherited)";
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = DaysYetWidget/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -827,7 +851,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 0.1.8;
+				MARKETING_VERSION = 0.1.9;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.widget;
 				PROVISIONING_PROFILE_SPECIFIER = "$(DAYSYET_WIDGET_PROFILE)";
 				SDKROOT = iphoneos;
@@ -868,14 +892,14 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DaysYet/DaysYet.entitlements;
 				CODE_SIGN_IDENTITY = "$(inherited)";
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = DaysYet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.8;
+				MARKETING_VERSION = 0.1.9;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet;
 				PROVISIONING_PROFILE_SPECIFIER = "$(DAYSYET_IOS_PROFILE)";
 				SDKROOT = iphoneos;
@@ -954,7 +978,7 @@
 				APPLICATION_EXTENSION_API_ONLY = YES;
 				CODE_SIGN_ENTITLEMENTS = DaysYetWidget/DaysYetWidget.entitlements;
 				CODE_SIGN_IDENTITY = "$(inherited)";
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = DaysYetWidget/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -962,7 +986,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 0.1.8;
+				MARKETING_VERSION = 0.1.9;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.widget;
 				PROVISIONING_PROFILE_SPECIFIER = "$(DAYSYET_WIDGET_PROFILE)";
 				SDKROOT = iphoneos;
@@ -1054,14 +1078,14 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = DaysYet/DaysYet.entitlements;
 				CODE_SIGN_IDENTITY = "$(inherited)";
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = DaysYet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.8;
+				MARKETING_VERSION = 0.1.9;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet;
 				PROVISIONING_PROFILE_SPECIFIER = "$(DAYSYET_IOS_PROFILE)";
 				SDKROOT = iphoneos;
@@ -1137,14 +1161,14 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGNING_ALLOWED = NO;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.8;
+				MARKETING_VERSION = 0.1.9;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.tests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1157,14 +1181,14 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGNING_ALLOWED = NO;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 13;
 				GENERATE_INFOPLIST_FILE = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.8;
+				MARKETING_VERSION = 0.1.9;
 				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.tests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
