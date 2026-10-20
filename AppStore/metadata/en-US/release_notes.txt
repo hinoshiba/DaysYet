@@ -1,12 +1,9 @@
-• Times and Settings now share Widget's navigation title and grouped background style. A shorter instruction keeps Times focused on your timelines.
-• At accessibility text sizes, time cards place titles above values and let text wrap for easier reading.
-• Three rows and Four circles now share one in-app editor. Switch designs and follow the same order: preview, timelines, then display settings. You can also open it from Settings.
-• Save the four circle timelines, center value, and theme in the app. Newly added circle widgets use these settings; individual widget overrides remain available.
-• Colors brings together a preview, four palette templates, and a color picker for each timeline. Customize colors and reset them individually or together. Row and circle colors are saved separately, and circles can follow row colors.
-• Circle names now sit inside each ring, in smaller text above the value.
-• Improved text and track readability when iOS removes widget backgrounds, including in StandBy.
-• Consolidated instructions for adding widgets and applying changes in the toolbar help.
+• Balanced the four-circle layout with one-line names, consistent percentage sizes, a smaller percent sign, and proportionate rings. Long names truncate inside their circles.
+• Small circles show the leading duration unit, dates with two-digit years, and activity times in 24-hour format. Large and VoiceOver retain detailed durations.
+• The circle preview now represents the Small layout.
+• Settings > Widget settings returns to the type chooser, and the app remembers your last editor selection.
+• Added a visible Add or switch on the Home Screen action below the preview.
+• Renamed Colors to Colors & palette and moved it directly below the preview.
+• Touch and hold a Times card > Change color to customize or reset its color. Cards now reflect the colors shared with Three timelines. Normal taps still open timeline settings where available.
 
-To apply app settings to an existing circle widget, touch and hold it > Edit Widget and set each field to App setting. A center value already using App setting now follows the dedicated circle value setting, initially Remaining percentage. Your saved Three rows settings are preserved.
-
-Custom widget colors apply when Theme is App setting; an explicit theme uses its template. iOS controls Lock Screen and StandBy color and background rendering.
+Saved settings, individual widget choices, and custom colors are preserved. The type selector chooses what to edit. To change the type on your Home Screen, add the desired widget from the system gallery.

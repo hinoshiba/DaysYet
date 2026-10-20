@@ -87,6 +87,7 @@ assert_line() {
 
 allowed_public_docs=(
   docs/STUDY_DAYS.md
+  docs/FOUR_CIRCLE_DESIGN_REVIEW.md
   docs/screenshots/study-days/ios-en-calendar.png
   docs/screenshots/study-days/ios-ja-calendar.png
   docs/screenshots/study-days/ios-ja-overview.png
@@ -124,6 +125,7 @@ for privacy_manifest in DaysYet/PrivacyInfo.xcprivacy DaysYetWidget/PrivacyInfo.
   assert_contains "${privacy_manifest}" "NSPrivacyAccessedAPICategoryUserDefaults"
   assert_contains "${privacy_manifest}" "1C8F.1"
 done
+assert_contains DaysYet/PrivacyInfo.xcprivacy "CA92.1"
 assert_contains DaysYetMac/PrivacyInfo.xcprivacy "NSPrivacyAccessedAPICategoryUserDefaults"
 assert_contains DaysYetMac/PrivacyInfo.xcprivacy "CA92.1"
 assert_contains DaysYetMac/PrivacyInfo.xcprivacy "NSPrivacyAccessedAPICategorySystemBootTime"

@@ -60,7 +60,7 @@ struct OnboardingView: View {
                     .font(.system(size: 38, weight: .bold, design: .rounded))
                     .multilineTextAlignment(.center)
                     .tracking(-0.8)
-                Text(L10n.text("活動時間から、今月・今年・人生まで。\n大切な3本だけを、ホーム画面へ。", "From activity hours to months, years, and life.\nKeep the three that matter on your Home Screen."))
+                Text(L10n.text("活動時間から、今月・今年・人生まで。\n大切な時間を、ホーム画面へ。", "From activity hours to months, years, and life.\nKeep the times that matter on your Home Screen."))
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.secondary)
                     .lineSpacing(4)
@@ -153,7 +153,7 @@ struct OnboardingView: View {
             VStack(alignment: .leading, spacing: 24) {
                 VStack(alignment: .leading, spacing: 8) {
                     EyebrowLabel(text: L10n.text("準備完了", "Ready"))
-                    Text(L10n.text("3つの時間を、\nひと目に。", "Three times,\none glance."))
+                    Text(L10n.text("大切な時間を、\nひと目に。", "Your time,\none glance."))
                         .font(.largeTitle.bold())
                     Text(L10n.text("最初は「今月・今年・健康でいたい年齢」。アプリ内で自由に入れ替えられます。", "Start with month, year, and your healthy-age goal. Change them anytime in the app."))
                         .foregroundStyle(.secondary)

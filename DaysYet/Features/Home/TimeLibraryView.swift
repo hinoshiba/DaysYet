@@ -14,14 +14,15 @@ extension MetricKind {
 
 struct TimeLibraryView: View {
     @EnvironmentObject private var store: ProfileStore
+    @State private var colorEditingMetric: MetricKind?
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 60)) { context in
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 14) {
                     Text(L10n.text(
-                        "活動時間や日付は、各カードから編集できます。",
-                        "Edit schedules and dates from their cards."
+                        "活動時間や日付はタップで編集。色はカードを長押し。",
+                        "Tap schedule and date cards to edit them. Touch and hold any card to change its color."
                     ))
                         .font(.footnote)
                         .foregroundStyle(.secondary)
@@ -35,7 +36,9 @@ struct TimeLibraryView: View {
                                 now: context.date
                             ),
                             valueStyle: store.profile.dashboardValueStyle,
-                            theme: store.profile.widgetTheme
+                            theme: store.profile.widgetTheme,
+                            customColors: store.profile.widgetCustomColors,
+                            editColor: { colorEditingMetric = metric }
                         )
                     }
                 }
@@ -46,6 +49,9 @@ struct TimeLibraryView: View {
         .background(Color(.systemGroupedBackground))
         .navigationTitle(L10n.text("時間", "Times"))
         .navigationBarTitleDisplayMode(.inline)
+        .sheet(item: $colorEditingMetric) { metric in
+            TimelineColorSettingsView(metric: metric)
+        }
     }
 }
 
@@ -53,24 +59,43 @@ private struct MetricLibraryRow: View {
     let snapshot: MetricSnapshot
     let valueStyle: MetricValueStyle
     let theme: WidgetTheme
+    let customColors: [MetricKind: WidgetColor]
+    let editColor: () -> Void
 
     var body: some View {
-        if snapshot.kind.hasOwnSettings {
-            NavigationLink {
-                MetricSettingsView(kind: snapshot.kind)
-            } label: {
+        Group {
+            if snapshot.kind.hasOwnSettings {
+                NavigationLink {
+                    MetricSettingsView(kind: snapshot.kind)
+                } label: {
+                    MetricCard(
+                        snapshot: snapshot,
+                        valueStyle: valueStyle,
+                        theme: theme,
+                        customColors: customColors,
+                        showsSettingsAffordance: true
+                    )
+                }
+                .buttonStyle(.plain)
+            } else {
                 MetricCard(
                     snapshot: snapshot,
                     valueStyle: valueStyle,
                     theme: theme,
-                    showsSettingsAffordance: true
+                    customColors: customColors
                 )
             }
-            .buttonStyle(.plain)
-            .accessibilityIdentifier("times.metric.\(snapshot.kind.rawValue)")
-        } else {
-            MetricCard(snapshot: snapshot, valueStyle: valueStyle, theme: theme)
         }
+        .contextMenu {
+            Button(action: editColor) {
+                Label(L10n.text("色を変更", "Change color"), systemImage: "paintpalette")
+            }
+            .accessibilityIdentifier("times.color.change")
+        }
+        .accessibilityAction(named: Text(L10n.text("色を変更", "Change color"))) {
+            editColor()
+        }
+        .accessibilityIdentifier("times.metric.\(snapshot.kind.rawValue)")
     }
 }
 

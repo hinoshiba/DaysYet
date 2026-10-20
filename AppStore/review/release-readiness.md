@@ -1,6 +1,12 @@
 # Release readiness
 
-## Current iOS 0.1.9 (14) resubmission
+## Current iOS 0.1.10 (15) preparation
+
+The release owner authorized merging the circle/layout, color-discovery, and Times long-press color improvements and submitting an iPhone / iPad update. App Store Connect showed iOS 0.1.9 (14) Ready for Distribution on 2026-10-20, with build 14 the newest iOS upload. The new candidate is 0.1.10 (15); Mac remains 0.1.8 (12). See the [0.1.10 release record](../releases/0.1.10.md) for candidate validation and the eventual submission receipt.
+
+Latest local candidate tests passed with zero failures: 127 iOS tests, 230 Mac tests, and eight iPhone UI tests (seven WidgetNavigation tests plus the static-card interaction test). The UI checks include native color selection/reset and normal editable-card taps after long-press color editing. Independent review of the Times color shortcut and color navigation found no must-fix issue. Store material verification, final source/tag and exact-release-commit CI, Archive, Validate, upload, processing, and final submission remain to be completed; these local results do not establish submission or public availability of 0.1.10.
+
+## Historical iOS 0.1.9 (14) resubmission
 
 Final Submit for Review succeeded for iOS 0.1.9 (14) on 2026-10-18 at 19:03 JST. Submission details confirmed one submitted item, the exact iOS 0.1.9 (14) build, Waiting for Review, and the 19:03 submission time. Build 14 replaces build 13 at the release owner's request; withdrawal was confirmed at 18:22 JST, and the previous build 13 receipt is marked Removed. Automatic release after approval to all users is retained. Mac remains 0.1.8 (12). Approval and public availability of iOS 0.1.9 remain unconfirmed.
 

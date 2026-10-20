@@ -3,15 +3,11 @@ import SwiftUI
 struct WidgetStudioView: View {
     @EnvironmentObject private var store: ProfileStore
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @State private var selectedLayout: WidgetEditorLayout
+    @Binding private var selectedLayout: WidgetEditorLayout
     @State private var showWidgetGuide = false
 
-    init() {
-#if DEBUG
-        _selectedLayout = State(initialValue: ProcessInfo.processInfo.arguments.contains("--screenshot-circles") ? .circles : .rows)
-#else
-        _selectedLayout = State(initialValue: .rows)
-#endif
+    init(layout: Binding<WidgetEditorLayout>) {
+        _selectedLayout = layout
     }
 
     var body: some View {
@@ -34,10 +30,53 @@ struct WidgetStudioView: View {
                 Section {
                     preview
                         .frame(maxWidth: .infinity)
-                        .frame(height: 224)
+                        .frame(height: selectedLayout == .circles ? 186 : 224)
                         .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+
+                    NavigationLink {
+                        WidgetColorSettingsView(layout: selectedLayout)
+                    } label: {
+                        ViewThatFits(in: .horizontal) {
+                            HStack {
+                                Text(L10n.text("色と配色", "Colors & palette"))
+                                Spacer()
+                                Text(selectedLayout.colorSummary(profile: store.profile))
+                                    .foregroundStyle(.secondary)
+                            }
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text(L10n.text("色と配色", "Colors & palette"))
+                                Text(selectedLayout.colorSummary(profile: store.profile))
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .accessibilityIdentifier("widget.colors")
+
+                    Button {
+                        showWidgetGuide = true
+                    } label: {
+                        Label(
+                            L10n.text("ホーム画面に追加・切り替え", "Add or switch on the Home Screen"),
+                            systemImage: "plus.rectangle.on.rectangle"
+                        )
+                        .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .accessibilityIdentifier("widget.guide")
                 } footer: {
-                    Text(selectedLayout.sizes)
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(selectedLayout == .circles
+                             ? L10n.text("小サイズのプレビュー · 小・大サイズで追加できます", "Small preview · Available in Small and Large")
+                             : selectedLayout.sizes)
+                        Text(L10n.text(
+                            "ここでは編集する種類を選びます。ホーム画面の種類は、追加し直して切り替えます。",
+                            "This selects the settings to edit. To change the type on your Home Screen, add that widget."
+                        ))
+                    }
                 }
 
                 Section {
@@ -93,27 +132,20 @@ struct WidgetStudioView: View {
                         }
                         .accessibilityIdentifier("widget.valueStyle")
                     }
-
-                    NavigationLink {
-                        WidgetColorSettingsView(layout: selectedLayout)
-                    } label: {
-                        ViewThatFits(in: .horizontal) {
-                            HStack {
-                                Text(L10n.text("カラー", "Colors"))
-                                Spacer()
-                                Text(selectedLayout.colorSummary(profile: store.profile))
-                                    .foregroundStyle(.secondary)
-                            }
-                            VStack(alignment: .leading, spacing: 6) {
-                                Text(L10n.text("カラー", "Colors"))
-                                Text(selectedLayout.colorSummary(profile: store.profile))
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                    }
-                    .accessibilityIdentifier("widget.colors")
                 } header: {
                     Text(L10n.text("表示", "Display"))
+                } footer: {
+                    if selectedLayout == .circles && valueStyleBinding.wrappedValue == .remaining {
+                        Text(L10n.text(
+                            "小サイズは主要な単位、大サイズは詳しい残り時間を表示します。",
+                            "Small shows the leading unit; Large shows the detailed time left."
+                        ))
+                    } else if selectedLayout == .circles && valueStyleBinding.wrappedValue == .targetDate {
+                        Text(L10n.text(
+                            "小サイズは年を2桁、時刻を24時間で表示します。",
+                            "Small uses a two-digit year and a 24-hour clock."
+                        ))
+                    }
                 }
             }
             // Changing the editor returns to its preview without changing either
@@ -123,16 +155,6 @@ struct WidgetStudioView: View {
         .background(Color(.systemGroupedBackground))
         .navigationTitle(L10n.text("ウィジェット", "Widgets"))
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    showWidgetGuide = true
-                } label: {
-                    Label(L10n.text("追加・反映方法", "Add and apply settings"), systemImage: "questionmark.circle")
-                }
-                .accessibilityIdentifier("widget.guide")
-            }
-        }
         .sheet(isPresented: $showWidgetGuide) {
             WidgetGuideView(layout: selectedLayout)
         }
@@ -255,7 +277,7 @@ enum WidgetEditorLayout: String, CaseIterable, Identifiable {
 
     var id: String { rawValue }
     var title: String {
-        self == .rows ? L10n.text("3つの行", "Three rows") : L10n.text("4つのサークル", "Four circles")
+        self == .rows ? L10n.text("3つの時間", "Three timelines") : L10n.text("4つのサークル", "Four circles")
     }
     var sizes: String {
         self == .rows
@@ -284,16 +306,16 @@ private struct WidgetGuideView: View {
                 Section {
                     Label(L10n.text("ホーム画面を長押し", "Touch and hold the Home Screen"), systemImage: "1.circle")
                     Label(L10n.text("編集 → ウィジェットを追加", "Choose Edit → Add Widget"), systemImage: "2.circle")
-                    Label(L10n.text("DaysYetを検索して種類とサイズを選ぶ", "Search for DaysYet and choose a type and size"), systemImage: "3.circle")
+                    Label(L10n.text("DaysYetを検索", "Search for DaysYet"), systemImage: "3.circle")
                     Text(layout == .circles
-                         ? L10n.text("「4つのサークル」の小・大サイズを選びます。", "Choose Four circles in Small or Large.")
-                         : L10n.text("「DaysYet — 3つの時間」の小・中サイズを選びます。", "Choose DaysYet — Three timelines in Small or Medium."))
+                         ? L10n.text("「4つのサークル」の小・大サイズを選んで追加します。", "Add Four circles in Small or Large.")
+                         : L10n.text("「DaysYet — 3つの時間」の小・中サイズを選んで追加します。", "Add DaysYet — Three timelines in Small or Medium."))
                 } header: {
-                    Text(L10n.text("ホーム画面に追加", "Add to the Home Screen"))
+                    Text(L10n.text("ホーム画面に追加・切り替え", "Add or switch on the Home Screen"))
                 } footer: {
                     Text(L10n.text(
-                        "アプリの種類切替は、編集する設定を選びます。ホーム画面に置く種類は追加時に選びます。",
-                        "The app's type selector chooses which settings to edit. Choose the type placed on the Home Screen when adding a widget."
+                        "新しいウィジェットの表示を確認したら、不要になった方を長押しして削除できます。",
+                        "After checking the new widget, you can touch and hold the old one to remove it."
                     ))
                 }
 
@@ -325,7 +347,7 @@ private struct WidgetGuideView: View {
                     Text(L10n.text("背景の半透明化、ロック画面の単色表示、スタンバイの夜間の色はiOSが調整します。", "iOS controls translucent backgrounds, monochrome Lock Screen widgets, and StandBy's nighttime colors."))
                 }
             }
-            .navigationTitle(L10n.text("追加・反映方法", "Add and apply settings"))
+            .navigationTitle(L10n.text("追加・切り替え方法", "Add and switch widgets"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {

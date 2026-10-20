@@ -13,12 +13,11 @@ app_group: group.com.hinoshiba.daysyet
 widget_kind: com.hinoshiba.daysyet.widget.progress
 circle_widget_kind: com.hinoshiba.daysyet.widget.circles
 lock_screen_widget_kind: com.hinoshiba.daysyet.widget.lock-screen
-# iOS 0.1.9 (14) submitted on 2026-10-18 at 19:03 JST; Waiting for Review.
-# Build 13 was withdrawn on 2026-10-18.
-# See releases/0.1.9-build14.md; the original build 13 record remains in releases/0.1.9.md.
-# Previous iOS 0.1.8 is Ready for Distribution; submission record: releases/0.1.8.md.
-version: 0.1.9
-build: 14
+# iOS 0.1.10 (15) release candidate; see releases/0.1.10.md.
+# App Store Connect showed iOS 0.1.9 (14) Ready for Distribution on 2026-10-20.
+# Its historical submission record remains in releases/0.1.9-build14.md.
+version: 0.1.10
+build: 15
 initial_release: false
 minimum_os: "17.0"
 device_families:
