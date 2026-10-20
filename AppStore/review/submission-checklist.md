@@ -1,6 +1,6 @@
 # Submission checklist
 
-Current iOS 0.1.10 (15) preparation and submission evidence are recorded in the [0.1.10 release record](../releases/0.1.10.md). App Store Connect showed the preceding iOS 0.1.9 (14) as Ready for Distribution on 2026-10-20. The checklists below are historical.
+iOS 0.1.10 (15) was submitted on 2026-10-20 at 19:09 JST and is Waiting for Review. Validation and submission evidence are recorded in the [0.1.10 release record](../releases/0.1.10.md). App Store Connect showed the preceding iOS 0.1.9 (14) as Ready for Distribution on 2026-10-20. The checklists below are historical.
 
 ## Historical 0.1.8 (12) preparation
 
