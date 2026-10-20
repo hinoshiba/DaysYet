@@ -124,7 +124,7 @@ struct WidgetColorSettingsView: View {
                      : L10n.text("色をタップすると、パレットから選んだり、自由に調整したりできます。", "Tap a color to choose from the palette or adjust it freely."))
             }
         }
-        .navigationTitle(L10n.text("カラー", "Colors"))
+        .navigationTitle(L10n.text("色と配色", "Colors & palette"))
         .navigationBarTitleDisplayMode(.inline)
     }
 
@@ -169,6 +169,84 @@ struct WidgetColorSettingsView: View {
                 $0.circleWidgetSettings.customColors[metric] = color
             }
         }
+    }
+}
+
+/// A shortcut to the same per-timeline color used by Times and Three timelines.
+/// Circle palettes keep their existing inheritance and explicit overrides.
+struct TimelineColorSettingsView: View {
+    @EnvironmentObject private var store: ProfileStore
+    @Environment(\.dismiss) private var dismiss
+    let metric: MetricKind
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    TimelineView(.periodic(from: .now, by: 60)) { context in
+                        MetricCard(
+                            snapshot: TimeProgressCalculator.snapshot(
+                                for: metric, profile: store.profile, now: context.date
+                            ),
+                            valueStyle: store.profile.dashboardValueStyle,
+                            theme: store.profile.widgetTheme,
+                            customColors: store.profile.widgetCustomColors
+                        )
+                    }
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+                    .accessibilityIdentifier("times.color.preview")
+                }
+
+                Section {
+                    ColorPicker(
+                        L10n.text("色", "Color"),
+                        selection: colorBinding,
+                        supportsOpacity: false
+                    )
+                    .accessibilityValue(
+                        store.profile.widgetCustomColors[metric]?.hex
+                            ?? L10n.text("配色テンプレート", "Palette template")
+                    )
+                    .accessibilityIdentifier("times.color.picker")
+
+                    if store.profile.widgetCustomColors[metric] != nil {
+                        Button(L10n.text("配色テンプレートに戻す", "Use palette color")) {
+                            store.update { $0.widgetCustomColors[metric] = nil }
+                        }
+                        .accessibilityIdentifier("times.color.reset")
+                    }
+                } header: {
+                    Text(metric.title(profile: store.profile))
+                } footer: {
+                    Text(L10n.text(
+                        "「時間」と「3つの時間」の色です。サークルは「3つの時間と同じ」の場合に引き継ぎ、個別色はそのままです。",
+                        "Used in Times and Three timelines. Four circles inherits this color when set to Same as Three timelines, keeping any color set for that timeline."
+                    ))
+                }
+            }
+            .navigationTitle(L10n.text("色を変更", "Change color"))
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(L10n.text("完了", "Done")) { dismiss() }
+                        .accessibilityIdentifier("times.color.done")
+                }
+            }
+        }
+    }
+
+    private var colorBinding: Binding<Color> {
+        Binding(
+            get: {
+                store.profile.widgetCustomColors[metric]?.color
+                    ?? store.profile.widgetTheme.palette.colors(for: metric)[0]
+            },
+            set: { color in
+                guard let storedColor = WidgetColor(color: color) else { return }
+                store.update { $0.widgetCustomColors[metric] = storedColor }
+            }
+        )
     }
 }
 

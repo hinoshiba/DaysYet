@@ -34,6 +34,27 @@ struct WidgetStudioView: View {
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
 
+                    NavigationLink {
+                        WidgetColorSettingsView(layout: selectedLayout)
+                    } label: {
+                        ViewThatFits(in: .horizontal) {
+                            HStack {
+                                Text(L10n.text("色と配色", "Colors & palette"))
+                                Spacer()
+                                Text(selectedLayout.colorSummary(profile: store.profile))
+                                    .foregroundStyle(.secondary)
+                            }
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text(L10n.text("色と配色", "Colors & palette"))
+                                Text(selectedLayout.colorSummary(profile: store.profile))
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .accessibilityIdentifier("widget.colors")
+
                     Button {
                         showWidgetGuide = true
                     } label: {
@@ -111,25 +132,6 @@ struct WidgetStudioView: View {
                         }
                         .accessibilityIdentifier("widget.valueStyle")
                     }
-
-                    NavigationLink {
-                        WidgetColorSettingsView(layout: selectedLayout)
-                    } label: {
-                        ViewThatFits(in: .horizontal) {
-                            HStack {
-                                Text(L10n.text("カラー", "Colors"))
-                                Spacer()
-                                Text(selectedLayout.colorSummary(profile: store.profile))
-                                    .foregroundStyle(.secondary)
-                            }
-                            VStack(alignment: .leading, spacing: 6) {
-                                Text(L10n.text("カラー", "Colors"))
-                                Text(selectedLayout.colorSummary(profile: store.profile))
-                                    .foregroundStyle(.secondary)
-                            }
-                        }
-                    }
-                    .accessibilityIdentifier("widget.colors")
                 } header: {
                     Text(L10n.text("表示", "Display"))
                 } footer: {

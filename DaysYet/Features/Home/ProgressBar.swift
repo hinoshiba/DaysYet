@@ -30,6 +30,7 @@ struct MetricCard: View {
     let snapshot: MetricSnapshot
     let valueStyle: MetricValueStyle
     var theme: WidgetTheme = .vividNight
+    var customColors: [MetricKind: WidgetColor] = [:]
     /// Shown when tapping the card opens the settings this time keeps to itself.
     var showsSettingsAffordance = false
 
@@ -55,7 +56,7 @@ struct MetricCard: View {
 
             ProgressBar(
                 fraction: snapshot.remainingFraction,
-                colors: DaysYetTheme.colors(for: snapshot.kind, theme: theme)
+                colors: theme.palette.colors(for: snapshot.kind, customColors: customColors)
             )
 
             Text(snapshot.secondarySummary(excluding: valueStyle))

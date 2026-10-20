@@ -10,9 +10,10 @@ final class WidgetNavigationTests: XCTestCase {
         let app = launchEditor(screenshotMode: true)
         let circles = app.segmentedControls["widget.layout"].buttons["Four circles"]
         XCTAssertTrue(circles.waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["widget.colors"].isHittable, "Colors should be visible without scrolling in Three timelines.")
         circles.tap()
         let colors = app.buttons["widget.colors"]
-        reveal(colors, in: app)
+        XCTAssertTrue(colors.isHittable, "Colors should be visible without scrolling in Four circles.")
         colors.tap()
         XCTAssertTrue(app.buttons["widget.colors.template"].waitForExistence(timeout: 5))
 
@@ -32,6 +33,7 @@ final class WidgetNavigationTests: XCTestCase {
         let circles = app.segmentedControls["widget.layout"].buttons["4つのサークル"]
         XCTAssertTrue(circles.waitForExistence(timeout: 10))
         circles.tap()
+        XCTAssertTrue(app.buttons["widget.colors"].isHittable)
         let guide = app.buttons["widget.guide"]
         XCTAssertTrue(guide.isHittable)
         guide.tap()
@@ -87,6 +89,68 @@ final class WidgetNavigationTests: XCTestCase {
         app.launch()
         XCTAssertTrue(picker.buttons["Three timelines"].waitForExistence(timeout: 10))
         XCTAssertTrue(picker.buttons["Three timelines"].isSelected)
+    }
+
+    @MainActor
+    func testTimesLongPressChangesAndResetsOnlyTheSelectedColor() {
+        let app = launchEditor(screenshotMode: true)
+        app.tabBars.buttons["Times"].tap()
+        let week = app.descendants(matching: .any)["times.metric.week"].firstMatch
+        XCTAssertTrue(week.waitForExistence(timeout: 10))
+        week.press(forDuration: 1)
+        let changeColor = app.buttons["times.color.change"]
+        XCTAssertTrue(changeColor.waitForExistence(timeout: 5))
+        changeColor.tap()
+        let picker = app.buttons["times.color.picker"]
+        XCTAssertTrue(picker.waitForExistence(timeout: 5))
+        XCTAssertEqual(picker.value as? String, "Palette template")
+        attachScreenshot(app, name: "times-color-shortcut")
+        picker.coordinate(withNormalizedOffset: CGVector(dx: 0.96, dy: 0.5)).tap()
+        // The system color picker follows the simulator's system language,
+        // independently of the app's explicit language.
+        let black = app.otherElements.matching(
+            NSPredicate(format: "label IN %@", ["ブラック 0", "Black 0"])
+        ).firstMatch
+        XCTAssertTrue(black.waitForExistence(timeout: 5))
+        black.tap()
+        app.buttons.matching(NSPredicate(format: "label IN %@", ["閉じる", "Close"])).firstMatch.tap()
+        XCTAssertTrue(app.buttons["times.color.reset"].waitForExistence(timeout: 5))
+        XCTAssertEqual(picker.value as? String, "#000000")
+        attachScreenshot(app, name: "times-color-changed-preview")
+        app.buttons["times.color.done"].tap()
+
+        let month = app.descendants(matching: .any)["times.metric.month"].firstMatch
+        month.press(forDuration: 1)
+        changeColor.tap()
+        XCTAssertTrue(picker.waitForExistence(timeout: 5))
+        XCTAssertEqual(picker.value as? String, "Palette template")
+        app.buttons["times.color.done"].tap()
+
+        week.press(forDuration: 1)
+        changeColor.tap()
+        XCTAssertTrue(picker.waitForExistence(timeout: 5))
+        XCTAssertEqual(picker.value as? String, "#000000")
+        app.buttons["times.color.reset"].tap()
+        XCTAssertEqual(picker.value as? String, "Palette template")
+        XCTAssertFalse(app.buttons["times.color.reset"].exists)
+        app.buttons["times.color.done"].tap()
+    }
+
+    @MainActor
+    func testJapaneseEditableCardKeepsNormalTapAfterLongPress() {
+        let app = launchEditor(screenshotMode: true, japanese: true)
+        app.tabBars.buttons["時間"].tap()
+        let milestone = app.buttons["times.metric.customLife"]
+        reveal(milestone, in: app)
+        milestone.press(forDuration: 1)
+        let changeColor = app.buttons["times.color.change"]
+        XCTAssertTrue(changeColor.waitForExistence(timeout: 5))
+        changeColor.tap()
+        XCTAssertTrue(app.buttons["times.color.picker"].waitForExistence(timeout: 5))
+        attachScreenshot(app, name: "times-color-shortcut-japanese")
+        app.buttons["times.color.done"].tap()
+        milestone.tap()
+        XCTAssertTrue(app.textFields["customLife.name"].waitForExistence(timeout: 5))
     }
 
     @MainActor

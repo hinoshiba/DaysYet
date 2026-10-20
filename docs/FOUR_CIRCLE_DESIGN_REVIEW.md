@@ -1,6 +1,6 @@
 # Four-circle design and iPhone setup review
 
-Reviewed on 2026-10-20 against the iOS 0.1.9 (14) source. The review covered Japanese and English typography, geometry, information density, navigation, persistence, accessibility, and existing widget compatibility.
+Reviewed on 2026-10-20 for the iOS 0.1.10 (15) candidate, building on the 0.1.9 (14) source. The review covered Japanese and English typography, geometry, information density, navigation, persistence, accessibility, and existing widget compatibility.
 
 ## Findings and decisions
 
@@ -13,6 +13,8 @@ Reviewed on 2026-10-20 against the iOS 0.1.9 (14) source. The review covered Jap
 | The type selector edited two independent configurations but did not replace an installed widget. | It looked like a display switch, while the crucial explanation was behind a question-mark icon. | Put an explicit Home Screen add/switch action next to the preview. Explain the distinction there, with exact gallery names and sizes in the guide. |
 | Settings only switched tabs; a previously opened color editor could remain on screen. | A user looking for the layout switch could land in an unrelated editor. | Settings explicitly names both types and always returns to the layout chooser. |
 | The editor started with Three rows on every launch. | Returning users lost their context. | Remember the last editor locally, retain the selection across navigation, and clear it with Delete all data. |
+| Colors was below the timeline list, outside the initial viewport even on a large iPhone. | A person looking at a preview could not see where to change its colors. | Move the existing Colors & palette link directly below the preview, retaining a single destination. |
+| Times showed bars but had no direct color operation, and its cards ignored saved custom colors. | A color change required finding a separate editor and was not visible on the card. | Long-press a card and choose Change color, with a named accessibility action as well. Show the same saved colors in Times; preserve normal taps and circle-specific overrides. |
 
 ## Typography and geometry
 
@@ -39,13 +41,15 @@ The existing widget kinds and intent parameters remain unchanged. To change kind
 
 The remembered editor is an app-only preference. Screenshot fixtures use separate in-memory state. Delete all data resets this preference together with the profile. The iOS privacy manifest and data map declare the additional app-only UserDefaults use; there is no new network path or data collection.
 
+Colors & palette remains visible for people who do not discover long-press. The Times shortcut changes the same per-timeline color as Three timelines, with immediate preview and an optional reset. Circles continue to follow their existing inheritance and override settings. This avoids replacing independent circle colors when editing a bar.
+
 ## Validation
 
 Native SwiftUI render attachments cover Small outer sizes 158, 170, and 186pt, Large 338pt, Japanese/English titles, CJK/Latin/emoji custom names, 0/9/99/100/<1%, Off, no schedule, durations, dates, and AX5. These are renders of the actual shared view, not screenshots of an operating-system widget host. Geometry checks cover circle diameters 56–180pt, two value-line budgets, and three text scales. iOS font measurements independently check that percentage glyphs fit without per-value shrinking.
 
-Navigation UI tests cover Settings returning from Colors to the selected layout, the Japanese add/switch guide, selection persistence across relaunch, screenshot isolation, deletion reset, and maximum accessibility text.
+Navigation UI tests cover Settings returning from Colors to the selected layout, the Japanese add/switch guide, selection persistence across relaunch, screenshot isolation, deletion reset, maximum accessibility text, native color selection/reset, and normal editable-card taps after long-press color editing. A separate static-card test confirms that cards without their own settings retain their non-navigating tap behavior.
 
-Local validation passed: 127 iOS tests, including 11 native render attachments and independent glyph measurements; 230 Mac tests; and five iPhone navigation UI tests. Public-file, development-compliance, and whitespace checks passed. A separate iPhone SE simulator attempt was stopped during its initial operating-system data migration, before any app test ran; compact widths were instead checked by native shared-view rendering on the working simulator.
+Latest local validation passed with zero failures: 127 iOS tests, including 11 native render attachments and independent glyph measurements; 230 Mac tests; and eight iPhone UI tests (seven WidgetNavigation tests and one static-card test). Independent review of the Times color shortcut and color navigation found no must-fix issue. Public-file, development-compliance, and whitespace checks passed earlier in the source review; final release checks, exact-release-commit CI, Archive, and submission are tracked separately in the [0.1.10 release record](../AppStore/releases/0.1.10.md). A separate iPhone SE simulator attempt was stopped during its initial operating-system data migration, before any app test ran; compact widths were instead checked by native shared-view rendering on the working simulator.
 
 Physical-device Home Screen, StandBy, tinted/clear host appearance, and VoiceOver speech were not newly exercised in this review. An existing installed widget cannot be replaced by the app's editor selector.
 
