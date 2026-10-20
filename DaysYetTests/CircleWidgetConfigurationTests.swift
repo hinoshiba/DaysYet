@@ -210,4 +210,49 @@ final class CircleWidgetConfigurationTests: XCTestCase {
         store.update { $0.circleWidgetSettings.metrics = [.workday] }
         XCTAssertEqual(saved?.circleWidgetSettings.metrics, [.workday, .month, .year, .activity])
     }
+
+    func testCompactCircleDefaultsDoNotRenameCustomLabelsOrAccessibilityTitles() {
+        var profile = UserProfile.initial
+        profile.dailyActivity.name = ""
+        XCTAssertEqual(MetricKind.activity.circleTitle(profile: profile), L10n.text("活動", "Activity"))
+        XCTAssertEqual(MetricKind.healthyLife.circleTitle(profile: profile), L10n.text("健康目標", "Health goal"))
+        let custom = "家族と過ごす大切な時間 📚 International"
+        profile.dailyActivity.name = custom
+        profile.workActivity.name = custom
+        profile.studySchedule.name = custom
+        profile.customTargetName = custom
+        for kind in [MetricKind.activity, .workday, .study, .customLife] {
+            let snapshot = TimeProgressCalculator.snapshot(for: kind, profile: profile)
+            XCTAssertEqual(snapshot.circleTitle, custom)
+            XCTAssertEqual(snapshot.title, custom)
+            XCTAssertTrue(snapshot.accessibilitySummary.hasPrefix(custom))
+        }
+        profile.dailyActivity.name = "  \n "
+        XCTAssertEqual(MetricKind.activity.circleTitle(profile: profile), L10n.text("活動", "Activity"))
+    }
+
+    func testCircleTextFramesStayInsideTheRingAcrossSupportedSizes() {
+        for diameter in stride(from: 56.0, through: 180.0, by: 1) {
+            for textScale in [1.0, 2.0, 3.0] {
+                for lines in [1, 2] {
+                    let layout = CircleWidgetTextLayout(
+                        diameter: diameter,
+                        labelSize: 11 * textScale,
+                        valueSize: 16 * textScale,
+                        valueLineLimit: lines,
+                        isPercentage: lines == 1
+                    )
+                    let safeDiameter = diameter - 2 * layout.lineWidth - 4
+                    XCTAssertLessThanOrEqual(
+                        hypot(layout.contentWidth, layout.contentHeight), safeDiameter + 0.001
+                    )
+                    XCTAssertGreaterThan(layout.contentWidth, 0)
+                    XCTAssertGreaterThan(layout.valueHeight, 0)
+                    XCTAssertGreaterThanOrEqual(layout.labelSize, 11)
+                    XCTAssertEqual(layout.labelHeight + layout.spacing + layout.valueHeight, layout.contentHeight, accuracy: 0.001)
+                }
+            }
+        }
+    }
+
 }

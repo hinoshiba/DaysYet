@@ -40,6 +40,29 @@ enum MetricKind: String, Codable, CaseIterable, Identifiable, Sendable {
         return trimmed.isEmpty ? title : trimmed
     }
 
+    /// Short defaults only; a person's own label is never renamed for a circle.
+    func circleTitle(profile: UserProfile) -> String {
+        let customName: String
+        switch self {
+        case .activity, .workday: customName = profile.activitySchedule(for: self).name
+        case .customLife: customName = profile.customTargetName
+        case .study: customName = profile.studySchedule.name
+        default: customName = ""
+        }
+        let trimmed = customName.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmed.isEmpty { return trimmed }
+        switch self {
+        case .week: return L10n.text("今週", "Week")
+        case .month: return L10n.text("今月", "Month")
+        case .year: return L10n.text("今年", "Year")
+        case .healthyLife: return L10n.text("健康目標", "Health goal")
+        case .customLife: return L10n.text("大切な日", "Milestone")
+        case .activity: return L10n.text("活動", "Activity")
+        case .workday: return L10n.text("勤務", "Work")
+        case .study: return L10n.text("学習日", "Study")
+        }
+    }
+
     var shortTitle: String {
         switch self {
         case .healthyLife: L10n.text("健康目標", "Health goal")
@@ -366,6 +389,7 @@ struct MetricSnapshot: Identifiable, Equatable, Sendable {
     let targetDate: Date
     var isOff: Bool = false
     var hasScheduledTime: Bool = true
+    var circleTitle: String? = nil
 
     var id: String { kind.rawValue }
     var remainingText: String { countdown.plainText }
@@ -486,7 +510,8 @@ enum TimeProgressCalculator {
             ),
             elapsedFraction: afterActivity ? 1 : fraction,
             targetDate: interval.end,
-            isOff: isOff
+            isOff: isOff,
+            circleTitle: kind.circleTitle(profile: profile)
         )
     }
 
@@ -610,7 +635,8 @@ enum TimeProgressCalculator {
             countdown: presentation,
             elapsedFraction: selectedDays.isEmpty ? 0 : Double(elapsedCount) / Double(selectedDays.count),
             targetDate: schedule.endDate(in: calendar),
-            hasScheduledTime: !selectedDays.isEmpty
+            hasScheduledTime: !selectedDays.isEmpty,
+            circleTitle: MetricKind.study.circleTitle(profile: profile)
         )
     }
 

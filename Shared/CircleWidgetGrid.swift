@@ -14,7 +14,7 @@ struct CircleWidgetGrid: View {
 
     var body: some View {
         GeometryReader { geometry in
-            let spacing: CGFloat = compact ? 4 : 12
+            let spacing: CGFloat = compact ? 8 : 12
             let cellWidth = max(0, (geometry.size.width - spacing) / 2)
             let cellHeight = max(0, (geometry.size.height - spacing) / 2)
 
@@ -44,10 +44,11 @@ struct CircleWidgetGrid: View {
 
 private struct CircleWidgetMetric: View {
     @Environment(\.widgetRenderingMode) private var renderingMode
-    @ScaledMetric(relativeTo: .caption) private var compactValueSize: CGFloat = 14
-    @ScaledMetric(relativeTo: .title2) private var largeValueSize: CGFloat = 24
-    @ScaledMetric(relativeTo: .caption2) private var compactLabelSize: CGFloat = 9
-    @ScaledMetric(relativeTo: .caption) private var largeLabelSize: CGFloat = 12
+    @Environment(\.locale) private var locale
+    @ScaledMetric(relativeTo: .caption) private var compactValueSize: CGFloat = 16
+    @ScaledMetric(relativeTo: .title2) private var largeValueSize: CGFloat = 28
+    @ScaledMetric(relativeTo: .caption2) private var compactLabelSize: CGFloat = 11
+    @ScaledMetric(relativeTo: .caption) private var largeLabelSize: CGFloat = 13
     let snapshot: MetricSnapshot
     let valueStyle: MetricValueStyle
     let theme: WidgetTheme
@@ -63,17 +64,16 @@ private struct CircleWidgetMetric: View {
     var body: some View {
         GeometryReader { geometry in
             let diameter = max(0, min(geometry.size.width, geometry.size.height))
-            let lineWidth: CGFloat = compact ? 4 : 7
-            // An inscribed square keeps even two-line values inside the ring.
-            let contentSize = max(0, (diameter - lineWidth * 2) / sqrt(2))
-            let labelSize = min(compact ? compactLabelSize : largeLabelSize, diameter * 0.15)
-            // Reserve the same title space in every circle so wrapping does not
-            // shift the percentage relative to its neighbors.
-            let labelHeight = min(labelSize * (compact ? 1.25 : 2.4), contentSize * (compact ? 0.3 : 0.42))
-            let spacing = min(compact ? 1.0 : 3.0, contentSize * 0.05)
-            let valueSize = min(compact ? compactValueSize : largeValueSize, diameter * 0.24)
-            let valueLineLimit = snapshot.isOff || (valueStyle == .percentage && snapshot.hasScheduledTime) ? 1 : 2
-            let valueHeight = max(0, min(valueSize * CGFloat(valueLineLimit) * 1.3, contentSize - labelHeight - spacing))
+            let isPercentage = !snapshot.isOff && snapshot.hasScheduledTime && valueStyle == .percentage
+            let valueLineLimit = compact || snapshot.isOff || isPercentage ? 1 : 2
+            let layout = CircleWidgetTextLayout(
+                diameter: diameter,
+                labelSize: compact ? compactLabelSize : largeLabelSize,
+                valueSize: compact ? (isPercentage || snapshot.isOff ? compactValueSize : 11) : largeValueSize,
+                valueLineLimit: valueLineLimit,
+                isPercentage: isPercentage
+            )
+            let lineWidth = layout.lineWidth
 
             ZStack {
                 Circle()
@@ -87,36 +87,25 @@ private struct CircleWidgetMetric: View {
                         .rotationEffect(.degrees(-90))
                         .widgetAccentable()
                 }
-                VStack(spacing: spacing) {
-                    Text(snapshot.title)
-                        .font(.system(
-                            size: labelSize,
-                            weight: .semibold,
-                            design: .rounded
-                        ))
+                VStack(spacing: layout.spacing) {
+                    Text(compact ? (snapshot.circleTitle ?? snapshot.title) : snapshot.title)
+                        .font(.system(size: layout.labelSize, weight: .medium))
                         .foregroundStyle(labelStyle)
-                        .lineLimit(compact ? 1 : 2)
+                        .lineLimit(1)
                         .truncationMode(.tail)
-                        .minimumScaleFactor(0.7)
-                        .allowsTightening(true)
-                        .frame(width: contentSize, height: labelHeight, alignment: .bottom)
+                        .frame(width: layout.contentWidth, height: layout.labelHeight)
                         .clipped()
-                    Text(valueText)
-                        .font(.system(
-                            size: valueSize,
-                            weight: .bold,
-                            design: .rounded
-                        ))
-                        .monospacedDigit()
+                    valueLabel(layout: layout, isPercentage: isPercentage)
                         .lineLimit(valueLineLimit)
                         .truncationMode(.tail)
-                        .minimumScaleFactor(0.5)
-                        .allowsTightening(true)
-                        .frame(width: contentSize, height: valueHeight)
+                        // Percentages share one size budgeted for 100%, so 9%
+                        // and 100% never acquire different visual emphasis.
+                        .minimumScaleFactor(isPercentage ? 1 : (compact && valueStyle == .targetDate ? 0.85 : min(1, 11 / layout.valueSize)))
+                        .frame(width: layout.contentWidth, height: layout.valueHeight)
                         .clipped()
                 }
                 .multilineTextAlignment(.center)
-                .frame(width: contentSize, height: contentSize)
+                .frame(width: layout.contentWidth, height: layout.contentHeight)
                 .clipped()
             }
             .frame(width: diameter, height: diameter)
@@ -128,11 +117,53 @@ private struct CircleWidgetMetric: View {
         .privacySensitive(snapshot.kind == .healthyLife || snapshot.kind == .customLife)
     }
 
+    private func valueLabel(layout: CircleWidgetTextLayout, isPercentage: Bool) -> Text {
+        if isPercentage {
+            return Text(RemainingPercentage.compactNumber(for: snapshot.remainingFraction))
+                .font(.system(size: layout.valueSize, weight: .bold, design: .rounded))
+                .monospacedDigit()
+                + Text("%")
+                .font(.system(size: layout.symbolSize, weight: .semibold, design: .rounded))
+        }
+        if compact && valueStyle == .targetDate && !snapshot.isOff && snapshot.hasScheduledTime {
+            // Condensed proportional digits keep the complete date legible in the
+            // narrow center; rounded monospaced digits need extra width here.
+            return Text(valueText)
+                .font(.system(size: layout.valueSize, weight: .semibold).width(.condensed))
+        }
+        return Text(valueText)
+            .font(.system(size: layout.valueSize, weight: .bold, design: .rounded))
+            .monospacedDigit()
+    }
+
     private var valueText: String {
         if snapshot.isOff { return "Off" }
-        if !snapshot.hasScheduledTime { return snapshot.remainingText }
+        if !snapshot.hasScheduledTime { return compact ? "—" : snapshot.remainingText }
         if valueStyle == .percentage {
             return RemainingPercentage.compactText(for: snapshot.remainingFraction)
+        }
+        if valueStyle == .remaining, snapshot.countdown.terminalText == nil {
+            // Small circles show the leading useful unit; the large family and
+            // VoiceOver retain the complete duration. Never split 12h into 1/2h.
+            if compact {
+                let component = snapshot.countdown.components.first(where: { $0.value > 0 })
+                    ?? snapshot.countdown.components.last
+                return component?.text ?? snapshot.remainingText
+            }
+            return snapshot.countdown.components.map(\.text).joined(separator: "\n")
+        }
+        if compact && valueStyle == .targetDate {
+            // The selected value style already supplies the "until" context.
+            // Keep the date itself intact instead of spending space on a suffix.
+            if snapshot.kind.isActivity {
+                let formatter = DateFormatter()
+                formatter.locale = locale
+                formatter.dateFormat = "H:mm"
+                return formatter.string(from: snapshot.targetDate)
+            }
+            return snapshot.targetDate.formatted(
+                .dateTime.year(.twoDigits).month(.defaultDigits).day().locale(locale)
+            )
         }
         // A circle's center is narrower than a row, including in the Large family.
         // The complete date and remaining time are still in its VoiceOver summary.
@@ -158,5 +189,51 @@ private struct CircleWidgetMetric: View {
             ))
         }
         return AnyShapeStyle(Color.primary)
+    }
+}
+
+/// The centered text rectangle stays inside the inner edge of the ring.
+/// A single title line prevents language-dependent empty space above the value.
+struct CircleWidgetTextLayout {
+    let lineWidth: CGFloat
+    let labelSize: CGFloat
+    let valueSize: CGFloat
+    let symbolSize: CGFloat
+    let spacing: CGFloat
+    let labelHeight: CGFloat
+    let valueHeight: CGFloat
+    let contentWidth: CGFloat
+    let contentHeight: CGFloat
+
+    init(diameter: CGFloat, labelSize requestedLabel: CGFloat, valueSize requestedValue: CGFloat,
+         valueLineLimit: Int, isPercentage: Bool) {
+        lineWidth = min(7, max(3, diameter * 0.045))
+        let innerDiameter = max(0, diameter - 2 * lineWidth - 4)
+        labelSize = min(requestedLabel, max(11, innerDiameter * 0.21))
+        labelHeight = min(labelSize * 1.3, innerDiameter * 0.4)
+        spacing = min(3, max(1, diameter * 0.015))
+        let lines = CGFloat(valueLineLimit)
+        // Two-line dates/durations need a smaller value style to leave horizontal
+        // room for the title and whole quantities in compact circles.
+        var candidate = min(requestedValue, max(11, diameter * (valueLineLimit == 1 ? 0.24 : 0.14)))
+        // Keep enough height for both lines even for dates and remaining time.
+        candidate = min(candidate, max(1, (innerDiameter * 0.9 - labelHeight - spacing) / (1.25 * lines)))
+        var height: CGFloat = 0
+        var width: CGFloat = 0
+        var symbol: CGFloat = 11
+        repeat {
+            symbol = max(11, candidate * 0.6)
+            height = min(innerDiameter, labelHeight + spacing + candidate * 1.25 * lines)
+            width = sqrt(max(0, innerDiameter * innerDiameter - height * height))
+            // Reserve a conservative width for three monospaced rounded digits
+            // and the percent sign, regardless of the current percentage.
+            if !isPercentage || candidate * 2.15 + symbol * 1.1 <= width || candidate <= 11 { break }
+            candidate = max(11, candidate - 0.25)
+        } while true
+        valueSize = candidate
+        symbolSize = symbol
+        valueHeight = max(0, height - labelHeight - spacing)
+        contentHeight = height
+        contentWidth = width
     }
 }

@@ -4,13 +4,32 @@ struct SettingsView: View {
     @EnvironmentObject private var store: ProfileStore
     @State private var showResetConfirmation = false
     let openWidgetSettings: () -> Void
+    let resetWidgetEditor: () -> Void
 
     var body: some View {
         Form {
             Section {
                 Button(action: openWidgetSettings) {
-                    Label(L10n.text("ウィジェットの設定", "Widget settings"), systemImage: "square.grid.2x2")
+                    HStack(spacing: 12) {
+                        Label {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(L10n.text("ウィジェットの設定", "Widget settings"))
+                                    .foregroundStyle(.primary)
+                                Text(L10n.text("3つの時間・4つのサークル", "Three timelines · Four circles"))
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        } icon: {
+                            Image(systemName: "square.grid.2x2")
+                        }
+                        Spacer(minLength: 0)
+                        Image(systemName: "chevron.right")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.tertiary)
+                            .accessibilityHidden(true)
+                    }
                 }
+                .buttonStyle(.plain)
                 .accessibilityIdentifier("settings.widgets")
             } header: {
                 Text(L10n.text("ウィジェット", "Widgets"))
@@ -73,7 +92,10 @@ struct SettingsView: View {
             isPresented: $showResetConfirmation,
             titleVisibility: .visible
         ) {
-            Button(L10n.text("消去", "Delete"), role: .destructive) { store.reset() }
+            Button(L10n.text("消去", "Delete"), role: .destructive) {
+                resetWidgetEditor()
+                store.reset()
+            }
             Button(L10n.text("キャンセル", "Cancel"), role: .cancel) {}
         }
     }
@@ -118,8 +140,8 @@ private struct PrivacyView: View {
         List {
             Section {
                 Text(L10n.text(
-                    "本アプリは、生年月日・目標年齢・活動時間とラベル・曜日・大切な日の起算日と目標日時・学習日の期間と曜日・個別の日付・表示設定を、アプリとウィジェットの共有領域に保存します。設定画面からいつでも全データを消去できます。",
-                    "This app stores your birth date, target age, activity hours with labels and weekdays, milestone start and target dates, study periods with weekdays and individual dates, and display choices in the private area shared by the app and its widget. You can delete all data from Settings at any time."
+                    "本アプリは、生年月日・目標年齢・活動時間とラベル・曜日・大切な日の起算日と目標日時・学習日の期間と曜日・個別の日付・表示設定を、アプリとウィジェットの共有領域に保存します。最後に編集したウィジェットの種類はアプリ内に保存します。設定画面からいつでも全データを消去できます。",
+                    "This app stores your birth date, target age, activity hours with labels and weekdays, milestone start and target dates, study periods with weekdays and individual dates, and display choices in the private area shared by the app and its widget. The last widget type you edited is stored in the app. You can delete all data from Settings at any time."
                 ))
             }
 

@@ -26,7 +26,7 @@ struct WidgetColorSettingsView: View {
             Section {
                 WidgetEditorPreview(profile: store.profile, layout: layout)
                     .frame(maxWidth: .infinity)
-                    .frame(height: 224)
+                    .frame(height: layout == .circles ? 186 : 224)
                     .listRowBackground(Color.clear)
             }
 
@@ -131,7 +131,7 @@ struct WidgetColorSettingsView: View {
     @ViewBuilder
     private func templateLabel(_ template: WidgetTheme?) -> some View {
         let selected = layout == .rows ? store.profile.widgetTheme : store.profile.circleWidgetSettings.theme
-        let title = template?.title ?? L10n.text("3行表示と同じ", "Same as Three rows")
+        let title = template?.title ?? L10n.text("3つの時間と同じ", "Same as Three timelines")
         if selected == template {
             Label(title, systemImage: "checkmark")
         } else {
@@ -190,12 +190,12 @@ struct WidgetEditorPreview: View {
                     },
                     valueStyle: configuration.resolvedValueStyle(profile: profile),
                     theme: configuration.resolvedTheme(profile: profile),
-                    compact: false,
+                    compact: true,
                     showsContainerBackground: true,
                     customColors: configuration.resolvedCustomColors(profile: profile)
                 )
-                .padding(12)
-                .frame(width: 224, height: 224)
+                .padding(16)
+                .frame(width: 170, height: 170)
                 .background(configuration.resolvedTheme(profile: profile).palette.background,
                             in: RoundedRectangle(cornerRadius: 24))
             }
@@ -206,7 +206,7 @@ struct WidgetEditorPreview: View {
 extension WidgetEditorLayout {
     func paletteTitle(profile: UserProfile) -> String {
         if self == .rows { return profile.widgetTheme.title }
-        return profile.circleWidgetSettings.theme?.title ?? L10n.text("3行表示と同じ", "Same as Three rows")
+        return profile.circleWidgetSettings.theme?.title ?? L10n.text("3つの時間と同じ", "Same as Three timelines")
     }
 
     func colorSummary(profile: UserProfile) -> String {
