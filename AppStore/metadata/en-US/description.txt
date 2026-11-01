@@ -20,7 +20,7 @@ COUNT YOUR AVAILABLE STUDY DAYS
 Name a plan of up to 366 days, select weekdays, and add or exclude dates. Two-week and four-week shortcuts help you start. Counts include today when selected. Percentages measure remaining selected days, not completed sessions. No device-calendar access is needed. Tap Study days on Times to edit.
 
 THREE DISPLAY LAYOUTS
-Choose a large countdown, a combined time/percentage/bar view, or three progress bars. Color shows time remaining, decreasing from 100% to 0%. Bars shrink from right to left; rings drain clockwise from the top. Bar values can show time left, percentage, or the end date.
+Choose a large countdown, a combined time/percentage/bar view, or three progress bars. Color shows time remaining, decreasing from 100% to 0%. Bars shrink from right to left; rings drain counterclockwise from the top. Bar values can show time left, percentage, or the end date.
 
 YOUR COLORS
 Colors & palette offers four templates and native color pickers. On Times, touch and hold a card > Change color to customize or reset its color. Cards share colors with Three timelines. Row and circle colors save separately; circles can follow the Three timelines palette. A widget's App setting theme uses your colors; an explicit theme uses its template.
