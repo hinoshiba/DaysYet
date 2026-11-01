@@ -82,7 +82,7 @@ private struct CircleWidgetMetric: View {
                 if snapshot.remainingFraction > 0 {
                     Circle()
                         .inset(by: lineWidth / 2)
-                        .trim(from: 0, to: snapshot.remainingFraction)
+                        .trim(from: 1 - snapshot.remainingFraction, to: 1)
                         .stroke(ringStyle, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
                         .rotationEffect(.degrees(-90))
                         .widgetAccentable()

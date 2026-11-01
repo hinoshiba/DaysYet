@@ -127,7 +127,7 @@ struct DaysYetLockScreenWidgetEntryView: View {
                 .stroke(.primary.opacity(0.2), lineWidth: 4)
             if snapshot.remainingFraction > 0 {
                 Circle()
-                    .trim(from: 0, to: snapshot.remainingFraction)
+                    .trim(from: 1 - snapshot.remainingFraction, to: 1)
                     .stroke(.primary, style: StrokeStyle(lineWidth: 4, lineCap: .round))
                     .rotationEffect(.degrees(-90))
             }

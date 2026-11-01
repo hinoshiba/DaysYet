@@ -52,7 +52,7 @@ struct MacWidgetColorSettings: View {
                 HStack(spacing: 8) {
                     ForEach(Array(store.profile.macDashboardMetrics.prefix(3))) { kind in
                         Circle()
-                            .trim(from: 0, to: 0.75)
+                            .trim(from: 0.25, to: 1)
                             .stroke(MacWidgetStyle.accent(for: kind, theme: theme),
                                     style: StrokeStyle(lineWidth: 2.5, lineCap: .round))
                             .rotationEffect(.degrees(-90))
