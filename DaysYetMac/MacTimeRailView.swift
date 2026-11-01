@@ -233,6 +233,7 @@ struct MacTopProgressBarView: View {
 
 struct MacPercentageRing: View {
     /// The unconsumed portion, from 1 at the start to 0 at the target.
+    /// The arc starts at 12 o'clock; its end retreats counterclockwise.
     let fraction: Double
     let accent: Color
     var selected = false
@@ -245,7 +246,7 @@ struct MacPercentageRing: View {
                 Circle().stroke(.white.opacity(0.10), lineWidth: 1.5)
                 if fraction > 0 {
                     Circle()
-                        .trim(from: 1 - fraction, to: 1)
+                        .trim(from: 0, to: fraction)
                         .stroke(accent, style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
                         .rotationEffect(.degrees(-90))
                 }

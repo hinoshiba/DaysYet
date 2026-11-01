@@ -176,8 +176,8 @@ struct MacSettingsView: View {
                     }
 
                     Text(L10n.text(
-                        "色のついた部分は残り時間を表し、100%から0%へ減ります。バーは右端が左へ縮み、サークルは12時の位置から時計回りに色が消えていきます。",
-                        "The colored portion shows time remaining and decreases from 100% to 0%. Bars shrink from right to left; circles empty clockwise from the 12 o’clock position."
+                        "色のついた部分は残り時間を表し、100%から0%へ減ります。バーは右端が左へ縮み、サークルは12時の位置から反時計回りに色が消えていきます。",
+                        "The colored portion shows time remaining and decreases from 100% to 0%. Bars shrink from right to left; circles empty counterclockwise from the 12 o’clock position."
                     ))
                     .font(.caption)
                     .foregroundStyle(.secondary)

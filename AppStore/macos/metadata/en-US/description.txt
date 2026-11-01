@@ -3,7 +3,7 @@ Make time for what matters. DaysYet keeps life and everyday countdowns at the ed
 Use it as a quiet memento mori: a reminder to be intentional with your time. Set your own healthy-age goal as a planning milestone. DaysYet counts down to that age; it does not predict health or lifespan.
 
 YOUR TIMELINES AT THE EDGE
-Start with three small remaining-time circles on the left or right and add up to eight different timelines. Top placement shows bars for the first three timelines and saves the other selections. The colored portion counts down from 100% to 0%: circles drain clockwise from the top, and bars keep their left edge fixed as they shrink from right to left. Hover to expand the black panel and reveal a timeline's details. On either side, the details follow the circle you select.
+Start with three small remaining-time circles on the left or right and add up to eight different timelines. Top placement shows bars for the first three timelines and saves the other selections. The colored portion counts down from 100% to 0%: circles drain counterclockwise from the top, and bars keep their left edge fixed as they shrink from right to left. Hover to expand the black panel and reveal a timeline's details. On either side, the details follow the circle you select.
 
 Optional Graph magnification enlarges the hovered side circle to 110–180% (default 135%; off by default), moving it slightly toward the screen center. Circles and details expand/close together. Returning during closing reopens smoothly. Clicks preserve magnification. Reduce Motion skips animation.
 
