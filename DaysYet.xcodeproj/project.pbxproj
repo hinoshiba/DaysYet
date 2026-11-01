@@ -8,65 +8,108 @@
 
 /* Begin PBXBuildFile section */
 		00F25F2FAC04A2CB5FAE3266 /* DaysYetWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA369AB53C5EA2EB4743187 /* DaysYetWidget.swift */; };
+		00F500FD55E3C3BEF799EBD3 /* DaysYetDock_healthyLife.app in Embed Dependencies */ = {isa = PBXBuildFile; fileRef = 29EFEC9EAF3928B063ECA970 /* DaysYetDock_healthyLife.app */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		02CAE5C82948C00CA9E5F7A2 /* StudySchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD354587144C454884BB8828 /* StudySchedule.swift */; };
 		03487D18EDC2D9D94757A09D /* DATA_SOURCES.md in Resources */ = {isa = PBXBuildFile; fileRef = 4F043AFA52F194DBD59AF711 /* DATA_SOURCES.md */; };
 		0351DE0C21BEF22B6A06ADFF /* CircleWidgetGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED60161D9CC07517DAD83D7C /* CircleWidgetGrid.swift */; };
+		041460C9A75ECF000B8E970D /* DaysYetDock_workday.app in Embed Dependencies */ = {isa = PBXBuildFile; fileRef = 924D4B12B7D8955900B83DCB /* DaysYetDock_workday.app */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		05F862399BBFD32126251C35 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 758D50D7732546DD2ACCB267 /* InfoPlist.strings */; };
 		08AFE0ECDA1D7147C230EBD8 /* ProfileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B04E98B81C6EE39699985B09 /* ProfileStore.swift */; };
+		09C615963AE93294CC57D83D /* MacDockTileMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E3F8357874BCD0D68CDB55 /* MacDockTileMessage.swift */; };
+		0D1782BA4F6419F7491DA0D3 /* DaysYetDock_week.app in Embed Dependencies */ = {isa = PBXBuildFile; fileRef = FED105EAF125BDE613C4E88C /* DaysYetDock_week.app */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		0EDF2AA905DBFD80BB767473 /* MacWidgetColorSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDFFE9A3383E27B646F2AEDD /* MacWidgetColorSettings.swift */; };
+		1034208B7244EE7ED7EBDA13 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EE63803F7DD28421990C806 /* main.swift */; };
 		11CE4CE5C819962411E0E55D /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 785E00C0D2C2EA34EB0A2AA4 /* UserProfile.swift */; };
 		13B2D4AAC9C730D98D6D82BF /* L10n.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CD64EF0BE487E467E8EE54 /* L10n.swift */; };
+		1505F4133E7CFBFBD3EE1117 /* MacDockTileProcessHost.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84B90E202776FC77FA72E87E /* MacDockTileProcessHost.swift */; };
+		151290AEB9038E954A95A6A1 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EE63803F7DD28421990C806 /* main.swift */; };
 		1566FB9383916B66814994CC /* MacCircleSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FAF5701274AE1606389D2BF /* MacCircleSettingsTests.swift */; };
 		15A96E0DCAECA58CA0D5ECE7 /* MacWidgetPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69813457F6DD4D80042683BE /* MacWidgetPreferences.swift */; };
 		173E528C30D166D165D41436 /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 80602A41F91F2981A51EBE0E /* LICENSE */; };
 		199AEA4664CC59225B6C8F18 /* MacWidgetColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 623E80015A8D443AD9E367E5 /* MacWidgetColorTests.swift */; };
 		212802DA1BF8E955FAA43C6B /* StudySchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD354587144C454884BB8828 /* StudySchedule.swift */; };
+		22E67A312598A8E7B35D7B4B /* MacSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2B8EC879B9A07781BC0776 /* MacSetupView.swift */; };
 		24DD53A121D0DA6BD9F70460 /* THIRD_PARTY_NOTICES.md in Resources */ = {isa = PBXBuildFile; fileRef = 37680AC2C679AD7E5923DC15 /* THIRD_PARTY_NOTICES.md */; };
+		2A7AF923DAA4DC4A617E7EE2 /* MacDockDirectDragTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E2515C0FEB68651AA97C14 /* MacDockDirectDragTests.swift */; };
+		2BA565CD144991F60BEA21CE /* MacSetupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53053C1748D1E4C40F1F9478 /* MacSetupController.swift */; };
 		2DCBD464C37F81B7F4FC236D /* ProfileRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D4529A3EAFCABF61CBA729D /* ProfileRepository.swift */; };
+		2DF4F609723D7E99EFB4662F /* MacDockAccessibilityReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2401C7073D2FCC0A6EDE239 /* MacDockAccessibilityReader.swift */; };
+		31175D62670E2B1CE57D0C5D /* MacDockTileMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E3F8357874BCD0D68CDB55 /* MacDockTileMessage.swift */; };
+		34714AF5A2F6E493DE49821A /* MacDockDirectDrag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49F93EC8A24BBB5D349AB32F /* MacDockDirectDrag.swift */; };
+		34E193604EB8E2CF7F53BDEB /* MacDockTileMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E3F8357874BCD0D68CDB55 /* MacDockTileMessage.swift */; };
 		35AC664734EEEB4F383A996F /* ProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA91CAA558C93AA58DF6FEB8 /* ProgressBar.swift */; };
+		3761759270431DB8C3D98970 /* MacWidgetDragMorphTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2CAA15AF2440B276D4602D33 /* MacWidgetDragMorphTests.swift */; };
 		39DAA55E95A5E78EE50BDFE7 /* WorkHoursTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9662ABB4E73AFBAA5B22B82D /* WorkHoursTests.swift */; };
+		3A766B2DF35B34765619F918 /* MacSetupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75B59E0C9CE60C426AB47430 /* MacSetupTests.swift */; };
 		3BF43F4237015ECD92A5C738 /* StudyScheduleEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBDAAB14865688B102E5DF7 /* StudyScheduleEditor.swift */; };
+		3F15278FA14310701A5300EC /* MacSystemDockLandingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AE5C12B70C3DBA89D332BFE /* MacSystemDockLandingTests.swift */; };
+		3F458248F88E3B3B6978DCC8 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 56F617F8B6043422AFFCFFD7 /* InfoPlist.strings */; };
+		403D8A72F0C620E34B99E74B /* DaysYetDock_month.app in Embed Dependencies */ = {isa = PBXBuildFile; fileRef = 69625C49D1AF33A88493D0E5 /* DaysYetDock_month.app */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		431EC325BD13055C51A21AF7 /* DaysYetWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6947F66D3D5B82E52FFDE992 /* DaysYetWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		457E6915E9DD0A4DA516C1D8 /* WidgetPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00AAA44E592AAC3BF808D773 /* WidgetPreview.swift */; };
+		467000A46419BF0DDC7DBFAD /* MacDockTileMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E3F8357874BCD0D68CDB55 /* MacDockTileMessage.swift */; };
 		4916B55AAAB4AA35C6D34D37 /* ProfileStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B04E98B81C6EE39699985B09 /* ProfileStore.swift */; };
 		49B112D86EC6BAC49C1220DB /* CircleWidgetGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED60161D9CC07517DAD83D7C /* CircleWidgetGrid.swift */; };
+		4A7AE886D63F8879776D660C /* MacDockTileMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E3F8357874BCD0D68CDB55 /* MacDockTileMessage.swift */; };
 		4A99EB9C683A50BFFB97E3BA /* MacTimeRailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D94F4707A5BA71C438877A9 /* MacTimeRailView.swift */; };
 		4DFC782E74EFE4EF5625A693 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 76A627882BF859D704488EBF /* PrivacyInfo.xcprivacy */; };
+		4E063CFA7DF7463206A892F0 /* MacWidgetDockingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 384A48AF89CB9A3882D2A4F9 /* MacWidgetDockingTests.swift */; };
 		4E18A1C464C86B6A6F4D2AB7 /* MacLoginItemSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18BD6B2B2B72D2A6012AE9D /* MacLoginItemSettings.swift */; };
 		4E58729CFFB84CB4C1BA1E4E /* ProfileRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D4529A3EAFCABF61CBA729D /* ProfileRepository.swift */; };
 		4EDDD820E2F065C84EB6B5B8 /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5077CE484DDB9FA8448530A /* RootView.swift */; };
 		504330BF424C64F449A526AE /* MacWidgetColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE3EA85B50717318CBF8C9EE /* MacWidgetColor.swift */; };
 		512CFBE061B7440C1ED28ED5 /* THIRD_PARTY_NOTICES.md in Resources */ = {isa = PBXBuildFile; fileRef = 37680AC2C679AD7E5923DC15 /* THIRD_PARTY_NOTICES.md */; };
+		53F4AF89A5290F3242EC6635 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EE63803F7DD28421990C806 /* main.swift */; };
 		5452BBBBF9E7A355C511D6FB /* ProfileRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D4529A3EAFCABF61CBA729D /* ProfileRepository.swift */; };
 		5661379D160B03A3D8D7C2ED /* ASSET_LICENSES.md in Resources */ = {isa = PBXBuildFile; fileRef = 7533C992E89912E1A026E4C4 /* ASSET_LICENSES.md */; };
 		567336EF98496F222B1AB276 /* TimeMetric.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787BB50AE053C559748C39E4 /* TimeMetric.swift */; };
 		589088BF6B0D2D21B1E42601 /* TimeMetric.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787BB50AE053C559748C39E4 /* TimeMetric.swift */; };
 		59E7DD6A4423C0C77B0382B1 /* StudyScheduleEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBDAAB14865688B102E5DF7 /* StudyScheduleEditor.swift */; };
 		5E8645B190857C3DCBBA3076 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 969922BBF414097227DF1A0E /* OnboardingView.swift */; };
+		5E92325C3A3C3ADBD5B33089 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2DE048BFC44D68C2F2FAC93A /* InfoPlist.strings */; };
+		5EBEA47DDBD5225F5A422649 /* MacBottomSurfaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1379B27CAC0B89CA0CCE0D8A /* MacBottomSurfaceTests.swift */; };
 		6414D35FF6013C7BE2C90A0D /* ActivityScheduleEditorContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = E990ACA6F50800ABD6754B72 /* ActivityScheduleEditorContent.swift */; };
+		64531AE9246F58D4124CE7AC /* DaysYetDock_study.app in Embed Dependencies */ = {isa = PBXBuildFile; fileRef = F782777E26E36F13629F0A83 /* DaysYetDock_study.app */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6588473D3F42BFD5BF6AF326 /* WidgetStudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B76A90071D066FB56C71C5EC /* WidgetStudioView.swift */; };
 		6D93E37B71D9C59C5B169118 /* DaysYetTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40CE81B58E035A5129E7D2E /* DaysYetTheme.swift */; };
 		6FAA83EC09247D942228C3BA /* StudySchedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD354587144C454884BB8828 /* StudySchedule.swift */; };
+		71C06F1D66BD3B4AE0CBAE1C /* MacDockTileMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E3F8357874BCD0D68CDB55 /* MacDockTileMessage.swift */; };
 		7403B0F82A146A7AFB2A3415 /* DaysYetTheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = A40CE81B58E035A5129E7D2E /* DaysYetTheme.swift */; };
 		750E3DC6CCC3CF4B00AF94BF /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B8EF889B5F766FA4E4E1F328 /* Localizable.xcstrings */; };
 		7712665604D34DE34FD77AE3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7EEF11C88A39D6BFF1B4D534 /* Assets.xcassets */; };
 		78A8590AFB6B87F956553E70 /* WorkHoursTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9662ABB4E73AFBAA5B22B82D /* WorkHoursTests.swift */; };
 		78E35E9D015BD80CA4B4A221 /* DaysYetMacApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0FCB41C9C9E755B3BEEED6E5 /* DaysYetMacApp.swift */; };
+		7CBF1B8A5CD34D6EC8AB3A8B /* MacWidgetHandoffTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37E7472AD057480189BEFED2 /* MacWidgetHandoffTests.swift */; };
 		7CF4EA4FA7D0B8729AC4C746 /* CircleWidgetConfigurationIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88F7DC2D8F30DFB87A613B7 /* CircleWidgetConfigurationIntent.swift */; };
 		7D3F68DAD83CACE73A3660BB /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F18863FE1366766444715E8 /* SettingsView.swift */; };
+		7D506D1B81C9CB309C335B27 /* MacSystemDockGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8F9E5ECF2E872F3C924A2A /* MacSystemDockGroup.swift */; };
 		7D931002DC755EF2AD7D7F44 /* StudyScheduleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 643338F9F52FABE2D2989A81 /* StudyScheduleTests.swift */; };
+		7DECD0F6493DA138D104622D /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = B089D21B60469DD25008276C /* InfoPlist.strings */; };
 		7EA968CA461D8A76438D7105 /* ActivityScheduleEditorContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = E990ACA6F50800ABD6754B72 /* ActivityScheduleEditorContent.swift */; };
+		7F8D57BEBD06681F70CD2FCB /* DaysYetDock_customLife.app in Embed Dependencies */ = {isa = PBXBuildFile; fileRef = B87B7F773CB1BA69BB82B46A /* DaysYetDock_customLife.app */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		80282C52FEDFF23801AAEA57 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 343F8E3BCF1BFAEAEBD45A97 /* Assets.xcassets */; };
+		80403A335244D4414D6A9F2E /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2892A653AAF9C0289FE00DC6 /* InfoPlist.strings */; };
 		85EABD42E7FC7E7ADDCA3C2B /* TimeMetric.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787BB50AE053C559748C39E4 /* TimeMetric.swift */; };
+		886044372D7059D081A8429E /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EE63803F7DD28421990C806 /* main.swift */; };
 		8884C49053255442004E4076 /* MacLoginItemSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABC46F615264F47CAE996877 /* MacLoginItemSettingsTests.swift */; };
+		89B6453F4EB1B28ACDD22956 /* MacWidgetDocking.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1DFEC698F18112CED98D1E8 /* MacWidgetDocking.swift */; };
+		8ACFAECEE2B9C541545BBC5D /* MacSystemDockTransitionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F77164C8657A0EC8BACA618 /* MacSystemDockTransitionTests.swift */; };
+		8D94FE156D09773633D1A844 /* MacSystemDockTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15AD9451FC49DF6EAE2DF61F /* MacSystemDockTests.swift */; };
 		8E5C94002BD49BCB08660381 /* StudyScheduleEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBDAAB14865688B102E5DF7 /* StudyScheduleEditor.swift */; };
 		9021D64237A8C956A22F7E6C /* WidgetConfigurationIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F496778F27954462FC180E9 /* WidgetConfigurationIntent.swift */; };
+		911CFACAA2105B38DA30CCE7 /* DaysYetDock_year.app in Embed Dependencies */ = {isa = PBXBuildFile; fileRef = 3D33B7E998BEE745C6395C00 /* DaysYetDock_year.app */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		943AF5ED0EF0C3BFC7DA2557 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 07705141EA121C9FBCD0F6E8 /* InfoPlist.strings */; };
 		94479AEE70C99AAF3C2210B8 /* MacWidgetPointerInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80547D3903A118C0591FA41E /* MacWidgetPointerInteraction.swift */; };
+		99225524141B870101355042 /* MacDockTileMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E3F8357874BCD0D68CDB55 /* MacDockTileMessage.swift */; };
+		9AE02ED545F6700D467EF51D /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EE63803F7DD28421990C806 /* main.swift */; };
 		9D69A22247FE6A5EDFA2EE0B /* CircleWidgetGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED60161D9CC07517DAD83D7C /* CircleWidgetGrid.swift */; };
 		A0FA6DE40F146A27740D1A54 /* ASSET_LICENSES.md in Resources */ = {isa = PBXBuildFile; fileRef = 7533C992E89912E1A026E4C4 /* ASSET_LICENSES.md */; };
 		A305EED064E52EA26F880C65 /* StudyDaysEditorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F02E0CDB3E124DF4630BAD /* StudyDaysEditorTests.swift */; };
 		A3DD38AC667FA2A651C26431 /* DaysYetApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B2991E7A8BFF58FEDD422CF /* DaysYetApp.swift */; };
 		A49A848B853782DFD545CE0E /* NOTICE in Resources */ = {isa = PBXBuildFile; fileRef = 58FE27717C77D4B7907182C9 /* NOTICE */; };
+		A5A31BB2EDEF03267B80679C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8FF6F1FCDB80B6E3D6006C23 /* InfoPlist.strings */; };
+		A6646D8374B467B60BBCF44E /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EE63803F7DD28421990C806 /* main.swift */; };
+		A6E151DEE633977CA2166A7C /* MacSystemDockLanding.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFEE42FEDB02DFEF33D01152 /* MacSystemDockLanding.swift */; };
 		A8D788E8B5582322DD48F6A7 /* L10n.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CD64EF0BE487E467E8EE54 /* L10n.swift */; };
 		B2B166B3D54AF08AE3B21409 /* CircleWidgetConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B41D138481FF74278B3C1E4 /* CircleWidgetConfigurationTests.swift */; };
 		B420EAFB604CA21AEF3D34B5 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 785E00C0D2C2EA34EB0A2AA4 /* UserProfile.swift */; };
@@ -77,6 +120,8 @@
 		B89D0FFBAA65FDE3315CFE58 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = B8EF889B5F766FA4E4E1F328 /* Localizable.xcstrings */; };
 		B98634D051022BC537685493 /* ActivityScheduleEditorContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = E990ACA6F50800ABD6754B72 /* ActivityScheduleEditorContent.swift */; };
 		B99D9E3C09AB918414346C08 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 71388ED2AE6C8DC3C059BFA2 /* PrivacyInfo.xcprivacy */; };
+		C0E255C8DBD6A01C6788F319 /* MacDockTileMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E3F8357874BCD0D68CDB55 /* MacDockTileMessage.swift */; };
+		C3FB3C2CE859BB90ACE633ED /* DaysYetDock_activity.app in Embed Dependencies */ = {isa = PBXBuildFile; fileRef = 5DC9D3EC4271FBCF84A746E2 /* DaysYetDock_activity.app */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		C56317008E96E1CC6CBEEAA8 /* CountdownValueLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0618C16198637FB983104639 /* CountdownValueLabel.swift */; };
 		C5FFD3A0BCC08174065295DB /* MacWidgetSelectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B654EE3C8A3A58D1CA888B91 /* MacWidgetSelectionTests.swift */; };
 		C8E7D8C6C12AE8C965D8F11A /* WeekStartTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62BD112C3BA9417B89662401 /* WeekStartTests.swift */; };
@@ -84,19 +129,25 @@
 		CC2239801EBE676781A15316 /* DaysYetWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A688870A80B2CCC93B72C9B /* DaysYetWidgetBundle.swift */; };
 		CFDADD3AD39F8A8248936B23 /* MacWidgetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5850D0BE692A63A71E62BE3E /* MacWidgetTests.swift */; };
 		D140799DC3B11E6C4B49AD2E /* LICENSE in Resources */ = {isa = PBXBuildFile; fileRef = 80602A41F91F2981A51EBE0E /* LICENSE */; };
+		D233B95E0B34467CFA7979F9 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EE63803F7DD28421990C806 /* main.swift */; };
 		D489FE92E2B47F6A316C4761 /* CircleWidgetConfigurationIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = F88F7DC2D8F30DFB87A613B7 /* CircleWidgetConfigurationIntent.swift */; };
+		D4E05EB4A7DF05B0A8A99772 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EE63803F7DD28421990C806 /* main.swift */; };
 		D6F28DDF872DCCAC2BE34579 /* MacWidgetController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A595FB6033234CAF7CA04E0C /* MacWidgetController.swift */; };
 		D70A37DD7864DF557E54602D /* MacSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B11D4C863E5F66FF0D5780 /* MacSettingsView.swift */; };
 		D9C9A244E134300DD9AE6CDC /* DaysYetCircleWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978165861780CE67270437AE /* DaysYetCircleWidget.swift */; };
 		D9DF23D0950A358548E83792 /* DATA_SOURCES.md in Resources */ = {isa = PBXBuildFile; fileRef = 4F043AFA52F194DBD59AF711 /* DATA_SOURCES.md */; };
 		DAC14362DD93C6EAD812EDAD /* CircleWidgetConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B41D138481FF74278B3C1E4 /* CircleWidgetConfigurationTests.swift */; };
 		DBF3257F4C9FB8F300DC21C0 /* CountdownValueLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0618C16198637FB983104639 /* CountdownValueLabel.swift */; };
+		DD5F509034F3CFCDBF6F1A18 /* MacSystemDockController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89FA560B29DF56B6FF274D66 /* MacSystemDockController.swift */; };
+		DD89238334AF18D0CC63BFE1 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D89EF74F000C25DDC5B0E5A8 /* InfoPlist.strings */; };
 		DFAB566A99FE9D4C3B9DF254 /* WidgetThemePalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223C8EC7373FA0756EAB7C3B /* WidgetThemePalette.swift */; };
 		E3E2174926AFE6402CD2BCBC /* WeekStartTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62BD112C3BA9417B89662401 /* WeekStartTests.swift */; };
 		E599D0FABAA625A46424AD4D /* WidgetThemePalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223C8EC7373FA0756EAB7C3B /* WidgetThemePalette.swift */; };
 		EAA338EF8B8FFEA8B25247EC /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 7FFE29BF02B4BBBAAF4BC232 /* PrivacyInfo.xcprivacy */; };
 		EB99BA47FDFE71A6167B0C81 /* CountdownValueLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0618C16198637FB983104639 /* CountdownValueLabel.swift */; };
+		EF2C782B1ECAF61E03AC6FA0 /* MacDockTileMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E3F8357874BCD0D68CDB55 /* MacDockTileMessage.swift */; };
 		EF5AEE0C2965F4F18F9B096F /* WidgetThemePalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223C8EC7373FA0756EAB7C3B /* WidgetThemePalette.swift */; };
+		EF73456D629531AA48B96301 /* MacWidgetAttachmentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC6CF22A7E935A0DA9F27522 /* MacWidgetAttachmentTests.swift */; };
 		F12A599B4D7C4566D140AFA1 /* TimeProgressCalculatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 091F1E00C9DBA9A030F1A29D /* TimeProgressCalculatorTests.swift */; };
 		F1C690026702A4AAC963828E /* StudyScheduleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 643338F9F52FABE2D2989A81 /* StudyScheduleTests.swift */; };
 		F2A3AC241AF4291382F95BE3 /* MacWorkTimeEditorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F70CE77930AFDEDAAEF41791 /* MacWorkTimeEditorTests.swift */; };
@@ -106,9 +157,45 @@
 		FB226A76DFBF9E8165F7AD29 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 785E00C0D2C2EA34EB0A2AA4 /* UserProfile.swift */; };
 		FB2992EC52031417A5F16BCD /* L10n.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42CD64EF0BE487E467E8EE54 /* L10n.swift */; };
 		FF2EA20E325876F47246EEEB /* MacWidgetDragTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FE1F2B7FEEEBC873DF9B2C2 /* MacWidgetDragTests.swift */; };
+		FFA0C139B7D824E2F65CD7FE /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 781188F61A7B822B3F61CF1C /* InfoPlist.strings */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		063E0533014E7322FA293ABD /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7B2BC7D121AD88D1A05765C6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AE8B633360B6F807910722CC;
+			remoteInfo = DaysYetDock_customLife;
+		};
+		1105EB7F96C150A3385126F3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7B2BC7D121AD88D1A05765C6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6715F8C58CCF9ED806264394;
+			remoteInfo = DaysYetDock_week;
+		};
+		2818A4D099AEA7EFF164059E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7B2BC7D121AD88D1A05765C6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 0C3A705773B5A189780AF633;
+			remoteInfo = DaysYetDock_activity;
+		};
+		4227FEC259BA6BFF58330243 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7B2BC7D121AD88D1A05765C6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 15399708A3ADD7B31CC7E08F;
+			remoteInfo = DaysYetDock_year;
+		};
+		42ADD1F4D4C48F09B867362A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7B2BC7D121AD88D1A05765C6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1AE34707A4AB1F63F63FF495;
+			remoteInfo = DaysYetDock_study;
+		};
 		4AA450C00BCDCAF09E2C52A2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7B2BC7D121AD88D1A05765C6 /* Project object */;
@@ -130,6 +217,13 @@
 			remoteGlobalIDString = 2F5EC37929FBBC30A02F32D0;
 			remoteInfo = DaysYetMac;
 		};
+		8EE7448EDAAE6F5D0EB6003C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7B2BC7D121AD88D1A05765C6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 33816940BD73E08E8A06C647;
+			remoteInfo = DaysYetDock_workday;
+		};
 		A340DD18A8D50FD9FF7BEDEF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7B2BC7D121AD88D1A05765C6 /* Project object */;
@@ -137,9 +231,41 @@
 			remoteGlobalIDString = D0267B263E8450E155F6EA6C;
 			remoteInfo = DaysYetWidget;
 		};
+		BB5C5C0B626017918EBFE7A1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7B2BC7D121AD88D1A05765C6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CF6E3D0B95FC3A69C2FD5FE3;
+			remoteInfo = DaysYetDock_month;
+		};
+		EBE53E3FCD5B91C8B76904BC /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 7B2BC7D121AD88D1A05765C6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 38FA92445349168868DAFFDD;
+			remoteInfo = DaysYetDock_healthyLife;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		0808A8A33F0A777429577562 /* Embed Dependencies */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = Contents/Helpers;
+			dstSubfolderSpec = 1;
+			files = (
+				0D1782BA4F6419F7491DA0D3 /* DaysYetDock_week.app in Embed Dependencies */,
+				403D8A72F0C620E34B99E74B /* DaysYetDock_month.app in Embed Dependencies */,
+				911CFACAA2105B38DA30CCE7 /* DaysYetDock_year.app in Embed Dependencies */,
+				00F500FD55E3C3BEF799EBD3 /* DaysYetDock_healthyLife.app in Embed Dependencies */,
+				7F8D57BEBD06681F70CD2FCB /* DaysYetDock_customLife.app in Embed Dependencies */,
+				C3FB3C2CE859BB90ACE633ED /* DaysYetDock_activity.app in Embed Dependencies */,
+				041460C9A75ECF000B8E970D /* DaysYetDock_workday.app in Embed Dependencies */,
+				64531AE9246F58D4124CE7AC /* DaysYetDock_study.app in Embed Dependencies */,
+			);
+			name = "Embed Dependencies";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E63B2705DE4CB68C6B6975A0 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -163,42 +289,70 @@
 		0B41D138481FF74278B3C1E4 /* CircleWidgetConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleWidgetConfigurationTests.swift; sourceTree = "<group>"; };
 		0FCB41C9C9E755B3BEEED6E5 /* DaysYetMacApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysYetMacApp.swift; sourceTree = "<group>"; };
 		115989BAB479742C1F5196E8 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1379B27CAC0B89CA0CCE0D8A /* MacBottomSurfaceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacBottomSurfaceTests.swift; sourceTree = "<group>"; };
+		15AD9451FC49DF6EAE2DF61F /* MacSystemDockTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSystemDockTests.swift; sourceTree = "<group>"; };
+		180A15157CF0A4E6E01B7660 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1A688870A80B2CCC93B72C9B /* DaysYetWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysYetWidgetBundle.swift; sourceTree = "<group>"; };
+		1B474C7B68C8B72E9B30DED6 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1F496778F27954462FC180E9 /* WidgetConfigurationIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetConfigurationIntent.swift; sourceTree = "<group>"; };
 		223C8EC7373FA0756EAB7C3B /* WidgetThemePalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetThemePalette.swift; sourceTree = "<group>"; };
+		22C7D5BB8F84F78046D47147 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		29EFEC9EAF3928B063ECA970 /* DaysYetDock_healthyLife.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DaysYetDock_healthyLife.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2CAA15AF2440B276D4602D33 /* MacWidgetDragMorphTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetDragMorphTests.swift; sourceTree = "<group>"; };
 		343F8E3BCF1BFAEAEBD45A97 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		37680AC2C679AD7E5923DC15 /* THIRD_PARTY_NOTICES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = THIRD_PARTY_NOTICES.md; sourceTree = "<group>"; };
+		37E7472AD057480189BEFED2 /* MacWidgetHandoffTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetHandoffTests.swift; sourceTree = "<group>"; };
+		384A48AF89CB9A3882D2A4F9 /* MacWidgetDockingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetDockingTests.swift; sourceTree = "<group>"; };
+		3D33B7E998BEE745C6395C00 /* DaysYetDock_year.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DaysYetDock_year.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3F77164C8657A0EC8BACA618 /* MacSystemDockTransitionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSystemDockTransitionTests.swift; sourceTree = "<group>"; };
 		42CD64EF0BE487E467E8EE54 /* L10n.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = L10n.swift; sourceTree = "<group>"; };
+		49F93EC8A24BBB5D349AB32F /* MacDockDirectDrag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacDockDirectDrag.swift; sourceTree = "<group>"; };
+		4AE5C12B70C3DBA89D332BFE /* MacSystemDockLandingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSystemDockLandingTests.swift; sourceTree = "<group>"; };
 		4F043AFA52F194DBD59AF711 /* DATA_SOURCES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = DATA_SOURCES.md; sourceTree = "<group>"; };
 		4F18863FE1366766444715E8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		4FCA7AA269E6B8975A8FD72B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		53053C1748D1E4C40F1F9478 /* MacSetupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSetupController.swift; sourceTree = "<group>"; };
 		5850D0BE692A63A71E62BE3E /* MacWidgetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetTests.swift; sourceTree = "<group>"; };
 		58FE27717C77D4B7907182C9 /* NOTICE */ = {isa = PBXFileReference; path = NOTICE; sourceTree = "<group>"; };
 		5B2E5AC365670A90ADF4A2A1 /* DaysYet.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = DaysYet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5BBDAAB14865688B102E5DF7 /* StudyScheduleEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyScheduleEditor.swift; sourceTree = "<group>"; };
+		5DC9D3EC4271FBCF84A746E2 /* DaysYetDock_activity.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DaysYetDock_activity.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FAF5701274AE1606389D2BF /* MacCircleSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacCircleSettingsTests.swift; sourceTree = "<group>"; };
 		623E80015A8D443AD9E367E5 /* MacWidgetColorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetColorTests.swift; sourceTree = "<group>"; };
 		62BD112C3BA9417B89662401 /* WeekStartTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekStartTests.swift; sourceTree = "<group>"; };
 		643338F9F52FABE2D2989A81 /* StudyScheduleTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudyScheduleTests.swift; sourceTree = "<group>"; };
 		6947F66D3D5B82E52FFDE992 /* DaysYetWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = DaysYetWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		69625C49D1AF33A88493D0E5 /* DaysYetDock_month.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DaysYetDock_month.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		69813457F6DD4D80042683BE /* MacWidgetPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetPreferences.swift; sourceTree = "<group>"; };
+		6B47EB1FE8B02338D4247BB9 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		6D029136DF87FA805CE2847C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		71388ED2AE6C8DC3C059BFA2 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		74567F1B377911324A05479D /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		7533C992E89912E1A026E4C4 /* ASSET_LICENSES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ASSET_LICENSES.md; sourceTree = "<group>"; };
+		75B59E0C9CE60C426AB47430 /* MacSetupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSetupTests.swift; sourceTree = "<group>"; };
 		76A627882BF859D704488EBF /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		785E00C0D2C2EA34EB0A2AA4 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		787BB50AE053C559748C39E4 /* TimeMetric.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeMetric.swift; sourceTree = "<group>"; };
 		7B2991E7A8BFF58FEDD422CF /* DaysYetApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysYetApp.swift; sourceTree = "<group>"; };
+		7EE63803F7DD28421990C806 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		7EEF11C88A39D6BFF1B4D534 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7FFE29BF02B4BBBAAF4BC232 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		80547D3903A118C0591FA41E /* MacWidgetPointerInteraction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetPointerInteraction.swift; sourceTree = "<group>"; };
 		80602A41F91F2981A51EBE0E /* LICENSE */ = {isa = PBXFileReference; path = LICENSE; sourceTree = "<group>"; };
+		8160501739DE58A0A1431171 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		84B90E202776FC77FA72E87E /* MacDockTileProcessHost.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacDockTileProcessHost.swift; sourceTree = "<group>"; };
+		89FA560B29DF56B6FF274D66 /* MacSystemDockController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSystemDockController.swift; sourceTree = "<group>"; };
 		8D4529A3EAFCABF61CBA729D /* ProfileRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileRepository.swift; sourceTree = "<group>"; };
 		8FE1F2B7FEEEBC873DF9B2C2 /* MacWidgetDragTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetDragTests.swift; sourceTree = "<group>"; };
 		8FE865DB573E3BF33345150E /* DaysYetMacTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DaysYetMacTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		915FE68529C9855E8EE6F868 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		924D4B12B7D8955900B83DCB /* DaysYetDock_workday.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DaysYetDock_workday.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		95E3F8357874BCD0D68CDB55 /* MacDockTileMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacDockTileMessage.swift; sourceTree = "<group>"; };
 		9662ABB4E73AFBAA5B22B82D /* WorkHoursTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkHoursTests.swift; sourceTree = "<group>"; };
 		969922BBF414097227DF1A0E /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		978165861780CE67270437AE /* DaysYetCircleWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysYetCircleWidget.swift; sourceTree = "<group>"; };
 		9D94F4707A5BA71C438877A9 /* MacTimeRailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacTimeRailView.swift; sourceTree = "<group>"; };
+		9DA658627CB4D74DF95891E4 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		A1B11D4C863E5F66FF0D5780 /* MacSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSettingsView.swift; sourceTree = "<group>"; };
 		A40CE81B58E035A5129E7D2E /* DaysYetTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysYetTheme.swift; sourceTree = "<group>"; };
 		A5077CE484DDB9FA8448530A /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -206,36 +360,63 @@
 		A9E1151ACD8A1E94DF04D3A0 /* DaysYetTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = DaysYetTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		ABC46F615264F47CAE996877 /* MacLoginItemSettingsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacLoginItemSettingsTests.swift; sourceTree = "<group>"; };
 		AE3EA85B50717318CBF8C9EE /* MacWidgetColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetColor.swift; sourceTree = "<group>"; };
+		AFEE42FEDB02DFEF33D01152 /* MacSystemDockLanding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSystemDockLanding.swift; sourceTree = "<group>"; };
 		B04E98B81C6EE39699985B09 /* ProfileStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileStore.swift; sourceTree = "<group>"; };
 		B18BD6B2B2B72D2A6012AE9D /* MacLoginItemSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacLoginItemSettings.swift; sourceTree = "<group>"; };
+		B1DFEC698F18112CED98D1E8 /* MacWidgetDocking.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetDocking.swift; sourceTree = "<group>"; };
+		B235EDF452099F16D54DFB0F /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		B654EE3C8A3A58D1CA888B91 /* MacWidgetSelectionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetSelectionTests.swift; sourceTree = "<group>"; };
 		B76A90071D066FB56C71C5EC /* WidgetStudioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetStudioView.swift; sourceTree = "<group>"; };
 		B76F2990B7B59DF8981C5A3A /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		B87B7F773CB1BA69BB82B46A /* DaysYetDock_customLife.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DaysYetDock_customLife.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B8EF889B5F766FA4E4E1F328 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		B91D17AB4C05AFCE7E8BA18C /* DaysYet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DaysYet.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE8F9E5ECF2E872F3C924A2A /* MacSystemDockGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSystemDockGroup.swift; sourceTree = "<group>"; };
 		BEA369AB53C5EA2EB4743187 /* DaysYetWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysYetWidget.swift; sourceTree = "<group>"; };
 		C10B69E5DF938A33AEEC9B9A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		C3ED721101F17598E03AFC84 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		C4F28632AE0C23B9C7B1B725 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		C52A47653BF5F9972DE3066D /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CA91CAA558C93AA58DF6FEB8 /* ProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressBar.swift; sourceTree = "<group>"; };
 		CDFFE9A3383E27B646F2AEDD /* MacWidgetColorSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetColorSettings.swift; sourceTree = "<group>"; };
 		D0B4316388958D185FAD4CCF /* DaysYetLockScreenWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysYetLockScreenWidget.swift; sourceTree = "<group>"; };
 		D10E6E3ADE87F9484D9C78A2 /* DaysYetUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = DaysYetUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DAEB4AD6C7F665296D79A64F /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		DC6CF22A7E935A0DA9F27522 /* MacWidgetAttachmentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetAttachmentTests.swift; sourceTree = "<group>"; };
+		E2401C7073D2FCC0A6EDE239 /* MacDockAccessibilityReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacDockAccessibilityReader.swift; sourceTree = "<group>"; };
+		E4F898BE18A345AA5B78C454 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		E990ACA6F50800ABD6754B72 /* ActivityScheduleEditorContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityScheduleEditorContent.swift; sourceTree = "<group>"; };
 		ED60161D9CC07517DAD83D7C /* CircleWidgetGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleWidgetGrid.swift; sourceTree = "<group>"; };
 		F2218EE8FA923E98D18516D4 /* TimeLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLibraryView.swift; sourceTree = "<group>"; };
 		F70CE77930AFDEDAAEF41791 /* MacWorkTimeEditorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWorkTimeEditorTests.swift; sourceTree = "<group>"; };
+		F782777E26E36F13629F0A83 /* DaysYetDock_study.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DaysYetDock_study.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F83DA82C878A7FA4C25CD16D /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		F88D22DC10023B149584B3E8 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		F88F7DC2D8F30DFB87A613B7 /* CircleWidgetConfigurationIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleWidgetConfigurationIntent.swift; sourceTree = "<group>"; };
+		F8E2515C0FEB68651AA97C14 /* MacDockDirectDragTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacDockDirectDragTests.swift; sourceTree = "<group>"; };
+		FA2B8EC879B9A07781BC0776 /* MacSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSetupView.swift; sourceTree = "<group>"; };
 		FD354587144C454884BB8828 /* StudySchedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StudySchedule.swift; sourceTree = "<group>"; };
+		FED105EAF125BDE613C4E88C /* DaysYetDock_week.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DaysYetDock_week.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
 		015258345CA4FC14987CC3A0 /* DaysYetMacTests */ = {
 			isa = PBXGroup;
 			children = (
+				1379B27CAC0B89CA0CCE0D8A /* MacBottomSurfaceTests.swift */,
 				5FAF5701274AE1606389D2BF /* MacCircleSettingsTests.swift */,
+				F8E2515C0FEB68651AA97C14 /* MacDockDirectDragTests.swift */,
 				ABC46F615264F47CAE996877 /* MacLoginItemSettingsTests.swift */,
+				75B59E0C9CE60C426AB47430 /* MacSetupTests.swift */,
+				4AE5C12B70C3DBA89D332BFE /* MacSystemDockLandingTests.swift */,
+				15AD9451FC49DF6EAE2DF61F /* MacSystemDockTests.swift */,
+				3F77164C8657A0EC8BACA618 /* MacSystemDockTransitionTests.swift */,
+				DC6CF22A7E935A0DA9F27522 /* MacWidgetAttachmentTests.swift */,
 				623E80015A8D443AD9E367E5 /* MacWidgetColorTests.swift */,
+				384A48AF89CB9A3882D2A4F9 /* MacWidgetDockingTests.swift */,
+				2CAA15AF2440B276D4602D33 /* MacWidgetDragMorphTests.swift */,
 				8FE1F2B7FEEEBC873DF9B2C2 /* MacWidgetDragTests.swift */,
+				37E7472AD057480189BEFED2 /* MacWidgetHandoffTests.swift */,
 				B654EE3C8A3A58D1CA888B91 /* MacWidgetSelectionTests.swift */,
 				5850D0BE692A63A71E62BE3E /* MacWidgetTests.swift */,
 				F70CE77930AFDEDAAEF41791 /* MacWorkTimeEditorTests.swift */,
@@ -271,17 +452,34 @@
 			path = Design;
 			sourceTree = "<group>";
 		};
+		07FE2FF6CC46FF338D7B8A4F /* workday */ = {
+			isa = PBXGroup;
+			children = (
+				56F617F8B6043422AFFCFFD7 /* InfoPlist.strings */,
+			);
+			path = workday;
+			sourceTree = "<group>";
+		};
 		1EBCCA896930A82C1AD37CBF /* DaysYetMac */ = {
 			isa = PBXGroup;
 			children = (
 				7EEF11C88A39D6BFF1B4D534 /* Assets.xcassets */,
 				0FCB41C9C9E755B3BEEED6E5 /* DaysYetMacApp.swift */,
+				E2401C7073D2FCC0A6EDE239 /* MacDockAccessibilityReader.swift */,
+				49F93EC8A24BBB5D349AB32F /* MacDockDirectDrag.swift */,
+				84B90E202776FC77FA72E87E /* MacDockTileProcessHost.swift */,
 				B18BD6B2B2B72D2A6012AE9D /* MacLoginItemSettings.swift */,
 				A1B11D4C863E5F66FF0D5780 /* MacSettingsView.swift */,
+				53053C1748D1E4C40F1F9478 /* MacSetupController.swift */,
+				FA2B8EC879B9A07781BC0776 /* MacSetupView.swift */,
+				89FA560B29DF56B6FF274D66 /* MacSystemDockController.swift */,
+				BE8F9E5ECF2E872F3C924A2A /* MacSystemDockGroup.swift */,
+				AFEE42FEDB02DFEF33D01152 /* MacSystemDockLanding.swift */,
 				9D94F4707A5BA71C438877A9 /* MacTimeRailView.swift */,
 				AE3EA85B50717318CBF8C9EE /* MacWidgetColor.swift */,
 				CDFFE9A3383E27B646F2AEDD /* MacWidgetColorSettings.swift */,
 				A595FB6033234CAF7CA04E0C /* MacWidgetController.swift */,
+				B1DFEC698F18112CED98D1E8 /* MacWidgetDocking.swift */,
 				80547D3903A118C0591FA41E /* MacWidgetPointerInteraction.swift */,
 				69813457F6DD4D80042683BE /* MacWidgetPreferences.swift */,
 				76A627882BF859D704488EBF /* PrivacyInfo.xcprivacy */,
@@ -295,6 +493,14 @@
 			children = (
 				5B2E5AC365670A90ADF4A2A1 /* DaysYet.app */,
 				B91D17AB4C05AFCE7E8BA18C /* DaysYet.app */,
+				5DC9D3EC4271FBCF84A746E2 /* DaysYetDock_activity.app */,
+				B87B7F773CB1BA69BB82B46A /* DaysYetDock_customLife.app */,
+				29EFEC9EAF3928B063ECA970 /* DaysYetDock_healthyLife.app */,
+				69625C49D1AF33A88493D0E5 /* DaysYetDock_month.app */,
+				F782777E26E36F13629F0A83 /* DaysYetDock_study.app */,
+				FED105EAF125BDE613C4E88C /* DaysYetDock_week.app */,
+				924D4B12B7D8955900B83DCB /* DaysYetDock_workday.app */,
+				3D33B7E998BEE745C6395C00 /* DaysYetDock_year.app */,
 				8FE865DB573E3BF33345150E /* DaysYetMacTests.xctest */,
 				A9E1151ACD8A1E94DF04D3A0 /* DaysYetTests.xctest */,
 				D10E6E3ADE87F9484D9C78A2 /* DaysYetUITests.xctest */,
@@ -313,14 +519,25 @@
 				37680AC2C679AD7E5923DC15 /* THIRD_PARTY_NOTICES.md */,
 				02BAFD473136DBE58B59488E /* Config */,
 				EB1E8B1F92D96FDC55948FFC /* DaysYet */,
+				46A78066E8F7577FCDE2B8B0 /* DaysYetDockTile */,
 				1EBCCA896930A82C1AD37CBF /* DaysYetMac */,
 				015258345CA4FC14987CC3A0 /* DaysYetMacTests */,
 				01A74EAD58527D66A4D5B6BA /* DaysYetTests */,
 				7EEDCDBD847B74A0F8D766FE /* DaysYetUITests */,
 				9FC2643860A178CB1AF832B2 /* DaysYetWidget */,
+				A1E738326287740A46CC63CB /* DockSupport */,
 				FA52699628EA4AB321357425 /* Shared */,
 				2F06D0F57EA534874E9D027D /* Products */,
 			);
+			sourceTree = "<group>";
+		};
+		46A78066E8F7577FCDE2B8B0 /* DaysYetDockTile */ = {
+			isa = PBXGroup;
+			children = (
+				7EE63803F7DD28421990C806 /* main.swift */,
+				BAD6780B67F954456E191E2C /* Labels */,
+			);
+			path = DaysYetDockTile;
 			sourceTree = "<group>";
 		};
 		4F9A05FD99DDB903E9025546 /* Onboarding */ = {
@@ -329,6 +546,14 @@
 				969922BBF414097227DF1A0E /* OnboardingView.swift */,
 			);
 			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		667E82043A78CB7C4FCB0467 /* week */ = {
+			isa = PBXGroup;
+			children = (
+				2DE048BFC44D68C2F2FAC93A /* InfoPlist.strings */,
+			);
+			path = week;
 			sourceTree = "<group>";
 		};
 		7EEDCDBD847B74A0F8D766FE /* DaysYetUITests */ = {
@@ -350,6 +575,14 @@
 			path = Home;
 			sourceTree = "<group>";
 		};
+		8ACEF89B78E428B40F85A6A6 /* year */ = {
+			isa = PBXGroup;
+			children = (
+				2892A653AAF9C0289FE00DC6 /* InfoPlist.strings */,
+			);
+			path = year;
+			sourceTree = "<group>";
+		};
 		8FC5994D9597A43258DFF78A /* Features */ = {
 			isa = PBXGroup;
 			children = (
@@ -358,6 +591,22 @@
 				F120B5E052E950E617E4B2AC /* Settings */,
 			);
 			path = Features;
+			sourceTree = "<group>";
+		};
+		966D0CAC80799EA1D8630830 /* customLife */ = {
+			isa = PBXGroup;
+			children = (
+				B089D21B60469DD25008276C /* InfoPlist.strings */,
+			);
+			path = customLife;
+			sourceTree = "<group>";
+		};
+		9A7A9434493E063C9EE1678C /* study */ = {
+			isa = PBXGroup;
+			children = (
+				D89EF74F000C25DDC5B0E5A8 /* InfoPlist.strings */,
+			);
+			path = study;
 			sourceTree = "<group>";
 		};
 		9FC2643860A178CB1AF832B2 /* DaysYetWidget */ = {
@@ -374,6 +623,14 @@
 			path = DaysYetWidget;
 			sourceTree = "<group>";
 		};
+		A1E738326287740A46CC63CB /* DockSupport */ = {
+			isa = PBXGroup;
+			children = (
+				95E3F8357874BCD0D68CDB55 /* MacDockTileMessage.swift */,
+			);
+			path = DockSupport;
+			sourceTree = "<group>";
+		};
 		A3B49BA7711A79DB01BF1ED6 /* App */ = {
 			isa = PBXGroup;
 			children = (
@@ -382,6 +639,45 @@
 				A5077CE484DDB9FA8448530A /* RootView.swift */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		AA50A2C5D61AEDBB68B6B2B7 /* month */ = {
+			isa = PBXGroup;
+			children = (
+				781188F61A7B822B3F61CF1C /* InfoPlist.strings */,
+			);
+			path = month;
+			sourceTree = "<group>";
+		};
+		AB0F30B7CB9E39C604AEC2F4 /* healthyLife */ = {
+			isa = PBXGroup;
+			children = (
+				758D50D7732546DD2ACCB267 /* InfoPlist.strings */,
+			);
+			path = healthyLife;
+			sourceTree = "<group>";
+		};
+		BAD6780B67F954456E191E2C /* Labels */ = {
+			isa = PBXGroup;
+			children = (
+				CB66FB8502669D98DF413CC1 /* activity */,
+				966D0CAC80799EA1D8630830 /* customLife */,
+				AB0F30B7CB9E39C604AEC2F4 /* healthyLife */,
+				AA50A2C5D61AEDBB68B6B2B7 /* month */,
+				9A7A9434493E063C9EE1678C /* study */,
+				667E82043A78CB7C4FCB0467 /* week */,
+				07FE2FF6CC46FF338D7B8A4F /* workday */,
+				8ACEF89B78E428B40F85A6A6 /* year */,
+			);
+			path = Labels;
+			sourceTree = "<group>";
+		};
+		CB66FB8502669D98DF413CC1 /* activity */ = {
+			isa = PBXGroup;
+			children = (
+				8FF6F1FCDB80B6E3D6006C23 /* InfoPlist.strings */,
+			);
+			path = activity;
 			sourceTree = "<group>";
 		};
 		EB1E8B1F92D96FDC55948FFC /* DaysYet */ = {
@@ -447,6 +743,60 @@
 			productReference = 5B2E5AC365670A90ADF4A2A1 /* DaysYet.app */;
 			productType = "com.apple.product-type.application";
 		};
+		0C3A705773B5A189780AF633 /* DaysYetDock_activity */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EA800C74775A85B2578C2F5E /* Build configuration list for PBXNativeTarget "DaysYetDock_activity" */;
+			buildPhases = (
+				DAD732523E8E1952795474EC /* Sources */,
+				4F13A9F99623F72C932D2E36 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DaysYetDock_activity;
+			packageProductDependencies = (
+			);
+			productName = DaysYetDock_activity;
+			productReference = 5DC9D3EC4271FBCF84A746E2 /* DaysYetDock_activity.app */;
+			productType = "com.apple.product-type.application";
+		};
+		15399708A3ADD7B31CC7E08F /* DaysYetDock_year */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D53D613B4AF6756D8B275DBB /* Build configuration list for PBXNativeTarget "DaysYetDock_year" */;
+			buildPhases = (
+				F23762F303DBD4B8C594B98D /* Sources */,
+				74ACF412B728C9BA7875096D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DaysYetDock_year;
+			packageProductDependencies = (
+			);
+			productName = DaysYetDock_year;
+			productReference = 3D33B7E998BEE745C6395C00 /* DaysYetDock_year.app */;
+			productType = "com.apple.product-type.application";
+		};
+		1AE34707A4AB1F63F63FF495 /* DaysYetDock_study */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = D012042827F33204FB45186E /* Build configuration list for PBXNativeTarget "DaysYetDock_study" */;
+			buildPhases = (
+				69B578108C74B415997BF8DA /* Sources */,
+				28C5889AC973CF3509317D2A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DaysYetDock_study;
+			packageProductDependencies = (
+			);
+			productName = DaysYetDock_study;
+			productReference = F782777E26E36F13629F0A83 /* DaysYetDock_study.app */;
+			productType = "com.apple.product-type.application";
+		};
 		26C14DC3F4816953E004B28D /* DaysYetMacTests */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AB1DDDFE5F3F2744A5AC5BE0 /* Build configuration list for PBXNativeTarget "DaysYetMacTests" */;
@@ -471,16 +821,79 @@
 			buildPhases = (
 				42FCBFAB170B6F3782EF2986 /* Sources */,
 				6ACC76D3DA38F60F73629C3F /* Resources */,
+				0808A8A33F0A777429577562 /* Embed Dependencies */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				FB25BE77969C3D25D9551CFE /* PBXTargetDependency */,
+				60236A3E5F7224143EFC09E0 /* PBXTargetDependency */,
+				C1D2AC1072AB7496F1E0AAAB /* PBXTargetDependency */,
+				EA28168A5698F868A15A342D /* PBXTargetDependency */,
+				442157F309AC64BA16C81445 /* PBXTargetDependency */,
+				846E23D4BD5105124912713E /* PBXTargetDependency */,
+				B1DB8B028226E6FC2358602A /* PBXTargetDependency */,
+				FC725E9F4EE81380D7DB6BBF /* PBXTargetDependency */,
 			);
 			name = DaysYetMac;
 			packageProductDependencies = (
 			);
 			productName = DaysYetMac;
 			productReference = B91D17AB4C05AFCE7E8BA18C /* DaysYet.app */;
+			productType = "com.apple.product-type.application";
+		};
+		33816940BD73E08E8A06C647 /* DaysYetDock_workday */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EE5F57524F80E277DEEE3768 /* Build configuration list for PBXNativeTarget "DaysYetDock_workday" */;
+			buildPhases = (
+				3045DFC2C8AAD49CE1928335 /* Sources */,
+				00AAD7566A2722D20762C52A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DaysYetDock_workday;
+			packageProductDependencies = (
+			);
+			productName = DaysYetDock_workday;
+			productReference = 924D4B12B7D8955900B83DCB /* DaysYetDock_workday.app */;
+			productType = "com.apple.product-type.application";
+		};
+		38FA92445349168868DAFFDD /* DaysYetDock_healthyLife */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3934573FFF4BAB527154815C /* Build configuration list for PBXNativeTarget "DaysYetDock_healthyLife" */;
+			buildPhases = (
+				390E282F38A565C5376D7DA6 /* Sources */,
+				D3DF6CB83539787D0B5810A4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DaysYetDock_healthyLife;
+			packageProductDependencies = (
+			);
+			productName = DaysYetDock_healthyLife;
+			productReference = 29EFEC9EAF3928B063ECA970 /* DaysYetDock_healthyLife.app */;
+			productType = "com.apple.product-type.application";
+		};
+		6715F8C58CCF9ED806264394 /* DaysYetDock_week */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 343D8820E44D4DB39859D3EB /* Build configuration list for PBXNativeTarget "DaysYetDock_week" */;
+			buildPhases = (
+				B2924DE32FCB6FB2F9F44240 /* Sources */,
+				AF4233D5004A98C66976764B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DaysYetDock_week;
+			packageProductDependencies = (
+			);
+			productName = DaysYetDock_week;
+			productReference = FED105EAF125BDE613C4E88C /* DaysYetDock_week.app */;
 			productType = "com.apple.product-type.application";
 		};
 		7DA495E25E3678A2B5143242 /* DaysYetUITests */ = {
@@ -500,6 +913,42 @@
 			productName = DaysYetUITests;
 			productReference = D10E6E3ADE87F9484D9C78A2 /* DaysYetUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		AE8B633360B6F807910722CC /* DaysYetDock_customLife */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CCAEE02D1E21A1FAE55DF163 /* Build configuration list for PBXNativeTarget "DaysYetDock_customLife" */;
+			buildPhases = (
+				3B017FCF4FD52EB9B99B13D0 /* Sources */,
+				BAAD15E8B6A4AAFBE20357FF /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DaysYetDock_customLife;
+			packageProductDependencies = (
+			);
+			productName = DaysYetDock_customLife;
+			productReference = B87B7F773CB1BA69BB82B46A /* DaysYetDock_customLife.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CF6E3D0B95FC3A69C2FD5FE3 /* DaysYetDock_month */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5BB5375D89B3A0A1A6696806 /* Build configuration list for PBXNativeTarget "DaysYetDock_month" */;
+			buildPhases = (
+				420CE08AA96B1E3434B7E736 /* Sources */,
+				0CC02342F91058A36F21B7BE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DaysYetDock_month;
+			packageProductDependencies = (
+			);
+			productName = DaysYetDock_month;
+			productReference = 69625C49D1AF33A88493D0E5 /* DaysYetDock_month.app */;
+			productType = "com.apple.product-type.application";
 		};
 		D0267B263E8450E155F6EA6C /* DaysYetWidget */ = {
 			isa = PBXNativeTarget;
@@ -549,15 +998,39 @@
 					05749A4A6B0F0D6B3CE39C34 = {
 						ProvisioningStyle = Automatic;
 					};
+					0C3A705773B5A189780AF633 = {
+						ProvisioningStyle = Automatic;
+					};
+					15399708A3ADD7B31CC7E08F = {
+						ProvisioningStyle = Automatic;
+					};
+					1AE34707A4AB1F63F63FF495 = {
+						ProvisioningStyle = Automatic;
+					};
 					26C14DC3F4816953E004B28D = {
 						ProvisioningStyle = Automatic;
 					};
 					2F5EC37929FBBC30A02F32D0 = {
 						ProvisioningStyle = Automatic;
 					};
+					33816940BD73E08E8A06C647 = {
+						ProvisioningStyle = Automatic;
+					};
+					38FA92445349168868DAFFDD = {
+						ProvisioningStyle = Automatic;
+					};
+					6715F8C58CCF9ED806264394 = {
+						ProvisioningStyle = Automatic;
+					};
 					7DA495E25E3678A2B5143242 = {
 						ProvisioningStyle = Automatic;
 						TestTargetID = 05749A4A6B0F0D6B3CE39C34;
+					};
+					AE8B633360B6F807910722CC = {
+						ProvisioningStyle = Automatic;
+					};
+					CF6E3D0B95FC3A69C2FD5FE3 = {
+						ProvisioningStyle = Automatic;
 					};
 					D0267B263E8450E155F6EA6C = {
 						ProvisioningStyle = Automatic;
@@ -583,6 +1056,14 @@
 			projectRoot = "";
 			targets = (
 				05749A4A6B0F0D6B3CE39C34 /* DaysYet */,
+				0C3A705773B5A189780AF633 /* DaysYetDock_activity */,
+				AE8B633360B6F807910722CC /* DaysYetDock_customLife */,
+				38FA92445349168868DAFFDD /* DaysYetDock_healthyLife */,
+				CF6E3D0B95FC3A69C2FD5FE3 /* DaysYetDock_month */,
+				1AE34707A4AB1F63F63FF495 /* DaysYetDock_study */,
+				6715F8C58CCF9ED806264394 /* DaysYetDock_week */,
+				33816940BD73E08E8A06C647 /* DaysYetDock_workday */,
+				15399708A3ADD7B31CC7E08F /* DaysYetDock_year */,
 				2F5EC37929FBBC30A02F32D0 /* DaysYetMac */,
 				26C14DC3F4816953E004B28D /* DaysYetMacTests */,
 				FD641515D8C275796D5F6C2C /* DaysYetTests */,
@@ -593,6 +1074,30 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		00AAD7566A2722D20762C52A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3F458248F88E3B3B6978DCC8 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0CC02342F91058A36F21B7BE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FFA0C139B7D824E2F65CD7FE /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		28C5889AC973CF3509317D2A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD89238334AF18D0CC63BFE1 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		3189BAA99784EEEE4CED992C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -606,6 +1111,14 @@
 				B66DE5162B94257F7742A20D /* NOTICE in Resources */,
 				B99D9E3C09AB918414346C08 /* PrivacyInfo.xcprivacy in Resources */,
 				512CFBE061B7440C1ED28ED5 /* THIRD_PARTY_NOTICES.md in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4F13A9F99623F72C932D2E36 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A5A31BB2EDEF03267B80679C /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -625,6 +1138,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		74ACF412B728C9BA7875096D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				80403A335244D4414D6A9F2E /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		776328637A90DAF25D763622 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -632,6 +1153,30 @@
 				F571C748BB95F074FBA354F9 /* InfoPlist.strings in Resources */,
 				CAF47E6D83B6357A740FED03 /* Localizable.xcstrings in Resources */,
 				EAA338EF8B8FFEA8B25247EC /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AF4233D5004A98C66976764B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5E92325C3A3C3ADBD5B33089 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BAAD15E8B6A4AAFBE20357FF /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7DECD0F6493DA138D104622D /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		D3DF6CB83539787D0B5810A4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				05F862399BBFD32126251C35 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -661,6 +1206,42 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		3045DFC2C8AAD49CE1928335 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4A7AE886D63F8879776D660C /* MacDockTileMessage.swift in Sources */,
+				9AE02ED545F6700D467EF51D /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		390E282F38A565C5376D7DA6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				99225524141B870101355042 /* MacDockTileMessage.swift in Sources */,
+				1034208B7244EE7ED7EBDA13 /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3B017FCF4FD52EB9B99B13D0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C0E255C8DBD6A01C6788F319 /* MacDockTileMessage.swift in Sources */,
+				D233B95E0B34467CFA7979F9 /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		420CE08AA96B1E3434B7E736 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				09C615963AE93294CC57D83D /* MacDockTileMessage.swift in Sources */,
+				A6646D8374B467B60BBCF44E /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		42FCBFAB170B6F3782EF2986 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -672,12 +1253,22 @@
 				78E35E9D015BD80CA4B4A221 /* DaysYetMacApp.swift in Sources */,
 				6D93E37B71D9C59C5B169118 /* DaysYetTheme.swift in Sources */,
 				FB2992EC52031417A5F16BCD /* L10n.swift in Sources */,
+				2DF4F609723D7E99EFB4662F /* MacDockAccessibilityReader.swift in Sources */,
+				34714AF5A2F6E493DE49821A /* MacDockDirectDrag.swift in Sources */,
+				71C06F1D66BD3B4AE0CBAE1C /* MacDockTileMessage.swift in Sources */,
+				1505F4133E7CFBFBD3EE1117 /* MacDockTileProcessHost.swift in Sources */,
 				4E18A1C464C86B6A6F4D2AB7 /* MacLoginItemSettings.swift in Sources */,
 				D70A37DD7864DF557E54602D /* MacSettingsView.swift in Sources */,
+				2BA565CD144991F60BEA21CE /* MacSetupController.swift in Sources */,
+				22E67A312598A8E7B35D7B4B /* MacSetupView.swift in Sources */,
+				DD5F509034F3CFCDBF6F1A18 /* MacSystemDockController.swift in Sources */,
+				7D506D1B81C9CB309C335B27 /* MacSystemDockGroup.swift in Sources */,
+				A6E151DEE633977CA2166A7C /* MacSystemDockLanding.swift in Sources */,
 				4A99EB9C683A50BFFB97E3BA /* MacTimeRailView.swift in Sources */,
 				504330BF424C64F449A526AE /* MacWidgetColor.swift in Sources */,
 				0EDF2AA905DBFD80BB767473 /* MacWidgetColorSettings.swift in Sources */,
 				D6F28DDF872DCCAC2BE34579 /* MacWidgetController.swift in Sources */,
+				89B6453F4EB1B28ACDD22956 /* MacWidgetDocking.swift in Sources */,
 				94479AEE70C99AAF3C2210B8 /* MacWidgetPointerInteraction.swift in Sources */,
 				15A96E0DCAECA58CA0D5ECE7 /* MacWidgetPreferences.swift in Sources */,
 				5452BBBBF9E7A355C511D6FB /* ProfileRepository.swift in Sources */,
@@ -687,6 +1278,24 @@
 				589088BF6B0D2D21B1E42601 /* TimeMetric.swift in Sources */,
 				B420EAFB604CA21AEF3D34B5 /* UserProfile.swift in Sources */,
 				E599D0FABAA625A46424AD4D /* WidgetThemePalette.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		69B578108C74B415997BF8DA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				34E193604EB8E2CF7F53BDEB /* MacDockTileMessage.swift in Sources */,
+				D4E05EB4A7DF05B0A8A99772 /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B2924DE32FCB6FB2F9F44240 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				467000A46419BF0DDC7DBFAD /* MacDockTileMessage.swift in Sources */,
+				53F4AF89A5290F3242EC6635 /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -726,6 +1335,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		DAD732523E8E1952795474EC /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				31175D62670E2B1CE57D0C5D /* MacDockTileMessage.swift in Sources */,
+				886044372D7059D081A8429E /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E31D3080116A8A1A41119F12 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -738,15 +1356,34 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F23762F303DBD4B8C594B98D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EF2C782B1ECAF61E03AC6FA0 /* MacDockTileMessage.swift in Sources */,
+				151290AEB9038E954A95A6A1 /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		FFC9FEEEF84C35A9CA11DED1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				DAC14362DD93C6EAD812EDAD /* CircleWidgetConfigurationTests.swift in Sources */,
+				5EBEA47DDBD5225F5A422649 /* MacBottomSurfaceTests.swift in Sources */,
 				1566FB9383916B66814994CC /* MacCircleSettingsTests.swift in Sources */,
+				2A7AF923DAA4DC4A617E7EE2 /* MacDockDirectDragTests.swift in Sources */,
 				8884C49053255442004E4076 /* MacLoginItemSettingsTests.swift in Sources */,
+				3A766B2DF35B34765619F918 /* MacSetupTests.swift in Sources */,
+				3F15278FA14310701A5300EC /* MacSystemDockLandingTests.swift in Sources */,
+				8D94FE156D09773633D1A844 /* MacSystemDockTests.swift in Sources */,
+				8ACFAECEE2B9C541545BBC5D /* MacSystemDockTransitionTests.swift in Sources */,
+				EF73456D629531AA48B96301 /* MacWidgetAttachmentTests.swift in Sources */,
 				199AEA4664CC59225B6C8F18 /* MacWidgetColorTests.swift in Sources */,
+				4E063CFA7DF7463206A892F0 /* MacWidgetDockingTests.swift in Sources */,
+				3761759270431DB8C3D98970 /* MacWidgetDragMorphTests.swift in Sources */,
 				FF2EA20E325876F47246EEEB /* MacWidgetDragTests.swift in Sources */,
+				7CBF1B8A5CD34D6EC8AB3A8B /* MacWidgetHandoffTests.swift in Sources */,
 				C5FFD3A0BCC08174065295DB /* MacWidgetSelectionTests.swift in Sources */,
 				CFDADD3AD39F8A8248936B23 /* MacWidgetTests.swift in Sources */,
 				F2A3AC241AF4291382F95BE3 /* MacWorkTimeEditorTests.swift in Sources */,
@@ -770,15 +1407,55 @@
 			target = 05749A4A6B0F0D6B3CE39C34 /* DaysYet */;
 			targetProxy = 8304CC63603B7E5DD29E53F6 /* PBXContainerItemProxy */;
 		};
+		442157F309AC64BA16C81445 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AE8B633360B6F807910722CC /* DaysYetDock_customLife */;
+			targetProxy = 063E0533014E7322FA293ABD /* PBXContainerItemProxy */;
+		};
 		5728513C4021A63535910B78 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 2F5EC37929FBBC30A02F32D0 /* DaysYetMac */;
 			targetProxy = 832523700F6A395B208E47E4 /* PBXContainerItemProxy */;
 		};
+		60236A3E5F7224143EFC09E0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CF6E3D0B95FC3A69C2FD5FE3 /* DaysYetDock_month */;
+			targetProxy = BB5C5C0B626017918EBFE7A1 /* PBXContainerItemProxy */;
+		};
+		846E23D4BD5105124912713E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 0C3A705773B5A189780AF633 /* DaysYetDock_activity */;
+			targetProxy = 2818A4D099AEA7EFF164059E /* PBXContainerItemProxy */;
+		};
+		B1DB8B028226E6FC2358602A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 33816940BD73E08E8A06C647 /* DaysYetDock_workday */;
+			targetProxy = 8EE7448EDAAE6F5D0EB6003C /* PBXContainerItemProxy */;
+		};
+		C1D2AC1072AB7496F1E0AAAB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 15399708A3ADD7B31CC7E08F /* DaysYetDock_year */;
+			targetProxy = 4227FEC259BA6BFF58330243 /* PBXContainerItemProxy */;
+		};
 		C6FC57C116F65CDDD2AB6BC8 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = D0267B263E8450E155F6EA6C /* DaysYetWidget */;
 			targetProxy = A340DD18A8D50FD9FF7BEDEF /* PBXContainerItemProxy */;
+		};
+		EA28168A5698F868A15A342D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 38FA92445349168868DAFFDD /* DaysYetDock_healthyLife */;
+			targetProxy = EBE53E3FCD5B91C8B76904BC /* PBXContainerItemProxy */;
+		};
+		FB25BE77969C3D25D9551CFE /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6715F8C58CCF9ED806264394 /* DaysYetDock_week */;
+			targetProxy = 1105EB7F96C150A3385126F3 /* PBXContainerItemProxy */;
+		};
+		FC725E9F4EE81380D7DB6BBF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1AE34707A4AB1F63F63FF495 /* DaysYetDock_study */;
+			targetProxy = 42ADD1F4D4C48F09B867362A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -792,11 +1469,65 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
+		2892A653AAF9C0289FE00DC6 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				8160501739DE58A0A1431171 /* en */,
+				74567F1B377911324A05479D /* ja */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		2DE048BFC44D68C2F2FAC93A /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				915FE68529C9855E8EE6F868 /* en */,
+				6B47EB1FE8B02338D4247BB9 /* ja */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		56F617F8B6043422AFFCFFD7 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E4F898BE18A345AA5B78C454 /* en */,
+				C3ED721101F17598E03AFC84 /* ja */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		758D50D7732546DD2ACCB267 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F88D22DC10023B149584B3E8 /* en */,
+				9DA658627CB4D74DF95891E4 /* ja */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 		7789B3FE1FCF7E665C59E506 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
 				036F8BD9D4F1B7467842B3A4 /* en */,
 				115989BAB479742C1F5196E8 /* ja */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		781188F61A7B822B3F61CF1C /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				4FCA7AA269E6B8975A8FD72B /* en */,
+				B235EDF452099F16D54DFB0F /* ja */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		8FF6F1FCDB80B6E3D6006C23 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				22C7D5BB8F84F78046D47147 /* en */,
+				1B474C7B68C8B72E9B30DED6 /* ja */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -810,9 +1541,51 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
+		B089D21B60469DD25008276C /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				C4F28632AE0C23B9C7B1B725 /* en */,
+				C52A47653BF5F9972DE3066D /* ja */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		D89EF74F000C25DDC5B0E5A8 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				180A15157CF0A4E6E01B7660 /* en */,
+				DAEB4AD6C7F665296D79A64F /* ja */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		010BA3ED05755829970192AD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DaysYetDockTile/DaysYetDockTile.entitlements;
+				CODE_SIGN_IDENTITY = "$(inherited)";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 12;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "DaysYet · Milestone";
+				INFOPLIST_KEY_LSUIElement = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.8;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.dock.customLife;
+				PRODUCT_MODULE_NAME = DaysYetDock_customLife;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 		0F721804770E90F36CC38B49 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -880,6 +1653,30 @@
 				PROVISIONING_PROFILE_SPECIFIER = "$(DAYSYET_IOS_PROFILE)";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		1D09C07AAE3A02E0201D45C3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DaysYetDockTile/DaysYetDockTile.entitlements;
+				CODE_SIGN_IDENTITY = "$(inherited)";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 12;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "DaysYet · Health Goal";
+				INFOPLIST_KEY_LSUIElement = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.8;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.dock.healthyLife;
+				PRODUCT_MODULE_NAME = DaysYetDock_healthyLife;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
 			};
 			name = Release;
 		};
@@ -971,6 +1768,30 @@
 			};
 			name = Release;
 		};
+		4EBAB874EBAA65CC8EB4CD72 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DaysYetDockTile/DaysYetDockTile.entitlements;
+				CODE_SIGN_IDENTITY = "$(inherited)";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 12;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "DaysYet · Month";
+				INFOPLIST_KEY_LSUIElement = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.8;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.dock.month;
+				PRODUCT_MODULE_NAME = DaysYetDock_month;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 		55B74E06DE24B27FF0C0EF92 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -988,6 +1809,54 @@
 				TEST_TARGET_NAME = DaysYet;
 			};
 			name = Release;
+		};
+		55F29F6A707ABDAF821DB1CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DaysYetDockTile/DaysYetDockTile.entitlements;
+				CODE_SIGN_IDENTITY = "$(inherited)";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 12;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "DaysYet · Health Goal";
+				INFOPLIST_KEY_LSUIElement = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.8;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.dock.healthyLife;
+				PRODUCT_MODULE_NAME = DaysYetDock_healthyLife;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		5612672F9109C2FC2DE35B34 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DaysYetDockTile/DaysYetDockTile.entitlements;
+				CODE_SIGN_IDENTITY = "$(inherited)";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 12;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "DaysYet · Study";
+				INFOPLIST_KEY_LSUIElement = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.8;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.dock.study;
+				PRODUCT_MODULE_NAME = DaysYetDock_study;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
 		};
 		58556FFA2CCF8B3476FFD69A /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -1047,6 +1916,102 @@
 			};
 			name = Release;
 		};
+		6092D6D1104041081A5CAB82 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DaysYetDockTile/DaysYetDockTile.entitlements;
+				CODE_SIGN_IDENTITY = "$(inherited)";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 12;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "DaysYet · Work";
+				INFOPLIST_KEY_LSUIElement = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.8;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.dock.workday;
+				PRODUCT_MODULE_NAME = DaysYetDock_workday;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		697AC394E6E403DC1021278D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DaysYetDockTile/DaysYetDockTile.entitlements;
+				CODE_SIGN_IDENTITY = "$(inherited)";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 12;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "DaysYet · Week";
+				INFOPLIST_KEY_LSUIElement = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.8;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.dock.week;
+				PRODUCT_MODULE_NAME = DaysYetDock_week;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		74D59A796AD29E7C48C8AE18 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DaysYetDockTile/DaysYetDockTile.entitlements;
+				CODE_SIGN_IDENTITY = "$(inherited)";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 12;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "DaysYet · Activity";
+				INFOPLIST_KEY_LSUIElement = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.8;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.dock.activity;
+				PRODUCT_MODULE_NAME = DaysYetDock_activity;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		76C4B2894CE7934166A2AE14 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DaysYetDockTile/DaysYetDockTile.entitlements;
+				CODE_SIGN_IDENTITY = "$(inherited)";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 12;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "DaysYet · Study";
+				INFOPLIST_KEY_LSUIElement = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.8;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.dock.study;
+				PRODUCT_MODULE_NAME = DaysYetDock_study;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 		7A177C80D4586E8BFF9F2E48 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1094,6 +2059,126 @@
 			};
 			name = Release;
 		};
+		8895F0D2694CEC04E65CCCB7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DaysYetDockTile/DaysYetDockTile.entitlements;
+				CODE_SIGN_IDENTITY = "$(inherited)";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 12;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "DaysYet · Milestone";
+				INFOPLIST_KEY_LSUIElement = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.8;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.dock.customLife;
+				PRODUCT_MODULE_NAME = DaysYetDock_customLife;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		90231AC607D374AE6276ECFC /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DaysYetDockTile/DaysYetDockTile.entitlements;
+				CODE_SIGN_IDENTITY = "$(inherited)";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 12;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "DaysYet · Work";
+				INFOPLIST_KEY_LSUIElement = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.8;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.dock.workday;
+				PRODUCT_MODULE_NAME = DaysYetDock_workday;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		9315EDC8C6A29C6086DF8DA5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DaysYetDockTile/DaysYetDockTile.entitlements;
+				CODE_SIGN_IDENTITY = "$(inherited)";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 12;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "DaysYet · Year";
+				INFOPLIST_KEY_LSUIElement = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.8;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.dock.year;
+				PRODUCT_MODULE_NAME = DaysYetDock_year;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		93F2028A5AF06D7630E741E0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DaysYetDockTile/DaysYetDockTile.entitlements;
+				CODE_SIGN_IDENTITY = "$(inherited)";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 12;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "DaysYet · Month";
+				INFOPLIST_KEY_LSUIElement = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.8;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.dock.month;
+				PRODUCT_MODULE_NAME = DaysYetDock_month;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		B1DABB97764FC79B63158068 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DaysYetDockTile/DaysYetDockTile.entitlements;
+				CODE_SIGN_IDENTITY = "$(inherited)";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 12;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "DaysYet · Week";
+				INFOPLIST_KEY_LSUIElement = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.8;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.dock.week;
+				PRODUCT_MODULE_NAME = DaysYetDock_week;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
 		C7CDF150DD92FDA3EF2DC911 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1111,6 +2196,30 @@
 				TEST_TARGET_NAME = DaysYet;
 			};
 			name = Debug;
+		};
+		C7DC8ACD1A7E32144431D232 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DaysYetDockTile/DaysYetDockTile.entitlements;
+				CODE_SIGN_IDENTITY = "$(inherited)";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 12;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "DaysYet · Year";
+				INFOPLIST_KEY_LSUIElement = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.8;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.dock.year;
+				PRODUCT_MODULE_NAME = DaysYetDock_year;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
 		};
 		D6C48EC35A25773FDD9B5769 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1192,14 +2301,65 @@
 			};
 			name = Release;
 		};
+		FEBE9859F7CBE4E15A36CBB8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = DaysYetDockTile/DaysYetDockTile.entitlements;
+				CODE_SIGN_IDENTITY = "$(inherited)";
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 12;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "DaysYet · Activity";
+				INFOPLIST_KEY_LSUIElement = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 0.1.8;
+				PRODUCT_BUNDLE_IDENTIFIER = com.hinoshiba.daysyet.dock.activity;
+				PRODUCT_MODULE_NAME = DaysYetDock_activity;
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		343D8820E44D4DB39859D3EB /* Build configuration list for PBXNativeTarget "DaysYetDock_week" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B1DABB97764FC79B63158068 /* Debug */,
+				697AC394E6E403DC1021278D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		3934573FFF4BAB527154815C /* Build configuration list for PBXNativeTarget "DaysYetDock_healthyLife" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				55F29F6A707ABDAF821DB1CD /* Debug */,
+				1D09C07AAE3A02E0201D45C3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		458908EE3D76C7905894DF7E /* Build configuration list for PBXNativeTarget "DaysYetTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DF12D9AB337B27B5A3C5CC53 /* Debug */,
 				E3B0DEB278A91964BA2C3F00 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		5BB5375D89B3A0A1A6696806 /* Build configuration list for PBXNativeTarget "DaysYetDock_month" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				93F2028A5AF06D7630E741E0 /* Debug */,
+				4EBAB874EBAA65CC8EB4CD72 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
@@ -1249,11 +2409,56 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
+		CCAEE02D1E21A1FAE55DF163 /* Build configuration list for PBXNativeTarget "DaysYetDock_customLife" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8895F0D2694CEC04E65CCCB7 /* Debug */,
+				010BA3ED05755829970192AD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		D012042827F33204FB45186E /* Build configuration list for PBXNativeTarget "DaysYetDock_study" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5612672F9109C2FC2DE35B34 /* Debug */,
+				76C4B2894CE7934166A2AE14 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		D53D613B4AF6756D8B275DBB /* Build configuration list for PBXNativeTarget "DaysYetDock_year" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				9315EDC8C6A29C6086DF8DA5 /* Debug */,
+				C7DC8ACD1A7E32144431D232 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		D6E55173F87B3FB367E96198 /* Build configuration list for PBXNativeTarget "DaysYetUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				C7CDF150DD92FDA3EF2DC911 /* Debug */,
 				55B74E06DE24B27FF0C0EF92 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		EA800C74775A85B2578C2F5E /* Build configuration list for PBXNativeTarget "DaysYetDock_activity" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				74D59A796AD29E7C48C8AE18 /* Debug */,
+				FEBE9859F7CBE4E15A36CBB8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		EE5F57524F80E277DEEE3768 /* Build configuration list for PBXNativeTarget "DaysYetDock_workday" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6092D6D1104041081A5CAB82 /* Debug */,
+				90231AC607D374AE6276ECFC /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

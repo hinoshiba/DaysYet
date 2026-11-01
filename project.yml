@@ -17,6 +17,28 @@ settings:
     VERSIONING_SYSTEM: apple-generic
     SWIFT_VERSION: "5.10"
 
+targetTemplates:
+  DaysYetDockTile:
+    type: application
+    platform: macOS
+    sources:
+      - path: DaysYetDockTile/main.swift
+      - path: DaysYetDockTile/Labels/${metric}
+      - path: DockSupport
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.hinoshiba.daysyet.dock.${metric}
+        PRODUCT_MODULE_NAME: DaysYetDock_${metric}
+        MARKETING_VERSION: "0.1.8"
+        CURRENT_PROJECT_VERSION: "12"
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: DaysYet · ${metric_title}
+        INFOPLIST_KEY_LSUIElement: YES
+        CODE_SIGN_ENTITLEMENTS: DaysYetDockTile/DaysYetDockTile.entitlements
+        CODE_SIGN_IDENTITY: $(inherited)
+        ENABLE_HARDENED_RUNTIME: YES
+        SKIP_INSTALL: YES
+
 targets:
   DaysYet:
     type: application
@@ -145,6 +167,7 @@ targets:
           - Info.plist
           - DaysYetMac.entitlements
       - path: Shared
+      - path: DockSupport
       - path: DaysYet/App/ProfileStore.swift
       - path: DaysYet/Design/DaysYetTheme.swift
       - path: LICENSE
@@ -185,6 +208,64 @@ targets:
         ASSETCATALOG_COMPILER_APPICON_NAME: MacAppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
 
+    dependencies:
+      - target: DaysYetDock_week
+        embed: true
+        link: false
+        codeSign: true
+        copy:
+          destination: wrapper
+          subpath: Contents/Helpers
+      - target: DaysYetDock_month
+        embed: true
+        link: false
+        codeSign: true
+        copy:
+          destination: wrapper
+          subpath: Contents/Helpers
+      - target: DaysYetDock_year
+        embed: true
+        link: false
+        codeSign: true
+        copy:
+          destination: wrapper
+          subpath: Contents/Helpers
+      - target: DaysYetDock_healthyLife
+        embed: true
+        link: false
+        codeSign: true
+        copy:
+          destination: wrapper
+          subpath: Contents/Helpers
+      - target: DaysYetDock_customLife
+        embed: true
+        link: false
+        codeSign: true
+        copy:
+          destination: wrapper
+          subpath: Contents/Helpers
+      - target: DaysYetDock_activity
+        embed: true
+        link: false
+        codeSign: true
+        copy:
+          destination: wrapper
+          subpath: Contents/Helpers
+      - target: DaysYetDock_workday
+        embed: true
+        link: false
+        codeSign: true
+        copy:
+          destination: wrapper
+          subpath: Contents/Helpers
+      - target: DaysYetDock_study
+        embed: true
+        link: false
+        codeSign: true
+        copy:
+          destination: wrapper
+          subpath: Contents/Helpers
+
   DaysYetMacTests:
     type: bundle.unit-test
     platform: macOS
@@ -200,6 +281,55 @@ targets:
         CURRENT_PROJECT_VERSION: "12"
         GENERATE_INFOPLIST_FILE: YES
         CODE_SIGNING_ALLOWED: NO
+
+  DaysYetDock_week:
+    templates: [DaysYetDockTile]
+    templateAttributes:
+      metric: week
+      metric_title: Week
+
+  DaysYetDock_month:
+    templates: [DaysYetDockTile]
+    templateAttributes:
+      metric: month
+      metric_title: Month
+
+  DaysYetDock_year:
+    templates: [DaysYetDockTile]
+    templateAttributes:
+      metric: year
+      metric_title: Year
+
+  DaysYetDock_healthyLife:
+    templates: [DaysYetDockTile]
+    templateAttributes:
+      metric: healthyLife
+      metric_title: Health Goal
+
+  DaysYetDock_customLife:
+    templates: [DaysYetDockTile]
+    templateAttributes:
+      metric: customLife
+      metric_title: Milestone
+
+  DaysYetDock_activity:
+    templates: [DaysYetDockTile]
+    templateAttributes:
+      metric: activity
+      metric_title: Activity
+
+  DaysYetDock_workday:
+    templates: [DaysYetDockTile]
+    templateAttributes:
+      metric: workday
+      metric_title: Work
+
+  DaysYetDock_study:
+    templates: [DaysYetDockTile]
+    templateAttributes:
+      metric: study
+      metric_title: Study
+
 
 schemes:
   DaysYet:

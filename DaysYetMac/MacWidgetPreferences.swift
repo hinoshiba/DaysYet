@@ -2,19 +2,20 @@ import AppKit
 import Combine
 
 enum MacWidgetEdge: String, CaseIterable, Identifiable {
-    case left, right, top
+    case left, right, top, bottom
     var id: String { rawValue }
     var title: String {
         switch self {
         case .left: L10n.text("左", "Left")
         case .right: L10n.text("右", "Right")
         case .top: L10n.text("上・カメラ", "Top / camera")
+        case .bottom: L10n.text("下", "Bottom")
         }
     }
 }
 
 extension UserProfile {
-    /// The camera strip has three segments; side rails use every configured circle.
+    /// The camera strip has three segments; circle layouts use every configured circle.
     func macWidgetMetrics(for edge: MacWidgetEdge) -> [MetricKind] {
         edge == .top ? Array(macDashboardMetrics.prefix(3)) : macDashboardMetrics
     }
@@ -28,9 +29,33 @@ struct MacDisplay: Identifiable {
 @MainActor
 final class MacWidgetPreferences: ObservableObject {
     @Published var isVisible: Bool { didSet { defaults.set(isVisible, forKey: Key.visible) } }
-    @Published var edge: MacWidgetEdge { didSet { defaults.set(edge.rawValue, forKey: Key.edge) } }
+    @Published var isInSystemDock: Bool {
+        didSet {
+            defaults.set(isInSystemDock, forKey: Key.systemDock)
+            if isInSystemDock { systemDockError = nil }
+        }
+    }
+    @Published var systemDockError: String?
+    @Published var directlyDragsFromDock: Bool {
+        didSet { defaults.set(directlyDragsFromDock, forKey: Key.directDockDrag) }
+    }
+    /// Remember only the edge observed on this Mac, including auto-hidden Docks.
+    var lastSystemDockEdge: MacWidgetEdge {
+        get {
+            let edge = MacWidgetEdge(rawValue: defaults.string(forKey: Key.systemDockEdge) ?? "") ?? .bottom
+            return edge == .top ? .bottom : edge
+        }
+        set { if newValue != .top { defaults.set(newValue.rawValue, forKey: Key.systemDockEdge) } }
+    }
+    @Published var edge: MacWidgetEdge {
+        didSet {
+            defaults.set(edge.rawValue, forKey: Key.edge)
+            if let resolvedDockEdge { updateDockPresentation(for: resolvedDockEdge) }
+        }
+    }
     /// A proportion of the available travel: zero is the top, one the bottom.
     @Published var verticalPosition: Double { didSet { defaults.set(verticalPosition, forKey: Key.position) } }
+    @Published var horizontalPosition: Double { didSet { defaults.set(horizontalPosition, forKey: Key.horizontalPosition) } }
     @Published var displayID: String { didSet { defaults.set(displayID, forKey: Key.display) } }
     @Published var keepDetailsOpen: Bool { didSet { defaults.set(keepDetailsOpen, forKey: Key.details) } }
     @Published var scale: Double { didSet { defaults.set(scale, forKey: Key.scale) } }
@@ -52,10 +77,16 @@ final class MacWidgetPreferences: ObservableObject {
     @Published private(set) var customColors: [MetricKind: MacWidgetColor]
 
     private let defaults: UserDefaults
+    private var resolvedDockEdge: MacWidgetEdge?
     private enum Key {
         static let visible = "mac-widget-visible"
+        static let systemDock = "mac-widget-system-dock"
+        static let directDockDrag = "mac-widget-direct-dock-drag"
+        static let systemDockEdge = "mac-widget-observed-dock-edge"
+        static let dockPlacementVersion = "mac-widget-dock-placement-version"
         static let edge = "mac-widget-edge"
         static let position = "mac-widget-position"
+        static let horizontalPosition = "mac-widget-horizontal-position"
         static let display = "mac-widget-display"
         static let details = "mac-widget-keep-details"
         static let scale = "mac-widget-scale"
@@ -68,9 +99,13 @@ final class MacWidgetPreferences: ObservableObject {
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         isVisible = defaults.object(forKey: Key.visible) as? Bool ?? true
+        isInSystemDock = defaults.bool(forKey: Key.systemDock)
+        directlyDragsFromDock = defaults.bool(forKey: Key.directDockDrag)
         edge = MacWidgetEdge(rawValue: defaults.string(forKey: Key.edge) ?? "") ?? .right
         let position = defaults.object(forKey: Key.position) as? Double ?? 0.5
         verticalPosition = position.isFinite ? min(max(position, 0), 1) : 0.5
+        let horizontal = defaults.object(forKey: Key.horizontalPosition) as? Double ?? 0.5
+        horizontalPosition = horizontal.isFinite ? min(max(horizontal, 0), 1) : 0.5
         displayID = defaults.string(forKey: Key.display) ?? ""
         keepDetailsOpen = defaults.bool(forKey: Key.details)
         scale = MacWidgetPlacement.clampedScale(defaults.object(forKey: Key.scale) as? Double ?? 1)
@@ -112,10 +147,44 @@ final class MacWidgetPreferences: ObservableObject {
         defaults.removeObject(forKey: Key.customColors)
     }
 
+    /// Placement has one choice: the screen edge. Dock membership follows that
+    /// edge, including choices made in Settings and changes to the macOS Dock.
+    func reconcileDockLocation(_ dockEdge: MacWidgetEdge) {
+        guard dockEdge != .top else { return }
+        if defaults.integer(forKey: Key.dockPlacementVersion) < 1 {
+            // Older versions kept a separate Dock flag and the previous edge.
+            // Preserve an existing Dock group when adopting the single choice.
+            if isInSystemDock { edge = dockEdge }
+            defaults.set(1, forKey: Key.dockPlacementVersion)
+        }
+        resolvedDockEdge = dockEdge
+        if lastSystemDockEdge != dockEdge { lastSystemDockEdge = dockEdge }
+        updateDockPresentation(for: dockEdge)
+    }
+
+    private func updateDockPresentation(for dockEdge: MacWidgetEdge) {
+        let inDock = edge == dockEdge
+        if isInSystemDock != inDock { isInSystemDock = inDock }
+    }
+
+    func returnToScreenEdge() {
+        let dockEdge = resolvedDockEdge ?? lastSystemDockEdge
+        // A Dock-side rail is no longer a separate mode. Returning must choose
+        // a different physical edge, also preventing a retry loop on failure.
+        if edge == dockEdge || isInSystemDock {
+            edge = dockEdge == .right ? .left : .right
+        }
+        isInSystemDock = false
+    }
+
     func reset() {
         isVisible = true
+        isInSystemDock = false
+        directlyDragsFromDock = false
+        systemDockError = nil
         edge = .right
         verticalPosition = 0.5
+        horizontalPosition = 0.5
         displayID = ""
         keepDetailsOpen = false
         scale = 1
@@ -123,8 +192,9 @@ final class MacWidgetPreferences: ObservableObject {
         hoverScale = 1.35
         detailScale = 1
         resetCustomColors()
-        [Key.visible, Key.edge, Key.position, Key.display, Key.details, Key.scale,
+        [Key.visible, Key.systemDock, Key.directDockDrag, Key.systemDockEdge, Key.edge, Key.position, Key.horizontalPosition, Key.display, Key.details, Key.scale,
          Key.magnifiesOnHover, Key.hoverScale, Key.detailScale].forEach(defaults.removeObject(forKey:))
+        if let resolvedDockEdge { reconcileDockLocation(resolvedDockEdge) }
     }
 }
 
@@ -148,7 +218,7 @@ struct MacTopNotchInfo: Equatable {
     }
 }
 
-/// Side placement respects the Dock; top placement attaches to the physical edge.
+/// Side and bottom placement respect the Dock; the top attaches to the physical edge.
 enum MacWidgetPlacement {
     static let railSize = NSSize(width: 46, height: 212)
     static let detailSize = NSSize(width: 124, height: 52)
@@ -269,6 +339,16 @@ enum MacWidgetPlacement {
                           y: screen.maxY - height, width: width, height: height)
         }
         let fraction = position.isFinite ? min(max(position, 0), 1) : 0.5
+        if edge == .bottom {
+            let baseHeight = expanded ? dockExpandedHeight(detailScale: detail, hoverScale: hoverScale) : dockHeight
+            let bottom = screenFrame?.minY ?? visibleFrame.minY
+            let dockFactor = min(factor, visibleFrame.width / dockWidth(for: metricCount, detailScale: detail),
+                                 max(visibleFrame.maxY - bottom, 0) / baseHeight)
+            let width = dockWidth(for: metricCount, detailScale: detail) * dockFactor
+            let height = baseHeight * dockFactor
+            return NSRect(x: visibleFrame.minX + (visibleFrame.width - width) * fraction,
+                          y: bottom, width: width, height: height)
+        }
         let size = expanded ? expandedSize : railSize
         let height = min(railHeight(for: metricCount) * factor, visibleFrame.height)
         let width = min((size.width + hoverOutset(for: hoverScale) + (expanded ? 124 * (detail - 1) : 0)) * factor, visibleFrame.width)
@@ -286,7 +366,11 @@ enum MacWidgetPlacement {
 /// window's top left, matching SwiftUI rather than AppKit's bottom-left origin.
 enum MacWidgetSurface {
     static func sideHoverIndex(at point: CGPoint, in size: CGSize, edge: MacWidgetEdge,
-                               scale: Double, metricCount: Int = 3, magnifications: [Int: CGFloat] = [:]) -> Int? {
+                               scale: Double, metricCount: Int = 3, magnifications: [Int: CGFloat] = [:], detailScale: Double = 1) -> Int? {
+        if edge == .bottom {
+            return dockHoverIndex(at: point, in: size, scale: scale, metricCount: metricCount,
+                                  magnifications: magnifications, detailScale: detailScale)
+        }
         guard edge != .top else { return nil }
         let factor = MacWidgetPlacement.clampedScale(scale)
         let verticalScale = MacWidgetPlacement.sideVerticalScale(in: size, scale: scale, metricCount: metricCount)
@@ -356,6 +440,11 @@ enum MacWidgetSurface {
         let path = CGMutablePath()
         guard size.width > 0, size.height > 0 else { return path }
         let factor = CGFloat(MacWidgetPlacement.clampedScale(scale))
+        if edge == .bottom {
+            return dockPath(in: size, selectedIndex: selectedIndex, scale: scale, metricCount: metricCount,
+                            detailScale: detailScale, magnifications: magnifications, expansion: sideExpansion,
+                            hoverScale: hoverScale)
+        }
         if edge == .top {
             let inset = topCameraInset.isFinite ? min(max(topCameraInset, 0), size.height) : 0
             let notchWidth = topNotchWidth.isFinite ? max(topNotchWidth, 0) : 0

@@ -92,26 +92,40 @@ struct MacDesktopWidgetView: View {
     @ObservedObject var store: ProfileStore
     @ObservedObject var preferences: MacWidgetPreferences
     @ObservedObject var controller: MacWidgetController
+    /// Draw a closed landing preview without changing or saving preferences.
+    var previewEdge: MacWidgetEdge? = nil
+    var previewTopInfo: MacTopNotchInfo? = nil
+
+    private var edge: MacWidgetEdge { previewEdge ?? preferences.edge }
+    private var metrics: [MetricKind] { store.profile.macWidgetMetrics(for: edge) }
+    private var notchInfo: MacTopNotchInfo { previewTopInfo ?? controller.topInfo }
+    private var isExpanded: Bool { previewEdge == nil && controller.isExpanded }
+    private var hoverScale: Double { previewEdge == nil ? controller.hoverScaleLimit : 1 }
+    private var hoverExpansion: CGFloat? { previewEdge == nil ? controller.sideHoverExpansion : 0 }
+    private var magnifications: [MetricKind: CGFloat] { previewEdge == nil ? controller.hoverMagnifications : [:] }
+    private var indexedMagnifications: [Int: CGFloat] { previewEdge == nil ? controller.indexedMagnifications : [:] }
 
     var body: some View {
         GeometryReader { geometry in
             let scale = MacWidgetPlacement.clampedScale(preferences.scale)
             let surface = Path(MacWidgetSurface.path(
-                in: geometry.size, edge: preferences.edge, selectedIndex: controller.selectionPosition,
-                scale: scale, topCameraInset: controller.topInfo.cameraInset,
-                topNotchWidth: controller.topInfo.notchWidth, metricCount: controller.activeMetrics.count,
-                hoverScale: controller.hoverScaleLimit, detailScale: preferences.detailScale,
-                magnifications: controller.indexedMagnifications, sideExpansion: controller.sideHoverExpansion
+                in: geometry.size, edge: edge, selectedIndex: controller.selectionPosition,
+                scale: scale, topCameraInset: notchInfo.cameraInset,
+                topNotchWidth: notchInfo.notchWidth, metricCount: metrics.count,
+                hoverScale: hoverScale, detailScale: preferences.detailScale,
+                magnifications: indexedMagnifications, sideExpansion: hoverExpansion
             ))
             ZStack(alignment: .topLeading) {
                 surface.fill(MacWidgetStyle.background)
-                if preferences.edge == .top {
+                if edge == .top {
                     topContent(in: geometry.size, scale: scale)
+                } else if edge == .bottom {
+                    dockContent(in: geometry.size, scale: scale)
                 } else {
                     let width = geometry.size.width / scale
-                    let height = MacWidgetPlacement.railHeight(for: controller.activeMetrics.count)
+                    let height = MacWidgetPlacement.railHeight(for: metrics.count)
                     let verticalScale = MacWidgetPlacement.sideVerticalScale(in: geometry.size,
-                        scale: scale, metricCount: controller.activeMetrics.count)
+                        scale: scale, metricCount: metrics.count)
                     sideContent(width: width, height: height)
                         .frame(width: width, height: height)
                         .scaleEffect(x: scale, y: verticalScale, anchor: .topLeading)
@@ -127,42 +141,90 @@ struct MacDesktopWidgetView: View {
         .onExitCommand { controller.closeDetails() }
     }
 
+    private func dockContent(in size: CGSize, scale: Double) -> some View {
+        let count = metrics.count
+        let factor = MacWidgetPlacement.dockScale(in: size, scale: scale, metricCount: count, detailScale: preferences.detailScale)
+        let expansion = hoverExpansion ?? MacWidgetPlacement.dockExpansion(
+            in: size, scale: scale, metricCount: count, detailScale: preferences.detailScale, hoverScale: hoverScale)
+        let detail = MacWidgetPlacement.dockDetailFrame(in: size, selectedIndex: controller.selectionPosition,
+            scale: scale, metricCount: count, detailScale: preferences.detailScale)
+        let visibleHeight = (MacWidgetPlacement.dockHeight
+            + (MacWidgetPlacement.dockExpandedHeight(detailScale: preferences.detailScale, hoverScale: hoverScale)
+                - MacWidgetPlacement.dockHeight) * expansion) * factor
+        let largestCircle = magnifications.values.max() ?? 1
+        let circleDepth = (23 + MacWidgetPlacement.inwardShift(for: largestCircle) + 16.75 * largestCircle) * factor
+        let clearance = max((visibleHeight - detail.maxY - circleDepth)
+            / max(MacWidgetPlacement.dockCirclePadding * factor, 0.001), 0)
+        let reveal = min(max((expansion - 0.35) / 0.55, 0), clearance, 1)
+        return ZStack(alignment: .topLeading) {
+            detailContent(width: detail.width / max(factor * preferences.detailScale, 0.001))
+                .scaleEffect(factor * preferences.detailScale, anchor: .topLeading)
+                .offset(x: detail.minX, y: detail.minY + max(size.height - visibleHeight, 0))
+                .opacity(reveal)
+                .accessibilityHidden(!isExpanded)
+            TimelineView(.periodic(from: .now, by: 60)) { context in
+                ZStack(alignment: .topLeading) {
+                    ForEach(Array(metrics.enumerated()), id: \.element) { index, kind in
+                        let snapshot = TimeProgressCalculator.snapshot(for: kind, profile: store.profile, now: context.date)
+                        let magnification = magnifications[kind] ?? 1
+                        let ring = MacWidgetPlacement.dockRingFrame(in: size, index: CGFloat(index), scale: scale,
+                            metricCount: count, magnification: magnification, detailScale: preferences.detailScale)
+                        MacPercentageRing(fraction: snapshot.remainingFraction,
+                            accent: MacWidgetStyle.accent(for: kind, theme: store.profile.widgetTheme, customColors: preferences.customColors),
+                            selected: isExpanded && controller.selectedMetric == kind,
+                            subdued: isExpanded && controller.selectedMetric != kind, isOff: snapshot.isOff)
+                            .scaleEffect(factor * magnification)
+                            .frame(width: ring.width, height: ring.height)
+                            .position(x: ring.midX, y: ring.midY)
+                            .accessibilityElement(children: .ignore)
+                            .accessibilityLabel(snapshot.accessibilitySummary)
+                            .accessibilityAddTraits(.isButton)
+                            .accessibilityAction { controller.showSettings() }
+                            .help(L10n.text("ドラッグで配置を変更・ダブルクリックで設定", "Drag to move · Double-click for settings"))
+                    }
+                }
+                .frame(width: size.width, height: size.height, alignment: .topLeading)
+            }
+        }
+        .frame(width: size.width, height: size.height, alignment: .topLeading)
+    }
+
     private func topContent(in size: CGSize, scale: Double) -> some View {
-        let inset = controller.topInfo.cameraInset
+        let inset = notchInfo.cameraInset
         let closed = MacWidgetPlacement.topClosedHeight(cameraInset: inset, scale: scale)
         let expanded = MacWidgetPlacement.topExpandedHeight(cameraInset: inset, scale: scale, detailScale: preferences.detailScale)
         let progress = min(max((size.height - closed) / max(expanded - closed, 1), 0), 1)
         let reveal = min(max((progress - 0.35) / 0.55, 0), 1)
         let strip = MacWidgetSurface.topProgressFrame(in: size, scale: scale,
-            topCameraInset: inset, topNotchWidth: controller.topInfo.notchWidth)
+            topCameraInset: inset, topNotchWidth: notchInfo.notchWidth)
         let detailScale = preferences.detailScale
         let detail = MacWidgetPlacement.topDetailFrame(in: size, cameraInset: inset, scale: scale, detailScale: detailScale)
         return ZStack(alignment: .topLeading) {
-            MacTopProgressBarView(store: store, preferences: preferences, controller: controller)
+            MacTopProgressBarView(store: store, preferences: preferences, controller: controller, closedPreview: previewEdge != nil)
                 .frame(width: strip.width, height: strip.height)
                 .offset(x: strip.minX, y: strip.minY)
             detailContent(width: detail.width / (scale * detailScale))
                 .scaleEffect(scale * detailScale, anchor: .topLeading)
                 .offset(x: detail.minX, y: detail.minY)
                 .opacity(reveal)
-                .accessibilityHidden(!controller.isExpanded)
+                .accessibilityHidden(!isExpanded)
         }
         .frame(width: size.width, height: size.height, alignment: .topLeading)
     }
 
     private func sideContent(width: CGFloat, height: CGFloat) -> some View {
-        let expansion = controller.sideHoverExpansion ?? MacWidgetPlacement.sideExpansion(
+        let expansion = hoverExpansion ?? MacWidgetPlacement.sideExpansion(
             in: CGSize(width: width, height: height), scale: 1,
-            hoverScale: controller.hoverScaleLimit, detailScale: preferences.detailScale)
-        let reveal = controller.hoverScaleLimit > 1 ? expansion : min(max((expansion - 0.42) / 0.50, 0), 1)
+            hoverScale: hoverScale, detailScale: preferences.detailScale)
+        let reveal = hoverScale > 1 ? expansion : min(max((expansion - 0.42) / 0.50, 0), 1)
         let detail = MacWidgetPlacement.sideDetailFrame(in: CGSize(width: width, height: height),
-            edge: preferences.edge, selectedIndex: controller.selectionPosition, scale: 1,
-            metricCount: controller.activeMetrics.count, hoverScale: controller.hoverScaleLimit, detailScale: preferences.detailScale)
-        let contentProgress = controller.hoverScaleLimit > 1 ? expansion : 1
+            edge: edge, selectedIndex: controller.selectionPosition, scale: 1,
+            metricCount: metrics.count, hoverScale: hoverScale, detailScale: preferences.detailScale)
+        let contentProgress = hoverScale > 1 ? expansion : 1
         // Grow the complete text and its padding with the surface so neither
         // edge reveals clipped fragments before the circle finishes growing.
-        let inset = (14 + MacWidgetPlacement.hoverOutset(for: controller.hoverScaleLimit)) * (1 - contentProgress)
-        let detailX = preferences.edge == .right
+        let inset = (14 + MacWidgetPlacement.hoverOutset(for: hoverScale)) * (1 - contentProgress)
+        let detailX = edge == .right
             ? detail.maxX + inset - detail.width * contentProgress
             : detail.minX - inset
         return ZStack(alignment: .topLeading) {
@@ -170,10 +232,10 @@ struct MacDesktopWidgetView: View {
                 .scaleEffect(preferences.detailScale * contentProgress, anchor: .topLeading)
                 .offset(x: detailX, y: detail.midY - detail.height * contentProgress / 2)
                 .opacity(reveal)
-                .accessibilityHidden(!controller.isExpanded)
-            MacTimeRailView(store: store, preferences: preferences, controller: controller)
+                .accessibilityHidden(!isExpanded)
+            MacTimeRailView(store: store, preferences: preferences, controller: controller, previewEdge: previewEdge)
                 .frame(width: 46, height: height)
-                .offset(x: preferences.edge == .right ? width - 46 : 0)
+                .offset(x: edge == .right ? width - 46 : 0)
         }
         .frame(width: width, height: height, alignment: .topLeading)
     }
@@ -195,6 +257,7 @@ struct MacTopProgressBarView: View {
     @ObservedObject var store: ProfileStore
     @ObservedObject var preferences: MacWidgetPreferences
     @ObservedObject var controller: MacWidgetController
+    var closedPreview = false
 
     var body: some View {
         GeometryReader { geometry in
@@ -202,7 +265,7 @@ struct MacTopProgressBarView: View {
                 HStack(spacing: 0) {
                     ForEach(store.profile.macWidgetMetrics(for: .top)) { kind in
                         let snapshot = TimeProgressCalculator.snapshot(for: kind, profile: store.profile, now: context.date)
-                        let selected = controller.isExpanded && controller.selectedMetric == kind
+                        let selected = !closedPreview && controller.isExpanded && controller.selectedMetric == kind
                         let width = max(geometry.size.width / 3 - 4, 0)
                         let thickness = min(2 * MacWidgetPlacement.clampedScale(preferences.scale), geometry.size.height)
                         ZStack(alignment: .leading) {
@@ -223,7 +286,7 @@ struct MacTopProgressBarView: View {
                         .accessibilityAddTraits(.isButton)
                         .accessibilityAction { controller.showSettings() }
                         .accessibilityHint(L10n.text("ダブルクリックで設定を開きます", "Double-click to open settings"))
-                        .help(L10n.text("ダブルクリックで設定を開きます", "Double-click to open settings"))
+                        .help(L10n.text("ドラッグで配置を変更・ダブルクリックで設定", "Drag to move · Double-click for settings"))
                     }
                 }
             }
@@ -273,11 +336,16 @@ struct MacTimeRailView: View {
     @ObservedObject var store: ProfileStore
     @ObservedObject var preferences: MacWidgetPreferences
     @ObservedObject var controller: MacWidgetController
+    var previewEdge: MacWidgetEdge? = nil
+
+    private var edge: MacWidgetEdge { previewEdge ?? preferences.edge }
+    private var metrics: [MetricKind] { store.profile.macWidgetMetrics(for: edge) }
+    private var isExpanded: Bool { previewEdge == nil && controller.isExpanded }
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 60)) { context in
             VStack(spacing: 0) {
-                ForEach(controller.activeMetrics) { kind in
+                ForEach(metrics) { kind in
                     railMetric(TimeProgressCalculator.snapshot(for: kind, profile: store.profile, now: context.date))
                 }
             }
@@ -286,13 +354,13 @@ struct MacTimeRailView: View {
     }
 
     private func railMetric(_ snapshot: MetricSnapshot) -> some View {
-        let selected = controller.isExpanded && controller.selectedMetric == snapshot.kind
-        let magnification = controller.hoverMagnifications[snapshot.kind] ?? 1
-        let shift = MacWidgetPlacement.inwardShift(for: magnification) * (preferences.edge == .right ? -1 : 1)
+        let selected = isExpanded && controller.selectedMetric == snapshot.kind
+        let magnification = previewEdge == nil ? controller.hoverMagnifications[snapshot.kind] ?? 1 : 1
+        let shift = MacWidgetPlacement.inwardShift(for: magnification) * (edge == .right ? -1 : 1)
         let accent = MacWidgetStyle.accent(for: snapshot.kind, theme: store.profile.widgetTheme,
                                           customColors: preferences.customColors)
         return MacPercentageRing(fraction: snapshot.remainingFraction, accent: accent,
-                                 selected: selected, subdued: controller.isExpanded && !selected, isOff: snapshot.isOff)
+                                 selected: selected, subdued: isExpanded && !selected, isOff: snapshot.isOff)
         .scaleEffect(magnification)
         .offset(x: shift)
         // Keep the target fixed while the ring grows, so adjacent rows do not
@@ -304,7 +372,7 @@ struct MacTimeRailView: View {
         .accessibilityAddTraits(.isButton)
         .accessibilityAction { controller.showSettings() }
         .accessibilityHint(L10n.text("ダブルクリックで設定を開きます", "Double-click to open settings"))
-        .help(L10n.text("ダブルクリックで設定を開きます", "Double-click to open settings"))
+        .help(L10n.text("ドラッグで配置を変更・ダブルクリックで設定", "Drag to move · Double-click for settings"))
     }
 }
 
@@ -329,7 +397,7 @@ struct MacTimeDetailView: View {
     }
 
     private func detail(_ snapshot: MetricSnapshot) -> some View {
-        let top = preferences.edge == .top
+        let top = preferences.edge == .top || preferences.edge == .bottom
         let scale = MacWidgetPlacement.clampedScale(preferences.scale)
         let mode = store.profile.widgetDisplayMode
         let showsBar = mode != .countdown
@@ -403,7 +471,7 @@ struct MacTimeDetailView: View {
 
     private func countdownValue(_ snapshot: MetricSnapshot) -> AttributedString {
         var value = AttributedString()
-        let top = preferences.edge == .top
+        let top = preferences.edge == .top || preferences.edge == .bottom
         let scale = MacWidgetPlacement.clampedScale(preferences.scale)
         let showsBar = store.profile.widgetDisplayMode != .countdown
         let unitFont = Font.system(size: max(11, 10 / scale), weight: .regular)

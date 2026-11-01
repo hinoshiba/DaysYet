@@ -90,8 +90,26 @@ struct MacSettingsView: View {
             Form {
                 loginItemSettings
 
+                if let setup = controller.setupController {
+                    Section(L10n.text("はじめの設定", "Get started")) {
+                        Button(L10n.text("セットアップと使い方を見る…", "Setup & tutorial…"), systemImage: "hand.point.up.left") {
+                            setup.show(startingAt: .startup)
+                        }
+                        Text(L10n.text("自動起動や、丸をつかんで移動する操作をご案内します。",
+                                       "Set up launch at login and learn how to move your circles."))
+                            .font(.caption).foregroundStyle(.secondary)
+#if DAYSYET_DIRECT_DOCK_DRAG
+                        if let direct = controller.directDockDrag {
+                            MacDockDirectDragSettings(preferences: preferences, direct: direct) {
+                                setup.show(startingAt: .movement)
+                            }
+                        }
+#endif
+                    }
+                }
+
                 Section {
-                    Toggle(L10n.text("画面の端に表示", "Show at the screen edge"), isOn: visibilityBinding)
+                    Toggle(L10n.text("ウィジェットを表示", "Show widget"), isOn: visibilityBinding)
                     if !preferences.isVisible {
                         Text(L10n.text(
                             "非表示にした場合は、DaysYetをもう一度起動して設定を開けます。",
@@ -100,92 +118,127 @@ struct MacSettingsView: View {
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     }
-                    Toggle(L10n.text("詳細を開いたままにする", "Keep details open"), isOn: $preferences.keepDetailsOpen)
-                    widgetSizeControl
+                    if !preferences.isInSystemDock {
+                        Toggle(L10n.text("詳細を開いたままにする", "Keep details open"), isOn: $preferences.keepDetailsOpen)
+                        widgetSizeControl
+                    }
                 } header: {
                     Text(L10n.text("常駐表示", "Resident widget"))
                 } footer: {
-                    Text(L10n.text(
-                        "ポインタを重ねると、同じ黒い面が広がってコンパクトな詳細を表示します。左右では、選んだサークルの高さに詳細がなめらかに移動します。ダブルクリックで設定を開きます。",
-                        "Hover to reveal compact details within the same black surface. At either side, details glide to the height of the selected circle. Double-click to open settings."
-                    ))
+                    if preferences.isInSystemDock {
+                        Text(L10n.text("アイコンの大きさと拡大は、macOSのDock設定に従います。",
+                                       "Icon size and magnification follow your macOS Dock settings."))
+                    } else {
+                        Text(L10n.text(
+                            "ポインタを重ねると、同じ黒い面が広がってコンパクトな詳細を表示します。左右では、選んだサークルの高さに詳細がなめらかに移動します。ダブルクリックで設定を開きます。",
+                            "Hover to reveal compact details within the same black surface. At either side, details glide to the height of the selected circle. Double-click to open settings."
+                        ))
+                    }
                 }
 
                 Section(L10n.text("位置", "Position")) {
-                    Picker(L10n.text("画面の端", "Screen edge"), selection: $preferences.edge) {
-                        ForEach(MacWidgetEdge.allCases) { edge in
-                            Text(edge.title).tag(edge)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-
-                    Picker(L10n.text("ディスプレイ", "Display"), selection: $preferences.displayID) {
-                        Text(L10n.text("自動（メイン画面）", "Automatic (main display)")).tag("")
-                        ForEach(controller.displays) { display in
-                            Text(display.name).tag(display.id)
-                        }
-                        if !preferences.displayID.isEmpty,
-                           !controller.displays.contains(where: { $0.id == preferences.displayID }) {
-                            Text(L10n.text("未接続のディスプレイ", "Disconnected display"))
-                                .tag(preferences.displayID)
-                        }
-                    }
-
-                    if preferences.edge == .top {
-                        Text(L10n.text(
-                            "カメラの切り欠きの下に、サイズに合わせた厚みの残り時間バーを表示します。バーのすぐ上でも項目を選べます。ノッチにポインタを重ねると詳細が開きます。切り欠きのない画面では、上端の中央に表示します。",
-                            "A time-remaining strip sits below the camera notch, with thickness controlled by the widget size. You can select a timeline just above its bar, too. Hover over the notch to open details. Displays without a notch use the top center."
-                        ))
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                    } else {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text(L10n.text(
-                                "ウィジェット本体を上下にドラッグして移動できます。移動した位置は自動で保存されます。",
-                                "Drag the widget up or down to move it. Its position is saved automatically."
-                            ))
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            Button(L10n.text("中央に戻す", "Center")) { controller.recenter() }
-                                .controlSize(.small)
-                        }
+                    screenEdgePositionSettings
+                    if let error = preferences.systemDockError {
+                        Text(error).font(.caption).foregroundStyle(.red)
                     }
                 }
 
-                if preferences.edge != .top {
+                if !preferences.isInSystemDock, preferences.edge != .top {
                     hoverMagnificationSettings
                 }
 
-                Section(L10n.text("表示", "Appearance")) {
-                    detailSizeControl
+                if !preferences.isInSystemDock {
+                    Section(L10n.text("表示", "Appearance")) {
+                        detailSizeControl
 
-                    Picker(L10n.text("詳細の表示モード", "Detail display mode"), selection: binding(\.widgetDisplayMode)) {
-                        ForEach(WidgetDisplayMode.allCases) { mode in
-                            Text(mode.title).tag(mode)
-                        }
-                    }
-                    .pickerStyle(.menu)
-
-                    if store.profile.widgetDisplayMode == .progressBars {
-                        Picker(L10n.text("バーの値", "Bar value"), selection: binding(\.dashboardValueStyle)) {
-                            ForEach(MetricValueStyle.allCases) { style in
-                                Text(style.title).tag(style)
+                        Picker(L10n.text("詳細の表示モード", "Detail display mode"), selection: binding(\.widgetDisplayMode)) {
+                            ForEach(WidgetDisplayMode.allCases) { mode in
+                                Text(mode.title).tag(mode)
                             }
                         }
                         .pickerStyle(.menu)
-                    }
 
-                    Text(L10n.text(
-                        "色のついた部分は残り時間を表し、100%から0%へ減ります。バーは右端が左へ縮み、サークルは12時の位置から時計回りに色が消えていきます。",
-                        "The colored portion shows time remaining and decreases from 100% to 0%. Bars shrink from right to left; circles empty clockwise from the 12 o’clock position."
-                    ))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                        if store.profile.widgetDisplayMode == .progressBars {
+                            Picker(L10n.text("バーの値", "Bar value"), selection: binding(\.dashboardValueStyle)) {
+                                ForEach(MetricValueStyle.allCases) { style in
+                                    Text(style.title).tag(style)
+                                }
+                            }
+                            .pickerStyle(.menu)
+                        }
+
+                        Text(L10n.text(
+                            "色のついた部分は残り時間を表し、100%から0%へ減ります。バーは右端が左へ縮み、サークルは12時の位置から時計回りに色が消えていきます。",
+                            "The colored portion shows time remaining and decreases from 100% to 0%. Bars shrink from right to left; circles empty clockwise from the 12 o’clock position."
+                        ))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    }
                 }
 
                 MacWidgetColorSettings(store: store, preferences: preferences)
             }
             .formStyle(.grouped)
+        }
+    }
+
+    private var screenEdgePositionSettings: some View {
+        Group {
+            Picker(L10n.text("画面の端", "Screen edge"), selection: $preferences.edge) {
+                ForEach(MacWidgetEdge.allCases) { edge in
+                    Text(edge.title).tag(edge)
+                }
+            }
+            .pickerStyle(.segmented)
+
+            Text(L10n.text(
+                "macOSのDockがある辺を選ぶと、自動的にDock内へ入ります。ほかの辺では、画面の端に吸着して表示します。",
+                "Choose the edge with the macOS Dock to join it automatically. Other edges show the widget attached to the screen."
+            ))
+            .font(.caption).foregroundStyle(.secondary)
+
+            Picker(L10n.text("ディスプレイ", "Display"), selection: $preferences.displayID) {
+                Text(L10n.text("自動（メイン画面）", "Automatic (main display)")).tag("")
+                ForEach(controller.displays) { display in
+                    Text(display.name).tag(display.id)
+                }
+                if !preferences.displayID.isEmpty,
+                   !controller.displays.contains(where: { $0.id == preferences.displayID }) {
+                    Text(L10n.text("未接続のディスプレイ", "Disconnected display"))
+                        .tag(preferences.displayID)
+                }
+            }
+            .disabled(preferences.isInSystemDock)
+
+            if preferences.isInSystemDock {
+                Text(L10n.text(
+                    "サークルごとにDockの枠を使い、まとめて移動できます。丸をクリックするとグループが開きます。表示するディスプレイと大きさは、macOSのDockに従います。",
+                    "Each circle uses a Dock slot and moves with the group. Click a circle to open the group. Display and icon size follow the macOS Dock."
+                ))
+                .font(.caption).foregroundStyle(.secondary)
+            } else if preferences.edge == .top {
+                Text(L10n.text(
+                    "カメラの切り欠きの下に、サイズに合わせた厚みの残り時間バーを表示します。バーのすぐ上でも項目を選べます。ノッチにポインタを重ねると詳細が開きます。切り欠きのない画面では、上端の中央に表示します。",
+                    "A time-remaining strip sits below the camera notch, with thickness controlled by the widget size. You can select a timeline just above its bar, too. Hover over the notch to open details. Displays without a notch use the top center."
+                ))
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            } else if preferences.edge == .bottom {
+                Text(L10n.text("サークルを画面の下端につなげて表示します。ポインタを重ねると、同じ面が上へ広がって詳細を表示します。",
+                               "Circles attach to the bottom edge. Hover to expand the same surface upward and show details."))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Text(L10n.text(
+                "端から約1/4が吸着エリアで、角では近い辺を選びます。丸を画面の縁に近づけると、触れる少し手前で吸着して展開します。引き離すと丸に戻り、離すと位置を保存。中央で離すかEscで元に戻ります。",
+                "Each outer quarter is a drop zone; corners use the nearer edge. Bring the circle near the screen edge to snap and unfold just before contact. Pull away to collect it again. Release to save; release in the center or press Esc to return."
+            ))
+            .font(.caption)
+            .foregroundStyle(.secondary)
+            if !preferences.isInSystemDock, preferences.edge != .top {
+                Button(L10n.text("中央に戻す", "Center")) { controller.recenter() }
+                    .controlSize(.small)
+            }
         }
     }
 
@@ -346,8 +399,8 @@ struct MacSettingsView: View {
             .accessibilityLabel(L10n.text("詳細のサイズ", "Detail size"))
             .accessibilityValue("\(Int((preferences.detailScale * 100).rounded()))%")
             Text(L10n.text(
-                "詳細の文字やバーを、ウィジェット全体のサイズに対してさらに拡大します。左右・上端のどの配置でも使えます。",
-                "Enlarge detail text and bars further relative to the widget size. Available at the left, right, and top edges."
+                "詳細の文字やバーを、ウィジェット全体のサイズに対してさらに拡大します。上下左右のどの配置でも使えます。",
+                "Enlarge detail text and bars further relative to the widget size. Available at all four edges."
             ))
             .font(.caption)
             .foregroundStyle(.secondary)
@@ -365,15 +418,32 @@ struct MacSettingsView: View {
                     .foregroundStyle(.secondary)
             }
 
-            MacPlacementPreview(profile: store.profile, edge: preferences.edge, position: preferences.verticalPosition,
-                                scale: preferences.scale, customColors: preferences.customColors)
-                .frame(height: 150)
-                .accessibilityLabel(L10n.text("画面の端に表示するウィジェットのプレビュー", "Preview of the widget at the screen edge"))
+            if preferences.isInSystemDock {
+                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
+                    ForEach(store.profile.macDashboardMetrics) { metric in
+                        MacSystemDockTileView(presentation: MacSystemDockPresentation(
+                            snapshot: TimeProgressCalculator.snapshot(for: metric, profile: store.profile),
+                            accent: MacWidgetStyle.accent(for: metric, theme: store.profile.widgetTheme,
+                                                         customColors: preferences.customColors)))
+                            .scaleEffect(0.5)
+                            .frame(width: 64, height: 64)
+                    }
+                }
+                .padding(12)
+                .frame(maxWidth: .infinity)
+                .background(.quaternary, in: RoundedRectangle(cornerRadius: 12))
+                .accessibilityLabel(L10n.text("Dockアイコンのプレビュー", "Dock icons preview"))
+            } else {
+                MacPlacementPreview(profile: store.profile, edge: preferences.edge, position: preferences.edge == .bottom ? preferences.horizontalPosition : preferences.verticalPosition,
+                                    scale: preferences.scale, customColors: preferences.customColors)
+                    .frame(height: 150)
+                    .accessibilityLabel(L10n.text("画面の端に表示するウィジェットのプレビュー", "Preview of the widget at the screen edge"))
+            }
 
-            Text(L10n.text(
-                "今週、今月、今年。\n選んだ時間を、デスクトップの端に。",
-                "Your week, month, and year.\nYour chosen timelines at the edge of your desktop."
-            ))
+            Text(preferences.isInSystemDock
+                ? L10n.text("選んだ時間を、Dockの中に。", "Your chosen timelines, inside the Dock.")
+                : L10n.text("今週、今月、今年。\n選んだ時間を、デスクトップの端に。",
+                            "Your week, month, and year.\nYour chosen timelines at the edge of your desktop."))
             .font(.callout)
             .lineSpacing(3)
             .foregroundStyle(.secondary)
@@ -384,7 +454,8 @@ struct MacSettingsView: View {
             } label: {
                 Label(
                     L10n.text("ウィジェットを表示", "Show Widget"),
-                    systemImage: preferences.edge == .top ? "rectangle.topthird.inset.filled"
+                    systemImage: preferences.isInSystemDock || preferences.edge == .bottom ? "dock.rectangle"
+                        : preferences.edge == .top ? "rectangle.topthird.inset.filled"
                         : preferences.edge == .left ? "sidebar.left" : "sidebar.right"
                 )
                     .frame(maxWidth: .infinity)
@@ -840,17 +911,19 @@ private struct MacPlacementPreview: View {
                 .frame(height: 11)
                 .background(.white.opacity(0.08))
 
-                HStack(alignment: .bottom, spacing: 4) {
-                    ForEach(0..<6, id: \.self) { index in
-                        RoundedRectangle(cornerRadius: 3)
-                            .fill(.white.opacity(index == 2 ? 0.8 : 0.25))
-                            .frame(width: 10, height: 10)
+                if edge != .bottom {
+                    HStack(alignment: .bottom, spacing: 4) {
+                        ForEach(0..<6, id: \.self) { index in
+                            RoundedRectangle(cornerRadius: 3)
+                                .fill(.white.opacity(index == 2 ? 0.8 : 0.25))
+                                .frame(width: 10, height: 10)
+                        }
                     }
+                    .padding(5)
+                    .background(.white.opacity(0.09), in: RoundedRectangle(cornerRadius: 6))
+                    .frame(maxWidth: .infinity)
+                    .offset(y: geometry.size.height - 25)
                 }
-                .padding(5)
-                .background(.white.opacity(0.09), in: RoundedRectangle(cornerRadius: 6))
-                .frame(maxWidth: .infinity)
-                .offset(y: geometry.size.height - 25)
 
                 if edge == .top {
                     let topWidth = max(36, 64 * previewScale)
@@ -885,6 +958,26 @@ private struct MacPlacementPreview: View {
                             .offset(x: 5, y: cameraHeight + (extraThickness - lineThickness) / 2)
                         }
                         .offset(x: (geometry.size.width - topWidth) / 2)
+                } else if edge == .bottom {
+                    let size = CGSize(width: MacWidgetPlacement.dockWidth(for: metrics.count),
+                                      height: MacWidgetPlacement.dockHeight)
+                    let dockScale = min(previewScale / 2, (geometry.size.width - 12) / size.width)
+                    let dockWidth = size.width * dockScale
+                    ZStack(alignment: .topLeading) {
+                        Path(MacWidgetSurface.dockPath(in: size, selectedIndex: 0, scale: 1,
+                            metricCount: metrics.count, detailScale: 1, magnifications: [:], expansion: 0))
+                            .fill(MacWidgetStyle.background)
+                        ForEach(Array(metrics.enumerated()), id: \.element) { index, kind in
+                            let ring = MacWidgetPlacement.dockRingFrame(in: size, index: CGFloat(index),
+                                scale: 1, metricCount: metrics.count)
+                            previewMetric(kind, scale: 1).position(x: ring.midX, y: ring.midY)
+                        }
+                    }
+                    .frame(width: size.width, height: size.height)
+                    .scaleEffect(dockScale, anchor: .bottomLeading)
+                    .frame(width: dockWidth, height: size.height * dockScale, alignment: .bottomLeading)
+                    .offset(x: max(geometry.size.width - dockWidth, 0) * min(max(position, 0), 1),
+                            y: geometry.size.height - size.height * dockScale)
                 } else {
                     VStack(spacing: 7) {
                         ForEach(metrics) { kind in
@@ -909,12 +1002,12 @@ private struct MacPlacementPreview: View {
         .accessibilityElement(children: .ignore)
     }
 
-    private func previewMetric(_ kind: MetricKind) -> some View {
+    private func previewMetric(_ kind: MetricKind, scale: CGFloat = 0.5625) -> some View {
         let snapshot = TimeProgressCalculator.snapshot(for: kind, profile: profile)
         let accent = MacWidgetStyle.accent(for: kind, theme: profile.widgetTheme, customColors: customColors)
         return MacPercentageRing(fraction: snapshot.remainingFraction, accent: accent, isOff: snapshot.isOff)
-            .scaleEffect(0.5625)
-            .frame(width: 18, height: 18)
+            .scaleEffect(scale)
+            .frame(width: 32 * scale, height: 32 * scale)
     }
 }
 
