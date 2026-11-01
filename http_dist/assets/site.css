@@ -454,8 +454,8 @@ figure { margin: 0; }
   height: 32px;
   border-radius: 50%;
   color: var(--metric-color);
-  /* The remaining arc starts at 12 o'clock and shrinks counterclockwise. */
-  background: conic-gradient(var(--metric-color) var(--remaining), #34363c var(--remaining));
+  /* The spent portion advances clockwise from 12 o'clock. */
+  background: conic-gradient(#34363c calc(100% - var(--remaining)), var(--metric-color) calc(100% - var(--remaining)));
 }
 
 .mac-ring::before { content: ""; position: absolute; inset: 1.5px; border-radius: 50%; background: #000; }
