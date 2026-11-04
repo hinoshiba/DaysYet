@@ -1,6 +1,6 @@
 # Privacy Policy / プライバシーポリシー
 
-最終更新 / Last updated: 2026-09-13
+最終更新 / Last updated: 2026-11-05
 
 ## 日本語
 
@@ -11,6 +11,10 @@ DaysYetは、利用者が入力した生年月日、健康でいたい年齢、�
 ### 保存場所と共有範囲
 
 情報は端末内だけに保存します。iPhone / iPad版はAppleのApp Group機能を使い、DaysYetアプリとWidget Extensionが共有する専用領域へ保存します。Mac版はMacアプリ専用のサンドボックス内の設定領域へ保存します。端末間での同期は行いません。開発者のサーバー、クラウド、分析サービス、広告事業者、その他第三者へ送信しません。アカウントは作成しません。
+
+別途ビルドするMacの直接配布向け試作版はサンドボックスの外で動作し、このMacのアプリ専用設定領域を使用します。Dockへの配置にはアクセシビリティの許可が必要です。DaysYetのアイコンを見つけてまとめて移動するため、Dock項目の識別情報・順序・位置と、関連するポインタやキーのイベントをメモリ上で処理します。他アプリの識別情報や入力内容を保存・送信しません。各サークルを表示する補助プロセスには、描画画像と表示ラベルだけを端末内のパイプで渡し、プロフィール全体は渡しません。
+
+通常のDock移動に画面収録は不要です。直接配布向け試作版には、説明への同意とmacOSの画面収録許可を別途必要とする、初期状態でオフの表示実験があります。有効にした場合に限り、移動中のDockとすぐ周囲の静止画をメモリに保持します。その範囲に見える他アプリや壁紙も含まれます。画像は移動の終了・中止時に破棄し、画像ファイルの保存、音声取得、外部送信は行いません。App Store向けの通常ビルドにはこの実験とアクセシビリティによるDock操作は含まれません。
 
 ウィジェットをホーム画面またはロック画面に置く、またはMacの常駐パネルを表示すると、選択したタイトル、残り期間、残り割合、終了日時が端末を見ることのできる人の目に触れる場合があります。ロック画面のウィジェットは、端末がロックされている間も表示される場合があります。
 
@@ -25,6 +29,8 @@ DaysYetは追跡、行動分析、広告、第三者SDKを使用しません。A
 ### 削除と保持期間
 
 設定画面の「すべてのデータを消去」で、その端末の保存情報を直ちに削除できます。Mac版では常駐パネルの配置とサイズの設定も初期状態へ戻ります。他の端末のデータには影響しません。アプリ削除後に残る端末内データはOSが管理します。開発者はアプリから利用者データを受信・保存しないため、開発者へ削除請求を行う対象はありません。
+
+直接配布向け試作版で、古いDaysYet補助アイコンの固定登録を修復した場合、その削除対象だけを `~/Library/Application Support/DaysYet/Dock Recovery/` にバックアップします。他アプリのDock登録はバックアップしません。この修復記録は設定リセットの対象外で、不要になったら同フォルダを削除できます。ログイン項目とアクセシビリティ・画面収録の許可はmacOSが管理し、システム設定から変更・取り消せます。
 
 ### 外部リンクと変更
 
@@ -44,6 +50,10 @@ DaysYet stores the birth date, healthy-age goal, milestone name, start and targe
 
 The data stays on the device. On iPhone and iPad it is stored in an App Group container shared by the DaysYet app and its widget extension. On Mac it is stored in preferences within the Mac app’s own sandbox. Data does not sync between devices. It is not sent to the developer, a server, cloud service, analytics provider, advertising provider, or any other third party. DaysYet does not create user accounts.
 
+The separately built direct-distribution Mac prototype runs outside the sandbox and uses app-specific preferences on that Mac. Dock placement requires Accessibility permission. To locate and move its icons as a group, DaysYet processes Dock item identities, order, geometry, and relevant pointer or keyboard events in memory. It does not save or transmit other apps' identities or input content. Each circle's helper process receives only its rendered image and display labels through local pipes, not the full profile.
+
+Ordinary Dock movement does not require Screen Recording. The direct prototype includes an optional visual experiment that is off by default and requires both consent to its explanation and macOS Screen Recording permission. Only when enabled does it temporarily hold a still image of the Dock and its immediate surroundings in memory, including any other apps or wallpaper visible in that region. Images are discarded when the move ends or is cancelled; there are no image files, audio capture, or external transfers. Normal App Store builds exclude this experiment and Accessibility-based Dock control.
+
 If a widget is placed on the Home Screen or Lock Screen, or the Mac desktop panel is shown, its title, time left, remaining percentage, or target date may be visible to anyone who can view the device. A Lock Screen widget may remain visible while the device is locked.
 
 ### Tracking, advertising, and analytics
@@ -57,6 +67,8 @@ The healthy-age goal is a personal planning marker chosen by the user. DaysYet d
 ### Deletion and retention
 
 Users can immediately remove saved data on the current device with “Delete all data” in Settings. On Mac this also resets the panel layout and size preferences. Data on other devices is unaffected. Any on-device data remaining after app deletion is managed by the operating system. Because the developer does not receive or retain user data from the app, there is no developer-side app record to delete.
+
+If the direct prototype repairs old pinned DaysYet helper registrations, it backs up only the removed helper records under `~/Library/Application Support/DaysYet/Dock Recovery/`. It does not back up other apps' Dock registrations. These recovery records are outside the settings reset and can be deleted by removing that folder when no longer needed. macOS manages login-item registration and Accessibility and Screen Recording permissions; they can be changed or revoked in System Settings.
 
 ### External links and changes
 
