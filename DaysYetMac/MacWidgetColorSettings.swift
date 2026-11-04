@@ -22,7 +22,7 @@ struct MacWidgetColorSettings: View {
             }
             .padding(.vertical, 4)
 
-            ForEach(store.profile.macWidgetMetrics(for: preferences.edge)) { kind in
+            ForEach(preferences.isInSystemDock ? store.profile.macDashboardMetrics : store.profile.macWidgetMetrics(for: preferences.edge)) { kind in
                 colorRow(kind)
             }
 

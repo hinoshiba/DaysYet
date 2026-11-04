@@ -5,6 +5,13 @@ struct MacWidgetPointerInteraction {
     struct Placement: Equatable {
         let frame: NSRect
         let position: Double
+        var edge: MacWidgetEdge? = nil
+        var target: MacWidgetDropTarget? = nil
+        var attachment: MacWidgetDropTarget? = nil
+        var tension: CGFloat = 0
+        var isDetached = false
+        var pointer: NSPoint? = nil
+        var isSlidingAlongEdge = false
     }
 
     enum Completion: Equatable {
@@ -20,7 +27,12 @@ struct MacWidgetPointerInteraction {
         let position: Double
         let clickCount: Int
         let timestamp: TimeInterval
+        let docking: MacWidgetDocking?
         var crossedThreshold = false
+        var detached = false
+        var target: MacWidgetDropTarget?
+        var attachment: MacWidgetDropTarget?
+        var isSlidingAlongEdge = false
     }
 
     static let dragThreshold: CGFloat = 5
@@ -28,17 +40,20 @@ struct MacWidgetPointerInteraction {
     private var previousClick: (point: NSPoint, timestamp: TimeInterval)?
     var isPressed: Bool { press != nil }
     var isDragging: Bool { press?.crossedThreshold == true }
+    var originalFrame: NSRect? { press?.frame }
+    var docking: MacWidgetDocking? { press?.docking }
 
     /// Quartz and AppKit share global point units, but opposite vertical axes.
     static func appKitPoint(fromQuartz point: CGPoint, primaryScreenMaxY: CGFloat) -> NSPoint {
         NSPoint(x: point.x, y: primaryScreenMaxY - point.y)
     }
 
-    /// A nil bound allows clicks on the top widget, but never moves it.
+    /// Docking captures a complete screen; bounds alone retain single-edge
+    /// sliding. With neither available, a press can only become a click.
     mutating func begin(at point: NSPoint, frame: NSRect, bounds: NSRect?, position: Double,
-                        clickCount: Int, timestamp: TimeInterval) {
+                        clickCount: Int, timestamp: TimeInterval, docking: MacWidgetDocking? = nil) {
         press = Press(point: point, frame: frame, bounds: bounds, position: position,
-                      clickCount: clickCount, timestamp: timestamp)
+                      clickCount: clickCount, timestamp: timestamp, docking: docking)
     }
 
     mutating func update(at point: NSPoint) -> Placement? {
@@ -46,6 +61,37 @@ struct MacWidgetPointerInteraction {
         let dx = point.x - press.point.x
         let dy = point.y - press.point.y
         if hypot(dx, dy) >= Self.dragThreshold { press.crossedThreshold = true }
+        if let docking = press.docking, press.crossedThreshold {
+            let distance = hypot(dx, dy)
+            let candidate = docking.target(at: point, previous: press.target?.edge,
+                originalFrame: press.frame, anchor: press.point)
+            let normal = docking.edge == .left || docking.edge == .right ? abs(dx) : abs(dy)
+            let tangent = docking.edge == .left || docking.edge == .right ? abs(dy) : abs(dx)
+            // A horizontal bottom rail is inset above the physical edge, so
+            // its pressed circle may be outside the free-circle contact band.
+            // Tangential movement keeps the original attachment and shape.
+            if !press.detached, docking.edge != .top, docking.edge != docking.systemDockEdge,
+               candidate?.edge == docking.edge, normal < MacWidgetDocking.releaseDistance,
+               press.isSlidingAlongEdge || tangent > normal, let candidate {
+                press.isSlidingAlongEdge = true
+                press.target = candidate
+                press.attachment = candidate
+                self.press = press
+                return Placement(frame: candidate.frame, position: candidate.position, edge: candidate.edge,
+                    target: candidate, attachment: candidate, pointer: point, isSlidingAlongEdge: true)
+            }
+            press.isSlidingAlongEdge = false
+            press.detached = press.detached || distance >= MacWidgetDocking.releaseDistance
+            if press.detached {
+                press.target = candidate
+                press.attachment = docking.attachment(at: point, target: press.target, previous: press.attachment?.edge)
+            }
+            self.press = press
+            let resistance: CGFloat = press.detached ? 1 : 0.32
+            return Placement(frame: press.frame.offsetBy(dx: dx * resistance, dy: dy * resistance),
+                position: press.position, edge: docking.edge, target: press.target, attachment: press.attachment,
+                tension: min(distance / MacWidgetDocking.releaseDistance, 1), isDetached: press.detached, pointer: point)
+        }
         self.press = press
         guard press.crossedThreshold, let bounds = press.bounds else { return nil }
         var frame = press.frame
@@ -63,6 +109,12 @@ struct MacWidgetPointerInteraction {
         self.press = nil
         if press.crossedThreshold {
             previousClick = nil
+            if let docking = press.docking {
+                let target = press.target
+                return .drag(Placement(frame: target?.frame ?? press.frame, position: target?.position ?? press.position,
+                                       edge: target?.edge ?? docking.edge, target: target, attachment: press.attachment,
+                                       isSlidingAlongEdge: press.isSlidingAlongEdge))
+            }
             return placement.map(Completion.drag) ?? .none
         }
         // AppKit can report clickCount == 2 immediately after a drag. Require

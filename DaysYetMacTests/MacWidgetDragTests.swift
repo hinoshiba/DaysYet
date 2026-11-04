@@ -88,7 +88,7 @@ final class MacWidgetDragTests: XCTestCase {
         XCTAssertEqual(interaction.finish(at: NSPoint(x: 23, y: 100), doubleClickInterval: 0.5), .none)
     }
 
-    func testTopPlacementNeverDragsButStillAcceptsTwoClicks() {
+    func testMissingDisplayGeometryNeverDragsButStillAcceptsTwoClicks() {
         var interaction = beginInteraction(bounds: nil)
         XCTAssertNil(interaction.update(at: NSPoint(x: 23, y: 180)))
         XCTAssertEqual(interaction.finish(at: NSPoint(x: 23, y: 180), doubleClickInterval: 0.5), .none)
@@ -121,7 +121,7 @@ final class MacWidgetDragTests: XCTestCase {
 
     @MainActor
     func testPendingSingleAndDoubleClicksKeepTheHoveredCircleMagnified() async throws {
-        for edge in [MacWidgetEdge.left, .right] {
+        for edge in [MacWidgetEdge.left, .right, .bottom] {
             try await withHoveredController(edge: edge) { controller in
                 for clickCount in [1, 2] {
                     beginPress(controller, clickCount: clickCount, timestamp: clickCount == 1 ? 1 : 1.2)
@@ -156,7 +156,7 @@ final class MacWidgetDragTests: XCTestCase {
 
     @MainActor
     func testUnmagnifiedPressStillCancelsAndResumesDeferredDetailHover() async throws {
-        for edge in [MacWidgetEdge.left, .right] {
+        for edge in [MacWidgetEdge.left, .right, .bottom] {
             try await withHoveredController(edge: edge, magnifiesOnHover: false) { controller in
                 beginPress(controller)
                 XCTAssertNil(controller.hoveredMetric)
@@ -176,7 +176,7 @@ final class MacWidgetDragTests: XCTestCase {
     func testPressDuringEnlargementKeepsTheCurrentScaleUntilRelease() async throws {
         try XCTSkipIf(NSWorkspace.shared.accessibilityDisplayShouldReduceMotion,
                       "Enlargement is immediate while Reduce Motion is enabled.")
-        for edge in [MacWidgetEdge.left, .right] {
+        for edge in [MacWidgetEdge.left, .right, .bottom] {
             try await withHoveredController(edge: edge, settleInitialHover: false) { controller in
                 let enlarging = try await eventually {
                     let scale = controller.hoverMagnifications[.month] ?? 1
@@ -200,7 +200,7 @@ final class MacWidgetDragTests: XCTestCase {
 
     @MainActor
     func testDragClearsHoverOnlyAfterThresholdAndKeepsItsInitialAnchor() async throws {
-        for edge in [MacWidgetEdge.left, .right] {
+        for edge in [MacWidgetEdge.left, .right, .bottom] {
             try await withHoveredController(edge: edge) { controller in
                 beginPress(controller)
                 XCTAssertNil(controller.updatePointerPress(at: NSPoint(x: 23, y: 104)))
@@ -231,7 +231,7 @@ final class MacWidgetDragTests: XCTestCase {
 
     @MainActor
     func testMouseUpAloneCanTurnASecondPressIntoADragAndClearHover() async throws {
-        for edge in [MacWidgetEdge.left, .right] {
+        for edge in [MacWidgetEdge.left, .right, .bottom] {
             try await withHoveredController(edge: edge) { controller in
                 beginPress(controller)
                 XCTAssertEqual(controller.finishPointerPress(at: NSPoint(x: 23, y: 100), doubleClickInterval: 0.5), .none)
