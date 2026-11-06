@@ -248,9 +248,7 @@ final class MacSystemDockTests: XCTestCase {
                 now: Date(timeIntervalSince1970: 1_790_000_000))
             let presentation = MacSystemDockPresentation(snapshot: snapshot,
                 accent: MacWidgetStyle.accent(for: kind, theme: .vividNight))
-            let renderer = ImageRenderer(content: MacSystemDockTileView(presentation: presentation))
-            renderer.scale = 2
-            let image = try XCTUnwrap(renderer.cgImage)
+            let image = try MacDockTileImageRenderer.image(for: presentation)
             XCTAssertEqual(image.width, 256)
             XCTAssertEqual(image.height, 256)
             let bitmap = NSBitmapImageRep(cgImage: image)
@@ -278,12 +276,10 @@ final class MacSystemDockTests: XCTestCase {
                 now: Date(timeIntervalSince1970: 1_790_000_000))
             let presentation = MacSystemDockPresentation(snapshot: snapshot,
                 accent: MacWidgetStyle.accent(for: kind, theme: .vividNight), opacity: 0)
-            // Match the parent's renderer and PNG/message encoding, then use
+            // Use the parent's renderer and PNG/message encoding, then use
             // the helper's NSImage decoder rather than inspecting only the
             // SwiftUI opacity property or the pre-encoding bitmap.
-            let renderer = ImageRenderer(content: MacSystemDockTileView(presentation: presentation))
-            renderer.scale = 2
-            let rendered = try XCTUnwrap(renderer.cgImage)
+            let rendered = try MacDockTileImageRenderer.image(for: presentation)
             let png = try XCTUnwrap(NSBitmapImageRep(cgImage: rendered).representation(using: .png, properties: [:]))
             let message = MacDockTileMessage(image: png, title: snapshot.title,
                 accessibilityLabel: snapshot.accessibilitySummary, groupTitle: "グループを開く",
@@ -301,6 +297,28 @@ final class MacSystemDockTests: XCTestCase {
                 }
             }
             XCTAssertTrue(allTransparent, "Hidden \(kind.rawValue) must contain no visible background, ring, or text pixels.")
+        }
+    }
+
+    @MainActor
+    func testDraggedDockImagesKeepTheirOpacityAfterTheHelperPNGRoundTrip() throws {
+        for kind in MetricKind.allCases {
+            let snapshot = TimeProgressCalculator.snapshot(for: kind, profile: .initial,
+                now: Date(timeIntervalSince1970: 1_790_000_000))
+            let presentation = MacSystemDockPresentation(snapshot: snapshot,
+                accent: MacWidgetStyle.accent(for: kind, theme: .vividNight), opacity: 0.22)
+            let rendered = try MacDockTileImageRenderer.image(for: presentation)
+            let png = try XCTUnwrap(NSBitmapImageRep(cgImage: rendered).representation(using: .png, properties: [:]))
+            let helperImage = try XCTUnwrap(NSImage(data: png))
+            let pixels = try XCTUnwrap(helperImage.cgImage(forProposedRect: nil, context: nil, hints: nil))
+            let bitmap = NSBitmapImageRep(cgImage: pixels)
+            XCTAssertEqual(try XCTUnwrap(bitmap.colorAt(x: 0, y: 0)).alphaComponent, 0)
+            XCTAssertEqual(try XCTUnwrap(bitmap.colorAt(x: 128, y: 128)).alphaComponent, 0.22, accuracy: 1.0 / 255)
+            let maximumAlpha = (0..<bitmap.pixelsHigh).flatMap { y in
+                (0..<bitmap.pixelsWide).map { x in bitmap.colorAt(x: x, y: y)?.alphaComponent ?? 1 }
+            }.max() ?? 1
+            XCTAssertLessThanOrEqual(maximumAlpha, 0.22 + 1.0 / 255,
+                "Dragged \(kind.rawValue) must fade its background, ring, and text together.")
         }
     }
 
