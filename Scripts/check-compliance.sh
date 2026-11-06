@@ -86,6 +86,7 @@ assert_line() {
 }
 
 allowed_public_docs=(
+  docs/SETTINGS_FLOW.md
   docs/STUDY_DAYS.md
   docs/FOUR_CIRCLE_DESIGN_REVIEW.md
   docs/screenshots/study-days/ios-en-calendar.png

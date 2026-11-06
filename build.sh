@@ -41,11 +41,15 @@ case "${MODE}" in
       -scheme DaysYet \
       -sdk iphonesimulator \
       -destination 'generic/platform=iOS Simulator' \
-      CODE_SIGNING_ALLOWED=NO \
+      CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- \
+      DEVELOPMENT_TEAM= PROVISIONING_PROFILE_SPECIFIER= \
       build
     ;;
   test)
-    daysyet_simulator_id="$(xcrun simctl list devices available | sed -nE 's/.*iPhone.*\(([0-9A-F-]{36})\).*/\1/p' | head -n 1)"
+    daysyet_simulator_id="${DAYSYET_SIMULATOR_ID:-}"
+    if [[ -z "${daysyet_simulator_id}" ]]; then
+      daysyet_simulator_id="$(xcrun simctl list devices available | sed -nE 's/.*iPhone.*\(([0-9A-F-]{36})\).*/\1/p' | head -n 1)"
+    fi
     if [[ -z "${daysyet_simulator_id}" ]]; then
       echo "error: no available iPhone simulator" >&2
       exit 1
@@ -54,7 +58,8 @@ case "${MODE}" in
       -project DaysYet.xcodeproj \
       -scheme DaysYet \
       -destination "platform=iOS Simulator,id=${daysyet_simulator_id}" \
-      CODE_SIGNING_ALLOWED=NO \
+      CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- \
+      DEVELOPMENT_TEAM= PROVISIONING_PROFILE_SPECIFIER= \
       test
     ;;
   mac)

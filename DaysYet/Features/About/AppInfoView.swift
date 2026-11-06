@@ -1,42 +1,12 @@
 import SwiftUI
 
-struct SettingsView: View {
-    @EnvironmentObject private var store: ProfileStore
+struct AppInfoView: View {
+    @Environment(\.dismiss) private var dismiss
     @State private var showResetConfirmation = false
-    let openWidgetSettings: () -> Void
-    let resetWidgetEditor: () -> Void
+    let resetData: () -> Void
 
     var body: some View {
         Form {
-            Section {
-                Button(action: openWidgetSettings) {
-                    HStack(spacing: 12) {
-                        Label {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(L10n.text("ウィジェットの設定", "Widget settings"))
-                                    .foregroundStyle(.primary)
-                                Text(L10n.text("3つの時間・4つのサークル", "Three timelines · Four circles"))
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                        } icon: {
-                            Image(systemName: "square.grid.2x2")
-                        }
-                        Spacer(minLength: 0)
-                        Image(systemName: "chevron.right")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(.tertiary)
-                            .accessibilityHidden(true)
-                    }
-                }
-                .buttonStyle(.plain)
-                .accessibilityIdentifier("settings.widgets")
-            } header: {
-                Text(L10n.text("ウィジェット", "Widgets"))
-            }
-
-            weekStartSection
-
             Section {
                 Label {
                     VStack(alignment: .leading, spacing: 4) {
@@ -51,15 +21,17 @@ struct SettingsView: View {
                         .foregroundStyle(.green)
                 }
 
-                NavigationLink(L10n.text("プライバシーについて", "Privacy")) {
+                NavigationLink(L10n.text("プライバシーポリシー", "Privacy policy")) {
                     PrivacyView()
                 }
+                .accessibilityIdentifier("app.info.privacy")
 
                 Button(role: .destructive) {
                     showResetConfirmation = true
                 } label: {
                     Label(L10n.text("すべてのデータを消去", "Delete all data"), systemImage: "trash")
                 }
+                .accessibilityIdentifier("app.info.reset")
             } header: {
                 Text(L10n.text("プライバシー", "Privacy"))
             }
@@ -77,55 +49,32 @@ struct SettingsView: View {
                 NavigationLink(L10n.text("ライセンス", "License")) {
                     LicenseView()
                 }
+                .accessibilityIdentifier("app.info.license")
 
                 LabeledContent(L10n.text("バージョン", "Version"), value: appVersion)
+                    .accessibilityIdentifier("app.info.version")
             } header: {
-                Text(L10n.text("このアプリについて", "About"))
+                Text("DaysYet")
             } footer: {
                 Text(L10n.text("人生のTokenを、大切なことへ。", "Life’s tokens. Make them count."))
             }
         }
-        .navigationTitle(L10n.text("設定", "Settings"))
+        .navigationTitle(L10n.text("このアプリについて", "About DaysYet"))
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button(L10n.text("完了", "Done")) { dismiss() }
+                    .accessibilityIdentifier("app.info.done")
+            }
+        }
         .confirmationDialog(
             L10n.text("端末内の設定をすべて消去しますか？", "Delete all on-device settings?"),
             isPresented: $showResetConfirmation,
             titleVisibility: .visible
         ) {
-            Button(L10n.text("消去", "Delete"), role: .destructive) {
-                resetWidgetEditor()
-                store.reset()
-            }
+            Button(L10n.text("消去", "Delete"), role: .destructive, action: resetData)
             Button(L10n.text("キャンセル", "Cancel"), role: .cancel) {}
         }
-    }
-
-    /// The week start orders both “This week” and the study-day weekdays, so it
-    /// stays here rather than moving to a single time’s settings.
-    private var weekStartSection: some View {
-        let weekday = store.profile.weekStartDay.resolvedTitle()
-        return Section {
-            Picker(L10n.text("開始曜日", "First day"), selection: weekStartBinding) {
-                ForEach(WeekStartDay.allCases) { day in
-                    Text(day.title).tag(day)
-                }
-            }
-            .accessibilityIdentifier("settings.weekStart")
-        } header: {
-            Text(L10n.text("週の始まり", "Week starts on"))
-        } footer: {
-            Text(L10n.text(
-                "\(weekday)の午前0時から、翌週の\(weekday)の午前0時までを「今週」として表示します。学習日の曜日の並びにも使います。",
-                "“This week” runs from midnight on \(weekday) to midnight on the following \(weekday). It also orders the weekdays in Study days."
-            ))
-        }
-    }
-
-    private var weekStartBinding: Binding<WeekStartDay> {
-        Binding(
-            get: { store.profile.weekStartDay },
-            set: { value in store.update { $0.weekStartDay = value } }
-        )
     }
 
     private var appVersion: String {
@@ -135,13 +84,13 @@ struct SettingsView: View {
     }
 }
 
-private struct PrivacyView: View {
+struct PrivacyView: View {
     var body: some View {
         List {
             Section {
                 Text(L10n.text(
-                    "本アプリは、生年月日・目標年齢・活動時間とラベル・曜日・大切な日の起算日と目標日時・学習日の期間と曜日・個別の日付・表示設定を、アプリとウィジェットの共有領域に保存します。最後に編集したウィジェットの種類はアプリ内に保存します。設定画面からいつでも全データを消去できます。",
-                    "This app stores your birth date, target age, activity hours with labels and weekdays, milestone start and target dates, study periods with weekdays and individual dates, and display choices in the private area shared by the app and its widget. The last widget type you edited is stored in the app. You can delete all data from Settings at any time."
+                    "本アプリは、生年月日・目標年齢・活動時間とラベル・曜日・大切な日の起算日と目標日時・学習日の期間と曜日・個別の日付・表示設定を、アプリとウィジェットの共有領域に保存します。「時間」画面右上のⓘから「このアプリについて」を開き、いつでも全データを消去できます。",
+                    "This app stores your birth date, target age, activity hours with labels and weekdays, milestone start and target dates, study periods with weekdays and individual dates, and display choices in the private area shared by the app and its widget. You can delete all data at any time from About DaysYet, opened with the info button at the top right of Times."
                 ))
             }
 
@@ -155,6 +104,7 @@ private struct PrivacyView: View {
             }
 
             Link(L10n.text("公開プライバシーポリシー", "Public privacy policy"), destination: ProjectLinks.privacyPolicy)
+                .accessibilityIdentifier("app.info.privacy.public")
             Link(L10n.text("サポート", "Support"), destination: ProjectLinks.support)
         }
         .navigationTitle(L10n.text("プライバシー", "Privacy"))
@@ -172,7 +122,7 @@ private enum ProjectLinks {
     }
 }
 
-private struct LicenseView: View {
+struct LicenseView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {

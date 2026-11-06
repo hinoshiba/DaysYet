@@ -41,7 +41,7 @@ struct DaysYetCircleTimelineProvider: AppIntentTimelineProvider {
             }
         }
 
-        // Scheduled starts/ends and midnight resets also apply to the fourth slot.
+        // Include scheduled transitions for every configured circle.
         for metric in firstEntry.metrics {
             entryDates += TimeProgressCalculator.transitionDates(
                 for: metric, profile: profile, after: now, through: refreshDate, calendar: calendar
@@ -81,7 +81,7 @@ struct DaysYetCircleWidgetEntryView: View {
             },
             valueStyle: entry.valueStyle,
             theme: entry.theme,
-            compact: family == .systemSmall,
+            size: CircleWidgetSize(family: family),
             customColors: entry.customColors
         )
         .containerBackground(for: .widget) {
@@ -103,6 +103,6 @@ struct DaysYetCircleWidget: Widget {
         }
         .configurationDisplayName("widget.circle.gallery.title")
         .description("widget.circle.gallery.description")
-        .supportedFamilies([.systemSmall, .systemLarge])
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }

@@ -255,7 +255,7 @@ final class CircleWidgetRenderingTests: XCTestCase {
             snapshots: snapshots,
             valueStyle: valueStyle,
             theme: theme,
-            compact: compact,
+            size: compact ? .small : .large,
             showsContainerBackground: true
         )
         .padding(16)

@@ -5,16 +5,16 @@ Set your own healthy-age goal as a personal planning milestone. DaysYet counts d
 THREE TIMELINES
 Choose three from this week, month, year, two activity schedules, your healthy-age goal, a milestone date with its own start date, and study days. Use the app's selection or a different combination for each widget.
 
-FOUR CIRCLES
-Show four timelines in a 2×2 grid with Small and Large Home Screen widgets. One-line names sit above values inside each ring; long names truncate visually. Percentage digits keep a consistent size. Set each position, center value (percentage, time left, or end date), and theme in the app. Small shows the leading duration unit, dates with two-digit years, and activity times in 24-hour format. Large and VoiceOver retain more detail. Circle settings are separate from Three timelines; widgets can override them.
+CIRCLES
+Choose one to eight timelines. Small shows the first four; Medium and Large show up to eight. Names sit above values inside each ring, and percentage digits keep a consistent size. Choose percentage, time left, or end date for the center. Small and dense layouts use compact values; VoiceOver retains full detail.
 
-FIND YOUR WIDGET SETTINGS
-On Widget, choose Three timelines or Four circles and preview changes. Settings > Widget settings returns to the type chooser. The app remembers your last editor selection. The circle preview shows the Small layout.
+WIDGET AND TIMES
+On Widget, choose Three rows or Circles. The installed DaysYet widget follows your layout, timelines, and theme. Tap one of four live theme previews to select it. Circle previews offer Small, Medium, and Large. Use + to add from Times, tap to replace, and Edit to reorder or remove. Schedules and dates live in Times, with Save and Cancel.
 
-Colors & palette is directly below the preview. Add or switch on the Home Screen explains installation. The type selector chooses what to edit; it does not replace a placed widget. Add the desired type from the system gallery. New circle widgets follow app settings. To apply them to an existing widget, touch and hold > Edit Widget and choose App setting.
+The info button explains installation and includes privacy and license links. Existing custom three-row widgets keep their choices. The original circle-only widget remains as Circles (fixed). To follow the app, add DaysYet; in Edit Widget, enable Follow app appearance and choose App setting for appearance options.
 
 TWO ACTIVITY SCHEDULES AND YOUR WEEK
-Set custom names, start/end times, and active weekdays. Overnight activities use device-local time and continue until their end even if the next day is Off. Choose the first day of This week from the device setting or any weekday. Tap an activity on Times to edit it.
+Set names, start/end times, and active weekdays for two schedules. Overnight activities use device-local time and continue until their end even if the next day is Off. Tap a schedule in Times to edit. Tap This week to choose its first day; this also orders the study calendar without changing selected dates.
 
 COUNT YOUR AVAILABLE STUDY DAYS
 Name a plan of up to 366 days, select weekdays, and add or exclude dates. Two-week and four-week shortcuts help you start. Counts include today when selected. Percentages measure remaining selected days, not completed sessions. No device-calendar access is needed. Tap Study days on Times to edit.
@@ -23,15 +23,15 @@ THREE DISPLAY LAYOUTS
 Choose a large countdown, a combined time/percentage/bar view, or three progress bars. Color shows time remaining, decreasing from 100% to 0%. Bars shrink from right to left; rings drain clockwise from the top. Bar values can show time left, percentage, or the end date.
 
 YOUR COLORS
-Colors & palette offers four templates and native color pickers. On Times, touch and hold a card > Change color to customize or reset its color. Cards share colors with Three timelines. Row and circle colors save separately; circles can follow the Three timelines palette. A widget's App setting theme uses your colors; an explicit theme uses its template.
+Four themes are shared by rows and circles. Timeline colors offers native color pickers. In Times, touch and hold a row > Change color to customize or reset it. Circles inherit these colors, keeping any circle-specific overrides. A widget's App setting theme uses your colors; an explicit widget theme uses its template.
 
 HOME SCREEN, LOCK SCREEN, AND STANDBY
-Three timelines supports Small and Medium; Four circles supports Small and Large. Inline, Circular, and Rectangular Lock Screen widgets show one timeline. Small widgets also work in StandBy, adapting text when the background is removed. iOS controls background and color rendering.
+Rows and circles support Small, Medium, and Large. Inline, Circular, and Rectangular Lock Screen widgets show one timeline. Small widgets also work in StandBy, adapting text when the background is removed. iOS controls background and color rendering.
 
 JAPANESE AND ENGLISH
 Use the app, widgets, and widget configuration in Japanese or English.
 
 ON DEVICE BY DESIGN
-No account is required. Dates, goals, schedules, and preferences stay on device and are never sent to the developer. Timeline settings are shared with the widget; the last editor choice stays in the app. No advertising or analytics SDKs. Delete all saved data from Settings at any time.
+No account is required. Dates, goals, schedules, and preferences stay on device and are never sent to the developer. No advertising or analytics SDKs. Delete all saved data from About DaysYet, opened with the info button at the top right of Times.
 
 Healthy-age goals are personal planning markers, not statistics, medical advice, diagnoses, or health/lifespan predictions.

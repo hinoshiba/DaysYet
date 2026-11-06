@@ -28,7 +28,7 @@ DaysYetは追跡、行動分析、広告、第三者SDKを使用しません。A
 
 ### 削除と保持期間
 
-設定画面の「すべてのデータを消去」で、その端末の保存情報を直ちに削除できます。Mac版では常駐パネルの配置とサイズの設定も初期状態へ戻ります。他の端末のデータには影響しません。アプリ削除後に残る端末内データはOSが管理します。開発者はアプリから利用者データを受信・保存しないため、開発者へ削除請求を行う対象はありません。
+iPhone / iPadでは「時間」画面右上のⓘから開く「このアプリについて」、Macでは設定画面の「すべてのデータを消去」で、その端末の保存情報を直ちに削除できます。Mac版では常駐パネルの配置とサイズの設定も初期状態へ戻ります。他の端末のデータには影響しません。アプリ削除後に残る端末内データはOSが管理します。開発者はアプリから利用者データを受信・保存しないため、開発者へ削除請求を行う対象はありません。
 
 直接配布向け試作版で、古いDaysYet補助アイコンの固定登録を修復した場合、その削除対象だけを `~/Library/Application Support/DaysYet/Dock Recovery/` にバックアップします。他アプリのDock登録はバックアップしません。この修復記録は設定リセットの対象外で、不要になったら同フォルダを削除できます。ログイン項目とアクセシビリティ・画面収録の許可はmacOSが管理し、システム設定から変更・取り消せます。
 
@@ -66,7 +66,7 @@ The healthy-age goal is a personal planning marker chosen by the user. DaysYet d
 
 ### Deletion and retention
 
-Users can immediately remove saved data on the current device with “Delete all data” in Settings. On Mac this also resets the panel layout and size preferences. Data on other devices is unaffected. Any on-device data remaining after app deletion is managed by the operating system. Because the developer does not receive or retain user data from the app, there is no developer-side app record to delete.
+Users can immediately remove saved data on the current device with “Delete all data”: on iPhone or iPad, open About DaysYet using the info button at the top right of Times; on Mac, open Settings. On Mac this also resets the panel layout and size preferences. Data on other devices is unaffected. Any on-device data remaining after app deletion is managed by the operating system. Because the developer does not receive or retain user data from the app, there is no developer-side app record to delete.
 
 If the direct prototype repairs old pinned DaysYet helper registrations, it backs up only the removed helper records under `~/Library/Application Support/DaysYet/Dock Recovery/`. It does not back up other apps' Dock registrations. These recovery records are outside the settings reset and can be deleted by removing that folder when no longer needed. macOS manages login-item registration and Accessibility and Screen Recording permissions; they can be changed or revoked in System Settings.
 
