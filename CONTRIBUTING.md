@@ -22,7 +22,7 @@ Thank you for helping improve this project.
 in Xcode. Run `./build.sh project` after changing `project.yml` and commit both;
 pull-request CI rejects a stale generated project.
 
-Unsigned builds and tests need no signing configuration. For an authorized
+Local builds and tests need no distribution credentials. iOS simulator builds use ad-hoc signing so the app and widget can share settings. For an authorized
 device build or release, use the ignored `Config/Signing.local.xcconfig` as
 described in [Local Xcode releases](docs/RELEASING.md). Keep team identifiers,
 personal certificate identities, provisioning profiles, and credentials out of
@@ -66,7 +66,7 @@ Any dependency, font, image, audio, dataset, or SDK addition must update the app
 - User-facing behavior and release documentation are updated.
 
 Use local Xcode for development and releases. Pull-request builds and tests
-are unsigned and require no maintainer credentials. After changing the
+use no distribution identity and require no maintainer credentials. After changing the
 repository, run the relevant checks, review the diff, then git commit and
 git push your branch. Submit it with the common pull-request template.
 The maintainer uses `support@hinoshiba.com` for public commit email metadata.

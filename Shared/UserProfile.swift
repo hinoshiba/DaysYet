@@ -79,45 +79,40 @@ struct ActivitySchedule: Codable, Equatable, Sendable {
 
 struct CircleWidgetSettings: Codable, Equatable, Sendable {
     static let defaultMetrics: [MetricKind] = [.week, .month, .year, .activity]
+    static let maximumCount = 8
+    static let slotDefaults = defaultMetrics + MetricKind.allCases.filter { !defaultMetrics.contains($0) }
 
     var metrics: [MetricKind]
     var valueStyle: MetricValueStyle
-    /// A nil theme follows the app's overall theme.
-    var theme: WidgetTheme?
     var customColors: [MetricKind: WidgetColor]
 
     init(
         metrics: [MetricKind] = Self.defaultMetrics,
         valueStyle: MetricValueStyle = .percentage,
-        theme: WidgetTheme? = nil,
         customColors: [MetricKind: WidgetColor] = [:]
     ) {
         self.metrics = metrics
         self.valueStyle = valueStyle
-        self.theme = theme
         self.customColors = customColors
     }
 
-    /// Preserve repeated selections and the position of each of the four slots.
+    /// Keep the chosen order and repeated selections, including lists shorter than four.
     var normalizedMetrics: [MetricKind] {
-        Self.defaultMetrics.indices.map { index in
-            metrics.indices.contains(index) ? metrics[index] : Self.defaultMetrics[index]
-        }
+        metrics.isEmpty ? Self.defaultMetrics : Array(metrics.prefix(Self.maximumCount))
     }
 
     private enum CodingKeys: String, CodingKey {
-        case metrics, valueStyle, theme, customColors
+        // Legacy circle-specific themes give way to the common app theme.
+        case metrics, valueStyle, customColors
     }
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let storedMetrics = (try? container.decode([String].self, forKey: .metrics)) ?? []
-        metrics = Self.defaultMetrics.indices.map { index in
-            guard storedMetrics.indices.contains(index) else { return Self.defaultMetrics[index] }
-            return MetricKind(rawValue: storedMetrics[index]) ?? Self.defaultMetrics[index]
+        metrics = storedMetrics.isEmpty ? Self.defaultMetrics : storedMetrics.prefix(Self.maximumCount).enumerated().map { index, value in
+            MetricKind(rawValue: value) ?? Self.slotDefaults[index]
         }
         valueStyle = (try? container.decode(MetricValueStyle.self, forKey: .valueStyle)) ?? .percentage
-        theme = try? container.decode(WidgetTheme.self, forKey: .theme)
         customColors = (try? container.decode(WidgetColorMap.self, forKey: .customColors))?.colors ?? [:]
     }
 
@@ -125,7 +120,6 @@ struct CircleWidgetSettings: Codable, Equatable, Sendable {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(normalizedMetrics, forKey: .metrics)
         try container.encode(valueStyle, forKey: .valueStyle)
-        try container.encodeIfPresent(theme, forKey: .theme)
         try container.encode(WidgetColorMap(customColors), forKey: .customColors)
     }
 }
@@ -145,6 +139,7 @@ struct UserProfile: Codable, Equatable, Sendable {
     var dashboardValueStyle: MetricValueStyle
     var widgetTheme: WidgetTheme
     var widgetCustomColors: [MetricKind: WidgetColor]
+    var widgetLayout: WidgetLayout
     var circleWidgetSettings: CircleWidgetSettings
     var isConfigured: Bool
 
@@ -214,6 +209,7 @@ struct UserProfile: Codable, Equatable, Sendable {
         case dashboardValueStyle
         case widgetTheme
         case widgetCustomColors
+        case widgetLayout
         case circleWidgetSettings
         case isConfigured
     }
@@ -236,7 +232,8 @@ struct UserProfile: Codable, Equatable, Sendable {
         workActivity: ActivitySchedule? = nil,
         studySchedule: StudySchedule = .initial,
         circleWidgetSettings: CircleWidgetSettings = CircleWidgetSettings(),
-        widgetCustomColors: [MetricKind: WidgetColor] = [:]
+        widgetCustomColors: [MetricKind: WidgetColor] = [:],
+        widgetLayout: WidgetLayout = .rows
     ) {
         self.birthDate = birthDate
         self.healthyLifeYears = healthyLifeYears
@@ -254,6 +251,7 @@ struct UserProfile: Codable, Equatable, Sendable {
         self.dashboardValueStyle = dashboardValueStyle
         self.widgetTheme = widgetTheme
         self.widgetCustomColors = widgetCustomColors
+        self.widgetLayout = widgetLayout
         self.circleWidgetSettings = circleWidgetSettings
         self.isConfigured = isConfigured
     }
@@ -285,6 +283,8 @@ struct UserProfile: Codable, Equatable, Sendable {
         dashboardValueStyle = (try? container.decode(MetricValueStyle.self, forKey: .dashboardValueStyle)) ?? .remaining
         widgetTheme = (try? container.decode(WidgetTheme.self, forKey: .widgetTheme)) ?? .vividNight
         widgetCustomColors = (try? container.decode(WidgetColorMap.self, forKey: .widgetCustomColors))?.colors ?? [:]
+        // Existing primary widgets keep their rows until changed in the app.
+        widgetLayout = (try? container.decode(WidgetLayout.self, forKey: .widgetLayout)) ?? .rows
         circleWidgetSettings = (try? container.decode(CircleWidgetSettings.self, forKey: .circleWidgetSettings))
             ?? CircleWidgetSettings()
         isConfigured = try container.decode(Bool.self, forKey: .isConfigured)
@@ -309,13 +309,13 @@ struct UserProfile: Codable, Equatable, Sendable {
         try container.encode(dashboardValueStyle, forKey: .dashboardValueStyle)
         try container.encode(widgetTheme, forKey: .widgetTheme)
         try container.encode(WidgetColorMap(widgetCustomColors), forKey: .widgetCustomColors)
+        try container.encode(widgetLayout, forKey: .widgetLayout)
         try container.encode(circleWidgetSettings, forKey: .circleWidgetSettings)
         try container.encode(isConfigured, forKey: .isConfigured)
     }
 
-    /// Following the row theme also inherits its colors, unless a circle overrides one.
+    /// Circles inherit timeline colors, with explicit circle overrides taking precedence.
     var resolvedCircleWidgetCustomColors: [MetricKind: WidgetColor] {
-        guard circleWidgetSettings.theme == nil else { return circleWidgetSettings.customColors }
         return widgetCustomColors.merging(circleWidgetSettings.customColors) { _, circle in circle }
     }
 

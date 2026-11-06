@@ -1,6 +1,15 @@
 import AppIntents
 import Foundation
 
+enum WidgetLayout: String, Codable, CaseIterable, Identifiable, Sendable {
+    case rows, circles
+
+    var id: String { rawValue }
+    var title: String {
+        self == .rows ? L10n.text("3つの行", "Three rows") : L10n.text("サークル", "Circles")
+    }
+}
+
 enum MetricKind: String, Codable, CaseIterable, Identifiable, Sendable {
     case week
     case month

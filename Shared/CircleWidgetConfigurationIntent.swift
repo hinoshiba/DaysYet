@@ -1,10 +1,13 @@
 import AppIntents
 import WidgetKit
 
-/// The circle widget has its own four slots; the app dashboard keeps three.
+/// Circle timelines and value style are independent; the app theme is shared.
 struct DaysYetCircleConfigurationIntent: WidgetConfigurationIntent {
     static let title: LocalizedStringResource = "widget.circle.configuration.title"
     static let description = IntentDescription("widget.circle.configuration.description")
+
+    @Parameter(title: "widget.circle.configuration.count", default: .appSetting)
+    var count: CircleWidgetCountOption
 
     @Parameter(title: "widget.circle.configuration.first_metric", default: .appSetting)
     var firstMetric: WidgetMetricOption
@@ -18,6 +21,18 @@ struct DaysYetCircleConfigurationIntent: WidgetConfigurationIntent {
     @Parameter(title: "widget.circle.configuration.fourth_metric", default: .appSetting)
     var fourthMetric: WidgetMetricOption
 
+    @Parameter(title: "widget.circle.configuration.fifth_metric", default: .appSetting)
+    var fifthMetric: WidgetMetricOption
+
+    @Parameter(title: "widget.circle.configuration.sixth_metric", default: .appSetting)
+    var sixthMetric: WidgetMetricOption
+
+    @Parameter(title: "widget.circle.configuration.seventh_metric", default: .appSetting)
+    var seventhMetric: WidgetMetricOption
+
+    @Parameter(title: "widget.circle.configuration.eighth_metric", default: .appSetting)
+    var eighthMetric: WidgetMetricOption
+
     @Parameter(title: "widget.circle.configuration.value_style", default: .appSetting)
     var valueStyle: WidgetValueStyleOption
 
@@ -25,23 +40,31 @@ struct DaysYetCircleConfigurationIntent: WidgetConfigurationIntent {
     var theme: WidgetThemeOption
 
     init() {
+        count = .appSetting
         firstMetric = .appSetting
         secondMetric = .appSetting
         thirdMetric = .appSetting
         fourthMetric = .appSetting
+        fifthMetric = .appSetting
+        sixthMetric = .appSetting
+        seventhMetric = .appSetting
+        eighthMetric = .appSetting
         valueStyle = .appSetting
         theme = .appSetting
     }
 
     func resolvedMetrics(profile: UserProfile) -> [MetricKind] {
         let appMetrics = profile.circleWidgetSettings.normalizedMetrics
-        let requested = [firstMetric, secondMetric, thirdMetric, fourthMetric].enumerated().map { index, option in
-            option.resolved(appMetric: appMetrics[index])
+        let options = [firstMetric, secondMetric, thirdMetric, fourthMetric,
+                       fifthMetric, sixthMetric, seventhMetric, eighthMetric]
+        let requested = options.prefix(count.resolved(appCount: appMetrics.count)).enumerated().map { index, option in
+            option.resolved(appMetric: appMetrics.indices.contains(index)
+                            ? appMetrics[index] : CircleWidgetSettings.slotDefaults[index])
         }
         guard !profile.isConfigured else { return requested }
 
         // Before onboarding, avoid displaying a sample birth date or milestone.
-        // Keep all four positions, including repeated explicitly selected metrics.
+        // Keep every position, including repeated explicitly selected metrics.
         var used = Set(requested.filter { $0 != .healthyLife && $0 != .customLife })
         return requested.map { metric in
             guard metric == .healthyLife || metric == .customLife else { return metric }
@@ -57,11 +80,28 @@ struct DaysYetCircleConfigurationIntent: WidgetConfigurationIntent {
     }
 
     func resolvedTheme(profile: UserProfile) -> WidgetTheme {
-        theme.resolved(profileTheme: profile.circleWidgetSettings.theme ?? profile.widgetTheme)
+        theme.resolved(profileTheme: profile.widgetTheme)
     }
 
     func resolvedCustomColors(profile: UserProfile) -> [MetricKind: WidgetColor] {
         // An explicitly selected widget template keeps its original colors.
         theme == .appSetting ? profile.resolvedCircleWidgetCustomColors : [:]
+    }
+}
+
+enum CircleWidgetCountOption: String, AppEnum {
+    case appSetting, one, two, three, four, five, six, seven, eight
+
+    static let typeDisplayRepresentation: TypeDisplayRepresentation = "widget.circle.configuration.count"
+    static let caseDisplayRepresentations: [Self: DisplayRepresentation] = [
+        .appSetting: "widget.option.app_setting",
+        .one: "1", .two: "2", .three: "3", .four: "4",
+        .five: "5", .six: "6", .seven: "7", .eight: "8"
+    ]
+
+    func resolved(appCount: Int) -> Int {
+        let explicitCounts: [Self: Int] = [.one: 1, .two: 2, .three: 3, .four: 4,
+                                         .five: 5, .six: 6, .seven: 7, .eight: 8]
+        return min(max(explicitCounts[self] ?? appCount, 1), CircleWidgetSettings.maximumCount)
     }
 }

@@ -40,7 +40,7 @@ final class StudyDaysEditorTests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["--screenshot-mode", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
         app.launch()
-        app.tabBars.buttons["Times"].tap()
+        app.buttons.matching(identifier: "Times").firstMatch.tap()
         let card = app.buttons["times.metric.study"]
         reveal(card, in: app)
         card.tap()
@@ -48,7 +48,7 @@ final class StudyDaysEditorTests: XCTestCase {
         reveal(weekday, in: app)
         weekday.tap()
         let changedValue = weekday.value as? String
-        app.navigationBars.buttons.element(boundBy: 0).tap()
+        app.buttons["time.editor.save"].tap()
         reveal(card, in: app)
         card.tap()
         reveal(weekday, in: app)
@@ -56,15 +56,56 @@ final class StudyDaysEditorTests: XCTestCase {
     }
 
     @MainActor
-    func testTimesWithoutOwnSettingsAreNotTappable() {
+    func testMonthsAndYearsRemainReadOnly() {
         let app = XCUIApplication()
         app.launchArguments = ["--screenshot-mode", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
         app.launch()
-        app.tabBars.buttons["Times"].tap()
+        app.buttons.matching(identifier: "Times").firstMatch.tap()
         XCTAssertTrue(app.buttons["times.metric.customLife"].waitForExistence(timeout: 10))
-        for metric in ["week", "month", "year"] {
+        XCTAssertTrue(app.buttons["times.metric.week"].exists)
+        for metric in ["month", "year"] {
             XCTAssertFalse(app.buttons["times.metric.\(metric)"].exists)
         }
+    }
+
+    @MainActor
+    func testWeekStartIsEditedFromTimesWithSaveAndCancel() {
+        let app = XCUIApplication()
+        app.launchArguments = ["--screenshot-mode", "--screenshot-times", "-AppleLanguages", "(en)", "-AppleLocale", "en_US"]
+        app.launch()
+        let weekCard = app.buttons["times.metric.week"]
+        XCTAssertTrue(weekCard.waitForExistence(timeout: 10))
+        weekCard.tap()
+        let firstDay = app.buttons["week.startDay"]
+        XCTAssertTrue(firstDay.waitForExistence(timeout: 5))
+        let originalLabel = firstDay.label
+        let originalValue = firstDay.value as? String
+        firstDay.tap()
+        app.buttons["Monday"].tap()
+        app.buttons["time.editor.cancel"].tap()
+
+        weekCard.tap()
+        XCTAssertEqual(firstDay.label, originalLabel)
+        XCTAssertEqual(firstDay.value as? String, originalValue)
+        firstDay.tap()
+        app.buttons["Monday"].tap()
+        app.buttons["time.editor.save"].tap()
+        weekCard.tap()
+        XCTAssertTrue(firstDay.label.contains("Monday") || (firstDay.value as? String)?.contains("Monday") == true)
+        attachScreenshot(app, name: "week-settings-in-times-en")
+        app.buttons["time.editor.cancel"].tap()
+
+        XCTAssertFalse(app.buttons.matching(identifier: "Settings").firstMatch.exists)
+        let studyCard = app.buttons["times.metric.study"]
+        reveal(studyCard, in: app)
+        studyCard.tap()
+        let monday = app.buttons["study.weekday.2"]
+        let sunday = app.buttons["study.weekday.1"]
+        reveal(monday, in: app)
+        XCTAssertLessThan(monday.frame.minX, sunday.frame.minX)
+        XCTAssertEqual(monday.value as? String, "Not selected")
+        XCTAssertEqual(sunday.value as? String, "Not selected")
+        app.buttons["time.editor.cancel"].tap()
     }
 
     @MainActor

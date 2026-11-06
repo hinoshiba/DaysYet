@@ -81,6 +81,34 @@ final class MacDockTileProcessHost {
 }
 
 @MainActor
+enum MacDockTileImageRenderer {
+    static func image(for presentation: MacSystemDockPresentation) throws -> CGImage {
+        var opaquePresentation = presentation
+        opaquePresentation.opacity = 1
+        let renderer = ImageRenderer(content: MacSystemDockTileView(presentation: opaquePresentation))
+        renderer.scale = 2
+        guard let image = renderer.cgImage else { throw CocoaError(.fileWriteUnknown) }
+        guard presentation.opacity < 1 else { return image }
+
+        // Apply opacity to the exported bitmap so hidden tiles stay transparent
+        // through the helper's PNG round trip on every supported macOS version.
+        guard let context = CGContext(data: nil, width: image.width, height: image.height,
+            bitsPerComponent: 8, bytesPerRow: 0, space: CGColorSpaceCreateDeviceRGB(),
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else {
+            throw CocoaError(.fileWriteUnknown)
+        }
+        let bounds = CGRect(x: 0, y: 0, width: image.width, height: image.height)
+        context.clear(bounds)
+        if presentation.opacity > 0 {
+            context.setAlpha(presentation.opacity)
+            context.draw(image, in: bounds)
+        }
+        guard let result = context.makeImage() else { throw CocoaError(.fileWriteUnknown) }
+        return result
+    }
+}
+
+@MainActor
 private final class MacDockTileProcess {
     private let process = Process()
     private let input = Pipe()
@@ -126,10 +154,8 @@ private final class MacDockTileProcess {
     }
 
     func update(_ presentation: MacSystemDockPresentation) throws {
-        let renderer = ImageRenderer(content: MacSystemDockTileView(presentation: presentation))
-        renderer.scale = 2
-        guard let image = renderer.cgImage,
-              let data = NSBitmapImageRep(cgImage: image).representation(using: .png, properties: [:]) else {
+        let image = try MacDockTileImageRenderer.image(for: presentation)
+        guard let data = NSBitmapImageRep(cgImage: image).representation(using: .png, properties: [:]) else {
             throw CocoaError(.fileWriteUnknown)
         }
         let message = MacDockTileMessage(image: data,

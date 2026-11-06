@@ -19,6 +19,10 @@ enum ProfileRepository {
 
     static func reset() {
         defaults.removeObject(forKey: profileKey)
+#if !os(macOS)
+        // Retired app-only editor choice predates the shared widget layout.
+        UserDefaults.standard.removeObject(forKey: "widget.editor.layout")
+#endif
     }
 
     // The standalone Mac app has no extension or cross-device storage.

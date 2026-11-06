@@ -6,40 +6,37 @@ final class WidgetNavigationTests: XCTestCase {
     }
 
     @MainActor
-    func testSettingsReturnsFromColorsToTheSelectedLayout() {
+    func testColorsReturnsToTheSelectedLayoutWithoutAnotherThemeSelector() {
         let app = launchEditor(screenshotMode: true)
-        let circles = app.segmentedControls["widget.layout"].buttons["Four circles"]
+        let circles = app.segmentedControls["widget.layout"].buttons["Circles"]
         XCTAssertTrue(circles.waitForExistence(timeout: 10))
-        XCTAssertTrue(app.buttons["widget.colors"].isHittable, "Colors should be visible without scrolling in Three timelines.")
         circles.tap()
-        let colors = app.buttons["widget.colors"]
-        XCTAssertTrue(colors.isHittable, "Colors should be visible without scrolling in Four circles.")
+        let colors = app.buttons["widget.colors.open"]
+        reveal(colors, in: app)
         colors.tap()
-        XCTAssertTrue(app.buttons["widget.colors.template"].waitForExistence(timeout: 5))
-
-        app.tabBars.buttons["Settings"].tap()
-        app.buttons["settings.widgets"].tap()
-
+        XCTAssertTrue(app.buttons["widget.colors.week"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.buttons["widget.colors.template"].exists)
+        app.tabBars.buttons["Times"].tap()
+        app.tabBars.buttons["Widget"].tap()
+        XCTAssertTrue(app.buttons["widget.colors.week"].exists)
+        app.navigationBars["Timeline colors"].buttons.element(boundBy: 0).tap()
         XCTAssertTrue(circles.waitForExistence(timeout: 5))
         XCTAssertTrue(circles.isSelected)
         XCTAssertTrue(app.buttons["widget.guide"].isHittable)
-        XCTAssertFalse(app.buttons["widget.colors.template"].exists)
-        attachScreenshot(app, name: "widget-editor-english-small-preview")
+        attachScreenshot(app, name: "widget-editor-colors-return")
     }
 
     @MainActor
     func testJapaneseGuideNamesTheSelectedWidgetAndExplainsReplacement() {
         let app = launchEditor(screenshotMode: true, japanese: true)
-        let circles = app.segmentedControls["widget.layout"].buttons["4つのサークル"]
+        let circles = app.segmentedControls["widget.layout"].buttons["サークル"]
         XCTAssertTrue(circles.waitForExistence(timeout: 10))
         circles.tap()
-        XCTAssertTrue(app.buttons["widget.colors"].isHittable)
         let guide = app.buttons["widget.guide"]
         XCTAssertTrue(guide.isHittable)
         guide.tap()
 
-        XCTAssertTrue(app.staticTexts["「4つのサークル」の小・大サイズを選んで追加します。"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.staticTexts["新しいウィジェットの表示を確認したら、不要になった方を長押しして削除できます。"].exists)
+        XCTAssertTrue(app.staticTexts["「DaysYet」の小・中・大サイズを選びます。サークルは小サイズで先頭4つ、中・大サイズで最大8つを表示します。"].waitForExistence(timeout: 5))
         attachScreenshot(app, name: "widget-guide-japanese")
         app.buttons["完了"].tap()
         attachScreenshot(app, name: "widget-editor-japanese-small-preview")
@@ -51,44 +48,54 @@ final class WidgetNavigationTests: XCTestCase {
         let app = launchEditor(screenshotMode: false)
         let picker = app.segmentedControls["widget.layout"]
         XCTAssertTrue(picker.waitForExistence(timeout: 10))
-        let initialChoice = picker.buttons["Four circles"].isSelected ? "Four circles" : "Three timelines"
-        picker.buttons["Four circles"].tap()
+        let initialChoice = picker.buttons["Circles"].isSelected ? "Circles" : "Three rows"
+        picker.buttons["Circles"].tap()
         app.terminate()
         app.launch()
-        XCTAssertTrue(picker.buttons["Four circles"].waitForExistence(timeout: 10))
-        XCTAssertTrue(picker.buttons["Four circles"].isSelected)
+        XCTAssertTrue(picker.buttons["Circles"].waitForExistence(timeout: 10))
+        XCTAssertTrue(picker.buttons["Circles"].isSelected)
 
         app.terminate()
         app.launchArguments = arguments(screenshotMode: true, japanese: false)
         app.launch()
-        XCTAssertTrue(picker.buttons["Three timelines"].waitForExistence(timeout: 10))
-        XCTAssertTrue(picker.buttons["Three timelines"].isSelected)
-        picker.buttons["Four circles"].tap()
-        picker.buttons["Three timelines"].tap()
+        XCTAssertTrue(picker.buttons["Three rows"].waitForExistence(timeout: 10))
+        XCTAssertTrue(picker.buttons["Three rows"].isSelected)
+        picker.buttons["Circles"].tap()
+        picker.buttons["Three rows"].tap()
+
+        app.terminate()
+        app.launchArguments = arguments(screenshotMode: true, japanese: false) + ["--screenshot-circles", "--screenshot-colors"]
+        app.launch()
+        XCTAssertTrue(app.buttons["widget.colors.week"].waitForExistence(timeout: 10))
+        app.navigationBars["Timeline colors"].buttons.element(boundBy: 0).tap()
+        XCTAssertTrue(picker.buttons["Circles"].isSelected)
 
         app.terminate()
         app.launchArguments = arguments(screenshotMode: false, japanese: false)
         app.launch()
-        XCTAssertTrue(picker.buttons["Four circles"].waitForExistence(timeout: 10))
-        XCTAssertTrue(picker.buttons["Four circles"].isSelected)
+        XCTAssertTrue(picker.buttons["Circles"].waitForExistence(timeout: 10))
+        XCTAssertTrue(picker.buttons["Circles"].isSelected)
         picker.buttons[initialChoice].tap()
     }
 
     @MainActor
-    func testDeletingAllDataAlsoResetsTheRememberedEditor() {
-        let app = launchEditor(screenshotMode: false)
+    func testDeletingSyntheticDataAlsoResetsTheLayout() {
+        let app = launchEditor(screenshotMode: true)
         let picker = app.segmentedControls["widget.layout"]
         XCTAssertTrue(picker.waitForExistence(timeout: 10))
-        picker.buttons["Four circles"].tap()
-        app.tabBars.buttons["Settings"].tap()
-        let reset = app.buttons["Delete all data"]
-        reveal(reset, in: app)
-        reset.tap()
+        picker.buttons["Circles"].tap()
+        app.tabBars.buttons["Times"].tap()
+        app.buttons["app.info.open"].tap()
+        app.buttons["app.info.reset"].tap()
         app.buttons["Delete"].tap()
-        app.terminate()
-        app.launch()
-        XCTAssertTrue(picker.buttons["Three timelines"].waitForExistence(timeout: 10))
-        XCTAssertTrue(picker.buttons["Three timelines"].isSelected)
+        let next = app.buttons["Continue"]
+        XCTAssertTrue(next.waitForExistence(timeout: 5))
+        next.tap()
+        next.tap()
+        app.buttons["Get started"].tap()
+        app.tabBars.buttons["Widget"].tap()
+        XCTAssertTrue(picker.buttons["Three rows"].waitForExistence(timeout: 10))
+        XCTAssertTrue(picker.buttons["Three rows"].isSelected)
     }
 
     @MainActor
@@ -154,25 +161,21 @@ final class WidgetNavigationTests: XCTestCase {
     }
 
     @MainActor
-    func testLargeTextSettingsAndGuideRemainReachable() {
+    func testLargeTextColorsAndGuideRemainReachable() {
         let app = XCUIApplication()
         app.launchArguments = arguments(screenshotMode: true, japanese: true) + [
-            "--screenshot-settings", "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"
+            "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"
         ]
         app.launch()
-        let settings = app.buttons["settings.widgets"]
-        XCTAssertTrue(settings.waitForExistence(timeout: 10))
-        attachScreenshot(app, name: "widget-settings-japanese-AX5")
-        settings.tap()
         let layout = app.buttons["widget.layout"]
         XCTAssertTrue(layout.waitForExistence(timeout: 5))
         layout.tap()
-        app.buttons["4つのサークル"].tap()
+        app.buttons["サークル"].tap()
         let guide = app.buttons["widget.guide"]
         reveal(guide, in: app)
         XCTAssertTrue(guide.isHittable)
         guide.tap()
-        XCTAssertTrue(app.navigationBars["追加・切り替え方法"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["使い方・アプリ情報"].waitForExistence(timeout: 5))
         attachScreenshot(app, name: "widget-guide-japanese-AX5")
     }
 
@@ -202,7 +205,7 @@ final class WidgetNavigationTests: XCTestCase {
 
     @MainActor
     private func reveal(_ element: XCUIElement, in app: XCUIApplication) {
-        for _ in 0..<6 {
+        for _ in 0..<18 {
             if element.exists && element.isHittable { return }
             app.swipeUp()
         }

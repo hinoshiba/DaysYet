@@ -25,79 +25,70 @@ struct ProgressBar: View {
     }
 }
 
-struct MetricCard: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+/// The value and name use the same hierarchy in Times and widget placement rows.
+struct MetricValueLabel: View {
+    let title: String
+    let value: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(value)
+                .font(.title2.weight(.regular).monospacedDigit())
+                .foregroundStyle(.primary)
+            Text(title)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .fixedSize(horizontal: false, vertical: true)
+    }
+}
+
+struct MetricSummaryRow: View {
     let snapshot: MetricSnapshot
     let valueStyle: MetricValueStyle
     var theme: WidgetTheme = .vividNight
     var customColors: [MetricKind: WidgetColor] = [:]
-    /// Shown when tapping the card opens the settings this time keeps to itself.
+    /// Only times with editable content show a disclosure indicator.
     var showsSettingsAffordance = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            if dynamicTypeSize.isAccessibilitySize {
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack(alignment: .firstTextBaseline) {
-                        title
-                        Spacer(minLength: 8)
-                        settingsAffordance
-                    }
-                    value
-                }
-            } else {
-                HStack(alignment: .firstTextBaseline) {
-                    title
-                    Spacer(minLength: 12)
-                    value.layoutPriority(1)
-                    settingsAffordance
-                }
+        HStack(spacing: 16) {
+            Image(systemName: snapshot.kind.symbolName)
+                .font(.system(size: 22))
+                .foregroundStyle(.secondary)
+                .frame(width: 40)
+                .accessibilityHidden(true)
+
+            VStack(alignment: .leading, spacing: 10) {
+                MetricValueLabel(title: snapshot.title, value: snapshot.valueText(style: valueStyle))
+
+                ProgressBar(
+                    fraction: snapshot.remainingFraction,
+                    colors: theme.palette.colors(for: snapshot.kind, customColors: customColors),
+                    height: 6
+                )
+
+                Text(snapshot.secondarySummary(excluding: valueStyle))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .monospacedDigit()
             }
 
-            ProgressBar(
-                fraction: snapshot.remainingFraction,
-                colors: theme.palette.colors(for: snapshot.kind, customColors: customColors)
-            )
-
-            Text(snapshot.secondarySummary(excluding: valueStyle))
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 2)
-                .fixedSize(horizontal: false, vertical: true)
-                .monospacedDigit()
+            Image(systemName: "chevron.right")
+                .font(.caption.weight(.semibold))
+                .foregroundStyle(.tertiary)
+                // Keep progress tracks aligned for read-only months and years.
+                .opacity(showsSettingsAffordance ? 1 : 0)
+                .accessibilityHidden(true)
         }
-        .padding(18)
-        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 24, style: .continuous))
-        .contentShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .padding(.vertical, 7)
+        .contentShape(Rectangle())
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(snapshot.accessibilitySummary)
         .accessibilityHint(showsSettingsAffordance
             ? L10n.text("この時間の設定を開きます", "Opens this timer’s settings")
             : "")
-    }
-
-    private var title: some View {
-        Label(snapshot.title, systemImage: snapshot.kind.symbolName)
-            .font(.headline)
-            .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
-            .fixedSize(horizontal: false, vertical: true)
-    }
-
-    private var value: some View {
-        Text(snapshot.valueText(style: valueStyle))
-            .font(.system(.subheadline, design: .rounded, weight: .bold))
-            .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
-            .minimumScaleFactor(dynamicTypeSize.isAccessibilitySize ? 1 : 0.72)
-            .fixedSize(horizontal: false, vertical: true)
-            .monospacedDigit()
-    }
-
-    @ViewBuilder
-    private var settingsAffordance: some View {
-        if showsSettingsAffordance {
-            Image(systemName: "chevron.right")
-                .font(.caption.bold())
-                .foregroundStyle(.secondary)
-        }
     }
 }

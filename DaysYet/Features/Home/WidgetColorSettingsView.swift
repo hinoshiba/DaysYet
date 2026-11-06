@@ -2,10 +2,10 @@ import SwiftUI
 
 struct WidgetColorSettingsView: View {
     @EnvironmentObject private var store: ProfileStore
-    let layout: WidgetEditorLayout
+    let layout: WidgetLayout
 
     private var theme: WidgetTheme {
-        layout == .rows ? store.profile.widgetTheme : (store.profile.circleWidgetSettings.theme ?? store.profile.widgetTheme)
+        store.profile.widgetTheme
     }
     private var ownColors: [MetricKind: WidgetColor] {
         layout == .rows ? store.profile.widgetCustomColors : store.profile.circleWidgetSettings.customColors
@@ -28,57 +28,6 @@ struct WidgetColorSettingsView: View {
                     .frame(maxWidth: .infinity)
                     .frame(height: layout == .circles ? 186 : 224)
                     .listRowBackground(Color.clear)
-            }
-
-            Section {
-                Menu {
-                    if layout == .circles {
-                        Button {
-                            applyTemplate(nil)
-                        } label: {
-                            templateLabel(nil)
-                        }
-                    }
-                    ForEach(WidgetTheme.allCases) { template in
-                        Button {
-                            applyTemplate(template)
-                        } label: {
-                            templateLabel(template)
-                        }
-                    }
-                } label: {
-                    VStack(alignment: .leading, spacing: 10) {
-                        HStack(alignment: .firstTextBaseline) {
-                            Text(layout.paletteTitle(profile: store.profile))
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                            Image(systemName: "chevron.up.chevron.down")
-                                .font(.caption.weight(.semibold))
-                        }
-                        HStack(spacing: 8) {
-                            ForEach(metrics) { metric in
-                                Capsule()
-                                    .fill(LinearGradient(
-                                        colors: theme.palette.colors(for: metric, customColors: resolvedColors),
-                                        startPoint: .leading, endPoint: .trailing
-                                    ))
-                                    .frame(height: 12)
-                            }
-                        }
-                        .accessibilityHidden(true)
-                    }
-                    .multilineTextAlignment(.leading)
-                    .padding(.vertical, 4)
-                }
-                .accessibilityLabel(L10n.text("配色テンプレート", "Palette template"))
-                .accessibilityValue(layout.paletteTitle(profile: store.profile))
-                .accessibilityIdentifier("widget.colors.template")
-            } header: {
-                Text(L10n.text("配色テンプレート", "Palette template"))
-            } footer: {
-                Text(L10n.text(
-                    "テンプレートを選ぶと、このウィジェットの個別の色をリセットします。",
-                    "Choosing a template resets this widget's custom colors."
-                ))
             }
 
             Section {
@@ -124,31 +73,8 @@ struct WidgetColorSettingsView: View {
                      : L10n.text("色をタップすると、パレットから選んだり、自由に調整したりできます。", "Tap a color to choose from the palette or adjust it freely."))
             }
         }
-        .navigationTitle(L10n.text("色と配色", "Colors & palette"))
+        .navigationTitle(L10n.text("項目ごとの色", "Timeline colors"))
         .navigationBarTitleDisplayMode(.inline)
-    }
-
-    @ViewBuilder
-    private func templateLabel(_ template: WidgetTheme?) -> some View {
-        let selected = layout == .rows ? store.profile.widgetTheme : store.profile.circleWidgetSettings.theme
-        let title = template?.title ?? L10n.text("3つの時間と同じ", "Same as Three timelines")
-        if selected == template {
-            Label(title, systemImage: "checkmark")
-        } else {
-            Text(title)
-        }
-    }
-
-    private func applyTemplate(_ template: WidgetTheme?) {
-        store.update {
-            if layout == .rows, let template {
-                $0.widgetTheme = template
-                $0.widgetCustomColors = [:]
-            } else if layout == .circles {
-                $0.circleWidgetSettings.theme = template
-                $0.circleWidgetSettings.customColors = [:]
-            }
-        }
     }
 
     private func colorBinding(for metric: MetricKind) -> Binding<Color> {
@@ -173,7 +99,7 @@ struct WidgetColorSettingsView: View {
 }
 
 /// A shortcut to the same per-timeline color used by Times and Three timelines.
-/// Circle palettes keep their existing inheritance and explicit overrides.
+/// Circles inherit these colors unless the user has set an explicit circle override.
 struct TimelineColorSettingsView: View {
     @EnvironmentObject private var store: ProfileStore
     @Environment(\.dismiss) private var dismiss
@@ -184,7 +110,7 @@ struct TimelineColorSettingsView: View {
             Form {
                 Section {
                     TimelineView(.periodic(from: .now, by: 60)) { context in
-                        MetricCard(
+                        MetricSummaryRow(
                             snapshot: TimeProgressCalculator.snapshot(
                                 for: metric, profile: store.profile, now: context.date
                             ),
@@ -220,8 +146,8 @@ struct TimelineColorSettingsView: View {
                     Text(metric.title(profile: store.profile))
                 } footer: {
                     Text(L10n.text(
-                        "「時間」と「3つの時間」の色です。サークルは「3つの時間と同じ」の場合に引き継ぎ、個別色はそのままです。",
-                        "Used in Times and Three timelines. Four circles inherits this color when set to Same as Three timelines, keeping any color set for that timeline."
+                        "「時間」とウィジェットに反映します。サークルに個別の色を設定している場合は、その色を使います。",
+                        "Used in Times and widgets. Circles keep any color set specifically for that timeline."
                     ))
                 }
             }
@@ -252,7 +178,7 @@ struct TimelineColorSettingsView: View {
 
 struct WidgetEditorPreview: View {
     let profile: UserProfile
-    let layout: WidgetEditorLayout
+    let layout: WidgetLayout
 
     var body: some View {
         if layout == .rows {
@@ -268,28 +194,16 @@ struct WidgetEditorPreview: View {
                     },
                     valueStyle: configuration.resolvedValueStyle(profile: profile),
                     theme: configuration.resolvedTheme(profile: profile),
-                    compact: true,
+                    size: .medium,
                     showsContainerBackground: true,
                     customColors: configuration.resolvedCustomColors(profile: profile)
                 )
                 .padding(16)
-                .frame(width: 170, height: 170)
+                .aspectRatio(2.05, contentMode: .fit)
+                .frame(maxWidth: 360)
                 .background(configuration.resolvedTheme(profile: profile).palette.background,
                             in: RoundedRectangle(cornerRadius: 24))
             }
         }
-    }
-}
-
-extension WidgetEditorLayout {
-    func paletteTitle(profile: UserProfile) -> String {
-        if self == .rows { return profile.widgetTheme.title }
-        return profile.circleWidgetSettings.theme?.title ?? L10n.text("3つの時間と同じ", "Same as Three timelines")
-    }
-
-    func colorSummary(profile: UserProfile) -> String {
-        let colors = self == .rows ? profile.widgetCustomColors : profile.circleWidgetSettings.customColors
-        let title = paletteTitle(profile: profile)
-        return colors.isEmpty ? title : title + L10n.text("・カスタム", " · Custom")
     }
 }

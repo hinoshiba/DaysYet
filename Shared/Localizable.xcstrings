@@ -49,10 +49,40 @@
         "ja" : { "stringUnit" : { "state" : "translated", "value" : "今年" } }
       }
     },
+    "widget.circle.configuration.count" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Number of circles" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "サークルの数" } }
+      }
+    },
+    "widget.circle.configuration.fifth_metric" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Fifth timeline" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "5つ目の時間" } }
+      }
+    },
+    "widget.circle.configuration.sixth_metric" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Sixth timeline" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "6つ目の時間" } }
+      }
+    },
+    "widget.circle.configuration.seventh_metric" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Seventh timeline" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "7つ目の時間" } }
+      }
+    },
+    "widget.circle.configuration.eighth_metric" : {
+      "localizations" : {
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Eighth timeline" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "8つ目の時間" } }
+      }
+    },
     "widget.circle.configuration.title" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Four circles settings" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "4つのサークルの設定" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Circle settings" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "サークルの設定" } }
       }
     },
     "widget.circle.configuration.value_style" : {
@@ -63,44 +93,44 @@
     },
     "widget.circle.configuration.description" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Choose four timelines, center values, and a theme." } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "4つの時間、中央の値、テーマを選びます。" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Choose up to eight timelines, center values, and a theme." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "最大8つの時間、中央の値、テーマを選びます。" } }
       }
     },
     "widget.circle.configuration.first_metric" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Top-left timeline" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "左上の時間" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "First timeline" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "1つ目の時間" } }
       }
     },
     "widget.circle.configuration.second_metric" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Top-right timeline" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "右上の時間" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Second timeline" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "2つ目の時間" } }
       }
     },
     "widget.circle.configuration.third_metric" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Bottom-left timeline" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "左下の時間" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Third timeline" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "3つ目の時間" } }
       }
     },
     "widget.circle.configuration.fourth_metric" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Bottom-right timeline" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "右下の時間" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Fourth timeline" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "4つ目の時間" } }
       }
     },
     "widget.circle.gallery.title" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Four circles" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "4つのサークル" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Circles (fixed)" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "サークル（固定）" } }
       }
     },
     "widget.circle.gallery.description" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "See the time left on four timelines in a 2×2 circle grid." } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "4つの時間の残りを、2×2のサークルで表示します。" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Always show circles, independently of the app’s layout. Small shows up to four; Medium and Large show up to eight." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "アプリの表示形式にかかわらずサークルを表示します。小サイズは最大4つ、中・大サイズは最大8つ。" } }
       }
     },
     "widget.configuration.description" : {
@@ -123,8 +153,8 @@
     },
     "widget.configuration.follows_app" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Use the three selected in the app" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "アプリで選んだ3本を使う" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Follow app appearance" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "アプリの表示に合わせる" } }
       }
     },
     "widget.configuration.second_metric" : {
@@ -147,26 +177,26 @@
     },
     "widget.configuration.title" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "DaysYet — Three timelines" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "DaysYet — 3つの時間" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "DaysYet" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "DaysYet" } }
       }
     },
     "widget.configuration.value_style" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Bar value" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "バーの値" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Value" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "表示する値" } }
       }
     },
     "widget.gallery.description" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "See three timelines, including two customizable activity schedules, in layouts and colors that suit you." } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "2種類の活動時間など、選んだ3つの時間を好みのレイアウトと色で表示します。" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Your timelines, layout, and theme follow the preview selected in the app." } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "アプリで選んだプレビューと同じ時間・表示形式・テーマで表示します。" } }
       }
     },
     "widget.gallery.title" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "DaysYet — Three timelines" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "DaysYet — 3つの時間" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "DaysYet" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "DaysYet" } }
       }
     },
     "widget.lock_screen.configuration.description" : {

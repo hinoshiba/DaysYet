@@ -11,7 +11,7 @@ final class WidgetColorProfileTests: XCTestCase {
         profile.widgetTheme = .calmSea
         profile.dashboardMetrics = [.workday, .study, .customLife]
         profile.circleWidgetSettings = CircleWidgetSettings(
-            metrics: [.study, .study, .week, .year], valueStyle: .targetDate, theme: .quietForest
+            metrics: [.study, .study, .week, .year], valueStyle: .targetDate
         )
         var object = try encodedObject(profile)
         object.removeValue(forKey: "widgetCustomColors")
@@ -67,7 +67,7 @@ final class WidgetColorProfileTests: XCTestCase {
     func testMalformedColorMapsFallBackIndependentlyWithoutLosingCircleSettings() throws {
         var profile = UserProfile.initial
         profile.circleWidgetSettings.valueStyle = .targetDate
-        profile.circleWidgetSettings.theme = .softDawn
+        profile.widgetTheme = .softDawn
         for malformed in ["#123456", ["#123456"], 123, NSNull()] as [Any] {
             var object = try encodedObject(profile)
             object["widgetCustomColors"] = malformed
@@ -95,19 +95,21 @@ final class WidgetColorProfileTests: XCTestCase {
         XCTAssertEqual(profile.resolvedCircleWidgetCustomColors, [.week: rowWeek])
     }
 
-    func testExplicitCircleThemeExcludesRowColorsEvenWhenThemeValuesMatch() throws {
+    func testLegacyCircleThemeMigrationKeepsBothColorMapsAndUsesTheSharedTheme() throws {
         let rowColor = try XCTUnwrap(WidgetColor(hex: "#112233"))
         let circleColor = try XCTUnwrap(WidgetColor(hex: "#AABBCC"))
         var profile = UserProfile.initial
+        profile.widgetTheme = .calmSea
         profile.widgetCustomColors = [.week: rowColor]
-        profile.circleWidgetSettings = CircleWidgetSettings(theme: profile.widgetTheme, customColors: [.month: circleColor])
-        XCTAssertEqual(profile.resolvedCircleWidgetCustomColors, [.month: circleColor])
-
-        profile.widgetCustomColors[.year] = rowColor
-        XCTAssertEqual(profile.resolvedCircleWidgetCustomColors, [.month: circleColor])
-        profile.circleWidgetSettings.theme = nil
-        XCTAssertEqual(profile.resolvedCircleWidgetCustomColors, [.week: rowColor, .year: rowColor, .month: circleColor])
-        XCTAssertEqual(try decode(encodedObject(profile)), profile)
+        profile.circleWidgetSettings = CircleWidgetSettings(customColors: [.month: circleColor])
+        var object = try encodedObject(profile)
+        var circle = try XCTUnwrap(object["circleWidgetSettings"] as? [String: Any])
+        circle["theme"] = WidgetTheme.softDawn.rawValue
+        object["circleWidgetSettings"] = circle
+        let migrated = try decode(object)
+        XCTAssertEqual(migrated, profile)
+        XCTAssertEqual(migrated.resolvedCircleWidgetCustomColors, [.week: rowColor, .month: circleColor])
+        XCTAssertEqual(try decode(encodedObject(migrated)), migrated)
     }
 
     private func encodedObject(_ profile: UserProfile) throws -> [String: Any] {
