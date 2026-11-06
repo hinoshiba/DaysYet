@@ -37,7 +37,7 @@ For the current implementation: **Data Not Collected**. Re-audit before every re
 
 ## Required-reason APIs
 
-The iOS app and Widget use App Group `UserDefaults`. Both executable bundles include a `PrivacyInfo.xcprivacy` declaration for `NSPrivacyAccessedAPICategoryUserDefaults`, approved reason `1C8F.1` (access by members of the same App Group). Shared profile storage intentionally has no `UserDefaults.standard` fallback. The iOS app additionally stores only the last widget editor type in its own `UserDefaults.standard`, with approved reason `CA92.1`; this key is removed when all data is reset. The Widget does not use or read that editor preference.
+The iOS app and Widget use App Group `UserDefaults`. Both executable bundles include a `PrivacyInfo.xcprivacy` declaration for `NSPrivacyAccessedAPICategoryUserDefaults`, approved reason `1C8F.1` (access by members of the same App Group). Shared profile storage intentionally has no `UserDefaults.standard` fallback. The iOS app also declares reason `CA92.1` for app-only preferences. The retired `widget.editor.layout` key is no longer read and is removed when all data is reset. The selected layout now lives in the shared profile as `widgetLayout`; only the circle preview size remains local to the app scene.
 
 The Mac app uses `UserDefaults.standard` within its own sandbox for timeline and panel settings. Its `PrivacyInfo.xcprivacy` declares `NSPrivacyAccessedAPICategoryUserDefaults` with reason `CA92.1` (data accessible only to the app). Mac preferences do not require App Group entitlements.
 
