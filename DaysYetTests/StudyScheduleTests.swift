@@ -24,6 +24,19 @@ final class StudyScheduleTests: XCTestCase {
                       activeWeekdays: weekdays, calendar: calendar)
     }
 
+    func testWeekStartChangesCalendarOrderWithoutChangingSelectedDates() throws {
+        var plan = try schedule()
+        plan.toggleDate(try date(8), calendar: calendar)
+        plan.toggleDate(try date(11), calendar: calendar)
+        let selectedDates = plan.selectedDates(calendar: calendar)
+        XCTAssertFalse(selectedDates.isEmpty)
+        for firstWeekday in 1...7 {
+            var changedCalendar = calendar
+            changedCalendar.firstWeekday = firstWeekday
+            XCTAssertEqual(plan.selectedDates(calendar: changedCalendar), selectedDates)
+        }
+    }
+
     func testWeekdaysAndCalendarOverridesSelectExactlyTheRequestedDays() throws {
         var schedule = try schedule()
         XCTAssertEqual(schedule.selectedDates(calendar: calendar).map {

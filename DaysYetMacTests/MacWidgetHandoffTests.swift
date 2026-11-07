@@ -5,6 +5,75 @@ import XCTest
 
 final class MacWidgetHandoffTests: XCTestCase {
     @MainActor
+    func testDockLandingKeepsRealOverlayPixelsThroughNativeMoveAndDisplayHandoff() async throws {
+        try await withWindow(reducesMotion: false, allowsDock: true) { controller, window, _ in
+            let screen = try XCTUnwrap(NSScreen.screens.first)
+            let docking = MacWidgetDocking(edge: .right, screenFrame: screen.frame,
+                visibleFrame: screen.visibleFrame, systemDockEdge: .left)
+            let focus = MacWidgetDragGeometry.focusFrame(in: window.frame, edge: .right, index: 1,
+                scale: 1, metricCount: 3, topInfo: docking.topInfo)
+            let drop = NSPoint(x: screen.frame.minX + 24, y: screen.frame.midY)
+            var finishMove = false
+            var waitingForMove = false
+            var finishDisplay = false
+            var waitingForDisplay = false
+            controller.commitSystemDockDrop = { _, _ in
+                waitingForMove = true
+                while !finishMove, !Task.isCancelled { try? await Task.sleep(for: .milliseconds(10)) }
+                return !Task.isCancelled
+            }
+            controller.systemDockDisplayReady = {
+                waitingForDisplay = true
+                while !finishDisplay, !Task.isCancelled { try? await Task.sleep(for: .milliseconds(10)) }
+                return !Task.isCancelled
+            }
+            controller.nativeDockFrames = {
+                Dictionary(uniqueKeysWithValues: controller.store.profile.macDashboardMetrics.enumerated().map {
+                    ($0.element, NSRect(x: screen.frame.minX + 8,
+                        y: screen.frame.midY - 90 + CGFloat($0.offset) * 60, width: 48, height: 48))
+                })
+            }
+            controller.beginPointerPress(at: NSPoint(x: focus.midX, y: focus.midY), frame: window.frame,
+                bounds: screen.visibleFrame, clickCount: 1, timestamp: 1, docking: docking)
+            _ = controller.updatePointerPress(at: drop)
+            let collected = try await eventually { controller.dragVisual?.coalescence == 1 }
+            XCTAssertTrue(collected)
+            guard case .drag(let placement) = controller.finishPointerPress(at: drop, doubleClickInterval: 0.5) else {
+                return XCTFail("Expected a Dock drop")
+            }
+            controller.settleDrop(placement)
+            let moving = try await eventually { waitingForMove }
+            XCTAssertTrue(moving)
+            let overlay = try XCTUnwrap(NSApp.windows.first {
+                ($0.contentView as? NSHostingView<MacWidgetDragOverlay>)?.rootView.dockLanding != nil
+            })
+            let host = try XCTUnwrap(overlay.contentView as? NSHostingView<MacWidgetDragOverlay>)
+            @MainActor func assertCarriedPixels() throws {
+                XCTAssertTrue(overlay.isVisible)
+                let metric = try XCTUnwrap(controller.dragOrigin?.metric)
+                let circle = try XCTUnwrap(controller.dockLandingVisual?.tiles[metric]?.frame)
+                host.layoutSubtreeIfNeeded()
+                let bitmap = try XCTUnwrap(host.bitmapImageRepForCachingDisplay(in: host.bounds))
+                host.cacheDisplay(in: host.bounds, to: bitmap)
+                let x = Int((circle.midX - overlay.frame.minX) * CGFloat(bitmap.pixelsWide) / overlay.frame.width)
+                let y = Int((overlay.frame.maxY - circle.midY) * CGFloat(bitmap.pixelsHigh) / overlay.frame.height)
+                XCTAssertGreaterThan(try XCTUnwrap(bitmap.colorAt(x: x, y: y)).alphaComponent, 0.99)
+            }
+            try assertCarriedPixels()
+            try await Task.sleep(for: .milliseconds(100))
+            try assertCarriedPixels()
+            finishMove = true
+            let displaying = try await eventually { waitingForDisplay }
+            XCTAssertTrue(displaying)
+            try assertCarriedPixels()
+            finishDisplay = true
+            let finished = try await eventually { controller.dragVisual == nil }
+            XCTAssertTrue(finished)
+            XCTAssertFalse(overlay.isVisible)
+        }
+    }
+
+    @MainActor
     func testLiveWidgetDrawsUnderTheOverlayBeforeLandingOrReturningFinishes() async throws {
         for reducesMotion in [false, true] {
             for edge: MacWidgetEdge? in [.bottom, .right, nil] {
@@ -102,12 +171,12 @@ final class MacWidgetHandoffTests: XCTestCase {
     }
 
     @MainActor
-    private func withWindow(reducesMotion: Bool,
+    private func withWindow(reducesMotion: Bool, allowsDock: Bool = false,
                             _ body: (MacWidgetController, NSWindow, DrawRecordingWidgetHost) async throws -> Void) async throws {
         try XCTSkipIf(NSScreen.screens.isEmpty, "A WindowServer display is required for drawing-order coverage.")
         let suite = "com.hinoshiba.daysyet.handoff.tests.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
-        let preferences = MacWidgetPreferences(defaults: defaults)
+        let preferences = MacWidgetPreferences(defaults: defaults, readDockPermission: { allowsDock })
         preferences.edge = .right
         preferences.verticalPosition = 0.24
         preferences.magnifiesOnHover = true

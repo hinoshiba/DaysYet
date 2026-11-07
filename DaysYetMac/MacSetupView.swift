@@ -133,16 +133,16 @@ struct MacSetupView: View {
                 tutorialStep(stage: .attached, title: text("3  端で吸着して広がる", "3  Snap to an edge"))
             }
             if setup.offersDirectDockDrag {
-                Text(text("画面端の丸も同じように移動できます。Dockのある辺に置くと、Dockに入ります。",
-                          "Circles at the screen edge move the same way. Drop them on the Dock’s edge to join the Dock."))
+                Text(text("画面端の丸も同じように移動できます。アクセシビリティを許可すると、Dockにも入れられます。",
+                          "Circles at the screen edge move the same way. Allow Accessibility to place them in the Dock too."))
                     .font(.caption).foregroundStyle(.secondary)
                 accessibilityCard
             } else {
                 VStack(alignment: .leading, spacing: 10) {
                     Label(text("離した場所が、新しい定位置に。", "Release to save your new spot."), systemImage: "cursorarrow.motionlines")
                         .font(.callout.weight(.medium))
-                    Text(text("画面の中央で離すか、Escキーを押すと元の位置に戻ります。Dockから動かす時は、丸をクリックしてグループを開き、つかんで移動できます。",
-                              "Release in the center or press Esc to return. To move out of the Dock, click a circle to open the group, then drag it to an edge."))
+                    Text(text("画面の中央で離すか、Escキーを押すと元の位置に戻ります。Dockがある辺以外から、好きな位置を選んでください。",
+                              "Release in the center or press Esc to return. Choose your favorite position along an edge without the Dock."))
                         .font(.callout).foregroundStyle(.secondary)
                     Text(text("設定はウィジェットをダブルクリック。いつでも配置や見た目を変えられます。",
                               "Double-click the widget to open settings and adjust its position or appearance."))
@@ -173,17 +173,17 @@ struct MacSetupView: View {
                 VStack(alignment: .leading, spacing: 5) {
                     Text(setup.accessibilityGranted
                          ? text("アクセシビリティは許可済みです", "Accessibility is enabled")
-                         : text("直接ドラッグを使うための、ひとつの設定。", "One setting to drag directly."))
+                         : text("Dockを使うための、ひとつの設定。", "One setting to use the Dock."))
                         .font(.callout.weight(.semibold))
-                    Text(text("Dock内のDaysYetの丸の位置を読み取るために、アクセシビリティの許可を使います。",
-                              "DaysYet uses Accessibility permission to locate its circles in the Dock."))
+                    Text(text("Dock内の位置と並びを読み取り、DaysYetの丸をまとめて移動するために、アクセシビリティの許可を使います。",
+                              "DaysYet uses Accessibility to read the Dock layout and move its circles as a group."))
                         .font(.caption).foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
             if setup.accessibilityGranted {
-                Text(text("「直接ドラッグを使う」で有効になります。Dock側の端へ戻すと、再びDockの中に。Optionキーを押しながら操作すると、Dock本来の並べ替えも使えます。",
-                          "Choose “Enable direct dragging” to turn it on. Return to the Dock’s edge to rejoin it. Hold Option to use the Dock’s own rearrangement."))
+                Text(text("Dock側の辺へ移動すると、丸の数ぶんの幅で表示します。どの丸をつかんでも、全体がまとまって移動します。",
+                          "Move to the Dock’s edge to use one slot per circle. Grab any circle to move the whole group."))
                     .font(.callout).foregroundStyle(.secondary)
             } else {
                 VStack(alignment: .leading, spacing: 7) {
@@ -198,8 +198,8 @@ struct MacSetupView: View {
                         .font(.caption).foregroundStyle(.secondary)
                         .fixedSize(horizontal: false, vertical: true)
                 } else {
-                    Text(text("許可はあとでも大丈夫。Dockの丸をクリックして開く操作は、そのまま使えます。",
-                              "You can do this later. Clicking a Dock circle to open the group still works."))
+                    Text(text("許可はあとでも大丈夫。許可するまでは、Dock以外の画面端で使えます。",
+                              "You can do this later. Until permission is granted, use the widget at an edge without the Dock."))
                         .font(.caption).foregroundStyle(.secondary)
                 }
             }
@@ -232,7 +232,7 @@ struct MacSetupView: View {
                     Button(text("あとで設定", "Set up later")) { setup.finish() }
                         .buttonStyle(.bordered)
                     Button(setup.accessibilityGranted
-                           ? text("直接ドラッグを使う", "Enable direct dragging")
+                           ? text("Dockを使う", "Use the Dock")
                            : text("システム設定を開く", "Open System Settings")) {
                         if setup.accessibilityGranted { setup.finishEnablingDockDrag() }
                         else { setup.openAccessibilitySettings() }

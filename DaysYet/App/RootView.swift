@@ -3,6 +3,8 @@ import SwiftUI
 struct RootView: View {
     @EnvironmentObject private var store: ProfileStore
     @State private var selectedTab: Int
+    @State private var showsAppInfo: Bool
+    @State private var resetsDataAfterAppInfoDismissal = false
 #if DEBUG
     @State private var screenshotMetricSettingsPresented: Bool
 #endif
@@ -11,45 +13,55 @@ struct RootView: View {
 #if DEBUG
         let arguments = ProcessInfo.processInfo.arguments
         let editsMetric = arguments.contains("--screenshot-edit-times") || arguments.contains("--screenshot-study-days")
-        let initialTab = arguments.contains("--screenshot-settings")
-            ? 2
-            : arguments.contains("--screenshot-times") || editsMetric ? 1 : 0
+        let opensAppInfo = arguments.contains("--screenshot-app-info") || arguments.contains("--screenshot-settings")
+        let initialTab = arguments.contains("--screenshot-times") || editsMetric || opensAppInfo ? 1 : 0
         _selectedTab = State(initialValue: initialTab)
+        _showsAppInfo = State(initialValue: opensAppInfo && !editsMetric)
         _screenshotMetricSettingsPresented = State(initialValue: editsMetric)
 #else
         _selectedTab = State(initialValue: 0)
+        _showsAppInfo = State(initialValue: false)
 #endif
     }
 
     var body: some View {
         TabView(selection: $selectedTab) {
             NavigationStack {
-                WidgetStudioView()
+                WidgetStudioView(openTimeLibrary: { selectedTab = 1 })
             }
             .tabItem { Label(L10n.text("ウィジェット", "Widget"), systemImage: "square.grid.2x2") }
             .tag(0)
 
             NavigationStack {
-                TimeLibraryView()
+                TimeLibraryView(openAppInfo: { showsAppInfo = true })
 #if DEBUG
-                    .navigationDestination(isPresented: $screenshotMetricSettingsPresented) {
+                    .sheet(isPresented: $screenshotMetricSettingsPresented) {
                         MetricSettingsView(kind: screenshotMetricKind)
                     }
 #endif
             }
             .tabItem { Label(L10n.text("時間", "Times"), systemImage: "circle.dotted") }
             .tag(1)
-
+        }
+        .sheet(isPresented: $showsAppInfo, onDismiss: appInfoDidDismiss) {
             NavigationStack {
-                SettingsView(openWidgetSettings: { selectedTab = 0 })
+                AppInfoView(resetData: {
+                    resetsDataAfterAppInfoDismissal = true
+                    showsAppInfo = false
+                })
             }
-            .tabItem { Label(L10n.text("設定", "Settings"), systemImage: "slider.horizontal.3") }
-            .tag(2)
         }
         .fullScreenCover(isPresented: onboardingPresented) {
             OnboardingView()
                 .environmentObject(store)
         }
+    }
+
+    private func appInfoDidDismiss() {
+        guard resetsDataAfterAppInfoDismissal else { return }
+        resetsDataAfterAppInfoDismissal = false
+        // Present onboarding after the About sheet has finished dismissing.
+        store.reset()
     }
 
 #if DEBUG

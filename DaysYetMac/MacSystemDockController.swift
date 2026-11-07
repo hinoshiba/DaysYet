@@ -18,6 +18,7 @@ final class MacSystemDockController {
     private let openGroup: () -> Void
     private let readDockEdge: () -> MacWidgetEdge?
     private let isChangingPlacement: () -> Bool
+    private let accessRevoked: () -> Void
     private var subscriptions = Set<AnyCancellable>()
     private var timer: Timer?
     private var locationTimer: Timer?
@@ -25,15 +26,21 @@ final class MacSystemDockController {
     private var isPresenting = false
     private var isDragging = false
     private var isLanding = false
+    private var keepsNativeTilesVisible = false
     private lazy var host = MacDockTileProcessHost(action: { [weak self] action in
         self?.handle(action)
-    }, failed: { [weak self] in self?.handleFailure() })
+    }, failed: { [weak self] in self?.handleFailure() }, cleanupFailed: { [weak self] in
+        self?.preferences.systemDockError = L10n.text(
+            "Dockに残ったDaysYetのアイコンを片付けられませんでした。DaysYetを開き直してから、もう一度お試しください。",
+            "DaysYet could not remove its leftover Dock icons. Reopen DaysYet and try again.")
+    })
 
     init(store: ProfileStore, preferences: MacWidgetPreferences,
          openSettings: @escaping () -> Void,
          openGroup: @escaping () -> Void = {},
          readDockEdge: @escaping () -> MacWidgetEdge? = { nil },
          isChangingPlacement: @escaping () -> Bool = { false },
+         accessRevoked: @escaping () -> Void = {},
          present: (([MacSystemDockPresentation]) -> Void)? = nil) {
         self.store = store
         self.preferences = preferences
@@ -41,6 +48,7 @@ final class MacSystemDockController {
         self.openGroup = openGroup
         self.readDockEdge = readDockEdge
         self.isChangingPlacement = isChangingPlacement
+        self.accessRevoked = accessRevoked
         self.presenter = present
         preferences.objectWillChange.receive(on: DispatchQueue.main)
             .sink { [weak self] _ in self?.refresh() }
@@ -60,6 +68,9 @@ final class MacSystemDockController {
 
     func start() {
         guard !started else { return }
+        // Also recover pins from a previous version/crash when no live group
+        // is being presented. Test presenters never touch system preferences.
+        if presenter == nil { host.removeStaleRegistrations() }
         started = true
         refresh()
         // A Dock can move while DaysYet is on another edge. Check its location
@@ -98,7 +109,9 @@ final class MacSystemDockController {
         let presentations = store.profile.macDashboardMetrics.map { kind in
             MacSystemDockPresentation(snapshot: TimeProgressCalculator.snapshot(for: kind, profile: store.profile, now: now),
                 accent: MacWidgetStyle.accent(for: kind, theme: store.profile.widgetTheme, customColors: preferences.customColors),
-                opacity: isLanding ? 0 : (isDragging ? 0.22 : 1))
+                // Existing Dock circles stay visible while their slots move.
+                // Only new insertions or a drawn repair preview replace them.
+                opacity: isLanding ? (keepsNativeTilesVisible ? 1 : 0) : (isDragging ? 0.22 : 1))
         }
         isPresenting = true
         present(presentations)
@@ -119,6 +132,13 @@ final class MacSystemDockController {
     }
 
     func synchronizeLocation() {
+        // Revocation also applies during a drag or landing; it cannot wait for
+        // the gesture to finish or for the next tile refresh.
+        if preferences.canUseSystemDock {
+            preferences.clearDockPermissionNotice()
+        } else if preferences.isInSystemDock {
+            rejectDockAccess()
+        }
         // Held previews and landing animations own their geometry until they
         // finish. Never turn a preview into a committed move mid-gesture.
         guard !isChangingPlacement(), let edge = readDockEdge() else { return }
@@ -131,10 +151,18 @@ final class MacSystemDockController {
         refresh()
     }
 
-    func setLanding(_ landing: Bool) {
-        guard isLanding != landing else { return }
+    func setLanding(_ landing: Bool, keepsNativeTilesVisible: Bool = false) {
+        let keepVisible = landing && keepsNativeTilesVisible
+        guard isLanding != landing || self.keepsNativeTilesVisible != keepVisible else { return }
         isLanding = landing
+        self.keepsNativeTilesVisible = keepVisible
         refresh()
+    }
+
+    func waitForDisplay() async -> Bool {
+        guard started, isPresenting, preferences.isVisible, preferences.isInSystemDock else { return false }
+        if presenter != nil { return true }
+        return await host.waitForDisplay()
     }
 
     func handle(_ action: MacDockTileAction) {
@@ -147,6 +175,12 @@ final class MacSystemDockController {
     }
 
     private func present(_ presentations: [MacSystemDockPresentation]) {
+        // Check the OS again immediately before creating/updating any helper.
+        // Neither a saved Dock flag nor a cached preview authorizes insertion.
+        if !presentations.isEmpty, !preferences.canUseSystemDock {
+            rejectDockAccess()
+            return
+        }
         if let presenter {
             presenter(presentations)
             return
@@ -157,6 +191,17 @@ final class MacSystemDockController {
         } catch {
             handleFailure()
         }
+    }
+
+    private func rejectDockAccess() {
+        preferences.requireDockPermission()
+        preferences.returnToScreenEdge()
+        isPresenting = false
+        timer?.invalidate()
+        timer = nil
+        if let presenter { presenter([]) }
+        else { host.stop() }
+        accessRevoked()
     }
 
     private func handleFailure() {

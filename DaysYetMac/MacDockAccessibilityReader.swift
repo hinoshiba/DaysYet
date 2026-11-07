@@ -8,6 +8,12 @@ struct MacDockAccessibilityItem: Sendable {
     let frame: NSRect
 }
 
+enum MacDockAccessibilitySample: Sendable {
+    case current([MacDockAccessibilityItem])
+    /// The bounded read ran out of time, rather than observing hidden tiles.
+    case temporarilyUnavailable
+}
+
 /// Read-only Dock inspection for the explicitly enabled direct-distribution
 /// prototype. The caller must confine this instance to one serial queue.
 /// No permission prompt, AX action, attribute mutation, or event posting occurs.
@@ -19,7 +25,7 @@ final class MacDockAccessibilityReader: @unchecked Sendable {
     private static let maximumChildren = 256
     private static let maximumDepth = 5
 
-    private enum ReadFailure: Error { case exhausted, unavailable }
+    private enum ReadFailure: Error { case exhausted, temporarilyUnavailable, unavailable }
 
     private struct Budget {
         let deadline: TimeInterval
@@ -50,13 +56,46 @@ final class MacDockAccessibilityReader: @unchecked Sendable {
     private var elements: [MetricKind: AXUIElement] = [:]
     private var discovery: Discovery?
     private var nextDiscovery: TimeInterval = 0
+    private var mayUsePreviousSnapshot = false
 
     /// Helper processes can disappear and return under the same file URLs.
     /// Call on the reader's serial queue when leaving Dock mode.
     func invalidate() { reset() }
 
+#if DAYSYET_DOCK_GROUP_GUARD
+    /// Classification for a possible native app-item drag. Only the subrole
+    /// and rectangle are read; no other app's name or URL is retained.
+    /// Run on this reader's serial queue, never inside an event-tap callback.
+    func applicationItemFrame(at point: CGPoint) -> CGRect? {
+        guard let processID, point.x.isFinite, point.y.isFinite else { return nil }
+        let application = AXUIElementCreateApplication(processID)
+        guard AXUIElementSetMessagingTimeout(application, 0.005) == .success else { return nil }
+        var hit: AXUIElement?
+        guard AXUIElementCopyElementAtPosition(application, Float(point.x), Float(point.y), &hit) == .success,
+              let hit, AXUIElementSetMessagingTimeout(hit, 0.005) == .success else { return nil }
+        var raw: CFArray?
+        let names = [kAXSubroleAttribute, kAXPositionAttribute, kAXSizeAttribute]
+        guard AXUIElementCopyMultipleAttributeValues(hit, names as CFArray, [], &raw) == .success,
+              let raw, CFArrayGetCount(raw) == 3 else { return nil }
+        let values = raw as [AnyObject]
+        guard values[0] as? String == kAXApplicationDockItemSubrole as String,
+              let origin = Self.point(values[1]), let size = Self.size(values[2]),
+              Self.appKitFrame(position: origin, size: size, primaryScreenMaxY: 0) != nil else { return nil }
+        let frame = CGRect(origin: origin, size: size)
+        return frame.contains(point) ? frame : nil
+    }
+#endif
+
+    func sample(dockPID: pid_t, allowedURLs: [MetricKind: URL], primaryScreenMaxY: CGFloat,
+                discoveringNewSlots: Bool = false, allowDragOcclusion: Bool = false) -> MacDockAccessibilitySample {
+        let items = read(dockPID: dockPID, allowedURLs: allowedURLs, primaryScreenMaxY: primaryScreenMaxY,
+                         discoveringNewSlots: discoveringNewSlots, allowDragOcclusion: allowDragOcclusion)
+        return mayUsePreviousSnapshot ? .temporarilyUnavailable : .current(items)
+    }
+
     func read(dockPID: pid_t, allowedURLs: [MetricKind: URL], primaryScreenMaxY: CGFloat,
-              discoveringNewSlots: Bool = false) -> [MacDockAccessibilityItem] {
+              discoveringNewSlots: Bool = false, allowDragOcclusion: Bool = false) -> [MacDockAccessibilityItem] {
+        mayUsePreviousSnapshot = false
         // Checking trust never requests it. Permission can be revoked between
         // polls, so old element references must not survive that transition.
         guard dockPID > 0, primaryScreenMaxY.isFinite, AXIsProcessTrusted() else {
@@ -68,7 +107,9 @@ final class MacDockAccessibilityReader: @unchecked Sendable {
             reset()
             return []
         }
+        var invalidatedPreviousGeometry = false
         if processID != dockPID || allowedPaths != paths || root == nil {
+            invalidatedPreviousGeometry = true
             reset()
             processID = dockPID
             allowedPaths = paths
@@ -97,17 +138,30 @@ final class MacDockAccessibilityReader: @unchecked Sendable {
                     kAXPositionAttribute, kAXSizeAttribute, kAXEnabledAttribute, kAXHiddenAttribute], budget: &budget)
                 guard values[0] as? String == (kAXApplicationDockItemSubrole as String),
                       Self.pathValue(values[1]) == path else {
+                    invalidatedPreviousGeometry = true
                     needsRediscovery = true
                     continue
                 }
-                if Self.boolean(values[4]) == false || Self.boolean(values[5]) == true { continue }
+                if Self.boolean(values[4]) == false || Self.boolean(values[5]) == true {
+                    invalidatedPreviousGeometry = true
+                    continue
+                }
                 guard let position = Self.point(values[2]), let size = Self.size(values[3]),
-                      let frame = Self.appKitFrame(position: position, size: size, primaryScreenMaxY: primaryScreenMaxY) else { continue }
+                      let frame = Self.appKitFrame(position: position, size: size, primaryScreenMaxY: primaryScreenMaxY) else {
+                    invalidatedPreviousGeometry = true
+                    continue
+                }
                 let quartzFrame = CGRect(origin: position, size: size)
                 // Auto-hidden Dock items can retain off-screen AX geometry.
                 // Never turn such a rectangle into an interactive overlay.
-                guard screens.contains(where: { $0.insetBy(dx: -1, dy: -1).contains(quartzFrame) }) else { continue }
-                guard try isVisible(element, in: root, at: CGPoint(x: quartzFrame.midX, y: quartzFrame.midY), budget: &budget) else {
+                guard screens.contains(where: { $0.insetBy(dx: -1, dy: -1).contains(quartzFrame) }) else {
+                    invalidatedPreviousGeometry = true
+                    continue
+                }
+                // During a Dock-owned drag its image can cover a verified
+                // slot. Keep reading that slot's current geometry and identity.
+                guard try allowDragOcclusion || isVisible(element, in: root, at: CGPoint(x: quartzFrame.midX, y: quartzFrame.midY), budget: &budget) else {
+                    invalidatedPreviousGeometry = true
                     needsRediscovery = true
                     continue
                 }
@@ -117,11 +171,17 @@ final class MacDockAccessibilityReader: @unchecked Sendable {
                 discovery = Discovery(queue: [Node(element: root, depth: 0)])
             }
             // Do not return old rectangles after a slow or stalled AX request.
-            guard ProcessInfo.processInfo.systemUptime < budget.deadline else { return [] }
+            guard ProcessInfo.processInfo.systemUptime < budget.deadline else {
+                mayUsePreviousSnapshot = !invalidatedPreviousGeometry
+                return []
+            }
             return result
-        } catch ReadFailure.exhausted {
+        } catch ReadFailure.exhausted, ReadFailure.temporarilyUnavailable {
             // Keep a bounded discovery's cursor so large Docks can be resolved
             // across polls, but never return a previous poll's frame values.
+            // A later timeout must not resurrect an earlier observation that
+            // a particular tile disappeared, moved off-screen, or changed identity.
+            mayUsePreviousSnapshot = !invalidatedPreviousGeometry
             return []
         } catch {
             elements.removeAll()
@@ -185,7 +245,9 @@ final class MacDockAccessibilityReader: @unchecked Sendable {
     private func attributes(_ element: AXUIElement, names: [String], budget: inout Budget) throws -> [AnyObject] {
         try budget.consume()
         var values: CFArray?
-        guard AXUIElementCopyMultipleAttributeValues(element, names as CFArray, [], &values) == .success,
+        let error = AXUIElementCopyMultipleAttributeValues(element, names as CFArray, [], &values)
+        if error == .cannotComplete { throw ReadFailure.temporarilyUnavailable }
+        guard error == .success,
               let values, CFArrayGetCount(values) == names.count else { throw ReadFailure.unavailable }
         // Unsupported optional attributes remain AXError/CFNull values; callers
         // check the expected public value type rather than force-casting them.
@@ -197,6 +259,7 @@ final class MacDockAccessibilityReader: @unchecked Sendable {
         var values: CFArray?
         let error = AXUIElementCopyAttributeValues(element, kAXChildrenAttribute as CFString, 0, maximum, &values)
         if error == .attributeUnsupported || error == .noValue { return [] }
+        if error == .cannotComplete { throw ReadFailure.temporarilyUnavailable }
         guard error == .success, let values else { throw ReadFailure.unavailable }
         return (values as [AnyObject]).compactMap { value in
             guard CFGetTypeID(value) == AXUIElementGetTypeID() else { return nil }
@@ -209,6 +272,7 @@ final class MacDockAccessibilityReader: @unchecked Sendable {
         var hit: AXUIElement?
         let error = AXUIElementCopyElementAtPosition(application, Float(point.x), Float(point.y), &hit)
         if error == .noValue { return false }
+        if error == .cannotComplete { throw ReadFailure.temporarilyUnavailable }
         guard error == .success else { throw ReadFailure.unavailable }
         // Limit hit testing to the Dock, so our own overlay cannot hide the
         // native item from this check and cause a show/hide feedback loop.

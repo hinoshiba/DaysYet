@@ -36,9 +36,10 @@ final class MacWidgetPreferences: ObservableObject {
         }
     }
     @Published var systemDockError: String?
-    @Published var directlyDragsFromDock: Bool {
-        didSet { defaults.set(directlyDragsFromDock, forKey: Key.directDockDrag) }
-    }
+    /// The snapshot transition was retired; a previous opt-in must not enable it.
+    let dockVisualHandoffEnabled = false
+    @Published private(set) var dockPermissionRequired = false
+    var canUseSystemDock: Bool { readDockPermission() }
     /// Remember only the edge observed on this Mac, including auto-hidden Docks.
     var lastSystemDockEdge: MacWidgetEdge {
         get {
@@ -77,10 +78,12 @@ final class MacWidgetPreferences: ObservableObject {
     @Published private(set) var customColors: [MetricKind: MacWidgetColor]
 
     private let defaults: UserDefaults
+    private let readDockPermission: () -> Bool
     private var resolvedDockEdge: MacWidgetEdge?
     private enum Key {
         static let visible = "mac-widget-visible"
         static let systemDock = "mac-widget-system-dock"
+        static let legacyDockVisualHandoff = "mac-widget-dock-visual-handoff"
         static let directDockDrag = "mac-widget-direct-dock-drag"
         static let systemDockEdge = "mac-widget-observed-dock-edge"
         static let dockPlacementVersion = "mac-widget-dock-placement-version"
@@ -96,11 +99,12 @@ final class MacWidgetPreferences: ObservableObject {
         static let customColors = "mac-widget-custom-colors"
     }
 
-    init(defaults: UserDefaults = .standard) {
+    init(defaults: UserDefaults = .standard, readDockPermission: @escaping () -> Bool = { MacDockPermission.isGranted() }) {
         self.defaults = defaults
+        self.readDockPermission = readDockPermission
         isVisible = defaults.object(forKey: Key.visible) as? Bool ?? true
         isInSystemDock = defaults.bool(forKey: Key.systemDock)
-        directlyDragsFromDock = defaults.bool(forKey: Key.directDockDrag)
+        defaults.removeObject(forKey: Key.legacyDockVisualHandoff)
         edge = MacWidgetEdge(rawValue: defaults.string(forKey: Key.edge) ?? "") ?? .right
         let position = defaults.object(forKey: Key.position) as? Double ?? 0.5
         verticalPosition = position.isFinite ? min(max(position, 0), 1) : 0.5
@@ -164,7 +168,32 @@ final class MacWidgetPreferences: ObservableObject {
 
     private func updateDockPresentation(for dockEdge: MacWidgetEdge) {
         let inDock = edge == dockEdge
+        if inDock, !canUseSystemDock {
+            requireDockPermission()
+            returnToScreenEdge()
+            return
+        }
         if isInSystemDock != inDock { isInSystemDock = inDock }
+    }
+
+    @discardableResult
+    func selectEdge(_ selected: MacWidgetEdge, dockEdge: MacWidgetEdge) -> Bool {
+        guard selected != dockEdge || canUseSystemDock else {
+            requireDockPermission()
+            return false
+        }
+        reconcileDockLocation(dockEdge)
+        edge = selected
+        clearDockPermissionNotice()
+        return true
+    }
+
+    func requireDockPermission() {
+        if !dockPermissionRequired { dockPermissionRequired = true }
+    }
+
+    func clearDockPermissionNotice() {
+        if dockPermissionRequired { dockPermissionRequired = false }
     }
 
     func returnToScreenEdge() {
@@ -180,8 +209,8 @@ final class MacWidgetPreferences: ObservableObject {
     func reset() {
         isVisible = true
         isInSystemDock = false
-        directlyDragsFromDock = false
         systemDockError = nil
+        clearDockPermissionNotice()
         edge = .right
         verticalPosition = 0.5
         horizontalPosition = 0.5
@@ -192,7 +221,7 @@ final class MacWidgetPreferences: ObservableObject {
         hoverScale = 1.35
         detailScale = 1
         resetCustomColors()
-        [Key.visible, Key.systemDock, Key.directDockDrag, Key.systemDockEdge, Key.edge, Key.position, Key.horizontalPosition, Key.display, Key.details, Key.scale,
+        [Key.visible, Key.systemDock, Key.legacyDockVisualHandoff, Key.directDockDrag, Key.systemDockEdge, Key.edge, Key.position, Key.horizontalPosition, Key.display, Key.details, Key.scale,
          Key.magnifiesOnHover, Key.hoverScale, Key.detailScale].forEach(defaults.removeObject(forKey:))
         if let resolvedDockEdge { reconcileDockLocation(resolvedDockEdge) }
     }

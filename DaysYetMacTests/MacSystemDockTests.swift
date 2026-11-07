@@ -12,13 +12,13 @@ final class MacSystemDockTests: XCTestCase {
             preferences.horizontalPosition = 0.78
             preferences.verticalPosition = 0.23
             preferences.isInSystemDock = true
-            let restored = MacWidgetPreferences(defaults: defaults)
+            let restored = MacWidgetPreferences(defaults: defaults, readDockPermission: { true })
             XCTAssertTrue(restored.isInSystemDock)
             XCTAssertEqual(restored.edge, .bottom)
             XCTAssertEqual(restored.horizontalPosition, 0.78)
             XCTAssertEqual(restored.verticalPosition, 0.23)
             restored.reset()
-            XCTAssertFalse(MacWidgetPreferences(defaults: defaults).isInSystemDock)
+            XCTAssertFalse(MacWidgetPreferences(defaults: defaults, readDockPermission: { true }).isInSystemDock)
         }
     }
 
@@ -46,6 +46,32 @@ final class MacSystemDockTests: XCTestCase {
             preferences.isInSystemDock = false
             try await Task.sleep(for: .milliseconds(30))
             XCTAssertEqual(batches.count, count, "Queued notifications cannot resurrect stopped Dock tiles.")
+        }
+    }
+
+    @MainActor
+    func testVisibleReorderHandoffDoesNotLeakIntoTheNextRepairOrInsertion() throws {
+        try withPreferences { preferences, _ in
+            preferences.isInSystemDock = true
+            var presentations: [MacSystemDockPresentation] = []
+            let controller = MacSystemDockController(store: ProfileStore(profile: .initial, saveProfile: { _ in }),
+                preferences: preferences, openSettings: {}, present: { presentations = $0 })
+            controller.start()
+            defer { controller.stop() }
+            controller.setDragging(true)
+            XCTAssertEqual(presentations.map(\.opacity), [0.22, 0.22, 0.22])
+            controller.setLanding(true, keepsNativeTilesVisible: true)
+            XCTAssertEqual(presentations.map(\.opacity), [1, 1, 1])
+            controller.setDragging(false)
+            XCTAssertEqual(presentations.map(\.opacity), [1, 1, 1])
+            controller.setLanding(false)
+            XCTAssertEqual(presentations.map(\.opacity), [1, 1, 1])
+            // Repair owns a separately drawn preview; insertion has no old
+            // group to preserve. Both retain their ordinary replacement flow.
+            controller.setLanding(true)
+            XCTAssertEqual(presentations.map(\.opacity), [0, 0, 0])
+            controller.setLanding(false)
+            XCTAssertEqual(presentations.map(\.opacity), [1, 1, 1])
         }
     }
 
@@ -126,13 +152,13 @@ final class MacSystemDockTests: XCTestCase {
             preferences.isInSystemDock = true
             preferences.verticalPosition = 0.23
             preferences.horizontalPosition = 0.78
-            let migrated = MacWidgetPreferences(defaults: defaults)
+            let migrated = MacWidgetPreferences(defaults: defaults, readDockPermission: { true })
             migrated.reconcileDockLocation(.left)
             XCTAssertTrue(migrated.isInSystemDock)
             XCTAssertEqual(migrated.edge, .left)
             XCTAssertEqual(migrated.verticalPosition, 0.23)
             XCTAssertEqual(migrated.horizontalPosition, 0.78)
-            let relaunched = MacWidgetPreferences(defaults: defaults)
+            let relaunched = MacWidgetPreferences(defaults: defaults, readDockPermission: { true })
             relaunched.reconcileDockLocation(.bottom)
             XCTAssertEqual(relaunched.edge, .left)
             XCTAssertFalse(relaunched.isInSystemDock)
@@ -197,7 +223,7 @@ final class MacSystemDockTests: XCTestCase {
             widget.saveDrop(.init(frame: frame, position: 0.6, edge: .bottom, target: target))
             XCTAssertEqual(preferences.edge, .bottom)
             XCTAssertTrue(preferences.isInSystemDock)
-            let restored = MacWidgetPreferences(defaults: defaults)
+            let restored = MacWidgetPreferences(defaults: defaults, readDockPermission: { true })
             restored.reconcileDockLocation(.bottom)
             XCTAssertEqual(restored.edge, .bottom)
             XCTAssertTrue(restored.isInSystemDock)
@@ -245,6 +271,39 @@ final class MacSystemDockTests: XCTestCase {
         }
     }
 
+    @MainActor
+    func testHiddenDockImagesRemainFullyTransparentAfterTheHelperPNGRoundTrip() throws {
+        for kind in MetricKind.allCases {
+            let snapshot = TimeProgressCalculator.snapshot(for: kind, profile: .initial,
+                now: Date(timeIntervalSince1970: 1_790_000_000))
+            let presentation = MacSystemDockPresentation(snapshot: snapshot,
+                accent: MacWidgetStyle.accent(for: kind, theme: .vividNight), opacity: 0)
+            // Match the parent's renderer and PNG/message encoding, then use
+            // the helper's NSImage decoder rather than inspecting only the
+            // SwiftUI opacity property or the pre-encoding bitmap.
+            let renderer = ImageRenderer(content: MacSystemDockTileView(presentation: presentation))
+            renderer.scale = 2
+            let rendered = try XCTUnwrap(renderer.cgImage)
+            let png = try XCTUnwrap(NSBitmapImageRep(cgImage: rendered).representation(using: .png, properties: [:]))
+            let message = MacDockTileMessage(image: png, title: snapshot.title,
+                accessibilityLabel: snapshot.accessibilitySummary, groupTitle: "グループを開く",
+                settingsTitle: "設定", returnTitle: "戻す", quitTitle: "終了")
+            let decoded = try JSONDecoder().decode(MacDockTileMessage.self, from: JSONEncoder().encode(message))
+            let helperImage = try XCTUnwrap(NSImage(data: decoded.image))
+            let pixels = try XCTUnwrap(helperImage.cgImage(forProposedRect: nil, context: nil, hints: nil))
+            XCTAssertEqual(pixels.width, 256)
+            XCTAssertEqual(pixels.height, 256)
+            let bitmap = NSBitmapImageRep(cgImage: pixels)
+            XCTAssertTrue(bitmap.hasAlpha)
+            let allTransparent = (0..<bitmap.pixelsHigh).allSatisfy { y in
+                (0..<bitmap.pixelsWide).allSatisfy { x in
+                    bitmap.colorAt(x: x, y: y)?.alphaComponent == 0
+                }
+            }
+            XCTAssertTrue(allTransparent, "Hidden \(kind.rawValue) must contain no visible background, ring, or text pixels.")
+        }
+    }
+
     func testEveryMetricHasADistinctEmbeddedHelperApp() throws {
         var identifiers = Set<String>()
         for kind in MetricKind.allCases {
@@ -263,7 +322,7 @@ final class MacSystemDockTests: XCTestCase {
         let suite = "com.hinoshiba.daysyet.system-dock.tests.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
         defer { defaults.removePersistentDomain(forName: suite) }
-        try body(MacWidgetPreferences(defaults: defaults), defaults)
+        try body(MacWidgetPreferences(defaults: defaults, readDockPermission: { true }), defaults)
     }
 
     @MainActor
@@ -271,7 +330,7 @@ final class MacSystemDockTests: XCTestCase {
         let suite = "com.hinoshiba.daysyet.system-dock.tests.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
         defer { defaults.removePersistentDomain(forName: suite) }
-        try await body(MacWidgetPreferences(defaults: defaults), defaults)
+        try await body(MacWidgetPreferences(defaults: defaults, readDockPermission: { true }), defaults)
     }
 
     @MainActor

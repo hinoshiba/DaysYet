@@ -1,59 +1,55 @@
 import SwiftUI
 
 extension MetricKind {
-    /// Settings this time keeps to itself, reachable by tapping its card.
-    /// Shared settings, such as the week start that also orders the study-day
-    /// weekdays, stay on the Settings tab instead.
-    var hasOwnSettings: Bool {
+    /// Times with editable content are opened from their rows.
+    var hasEditableSettings: Bool {
         switch self {
-        case .week, .month, .year: false
-        case .healthyLife, .customLife, .activity, .workday, .study: true
+        case .month, .year: false
+        case .week, .healthyLife, .customLife, .activity, .workday, .study: true
         }
     }
 }
 
 struct TimeLibraryView: View {
     @EnvironmentObject private var store: ProfileStore
+    let openAppInfo: () -> Void
 
     var body: some View {
-        ZStack {
-            DaysYetBackground(theme: store.profile.widgetTheme)
-            TimelineView(.periodic(from: .now, by: 60)) { context in
-                ScrollView {
-                    LazyVStack(alignment: .leading, spacing: 14) {
-                        VStack(alignment: .leading, spacing: 6) {
-                            EyebrowLabel(text: L10n.text("時間の一覧", "Time library"))
-                            Text(L10n.text("いまを、いくつもの\n距離から見る。", "See time across\ndifferent horizons."))
-                                .font(.system(.largeTitle, design: .rounded, weight: .bold))
-                                .tracking(-0.7)
-                            Text(L10n.text(
-                                "カードをタップすると、その時間だけの設定を開けます。ウィジェットに置く3本は、ウィジェットタブで選べます。",
-                                "Tap a card to edit that time’s own settings. Choose the three shown in your widget from the Widget tab."
-                            ))
-                            .foregroundStyle(.secondary)
-                        }
-                        .padding(.bottom, 8)
-
-                        ForEach(MetricKind.allCases) { metric in
-                            MetricLibraryRow(
-                                snapshot: TimeProgressCalculator.snapshot(
-                                    for: metric,
-                                    profile: store.profile,
-                                    now: context.date
-                                ),
-                                valueStyle: store.profile.dashboardValueStyle,
-                                theme: store.profile.widgetTheme
-                            )
-                        }
-
+        TimelineView(.periodic(from: .now, by: 60)) { context in
+            Form {
+                Section {
+                    ForEach(MetricKind.allCases) { metric in
+                        MetricLibraryRow(
+                            snapshot: TimeProgressCalculator.snapshot(
+                                for: metric,
+                                profile: store.profile,
+                                now: context.date
+                            ),
+                            valueStyle: store.profile.dashboardValueStyle,
+                            theme: store.profile.widgetTheme
+                        )
                     }
-                    .padding(20)
-                    .padding(.bottom, 24)
+                } header: {
+                    Text(L10n.text("時間の一覧", "Time library"))
+                } footer: {
+                    Text(L10n.text(
+                        "時刻・日付など、時間の内容を編集できます。ウィジェットに表示する時間は「ウィジェット」タブで選びます。",
+                        "Edit schedules, dates, and other details here. Choose which times to display in the Widget tab."
+                    ))
                 }
             }
         }
-        .navigationTitle("")
-        .toolbar(.hidden, for: .navigationBar)
+        .background(Color(.systemGroupedBackground))
+        .navigationTitle(L10n.text("時間", "Times"))
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: openAppInfo) {
+                    Label(L10n.text("このアプリについて", "About DaysYet"), systemImage: "info.circle")
+                }
+                .accessibilityIdentifier("app.info.open")
+            }
+        }
     }
 }
 
@@ -61,13 +57,14 @@ private struct MetricLibraryRow: View {
     let snapshot: MetricSnapshot
     let valueStyle: MetricValueStyle
     let theme: WidgetTheme
+    @State private var showsEditor = false
 
     var body: some View {
-        if snapshot.kind.hasOwnSettings {
-            NavigationLink {
-                MetricSettingsView(kind: snapshot.kind)
+        if snapshot.kind.hasEditableSettings {
+            Button {
+                showsEditor = true
             } label: {
-                MetricCard(
+                MetricSummaryRow(
                     snapshot: snapshot,
                     valueStyle: valueStyle,
                     theme: theme,
@@ -76,14 +73,29 @@ private struct MetricLibraryRow: View {
             }
             .buttonStyle(.plain)
             .accessibilityIdentifier("times.metric.\(snapshot.kind.rawValue)")
+            .sheet(isPresented: $showsEditor) {
+                MetricSettingsView(kind: snapshot.kind)
+            }
         } else {
-            MetricCard(snapshot: snapshot, valueStyle: valueStyle, theme: theme)
+            MetricSummaryRow(snapshot: snapshot, valueStyle: valueStyle, theme: theme)
         }
     }
 }
 
-/// The settings that belong to a single time, opened from its card in Times.
+/// The settings that belong to a single time, opened from its row in Times.
 struct MetricSettingsView: View {
+    @EnvironmentObject private var store: ProfileStore
+    let kind: MetricKind
+
+    var body: some View {
+        TimeEditor(profile: store.profile, metric: kind) { draft in
+            store.saveMetricSettings(kind, from: draft)
+        }
+    }
+}
+
+/// Fields only: the presenting editor owns the draft and its Save/Cancel actions.
+struct MetricSettingsContent: View {
     @EnvironmentObject private var store: ProfileStore
     let kind: MetricKind
 
@@ -98,32 +110,46 @@ struct MetricSettingsView: View {
                     ),
                     weekStartDay: store.profile.weekStartDay
                 )
-            case .activity, .workday:
-                Form { activityHoursSection(for: kind) }
-            case .healthyLife:
-                Form { healthyLifeSection }
-            case .customLife:
-                Form { milestoneSection }
-            case .week, .month, .year:
-                Form { sharedSettingsNotice }
+            default:
+                Form { MetricSettingsFormContent(kind: kind) }
             }
         }
         .navigationTitle(kind.title(profile: store.profile))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .tabBar)
     }
+}
 
-    private var sharedSettingsNotice: some View {
-        Section {
-            Label(
-                L10n.text(
-                    "この時間に固有の設定はありません。週の始まりなど、複数の時間に関わる設定は設定タブにあります。",
-                    "This time has no settings of its own. Settings shared by several times, such as the week start, live on the Settings tab."
-                ),
-                systemImage: "info.circle"
-            )
-            .font(.footnote)
-            .foregroundStyle(.secondary)
+/// Editable fields for a time in the library.
+struct MetricSettingsFormContent: View {
+    @EnvironmentObject private var store: ProfileStore
+    let kind: MetricKind
+
+    var body: some View {
+        switch kind {
+        case .activity, .workday: activityHoursSection(for: kind)
+        case .healthyLife: healthyLifeSection
+        case .customLife: milestoneSection
+        case .week: weekStartSection
+        case .month, .year, .study: EmptyView()
+        }
+    }
+
+    private var weekStartSection: some View {
+        let weekday = store.profile.weekStartDay.resolvedTitle()
+        return Section {
+            Picker(L10n.text("開始曜日", "First day"), selection: binding(\.weekStartDay)) {
+                ForEach(WeekStartDay.allCases) { day in Text(day.title).tag(day) }
+            }
+            .pickerStyle(.navigationLink)
+            .accessibilityIdentifier("week.startDay")
+        } header: {
+            Text(L10n.text("週の始まり", "Week starts on"))
+        } footer: {
+            Text(L10n.text(
+                "\(weekday)の午前0時から、翌週の\(weekday)の午前0時までを「今週」として表示します。学習カレンダーの曜日の並びにも反映されますが、選んだ学習日は変わりません。",
+                "“This week” runs from midnight on \(weekday) to midnight on the following \(weekday). This also changes the weekday order in Study days, without changing your selected dates."
+            ))
         }
     }
 

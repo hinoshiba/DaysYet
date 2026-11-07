@@ -1,6 +1,7 @@
 import AppKit
 import Combine
 import ColorSync
+import OSLog
 import QuartzCore
 import SwiftUI
 
@@ -51,7 +52,12 @@ final class MacWidgetController: ObservableObject {
     var nativeDockDragChanged: ((Bool) -> Void)?
     var nativeDockReturnFrame: ((MetricKind) -> NSRect?)?
     var nativeDockFrames: (() -> [MetricKind: NSRect]?)?
+    /// The direct build can commit a position among native Dock applications
+    /// while the open circle preview remains visible.
+    /// Returns true only when the native circles form a complete ordered group.
+    var commitSystemDockDrop: ((NSPoint, MetricKind) async -> Bool)?
     var systemDockLandingChanged: ((Bool) -> Void)?
+    var systemDockDisplayReady: (() async -> Bool)?
     weak var setupController: MacSetupController?
 #if DAYSYET_DIRECT_DOCK_DRAG
     var directDockDrag: MacDockDirectDragController?
@@ -78,6 +84,25 @@ final class MacWidgetController: ObservableObject {
         clearDragPresentation()
         synchronize()
     }
+
+    func abortDockPlacement() {
+        pointerInteraction.cancel()
+        clearDragPresentation()
+        closeDockGroup()
+        synchronize()
+    }
+
+    func selectEdge(_ edge: MacWidgetEdge) {
+        let dockEdge = currentSystemDockEdge ?? preferences.lastSystemDockEdge
+        if !preferences.selectEdge(edge, dockEdge: dockEdge) { showDockPermissionSettings() }
+    }
+
+    private func showDockPermissionSettings() {
+        preferences.requireDockPermission()
+#if DAYSYET_DIRECT_DOCK_DRAG
+        if directDockDrag != nil { showSettings() }
+#endif
+    }
     private var settingsWindow: NSWindow?
     private var subscriptions = Set<AnyCancellable>()
     private var closeTask: Task<Void, Never>?
@@ -99,7 +124,8 @@ final class MacWidgetController: ObservableObject {
     private var dragPreviewImages: [MacWidgetEdge: NSImage] = [:]
     private var dragDocking: MacWidgetDocking?
     private var dragWidgetImage: NSImage?
-    private var dockLandingImages: [MetricKind: NSImage] = [:]
+    private var dockLandingPresentations: [MetricKind: MacSystemDockPresentation] = [:]
+    private let landingLog = Logger(subsystem: "com.hinoshiba.daysyet", category: "dock-landing")
     private var dragMetricSnapshot: MetricSnapshot?
     private var dragAccent = Color.clear
     private var isSettling = false
@@ -851,7 +877,12 @@ final class MacWidgetController: ObservableObject {
     }
 
     func updatePointerPress(at point: NSPoint) -> MacWidgetPointerInteraction.Placement? {
-        let placement = pointerInteraction.update(at: point)
+        var placement = pointerInteraction.update(at: point)
+        if placement?.attachment?.isSystemDock == true, !preferences.canUseSystemDock {
+            // Keep the moving circle collected; a blocked edge must not preview
+            // a Dock insertion that cannot be committed on release.
+            placement?.attachment = nil
+        }
         if pointerInteraction.isDragging { hoveredMetric = nil }
         if let placement { presentDrag(placement) }
         return placement
@@ -997,6 +1028,30 @@ final class MacWidgetController: ObservableObject {
     private func updateHeldAttachment(_ target: MacWidgetDropTarget?) -> Bool {
         let previous = dragAttachment
         dragAttachment = target
+        if let target, target.isSystemDock {
+            // One carried circle represents the insertion gap. Expanding the
+            // whole row here hides that gap and makes its anchor ambiguous.
+            if previous?.isSystemDock == true {
+                if attachmentTask == nil { dragVisual = attachmentVisual(for: target, coalescence: 1) }
+                refreshDragOverlay()
+                return true
+            }
+            collapseTask?.cancel()
+            collapseTask = nil
+            attachmentTask?.cancel()
+            attachmentTask = nil
+            dragPreviewEdge = nil
+            if reducesMotion() || dragVisual?.coalescence == 1 {
+                dragVisual = attachmentVisual(for: target, coalescence: 1)
+                refreshDragOverlay()
+            } else {
+                attachmentTask = Task { [weak self] in
+                    guard let self, await self.animateHeldAttachment(coalescence: 1, duration: 0.14) else { return }
+                    self.attachmentTask = nil
+                }
+            }
+            return true
+        }
         if let target {
             if previous?.edge == target.edge {
                 if attachmentTask == nil { dragVisual = attachmentVisual(for: target, coalescence: 0) }
@@ -1068,12 +1123,16 @@ final class MacWidgetController: ObservableObject {
 
     private func attachmentVisual(for target: MacWidgetDropTarget, coalescence: CGFloat) -> MacWidgetDragVisual? {
         guard let origin = dragOrigin, let docking = dragDocking else { return nil }
-        let metrics = target.isSystemDock ? store.profile.macDashboardMetrics : store.profile.macWidgetMetrics(for: target.edge)
+        if target.isSystemDock {
+            guard let pointer = dragPresentation?.pointer, var visual = dragVisual else { return nil }
+            visual.circleFrame = MacWidgetDragGeometry.circleFrame(center: pointer, scale: docking.scale)
+            visual.coalescence = coalescence
+            return visual
+        }
+        let metrics = store.profile.macWidgetMetrics(for: target.edge)
         let index = metrics.firstIndex(of: origin.metric) ?? 0
-        let focus = target.isSystemDock
-            ? MacSystemDockGroupLayout(edge: target.edge, count: metrics.count, scale: docking.scale).focus(in: target.frame, index: index)
-            : MacWidgetDragGeometry.focusFrame(in: target.frame, edge: target.edge, index: index,
-                scale: docking.scale, metricCount: metrics.count, topInfo: docking.topInfo, detailScale: docking.detailScale)
+        let focus = MacWidgetDragGeometry.focusFrame(in: target.frame, edge: target.edge, index: index,
+            scale: docking.scale, metricCount: metrics.count, topInfo: docking.topInfo, detailScale: docking.detailScale)
         return MacWidgetDragVisual(widgetFrame: target.frame, focusFrame: focus,
             circleFrame: MacWidgetDragGeometry.circleFrame(center: NSPoint(x: focus.midX, y: focus.midY), scale: docking.scale),
             coalescence: coalescence)
@@ -1115,7 +1174,7 @@ final class MacWidgetController: ObservableObject {
         guard panel != nil, let docking = dragDocking, let visual = dragVisual, let snapshot = dragMetricSnapshot else { return }
         let view = MacWidgetDragOverlay(docking: docking,
             visual: visual, widgetImage: dragWidgetImage, snapshot: snapshot, accent: dragAccent,
-            dockLanding: dockLandingVisual, dockImages: dockLandingImages)
+            dockLanding: dockLandingVisual, dockPresentations: dockLandingPresentations)
         if let host = dragOverlayHost {
             host.rootView = view
         } else {
@@ -1127,7 +1186,10 @@ final class MacWidgetController: ObservableObject {
             overlay.backgroundColor = .clear
             overlay.hasShadow = false
             overlay.ignoresMouseEvents = true
-            overlay.level = .statusBar
+            // Keep the carried circle above the Dock's focused/dragging UI,
+            // including while native placement temporarily owns keyboard focus.
+            overlay.level = NSWindow.Level(rawValue: Int(CGWindowLevelForKey(.draggingWindow)))
+            overlay.hidesOnDeactivate = false
             overlay.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary]
             overlay.isReleasedWhenClosed = false
             let host = NSHostingView(rootView: view)
@@ -1147,6 +1209,14 @@ final class MacWidgetController: ObservableObject {
         CATransaction.flush()
     }
 
+    private func recordDockLanding(_ phase: String) {
+        let visible = dragOverlay?.isVisible ?? false
+        let alpha = dragOverlay?.alphaValue ?? 0
+        let count = dockLandingPresentations.count
+        let activeOpacity = dragOrigin.flatMap { dockLandingVisual?.tiles[$0.metric]?.opacity } ?? -1
+        landingLog.notice("phase=\(phase, privacy: .public) windowVisible=\(visible) windowAlpha=\(alpha) circles=\(count) carriedOpacity=\(activeOpacity) appActive=\(NSApp.isActive)")
+    }
+
     private func hideDragSourceAfterDrawingOverlay() {
         guard let overlay = dragOverlay, let source = eventOwningPanel?.contentView,
               source.alphaValue > 0 else { return }
@@ -1159,6 +1229,10 @@ final class MacWidgetController: ObservableObject {
     /// Persist only a valid landing. Center releases and Escape retain both axes.
     func saveDrop(_ placement: MacWidgetPointerInteraction.Placement) {
         guard let target = placement.target else { return }
+        guard !target.isSystemDock || preferences.canUseSystemDock else {
+            preferences.requireDockPermission()
+            return
+        }
         // The gesture may have observed a newer Dock location than the polling
         // timer. Commit using the same geometry that produced its preview.
         if let dockEdge = dragDocking?.systemDockEdge { preferences.reconcileDockLocation(dockEdge) }
@@ -1189,7 +1263,7 @@ final class MacWidgetController: ObservableObject {
         dragOrigin = nil
         dragVisual = nil
         dockLandingVisual = nil
-        dockLandingImages = [:]
+        dockLandingPresentations = [:]
         isDockLanding = false
         isHandingOffToEdge = false
         dragAttachment = nil
@@ -1227,6 +1301,12 @@ final class MacWidgetController: ObservableObject {
     }
 
     func settleDrop(_ placement: MacWidgetPointerInteraction.Placement?) {
+        if placement?.target?.isSystemDock == true, !preferences.canUseSystemDock {
+            // Returning uses the original edge and both saved coordinates.
+            settleDrop(nil)
+            showDockPermissionSettings()
+            return
+        }
         collapseTask?.cancel()
         collapseTask = nil
         attachmentTask?.cancel()
@@ -1335,8 +1415,8 @@ final class MacWidgetController: ObservableObject {
     private func settleDockDrop(_ placement: MacWidgetPointerInteraction.Placement?, origin: MacWidgetDragOrigin?) {
         if let target = placement?.target, target.isSystemDock,
            let origin, let docking = dragDocking, let visual = dragVisual,
-           preferences.isVisible, !reducesMotion() {
-            settleOpenDockGroup(target: target, origin: origin, docking: docking, visual: visual)
+           preferences.isVisible, !reducesMotion() || commitSystemDockDrop != nil {
+            settleDockInsertion(target: target, origin: origin, docking: docking, visual: visual)
             return
         }
         guard let origin, let docking = dragDocking, let visual = dragVisual,
@@ -1401,58 +1481,107 @@ final class MacWidgetController: ObservableObject {
         }
     }
 
-    private func settleOpenDockGroup(target: MacWidgetDropTarget, origin: MacWidgetDragOrigin,
+    private func settleDockInsertion(target: MacWidgetDropTarget, origin: MacWidgetDragOrigin,
                                      docking: MacWidgetDocking, visual: MacWidgetDragVisual) {
         let metrics = store.profile.macDashboardMetrics
-        let layout = MacSystemDockGroupLayout(edge: target.edge, count: metrics.count, scale: docking.scale)
-        let isOpenPreview = dragAttachment?.isSystemDock == true && dragPreviewEdge == target.edge
-        let initial = MacSystemDockLandingVisual.start(metrics: metrics, grabbed: origin.metric,
-            visual: visual, layout: layout, isOpenPreview: isOpenPreview)
-        dockLandingVisual = initial
-        for metric in metrics {
-            let renderer = ImageRenderer(content: MacSystemDockTileView(presentation: MacSystemDockPresentation(
+        // A reorder already has visible native circles. Return only the carried
+        // circle to its slot; a second fan-out would duplicate the live group.
+        let previewMetrics = origin.isSystemDock ? [origin.metric] : metrics
+        let initial = MacSystemDockLandingVisual.start(metrics: previewMetrics, grabbed: origin.metric,
+            visual: visual)
+        // Render the circles directly in the existing overlay. Converting them
+        // to optional NSImages at mouse-up can replace a visible circle with
+        // an empty layer before the native move even begins.
+        dockLandingPresentations = Dictionary(uniqueKeysWithValues: previewMetrics.map { metric in
+            (metric, MacSystemDockPresentation(
                 snapshot: TimeProgressCalculator.snapshot(for: metric, profile: store.profile),
                 accent: MacWidgetStyle.accent(for: metric, theme: store.profile.widgetTheme,
-                                             customColors: preferences.customColors))))
-            renderer.scale = 2
-            dockLandingImages[metric] = renderer.nsImage
-        }
+                                             customColors: preferences.customColors)))
+        })
+        dockLandingVisual = initial
         refreshDragOverlay()
+        if let overlay = dragOverlay { drawWindowNow(overlay) }
+        recordDockLanding("prepared")
+        let dropPoint = dragPresentation?.pointer ?? origin.pointer
         settleTask = Task { [weak self] in
             guard let self else { return }
-            // Let newly launched helper slots establish their actual positions.
-            // The open preview stays open during this short handoff.
+            if let commit = self.commitSystemDockDrop {
+                let hasCompleteGroup = await commit(dropPoint, origin.metric)
+                guard !Task.isCancelled else { return }
+                self.recordDockLanding(hasCompleteGroup ? "native-complete" : "native-interrupted")
+                guard self.preferences.isInSystemDock else {
+                    self.clearDragPresentation()
+                    self.synchronize()
+                    return
+                }
+                if !hasCompleteGroup {
+                    // An interrupted native transaction can have moved only
+                    // some members. Never animate the preview into those
+                    // scattered positions as if the drop had succeeded.
+                    await self.finishDockLanding(origin: origin)
+                    return
+                }
+            }
+            // Wait for the entire native group, including members which are
+            // already visible and need no overlay during a reorder.
             let deadline = ProcessInfo.processInfo.systemUptime + 0.35
-            while !Task.isCancelled, let frames = self.nativeDockFrames?(),
-                  metrics.contains(where: { frames[$0] == nil }),
-                  ProcessInfo.processInfo.systemUptime < deadline {
+            var confirmedDestination: MacSystemDockLandingVisual?
+            while !Task.isCancelled {
+                if let frames = self.nativeDockFrames?(), metrics.allSatisfy({ frames[$0] != nil }) {
+                    confirmedDestination = .destination(metrics: previewMetrics, nativeFrames: frames, target: target, docking: docking)
+                    break
+                }
+                guard ProcessInfo.processInfo.systemUptime < deadline else { break }
                 try? await Task.sleep(for: .milliseconds(16))
             }
             guard !Task.isCancelled else { return }
+            guard var destination = confirmedDestination else {
+                // Missing AX geometry is not a reason to dissolve the carried
+                // circle or fly into guessed slots. Hand off from it directly.
+                await self.finishDockLanding(origin: origin)
+                return
+            }
             let start = ProcessInfo.processInfo.systemUptime
-            var lastDestination = MacSystemDockLandingVisual.destination(metrics: metrics, nativeFrames: [:], target: target, docking: docking)
-            var hasNativeFrames = false
             while !Task.isCancelled {
-                let frames = self.nativeDockFrames?() ?? [:]
-                hasNativeFrames = metrics.allSatisfy { frames[$0] != nil }
-                if hasNativeFrames {
-                    lastDestination = .destination(metrics: metrics, nativeFrames: frames, target: target, docking: docking)
+                if let frames = self.nativeDockFrames?(), metrics.allSatisfy({ frames[$0] != nil }) {
+                    destination = .destination(metrics: previewMetrics, nativeFrames: frames, target: target, docking: docking)
                 }
-                var destination = lastDestination
-                let progress = min((ProcessInfo.processInfo.systemUptime - start) / 0.28, 1)
-                if !hasNativeFrames {
-                    for metric in metrics { destination.tiles[metric]?.opacity = 0 }
-                }
+                // Geometry can briefly expire while the Dock animates. Keep
+                // the last confirmed destination and full opacity throughout.
+                let progress = self.reducesMotion() ? 1 : min((ProcessInfo.processInfo.systemUptime - start) / 0.28, 1)
                 self.dockLandingVisual = initial.interpolated(to: destination, progress: progress)
                 self.refreshDragOverlay()
                 if progress >= 1 { break }
                 try? await Task.sleep(for: .milliseconds(16))
             }
             guard !Task.isCancelled else { return }
-            self.closeDockGroup()
-            self.clearDragPresentation()
-            self.synchronize()
+            await self.finishDockLanding(origin: origin)
         }
+    }
+
+    private func finishDockLanding(origin: MacWidgetDragOrigin) async {
+        // Restore both the hidden and dimmed states before the preview goes
+        // away. Input stays disabled while isDockLanding remains true.
+        if origin.isNativeDock { nativeDockDragChanged?(false) }
+        systemDockLandingChanged?(false)
+        if let waitForDisplay = systemDockDisplayReady {
+            // Keep the preview through a late helper redraw as well. Each
+            // helper wait is bounded; cancellation still releases it at once.
+            var ready = await waitForDisplay()
+            guard !Task.isCancelled else { return }
+            if !ready, preferences.isVisible, preferences.isInSystemDock {
+                recordDockLanding("display-retry")
+                ready = await waitForDisplay()
+            }
+            guard !Task.isCancelled else { return }
+            recordDockLanding(ready ? "native-displayed" : "display-timeout")
+        } else {
+            try? await Task.sleep(for: .milliseconds(80))
+        }
+        guard !Task.isCancelled else { return }
+        closeDockGroup()
+        clearDragPresentation()
+        synchronize()
     }
 
     private func animateNativeDockReturn(to destination: MacWidgetDragVisual, metric: MetricKind, duration: TimeInterval) async -> Bool {

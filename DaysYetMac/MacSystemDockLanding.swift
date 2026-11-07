@@ -5,17 +5,14 @@ struct MacSystemDockLandingTile: Equatable {
     var opacity: Double = 1
 }
 
-/// Keep each circle independent during the handoff to real Dock slots. A row
-/// that is already open must never merge into a single circle on mouse-up.
+/// Start with the carried circle, then reveal the other members only once
+/// the group has been inserted into its real Dock slots.
 struct MacSystemDockLandingVisual: Equatable {
     var tiles: [MetricKind: MacSystemDockLandingTile]
 
-    static func start(metrics: [MetricKind], grabbed: MetricKind, visual: MacWidgetDragVisual,
-                      layout: MacSystemDockGroupLayout, isOpenPreview: Bool) -> Self {
-        Self(tiles: Dictionary(uniqueKeysWithValues: metrics.enumerated().map { index, metric in
-            let frame = isOpenPreview ? layout.focus(in: visual.widgetFrame, index: index) : visual.circleFrame
-            return (metric, MacSystemDockLandingTile(frame: frame,
-                opacity: isOpenPreview || metric == grabbed ? 1 : 0))
+    static func start(metrics: [MetricKind], grabbed: MetricKind, visual: MacWidgetDragVisual) -> Self {
+        Self(tiles: Dictionary(uniqueKeysWithValues: metrics.map { metric in
+            (metric, MacSystemDockLandingTile(frame: visual.circleFrame, opacity: metric == grabbed ? 1 : 0))
         }))
     }
 

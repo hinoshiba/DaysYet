@@ -51,6 +51,10 @@ final class DockTileDelegate: NSObject, NSApplicationDelegate {
             tile.contentView = view
             if NSApp.activationPolicy() != .regular { NSApp.setActivationPolicy(.regular) }
             tile.display()
+            if let revision = update.displayRevision {
+                let line = MacDockTileDisplayState.acknowledgement(revision) + "\n"
+                try? FileHandle.standardOutput.write(contentsOf: Data(line.utf8))
+            }
         }
     }
 

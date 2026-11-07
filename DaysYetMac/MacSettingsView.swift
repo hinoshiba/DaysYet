@@ -1,6 +1,48 @@
 import AppKit
 import SwiftUI
 
+private struct MacSettingsStatus: View {
+    let title: String
+    let color: Color
+
+    var body: some View {
+        Text(title)
+            .font(.caption)
+            .foregroundStyle(color)
+            .padding(.horizontal, 7)
+            .padding(.vertical, 2)
+            .background(color.opacity(0.1), in: Capsule())
+            .fixedSize()
+    }
+}
+
+#if DAYSYET_DIRECT_DOCK_DRAG
+private struct MacAccessibilitySettingsRow: View {
+    @ObservedObject var direct: MacDockDirectDragController
+
+    var body: some View {
+        HStack(spacing: 12) {
+            VStack(alignment: .leading, spacing: 5) {
+                HStack {
+                    Text(L10n.text("アクセシビリティ", "Accessibility"))
+                    MacSettingsStatus(title: direct.accessibilityGranted
+                        ? L10n.text("許可済み", "Allowed") : L10n.text("未許可", "Not allowed"),
+                        color: direct.accessibilityGranted ? .green : .secondary)
+                }
+                Text(L10n.text("有効にするとDockにも設置できます。", "Allow access to place DaysYet in the Dock."))
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+            Spacer(minLength: 0)
+            Button(L10n.text("設定を開く…", "Open Settings…")) {
+                direct.openAccessibilitySettings()
+            }
+            .controlSize(.small)
+            .accessibilityLabel(L10n.text("アクセシビリティの設定を開く", "Open Accessibility Settings"))
+        }
+    }
+}
+#endif
+
 struct MacSettingsView: View {
     @ObservedObject var store: ProfileStore
     @ObservedObject var preferences: MacWidgetPreferences
@@ -48,13 +90,13 @@ struct MacSettingsView: View {
             .padding(.bottom, 12)
         }
         .frame(minWidth: 680, idealWidth: 760, minHeight: 560, idealHeight: 620)
-        .onAppear { loginItem.refresh() }
+        .onAppear { refreshGeneralSettings() }
         .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
-            loginItem.refresh()
+            refreshGeneralSettings()
         }
         .onReceive(NotificationCenter.default.publisher(for: NSWindow.didBecomeKeyNotification)) { _ in
             // The settings window is reused, so onAppear alone is insufficient.
-            loginItem.refresh()
+            refreshGeneralSettings()
         }
         .sheet(item: $selectedDocument) { document in
             MacLegalDocumentView(document: document)
@@ -88,25 +130,7 @@ struct MacSettingsView: View {
                 .frame(width: 224)
             Divider()
             Form {
-                loginItemSettings
-
-                if let setup = controller.setupController {
-                    Section(L10n.text("はじめの設定", "Get started")) {
-                        Button(L10n.text("セットアップと使い方を見る…", "Setup & tutorial…"), systemImage: "hand.point.up.left") {
-                            setup.show(startingAt: .startup)
-                        }
-                        Text(L10n.text("自動起動や、丸をつかんで移動する操作をご案内します。",
-                                       "Set up launch at login and learn how to move your circles."))
-                            .font(.caption).foregroundStyle(.secondary)
-#if DAYSYET_DIRECT_DOCK_DRAG
-                        if let direct = controller.directDockDrag {
-                            MacDockDirectDragSettings(preferences: preferences, direct: direct) {
-                                setup.show(startingAt: .movement)
-                            }
-                        }
-#endif
-                    }
-                }
+                generalSettings
 
                 Section {
                     Toggle(L10n.text("ウィジェットを表示", "Show widget"), isOn: visibilityBinding)
@@ -140,6 +164,21 @@ struct MacSettingsView: View {
                     screenEdgePositionSettings
                     if let error = preferences.systemDockError {
                         Text(error).font(.caption).foregroundStyle(.red)
+                    }
+                    if preferences.dockPermissionRequired {
+                        Text(MacDockPermission.canRequest
+                             ? L10n.text("Dockに入れるにはアクセシビリティの許可が必要です。許可後に、もう一度Dock側の辺へ移動してください。",
+                                         "Accessibility permission is required to enter the Dock. After allowing it, move to the Dock’s edge again.")
+                             : L10n.text("Dockがある辺には配置できません。ほかの辺を選んでください。",
+                                         "The Dock’s edge is unavailable. Choose another screen edge."))
+                            .font(.caption).foregroundStyle(.secondary)
+#if DAYSYET_DIRECT_DOCK_DRAG
+                        if let direct = controller.directDockDrag {
+                            Button(L10n.text("アクセシビリティの設定を開く…", "Open Accessibility Settings…")) {
+                                direct.openAccessibilitySettings()
+                            }
+                        }
+#endif
                     }
                 }
 
@@ -184,17 +223,19 @@ struct MacSettingsView: View {
 
     private var screenEdgePositionSettings: some View {
         Group {
-            Picker(L10n.text("画面の端", "Screen edge"), selection: $preferences.edge) {
+            Picker(L10n.text("画面の端", "Screen edge"), selection: Binding(
+                get: { preferences.edge }, set: { controller.selectEdge($0) }
+            )) {
                 ForEach(MacWidgetEdge.allCases) { edge in
                     Text(edge.title).tag(edge)
                 }
             }
             .pickerStyle(.segmented)
 
-            Text(L10n.text(
-                "macOSのDockがある辺を選ぶと、自動的にDock内へ入ります。ほかの辺では、画面の端に吸着して表示します。",
-                "Choose the edge with the macOS Dock to join it automatically. Other edges show the widget attached to the screen."
-            ))
+            Text(MacDockPermission.canRequest ? L10n.text(
+                "macOSのDockがある辺を選ぶと、アクセシビリティの許可を確認してDock内へ入ります。ほかの辺では、画面の端に吸着して表示します。",
+                "Choosing the macOS Dock’s edge checks Accessibility permission before joining it. Other edges show the widget attached to the screen."
+            ) : L10n.text("Dockがある辺以外に配置できます。", "Choose a screen edge without the Dock."))
             .font(.caption).foregroundStyle(.secondary)
 
             Picker(L10n.text("ディスプレイ", "Display"), selection: $preferences.displayID) {
@@ -242,12 +283,41 @@ struct MacSettingsView: View {
         }
     }
 
-    private var loginItemSettings: some View {
+    private func refreshGeneralSettings() {
+        loginItem.refresh()
+#if DAYSYET_DIRECT_DOCK_DRAG
+        controller.directDockDrag?.refreshAccessibility()
+#endif
+    }
+
+    private var loginStatus: String {
+        switch loginItem.status {
+        case .enabled: L10n.text("オン", "On")
+        case .notRegistered: L10n.text("オフ", "Off")
+        case .requiresApproval: L10n.text("承認待ち", "Approval needed")
+        case .notFound: L10n.text("利用不可", "Unavailable")
+        @unknown default: L10n.text("確認できません", "Unknown")
+        }
+    }
+
+    private var generalSettings: some View {
         Section {
-            Toggle(L10n.text("ログイン時に起動", "Launch at login"), isOn: Binding(
+            Toggle(isOn: Binding(
                 get: { loginItem.isEnabled },
                 set: { loginItem.setEnabled($0) }
-            ))
+            )) {
+                VStack(alignment: .leading, spacing: 5) {
+                    HStack {
+                        Text(L10n.text("ログイン時に起動", "Launch at login"))
+                        MacSettingsStatus(title: loginStatus,
+                            color: loginItem.isEnabled ? .green : loginItem.requiresApproval ? .orange : .secondary)
+                    }
+                    Text(L10n.text("Macへのログイン時にDaysYetを開きます。", "Open DaysYet when you log in to your Mac."))
+                        .font(.caption).foregroundStyle(.secondary)
+                }
+            }
+            .accessibilityLabel(L10n.text("ログイン時に起動", "Launch at login"))
+            .accessibilityValue(loginStatus)
 
             if loginItem.requiresApproval {
                 Label(L10n.text(
@@ -278,13 +348,13 @@ struct MacSettingsView: View {
                     loginItem.openSystemSettings()
                 }
             }
+#if DAYSYET_DIRECT_DOCK_DRAG
+            if let direct = controller.directDockDrag {
+                MacAccessibilitySettingsRow(direct: direct)
+            }
+#endif
         } header: {
-            Text(L10n.text("起動", "Startup"))
-        } footer: {
-            Text(L10n.text(
-                "有効にすると、Macへのログイン時にDaysYetが自動で起動します。再起動後もウィジェットを表示したい場合におすすめです。",
-                "Automatically open DaysYet when you log in to your Mac. Recommended to keep the widget available after restarting."
-            ))
+            Text(L10n.text("一般", "General"))
         }
     }
 

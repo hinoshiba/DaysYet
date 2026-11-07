@@ -3,15 +3,18 @@ import SwiftUI
 struct WidgetStudioView: View {
     @EnvironmentObject private var store: ProfileStore
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-    @State private var selectedLayout: WidgetEditorLayout = .rows
     @State private var showWidgetGuide = false
+    @SceneStorage("widget.circle.previewSize") private var circleSize: CircleWidgetSize = .medium
+    @State private var timePicker: WidgetTimeRequest?
+    @State private var opensTimeLibraryOnDismiss = false
+    @State private var editMode: EditMode = .inactive
+    let openTimeLibrary: () -> Void
+
+    private var selectedLayout: WidgetLayout { store.profile.widgetLayout }
 
     var body: some View {
         VStack(spacing: 0) {
-            VStack(alignment: .leading, spacing: 8) {
-                Text(L10n.text("編集するウィジェット", "Widget to edit"))
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+            VStack {
                 if dynamicTypeSize.isAccessibilitySize {
                     layoutPicker.pickerStyle(.menu)
                 } else {
@@ -23,113 +26,204 @@ struct WidgetStudioView: View {
             .padding(.vertical, 12)
 
             Form {
-                Section {
-                    preview
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 224)
-                        .listRowBackground(Color.clear)
-                } footer: {
-                    Text(selectedLayout.sizes)
-                }
-
-                Section {
-                    ForEach(Array(selectedMetrics.enumerated()), id: \.offset) { index, metric in
-                        WidgetSettingPicker(
-                            selectedLayout.positionTitle(index),
-                            selection: metricBinding(at: index),
-                            selectedValue: metric.title(profile: store.profile)
-                        ) {
-                            ForEach(MetricKind.allCases) { metric in
-                                Text(metric.title(profile: store.profile)).tag(metric)
-                            }
-                        }
-                        .accessibilityIdentifier("widget.metric.\(index)")
-                    }
-                } header: {
-                    Text(L10n.text("表示する時間", "Timelines"))
-                } footer: {
-                    Text(L10n.text(
-                        "活動時間や日付の詳細は「時間」タブで編集できます。",
-                        "Edit schedules and dates in the Times tab."
-                    ))
-                }
-
-                Section {
-                    if selectedLayout == .rows {
-                        WidgetSettingPicker(
-                            L10n.text("表示方法", "Display mode"),
-                            selection: Binding(
-                                get: { store.profile.widgetDisplayMode },
-                                set: { value in store.update { $0.widgetDisplayMode = value } }
-                            ),
-                            selectedValue: store.profile.widgetDisplayMode.title
-                        ) {
-                            ForEach(WidgetDisplayMode.allCases) { mode in
-                                Text(mode.title).tag(mode)
-                            }
-                        }
-                        .accessibilityIdentifier("widget.displayMode")
-                    }
-
-                    if selectedLayout == .circles || store.profile.widgetDisplayMode == .progressBars {
-                        WidgetSettingPicker(
-                            selectedLayout == .circles
-                                ? L10n.text("中央の値", "Center value")
-                                : L10n.text("バーの値", "Bar value"),
-                            selection: valueStyleBinding,
-                            selectedValue: valueStyleBinding.wrappedValue.title
-                        ) {
-                            ForEach(MetricValueStyle.allCases) { style in
-                                Text(style.title).tag(style)
-                            }
-                        }
-                        .accessibilityIdentifier("widget.valueStyle")
-                    }
-
-                    WidgetSettingPicker(
-                        L10n.text("テーマ", "Theme"),
-                        selection: themeBinding,
-                        selectedValue: themeBinding.wrappedValue?.title
-                            ?? L10n.text("3行表示と同じ", "Same as Three rows")
-                    ) {
+                if !editMode.isEditing {
+                    Section {
                         if selectedLayout == .circles {
-                            Text(L10n.text("3行表示と同じ", "Same as Three rows"))
-                                .tag(Optional<WidgetTheme>.none)
+                            Group {
+                                if dynamicTypeSize.isAccessibilitySize {
+                                    circleSizePicker.pickerStyle(.menu)
+                                } else {
+                                    circleSizePicker.pickerStyle(.segmented)
+                                }
+                            }
+                            .listRowBackground(Color.clear)
+                            .listRowSeparator(.hidden)
                         }
-                        ForEach(WidgetTheme.allCases) { theme in
-                            Text(theme.title).tag(Optional(theme))
-                        }
+
+                        WidgetThemePicker(
+                            selectedTheme: store.profile.widgetTheme,
+                            previewSize: themePreviewSize,
+                            onSelect: { theme in store.update { $0.widgetTheme = theme } },
+                            preview: { preview(for: $0) }
+                        )
+                        .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 0, trailing: 0))
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
+                    } header: {
+                        Text(L10n.text("テーマ", "Theme"))
+                    } footer: {
+                        Text(selectedLayout == .circles
+                             ? L10n.text("見本をタップしてテーマを選びます。小サイズは先頭の4つ、中・大サイズは最大8つを表示します。", "Tap a preview to choose a theme. Small shows the first four; Medium and Large show up to eight.")
+                             : L10n.text("見本をタップしてテーマを選びます。", "Tap a preview to choose a theme."))
                     }
-                    .accessibilityIdentifier("widget.theme")
-                } header: {
-                    Text(L10n.text("表示", "Display"))
+                }
+
+                if selectedLayout == .circles {
+                    circleSection
+                } else {
+                    Section {
+                        ForEach(Array(selectedMetrics.enumerated()), id: \.offset) { index, metric in
+                            Button {
+                                timePicker = WidgetTimeRequest(destination: .row(index))
+                            } label: {
+                                WidgetMetricSettingRow(metric: metric, profile: store.profile, index: index, isCircle: false)
+                            }
+                            .buttonStyle(.plain)
+                            .accessibilityIdentifier("widget.metric.\(index)")
+                        }
+                    } header: {
+                        Text(L10n.text("表示する時間", "Timelines"))
+                    } footer: {
+                        Text(L10n.text("タップして「時間」の一覧から選びます。", "Tap a row to choose from your Times."))
+                    }
+                }
+
+                if !editMode.isEditing {
+                    Section {
+                        if selectedLayout == .rows {
+                            WidgetSettingPicker(
+                                L10n.text("表示方法", "Display mode"),
+                                selection: Binding(
+                                    get: { store.profile.widgetDisplayMode },
+                                    set: { value in store.update { $0.widgetDisplayMode = value } }
+                                ),
+                                selectedValue: store.profile.widgetDisplayMode.title
+                            ) {
+                                ForEach(WidgetDisplayMode.allCases) { mode in
+                                    Text(mode.title).tag(mode)
+                                }
+                            }
+                            .accessibilityIdentifier("widget.displayMode")
+                        }
+
+                        if selectedLayout == .circles || store.profile.widgetDisplayMode == .progressBars {
+                            WidgetSettingPicker(
+                                selectedLayout == .circles
+                                    ? L10n.text("中央の値", "Center value")
+                                    : L10n.text("バーの値", "Bar value"),
+                                selection: valueStyleBinding,
+                                selectedValue: valueStyleBinding.wrappedValue.title
+                            ) {
+                                ForEach(MetricValueStyle.allCases) { style in
+                                    Text(style.title).tag(style)
+                                }
+                            }
+                            .accessibilityIdentifier("widget.valueStyle")
+                        }
+                    } header: {
+                        Text(L10n.text("表示", "Display"))
+                    }
                 }
             }
-            // Changing the editor returns to its preview without changing either
-            // widget's saved choices or the widget installed on the Home Screen.
+            // Keep each layout's metrics while returning to its theme previews.
             .id(selectedLayout)
         }
         .background(Color(.systemGroupedBackground))
-        .navigationTitle(L10n.text("ウィジェット", "Widgets"))
+        .navigationTitle(L10n.text("ウィジェット", "Widget"))
         .navigationBarTitleDisplayMode(.inline)
+        .environment(\.editMode, $editMode)
+        .onChange(of: selectedLayout) { _, _ in editMode = .inactive }
         .toolbar {
+            if selectedLayout == .circles {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(editMode.isEditing ? L10n.text("完了", "Done") : L10n.text("編集", "Edit")) {
+                        withAnimation { editMode = editMode.isEditing ? .inactive : .active }
+                    }
+                    .accessibilityIdentifier("widget.circle.editList")
+                }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        editMode = .inactive
+                        timePicker = WidgetTimeRequest(destination: .newCircle)
+                    } label: {
+                        Label(L10n.text("時間から追加", "Add from Times"), systemImage: "plus")
+                    }
+                    .disabled(selectedMetrics.count >= CircleWidgetSettings.maximumCount)
+                    .accessibilityIdentifier("widget.circle.add")
+                }
+            }
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     showWidgetGuide = true
                 } label: {
-                    Label(L10n.text("追加・反映方法", "Add and apply settings"), systemImage: "questionmark.circle")
+                    Label(L10n.text("使い方・アプリ情報", "Help & app info"), systemImage: "info.circle")
                 }
                 .accessibilityIdentifier("widget.guide")
             }
         }
         .sheet(isPresented: $showWidgetGuide) {
-            WidgetGuideView(layout: selectedLayout)
+            WidgetGuideView()
+        }
+        .sheet(item: $timePicker, onDismiss: {
+            if opensTimeLibraryOnDismiss {
+                opensTimeLibraryOnDismiss = false
+                openTimeLibrary()
+            }
+        }) { request in
+            WidgetTimePicker(profile: store.profile, destination: request.destination) { metric in
+                switch request.destination {
+                case .circle(let index): store.setCircleWidgetMetric(metric, at: index)
+                case .newCircle: store.addCircleWidgetMetric(metric)
+                case .row(let index): store.setDashboardMetric(metric, at: index)
+                }
+            } onOpenTimeLibrary: {
+                opensTimeLibraryOnDismiss = true
+            }
         }
     }
 
+    private var circleSection: some View {
+        Section {
+            ForEach(Array(selectedMetrics.enumerated()), id: \.offset) { index, metric in
+                Group {
+                    if editMode.isEditing {
+                        WidgetMetricSettingRow(metric: metric, profile: store.profile, index: index, showsDisclosure: false)
+                    } else {
+                        Button {
+                            timePicker = WidgetTimeRequest(destination: .circle(index))
+                        } label: {
+                            WidgetMetricSettingRow(metric: metric, profile: store.profile, index: index)
+                        }
+                        .buttonStyle(.plain)
+                    }
+                }
+                .deleteDisabled(selectedMetrics.count <= 1)
+                .accessibilityIdentifier("widget.circle.\(index)")
+            }
+            .onDelete(perform: store.removeCircleWidgetMetrics)
+            .onMove(perform: store.moveCircleWidgetMetrics)
+        } header: {
+            Text(L10n.text("サークル \(selectedMetrics.count) / 8", "Circles \(selectedMetrics.count) / 8"))
+        } footer: {
+            VStack(alignment: .leading, spacing: 8) {
+                if editMode.isEditing {
+                    Text(L10n.text("右のハンドルをドラッグして並べ替えます。変更は自動で保存されます。", "Drag the handles on the right to reorder. Changes save automatically."))
+                    if selectedMetrics.count <= 1 {
+                        Text(L10n.text("サークルは1つ以上必要です。", "Keep at least one circle."))
+                    }
+                } else {
+                    Text(L10n.text(
+                        "＋で「時間」から追加、タップで差し替え。「編集」で並べ替え・削除できます。",
+                        "Use + to add from Times, or tap to replace. Use Edit to reorder or remove."
+                    ))
+                }
+            }
+        }
+    }
+
+    private var circleSizePicker: some View {
+        Picker(L10n.text("プレビューのサイズ", "Preview size"), selection: $circleSize) {
+            ForEach(CircleWidgetSize.allCases) { size in Text(size.title).tag(size) }
+        }
+        .accessibilityIdentifier("widget.circle.size")
+    }
+
     private var layoutPicker: some View {
-        Picker(L10n.text("編集するウィジェット", "Widget to edit"), selection: $selectedLayout) {
-            ForEach(WidgetEditorLayout.allCases) { layout in
+        Picker(L10n.text("表示形式", "Layout"), selection: Binding(
+            get: { selectedLayout },
+            set: { layout in store.update { $0.widgetLayout = layout } }
+        )) {
+            ForEach(WidgetLayout.allCases) { layout in
                 Text(layout.title).tag(layout)
             }
         }
@@ -138,53 +232,47 @@ struct WidgetStudioView: View {
     }
 
     @ViewBuilder
-    private var preview: some View {
+    private func preview(for theme: WidgetTheme) -> some View {
         if selectedLayout == .rows {
-            WidgetPreview(profile: store.profile)
-                .aspectRatio(2.05, contentMode: .fit)
-                .frame(maxWidth: 360)
+            WidgetPreview(profile: themedPreviewProfile(theme))
+                .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
         } else {
             TimelineView(.periodic(from: .now, by: 60)) { context in
-                let configuration = DaysYetCircleConfigurationIntent()
                 CircleWidgetGrid(
-                    snapshots: configuration.resolvedMetrics(profile: store.profile).map {
+                    snapshots: selectedMetrics.map {
                         TimeProgressCalculator.snapshot(for: $0, profile: store.profile, now: context.date)
                     },
-                    valueStyle: configuration.resolvedValueStyle(profile: store.profile),
-                    theme: configuration.resolvedTheme(profile: store.profile),
-                    compact: false,
+                    valueStyle: store.profile.circleWidgetSettings.valueStyle,
+                    theme: theme,
+                    size: circleSize,
                     showsContainerBackground: true
                 )
-                .padding(12)
-                .frame(width: 224, height: 224)
-                .background(configuration.resolvedTheme(profile: store.profile).palette.background,
+                .padding(circleSize == .small ? 12 : 16)
+                .background(theme.palette.background,
                             in: RoundedRectangle(cornerRadius: 24))
             }
         }
+    }
+
+    private var themePreviewSize: CGSize {
+        guard selectedLayout == .circles else { return CGSize(width: 340, height: 166) }
+        switch circleSize {
+        case .small: return CGSize(width: 176, height: 176)
+        case .medium: return CGSize(width: 340, height: 162)
+        case .large: return CGSize(width: 340, height: 340)
+        }
+    }
+
+    private func themedPreviewProfile(_ theme: WidgetTheme) -> UserProfile {
+        var profile = store.profile
+        profile.widgetTheme = theme
+        return profile
     }
 
     private var selectedMetrics: [MetricKind] {
         selectedLayout == .rows
             ? store.profile.normalizedDashboardMetrics
             : store.profile.circleWidgetSettings.normalizedMetrics
-    }
-
-    private func metricBinding(at index: Int) -> Binding<MetricKind> {
-        let layout = selectedLayout
-        return Binding(
-            get: {
-                layout == .rows
-                    ? store.profile.normalizedDashboardMetrics[index]
-                    : store.profile.circleWidgetSettings.normalizedMetrics[index]
-            },
-            set: { value in
-                if layout == .rows {
-                    store.setDashboardMetric(value, at: index)
-                } else {
-                    store.setCircleWidgetMetric(value, at: index)
-                }
-            }
-        )
     }
 
     private var valueStyleBinding: Binding<MetricValueStyle> {
@@ -201,24 +289,6 @@ struct WidgetStudioView: View {
                         $0.dashboardValueStyle = value
                     } else {
                         $0.circleWidgetSettings.valueStyle = value
-                    }
-                }
-            }
-        )
-    }
-
-    private var themeBinding: Binding<WidgetTheme?> {
-        let layout = selectedLayout
-        return Binding(
-            get: {
-                layout == .rows ? store.profile.widgetTheme : store.profile.circleWidgetSettings.theme
-            },
-            set: { value in
-                store.update {
-                    if layout == .rows, let value {
-                        $0.widgetTheme = value
-                    } else if layout == .circles {
-                        $0.circleWidgetSettings.theme = value
                     }
                 }
             }
@@ -279,33 +349,8 @@ private struct WidgetSettingPicker<Selection: Hashable, Content: View>: View {
     }
 }
 
-private enum WidgetEditorLayout: String, CaseIterable, Identifiable {
-    case rows, circles
-
-    var id: String { rawValue }
-    var title: String {
-        self == .rows ? L10n.text("3つの行", "Three rows") : L10n.text("4つのサークル", "Four circles")
-    }
-    var sizes: String {
-        self == .rows
-            ? L10n.text("ホーム画面：小・中サイズ", "Home Screen: Small and Medium")
-            : L10n.text("ホーム画面：小・大サイズ", "Home Screen: Small and Large")
-    }
-
-    func positionTitle(_ index: Int) -> String {
-        if self == .rows {
-            return [L10n.text("上", "Top"), L10n.text("中央", "Middle"), L10n.text("下", "Bottom")][index]
-        }
-        return [
-            L10n.text("左上", "Top left"), L10n.text("右上", "Top right"),
-            L10n.text("左下", "Bottom left"), L10n.text("右下", "Bottom right")
-        ][index]
-    }
-}
-
 private struct WidgetGuideView: View {
     @Environment(\.dismiss) private var dismiss
-    let layout: WidgetEditorLayout
 
     var body: some View {
         NavigationStack {
@@ -313,29 +358,25 @@ private struct WidgetGuideView: View {
                 Section {
                     Label(L10n.text("ホーム画面を長押し", "Touch and hold the Home Screen"), systemImage: "1.circle")
                     Label(L10n.text("編集 → ウィジェットを追加", "Choose Edit → Add Widget"), systemImage: "2.circle")
-                    Label(L10n.text("DaysYetを検索して種類とサイズを選ぶ", "Search for DaysYet and choose a type and size"), systemImage: "3.circle")
-                    Text(layout == .circles
-                         ? L10n.text("「4つのサークル」の小・大サイズを選びます。", "Choose Four circles in Small or Large.")
-                         : L10n.text("「DaysYet — 3つの時間」の小・中サイズを選びます。", "Choose DaysYet — Three timelines in Small or Medium."))
+                    Label(L10n.text("DaysYetを検索してサイズを選ぶ", "Search for DaysYet and choose a size"), systemImage: "3.circle")
+                    Text(L10n.text("「DaysYet」の小・中・大サイズを選びます。サークルは小サイズで先頭4つ、中・大サイズで最大8つを表示します。", "Choose DaysYet in Small, Medium, or Large. Circles show the first four in Small, or up to eight in Medium and Large."))
                 } header: {
                     Text(L10n.text("ホーム画面に追加", "Add to the Home Screen"))
                 } footer: {
                     Text(L10n.text(
-                        "アプリの種類切替は、編集する設定を選びます。ホーム画面に置く種類は追加時に選びます。",
-                        "The app's type selector chooses which settings to edit. Choose the type placed on the Home Screen when adding a widget."
+                        "アプリで選んだ表示形式とテーマが、ホーム画面にも反映されます。プレビューのサイズは見本だけを変更します。",
+                        "The layout and theme you choose in the app also apply to the Home Screen. Preview size only changes the preview."
                     ))
                 }
 
                 Section {
                     Label(L10n.text("ウィジェットを長押し → ウィジェットを編集", "Touch and hold the widget → Edit Widget"), systemImage: "hand.tap")
-                    Text(layout == .circles
-                         ? L10n.text("4つの時間・中央の値・テーマを「アプリの設定」にすると、この画面で選んだ内容を使います。", "Set the four timelines, center value, and theme to App setting to use your choices in the app.")
-                         : L10n.text("「アプリで選んだ3本を使う」をオンにし、表示モード・値・テーマを「アプリの設定」にします。", "Turn on Use the three selected in the app and set the display mode, value, and theme to App setting."))
-                    Text(L10n.text("ウィジェットごとに個別の設定を選ぶこともできます。", "You can also choose individual settings for each widget."))
+                    Text(L10n.text("通常は追加するだけで反映されます。個別設定を変更している場合は「アプリの表示に合わせる」をオンにし、表示モード・値・テーマを「アプリの設定」に戻します。", "New widgets follow the app automatically. If you changed individual settings, turn on Follow app appearance and set display mode, value, and theme to App setting."))
+                    Text(L10n.text("以前の「サークル」は「サークル（固定）」として残ります。表示形式も連動させるには「DaysYet」を追加してください。", "The original Circles widget remains as Circles (fixed). Add DaysYet to follow the app's layout as well."))
                 } header: {
                     Text(L10n.text("追加済みウィジェットに反映", "Apply to existing widgets"))
                 } footer: {
-                    Text(L10n.text("設定は自動で保存されます。ウィジェットの更新時刻はiOSが調整します。", "Settings save automatically. Widget refresh timing is controlled by iOS."))
+                    Text(L10n.text("ウィジェットの選択・配置・表示は自動で保存されます。時刻・日付は「時間」タブで編集します。ウィジェットの更新時刻はiOSが調整します。", "Widget choices, order, and appearance save automatically. Edit schedules and dates in Times. Widget refresh timing is controlled by iOS."))
                 }
 
                 Section {
@@ -353,12 +394,27 @@ private struct WidgetGuideView: View {
                 } footer: {
                     Text(L10n.text("背景の半透明化、ロック画面の単色表示、スタンバイの夜間の色はiOSが調整します。", "iOS controls translucent backgrounds, monochrome Lock Screen widgets, and StandBy's nighttime colors."))
                 }
+
+                Section {
+                    NavigationLink(L10n.text("プライバシーポリシー", "Privacy policy")) {
+                        PrivacyView()
+                    }
+                    .accessibilityIdentifier("app.info.privacy")
+
+                    NavigationLink(L10n.text("ライセンス", "License")) {
+                        LicenseView()
+                    }
+                    .accessibilityIdentifier("app.info.license")
+                } header: {
+                    Text(L10n.text("このアプリについて", "About DaysYet"))
+                }
             }
-            .navigationTitle(L10n.text("追加・反映方法", "Add and apply settings"))
+            .navigationTitle(L10n.text("使い方・アプリ情報", "Help & app info"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(L10n.text("完了", "Done")) { dismiss() }
+                        .accessibilityIdentifier("widget.guide.done")
                 }
             }
         }

@@ -90,8 +90,9 @@ final class MacSystemDockTransitionTests: XCTestCase {
             beginEdge(controller, docking: docking)
             _ = controller.updatePointerPress(at: point(.bottom))
             XCTAssertEqual(controller.dragAttachment?.isSystemDock, true)
-            XCTAssertEqual(controller.dragVisual?.widgetFrame.size, MacSystemDockGroupLayout(edge: .bottom, count: 3).size)
-            XCTAssertEqual(controller.dragVisual?.coalescence, 0)
+            XCTAssertEqual(controller.dragVisual?.circleFrame.midX, point(.bottom).x)
+            XCTAssertEqual(controller.dragVisual?.circleFrame.midY, point(.bottom).y)
+            XCTAssertEqual(controller.dragVisual?.coalescence, 1)
             XCTAssertFalse(preferences.isInSystemDock)
             controller.settleDrop(try finish(controller, at: point(.bottom)))
             XCTAssertTrue(preferences.isInSystemDock)
@@ -211,7 +212,7 @@ final class MacSystemDockTransitionTests: XCTestCase {
         let suite = "com.hinoshiba.daysyet.dock-transition.tests.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
         defer { defaults.removePersistentDomain(forName: suite) }
-        let preferences = MacWidgetPreferences(defaults: defaults)
+        let preferences = MacWidgetPreferences(defaults: defaults, readDockPermission: { true })
         preferences.edge = inDock ? .bottom : .right
         preferences.verticalPosition = 0.24
         preferences.horizontalPosition = 0.72

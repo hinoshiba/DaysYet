@@ -24,7 +24,7 @@ DaysYetは追跡、行動分析、広告、第三者SDKを使用しません。A
 
 ### 削除と保持期間
 
-設定画面の「すべてのデータを消去」で、その端末の保存情報を直ちに削除できます。Mac版では常駐パネルの配置とサイズの設定も初期状態へ戻ります。他の端末のデータには影響しません。アプリ削除後に残る端末内データはOSが管理します。開発者はアプリから利用者データを受信・保存しないため、開発者へ削除請求を行う対象はありません。
+iPhone / iPadでは「時間」画面右上のⓘから開く「このアプリについて」、Macでは設定画面の「すべてのデータを消去」で、その端末の保存情報を直ちに削除できます。Mac版では常駐パネルの配置とサイズの設定も初期状態へ戻ります。他の端末のデータには影響しません。アプリ削除後に残る端末内データはOSが管理します。開発者はアプリから利用者データを受信・保存しないため、開発者へ削除請求を行う対象はありません。
 
 ### 外部リンクと変更
 
@@ -56,7 +56,7 @@ The healthy-age goal is a personal planning marker chosen by the user. DaysYet d
 
 ### Deletion and retention
 
-Users can immediately remove saved data on the current device with “Delete all data” in Settings. On Mac this also resets the panel layout and size preferences. Data on other devices is unaffected. Any on-device data remaining after app deletion is managed by the operating system. Because the developer does not receive or retain user data from the app, there is no developer-side app record to delete.
+Users can immediately remove saved data on the current device with “Delete all data”: on iPhone or iPad, open About DaysYet using the info button at the top right of Times; on Mac, open Settings. On Mac this also resets the panel layout and size preferences. Data on other devices is unaffected. Any on-device data remaining after app deletion is managed by the operating system. Because the developer does not receive or retain user data from the app, there is no developer-side app record to delete.
 
 ### External links and changes
 

@@ -6,13 +6,19 @@ final class MacDockTileProcessHost {
     private var tiles: [MetricKind: MacDockTileProcess] = [:]
     private let action: (MacDockTileAction) -> Void
     private let failed: () -> Void
+    private let cleanup: MacDockRegistrationCleanup
+    private let cleanupFailed: () -> Void
 
-    init(action: @escaping (MacDockTileAction) -> Void, failed: @escaping () -> Void) {
+    init(action: @escaping (MacDockTileAction) -> Void, failed: @escaping () -> Void,
+         cleanupFailed: @escaping () -> Void = {}, cleanup: MacDockRegistrationCleanup? = nil) {
         self.action = action
         self.failed = failed
+        self.cleanupFailed = cleanupFailed
+        self.cleanup = cleanup ?? .system()
     }
 
     func update(_ presentations: [MacSystemDockPresentation]) throws {
+        if tiles.isEmpty, cleanup.run() == .failed { throw CocoaError(.fileWriteUnknown) }
         let kinds = Set(presentations.map { $0.snapshot.kind })
         for kind in Array(tiles.keys) where !kinds.contains(kind) {
             tiles.removeValue(forKey: kind)?.stop()
@@ -35,6 +41,42 @@ final class MacDockTileProcessHost {
     func stop() {
         for tile in tiles.values { tile.stop() }
         tiles.removeAll()
+        removeStaleRegistrations()
+    }
+
+    func waitForDisplay() async -> Bool {
+        let expected = Set(tiles.keys)
+        guard !expected.isEmpty else { return false }
+        return await Self.waitForDisplay(
+            isAvailable: { Set(self.tiles.keys) == expected },
+            isCurrent: { self.tiles.values.allSatisfy(\.displayIsCurrent) })
+    }
+
+    /// Keep the wait bounded even if another refresh supersedes an acknowledged image.
+    static func waitForDisplay(
+        isAvailable: () -> Bool,
+        isCurrent: () -> Bool,
+        now: () -> TimeInterval = { ProcessInfo.processInfo.systemUptime },
+        sleep: (Duration) async throws -> Void = { try await Task.sleep(for: $0) }
+    ) async -> Bool {
+        let deadline = now() + 0.5
+        while !Task.isCancelled, isAvailable() {
+            if isCurrent() {
+                // Give the already-submitted tile contents one display update.
+                do { try await sleep(.milliseconds(32)) } catch { return false }
+                guard !Task.isCancelled, isAvailable() else { return false }
+                if isCurrent() { return true }
+                // A refresh during that display update needs its own receipt;
+                // it must not fail an otherwise healthy wait before its deadline.
+            }
+            guard now() < deadline else { return false }
+            do { try await sleep(.milliseconds(10)) } catch { return false }
+        }
+        return false
+    }
+
+    func removeStaleRegistrations() {
+        if cleanup.run() == .failed { cleanupFailed() }
     }
 }
 
@@ -45,6 +87,8 @@ private final class MacDockTileProcess {
     private let output = Pipe()
     private var outputBuffer = Data()
     private var stopped = false
+    private var displayState = MacDockTileDisplayState()
+    var displayIsCurrent: Bool { !stopped && process.isRunning && displayState.isCurrent }
     private let action: (MacDockTileAction) -> Void
     private let failed: () -> Void
 
@@ -94,7 +138,8 @@ private final class MacDockTileProcess {
             groupTitle: L10n.text("グループを開く", "Open group"),
             settingsTitle: L10n.text("DaysYetの設定…", "DaysYet Settings…"),
             returnTitle: L10n.text("画面の端に戻す", "Return to screen edge"),
-            quitTitle: L10n.text("DaysYetを終了", "Quit DaysYet"))
+            quitTitle: L10n.text("DaysYetを終了", "Quit DaysYet"),
+            displayRevision: displayState.nextRevision())
         var encoded = try JSONEncoder().encode(message)
         encoded.append(10)
         try input.fileHandleForWriting.write(contentsOf: encoded)
@@ -107,7 +152,7 @@ private final class MacDockTileProcess {
         while let newline = outputBuffer.firstIndex(of: 10) {
             let line = String(data: outputBuffer.prefix(upTo: newline), encoding: .utf8)
             outputBuffer.removeSubrange(...newline)
-            if let line, let command = MacDockTileAction(rawValue: line) { action(command) }
+            if let line, !displayState.receive(line), let command = MacDockTileAction(rawValue: line) { action(command) }
         }
     }
 

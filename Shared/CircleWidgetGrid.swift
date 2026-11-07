@@ -1,36 +1,87 @@
 import SwiftUI
 import WidgetKit
 
+enum CircleWidgetSize: String, CaseIterable, Identifiable {
+    case small, medium, large
+
+    var id: String { rawValue }
+    var title: String {
+        switch self {
+        case .small: L10n.text("小", "Small")
+        case .medium: L10n.text("中・横長", "Medium")
+        case .large: L10n.text("大", "Large")
+        }
+    }
+
+    var capacity: Int { self == .small ? 4 : CircleWidgetSettings.maximumCount }
+
+    init(family: WidgetFamily) {
+        switch family {
+        case .systemMedium: self = .medium
+        case .systemLarge: self = .large
+        default: self = .small
+        }
+    }
+}
+
+struct CircleWidgetGridLayout {
+    let count: Int
+    let columns: Int
+    let rows: Int
+    let compact: Bool
+    var spacing: CGFloat { compact ? 4 : 12 }
+
+    init(size: CircleWidgetSize, metricCount: Int) {
+        count = min(max(metricCount, 0), size.capacity)
+        switch size {
+        case .small: columns = min(max(count, 1), 2)
+        case .medium: columns = count <= 4 ? max(count, 1) : (count + 1) / 2
+        case .large: columns = count <= 4 ? min(max(count, 1), 2) : 3
+        }
+        rows = max(1, (count + columns - 1) / columns)
+        compact = size == .small || (size == .medium && count > 4)
+    }
+
+    func cellSize(in available: CGSize) -> CGSize {
+        CGSize(
+            width: max(0, (available.width - spacing * CGFloat(columns - 1)) / CGFloat(columns)),
+            height: max(0, (available.height - spacing * CGFloat(rows - 1)) / CGFloat(rows))
+        )
+    }
+}
+
 /// Shared with the app target so the actual widget layout can be rendered in QA.
 struct CircleWidgetGrid: View {
     @Environment(\.showsWidgetContainerBackground) private var widgetShowsContainerBackground
     let snapshots: [MetricSnapshot]
     let valueStyle: MetricValueStyle
     let theme: WidgetTheme
-    let compact: Bool
+    let size: CircleWidgetSize
     /// App previews draw their own background; widgets use the host's environment.
     var showsContainerBackground: Bool? = nil
 
     var body: some View {
         GeometryReader { geometry in
-            let spacing: CGFloat = compact ? 4 : 12
-            let cellWidth = max(0, (geometry.size.width - spacing) / 2)
-            let cellHeight = max(0, (geometry.size.height - spacing) / 2)
+            let layout = CircleWidgetGridLayout(size: size, metricCount: snapshots.count)
+            let cell = layout.cellSize(in: geometry.size)
 
-            VStack(spacing: spacing) {
-                ForEach(0..<2) { row in
-                    HStack(spacing: spacing) {
-                        ForEach(0..<2) { column in
-                            let index = row * 2 + column
-                            if snapshots.indices.contains(index) {
+            VStack(spacing: layout.spacing) {
+                ForEach(0..<layout.rows, id: \.self) { row in
+                    HStack(spacing: layout.spacing) {
+                        ForEach(0..<layout.columns, id: \.self) { column in
+                            let index = row * layout.columns + column
+                            if index < layout.count {
                                 CircleWidgetMetric(
                                     snapshot: snapshots[index],
                                     valueStyle: valueStyle,
                                     theme: theme,
-                                    compact: compact,
+                                    compact: layout.compact,
                                     showsContainerBackground: showsContainerBackground ?? widgetShowsContainerBackground
                                 )
-                                .frame(width: cellWidth, height: cellHeight)
+                                .frame(width: cell.width, height: cell.height)
+                            } else {
+                                Color.clear.frame(width: cell.width, height: cell.height)
+                                    .accessibilityHidden(true)
                             }
                         }
                     }

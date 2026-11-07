@@ -12,5 +12,5 @@ if [[ "$mode" == test ]]; then configuration=Debug; fi
 xcodebuild -project DaysYet.xcodeproj -scheme DaysYetMac \
   -configuration "$configuration" -destination 'platform=macOS' \
   -derivedDataPath /tmp/daysyet-direct-dock \
-  'SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) DAYSYET_DIRECT_DOCK_DRAG' \
+  'SWIFT_ACTIVE_COMPILATION_CONDITIONS=$(inherited) DAYSYET_DIRECT_DOCK_DRAG DAYSYET_DOCK_NATIVE_REORDER DAYSYET_DOCK_GROUP_GUARD' \
   ENABLE_APP_SANDBOX=NO CODE_SIGN_ENTITLEMENTS= CODE_SIGNING_ALLOWED=NO "$mode"

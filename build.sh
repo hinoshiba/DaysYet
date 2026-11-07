@@ -41,7 +41,8 @@ case "${MODE}" in
       -scheme DaysYet \
       -sdk iphonesimulator \
       -destination 'generic/platform=iOS Simulator' \
-      CODE_SIGNING_ALLOWED=NO \
+      CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- \
+      DEVELOPMENT_TEAM= PROVISIONING_PROFILE_SPECIFIER= \
       build
     ;;
   test)
@@ -54,7 +55,8 @@ case "${MODE}" in
       -project DaysYet.xcodeproj \
       -scheme DaysYet \
       -destination "platform=iOS Simulator,id=${daysyet_simulator_id}" \
-      CODE_SIGNING_ALLOWED=NO \
+      CODE_SIGNING_ALLOWED=YES CODE_SIGN_IDENTITY=- \
+      DEVELOPMENT_TEAM= PROVISIONING_PROFILE_SPECIFIER= \
       test
     ;;
   mac)

@@ -6,6 +6,7 @@ struct DaysYetTimelineEntry: TimelineEntry {
     let date: Date
     let configuration: DaysYetConfigurationIntent
     let profile: UserProfile
+    let layout: WidgetLayout
     let metrics: [MetricKind]
     let displayMode: WidgetDisplayMode
     let valueStyle: MetricValueStyle
@@ -19,6 +20,7 @@ struct DaysYetTimelineProvider: AppIntentTimelineProvider {
             date: .now,
             configuration: DaysYetConfigurationIntent(),
             profile: profile,
+            layout: .rows,
             metrics: [.week, .month, .year],
             displayMode: .progressBars,
             valueStyle: .remaining,
@@ -39,7 +41,9 @@ struct DaysYetTimelineProvider: AppIntentTimelineProvider {
             ?? now.addingTimeInterval(7_200)
         var entryDates = [now, refreshDate]
 
-        if firstEntry.displayMode.showsLiveCountdown {
+        let needsMinuteUpdates = firstEntry.valueStyle == .remaining
+            || (firstEntry.layout == .rows && firstEntry.displayMode.showsLiveCountdown)
+        if needsMinuteUpdates {
             // Remaining values expose minutes, so keep them aligned to the
             // clock without asking WidgetKit to reload the whole timeline.
             let nextMinute = calendar.dateInterval(of: .minute, for: now)?.end
@@ -48,8 +52,9 @@ struct DaysYetTimelineProvider: AppIntentTimelineProvider {
                 calendar.date(byAdding: .minute, value: $0, to: nextMinute)
             }
         } else {
-            entryDates += (1..<8).compactMap {
-                calendar.date(byAdding: .minute, value: $0 * 15, to: now)
+            let interval = firstEntry.layout == .circles ? 5 : 15
+            entryDates += stride(from: interval, to: 120, by: interval).compactMap {
+                calendar.date(byAdding: .minute, value: $0, to: now)
             }
         }
 
@@ -76,33 +81,15 @@ struct DaysYetTimelineProvider: AppIntentTimelineProvider {
         configuration: DaysYetConfigurationIntent,
         profile: UserProfile = ProfileRepository.load()
     ) -> DaysYetTimelineEntry {
-        let requestedMetrics: [MetricKind]
-        if configuration.followsAppSelection {
-            requestedMetrics = profile.normalizedDashboardMetrics
-        } else {
-            requestedMetrics = [
-                configuration.firstMetric.resolved(appMetric: profile.normalizedDashboardMetrics[0]),
-                configuration.secondMetric.resolved(appMetric: profile.normalizedDashboardMetrics[1]),
-                configuration.thirdMetric.resolved(appMetric: profile.normalizedDashboardMetrics[2])
-            ]
-        }
-        // Calendar periods and the default work schedule are usable before
-        // onboarding. Only personal reference points need to be configured.
-        var usedMetrics = Set(requestedMetrics.filter { $0 != .healthyLife && $0 != .customLife })
-        let metrics = requestedMetrics.map { metric -> MetricKind in
-            guard !profile.isConfigured, metric == .healthyLife || metric == .customLife else { return metric }
-            let replacement = [MetricKind.week, .month, .year].first { !usedMetrics.contains($0) } ?? .week
-            usedMetrics.insert(replacement)
-            return replacement
-        }
         return DaysYetTimelineEntry(
             date: date,
             configuration: configuration,
             profile: profile,
-            metrics: metrics,
+            layout: configuration.resolvedLayout(profile: profile),
+            metrics: configuration.resolvedMetrics(profile: profile),
             displayMode: configuration.displayMode.resolved(profileMode: profile.widgetDisplayMode),
-            valueStyle: configuration.valueStyle.resolved(profileStyle: profile.dashboardValueStyle),
-            theme: configuration.theme.resolved(profileTheme: profile.widgetTheme)
+            valueStyle: configuration.resolvedValueStyle(profile: profile),
+            theme: configuration.resolvedTheme(profile: profile)
         )
     }
 }
@@ -116,6 +103,37 @@ struct DaysYetWidgetEntryView: View {
     private var palette: WidgetThemePalette { entry.theme.palette }
 
     var body: some View {
+        Group {
+            if entry.layout == .circles {
+                CircleWidgetGrid(
+                    snapshots: entry.metrics.map {
+                        TimeProgressCalculator.snapshot(for: $0, profile: entry.profile, now: entry.date)
+                    },
+                    valueStyle: entry.valueStyle,
+                    theme: entry.theme,
+                    size: CircleWidgetSize(family: family)
+                )
+            } else {
+                rows
+            }
+        }
+        .foregroundStyle(renderingMode == .fullColor && showsContainerBackground ? AnyShapeStyle(palette.foreground) : AnyShapeStyle(Color.primary))
+        .containerBackground(for: .widget) {
+            ZStack {
+                palette.background
+                if entry.layout == .rows {
+                    RadialGradient(
+                        colors: [palette.glow.opacity(0.22), .clear],
+                        center: .topTrailing,
+                        startRadius: 1,
+                        endRadius: 230
+                    )
+                }
+            }
+        }
+    }
+
+    private var rows: some View {
         VStack(spacing: 0) {
             ForEach(Array(entry.metrics.prefix(3).enumerated()), id: \.offset) { _, metric in
                 let snapshot = TimeProgressCalculator.snapshot(
@@ -131,18 +149,6 @@ struct DaysYetWidgetEntryView: View {
                     compact: family == .systemSmall
                 )
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-            }
-        }
-        .foregroundStyle(renderingMode == .fullColor && showsContainerBackground ? AnyShapeStyle(palette.foreground) : AnyShapeStyle(Color.primary))
-        .containerBackground(for: .widget) {
-            ZStack {
-                palette.background
-                RadialGradient(
-                    colors: [palette.glow.opacity(0.22), .clear],
-                    center: .topTrailing,
-                    startRadius: 1,
-                    endRadius: 230
-                )
             }
         }
     }
@@ -355,6 +361,6 @@ struct DaysYetWidget: Widget {
         }
         .configurationDisplayName("widget.gallery.title")
         .description("widget.gallery.description")
-        .supportedFamilies([.systemSmall, .systemMedium])
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge])
     }
 }

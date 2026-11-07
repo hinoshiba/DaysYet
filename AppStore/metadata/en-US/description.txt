@@ -11,7 +11,7 @@ FOUR CIRCLES
 Show four timelines in a 2×2 grid with Small and Large Home Screen widgets. Choose each position, percentage/time left/end date for the center, and a theme. Defaults are This week, This month, This year, and Daily activity. The four selections are independent of the app's three timelines. Touch and hold the added widget > Edit Widget to change them.
 
 TWO ACTIVITY SCHEDULES AND YOUR WEEK
-Set up two activities, such as your whole day and work hours, with custom names, start and end times, and active weekdays. Set individual weekdays to Off and use overnight schedules in your device’s local time. An activity that has started continues until its end, even if the next day is Off. Choose the first day of This week using the device calendar setting or any weekday. Edit an activity schedule by tapping its card on the Times tab. Your existing work times and display selections are preserved.
+Set up two activities, such as your whole day and work hours, with custom names, start and end times, and active weekdays. Set individual weekdays to Off and use overnight schedules in your device’s local time. An activity that has started continues until its end, even if the next day is Off. Choose the first day of This week using the device calendar setting or any weekday. Edit an activity schedule by tapping its row on the Times tab. Your existing work times and display selections are preserved.
 
 COUNT YOUR AVAILABLE STUDY DAYS
 Plan a period of up to 366 days, including the start and end dates. Give it a name, select weekdays, and add or exclude individual dates in the calendar. Two-week and four-week shortcuts help you start a short-term plan. Show the remaining study days in the app or widgets. The count and percentage show selected days still available, including today when selected. It does not record completed study sessions or access your device calendar. Edit your plan by tapping Study days on the Times tab.
@@ -28,6 +28,6 @@ JAPANESE AND ENGLISH
 Use the app, widget, and widget configuration in Japanese or English.
 
 ON DEVICE BY DESIGN
-No account is required. Your birth date, configured dates, activity names, times and weekdays, week-start choice, and study plan remain in the on-device area shared by the app and widget and are not sent to the developer. DaysYet contains no advertising or analytics SDKs. You can delete all saved data from Settings at any time.
+No account is required. Your birth date, configured dates, activity names, times and weekdays, week-start choice, and study plan remain in the on-device area shared by the app and widget and are not sent to the developer. DaysYet contains no advertising or analytics SDKs. You can delete all saved data at any time from About DaysYet, opened with the info button at the top right of Times.
 
 The healthy-age goal is a personal planning marker you choose. It is not a statistic, medical advice, diagnosis, or a prediction of your health or lifespan.

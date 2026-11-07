@@ -181,7 +181,7 @@ struct MacWidgetDocking {
             : radius * Self.attachmentDiameterMultiplier
         // Screen-coordinate subtraction can round fractional contact points.
         // Dock circles sit inside a reserved strip, away from the physical
-        // screen edge. Sliding across that strip must retain the open row.
+        // screen edge. Sliding across that strip retains the Dock insertion target.
         let dockDepth: CGFloat
         if target.isSystemDock {
             switch target.edge {
@@ -286,7 +286,7 @@ struct MacWidgetDragOverlay: View {
     let snapshot: MetricSnapshot
     let accent: Color
     var dockLanding: MacSystemDockLandingVisual? = nil
-    var dockImages: [MetricKind: NSImage] = [:]
+    var dockPresentations: [MetricKind: MacSystemDockPresentation] = [:]
 
     private func local(_ frame: NSRect) -> CGRect {
         CGRect(x: frame.minX - docking.screenFrame.minX, y: docking.screenFrame.maxY - frame.maxY,
@@ -297,9 +297,10 @@ struct MacWidgetDragOverlay: View {
         ZStack(alignment: .topLeading) {
             if let dockLanding {
                 ForEach(MetricKind.allCases, id: \.self) { metric in
-                    if let tile = dockLanding.tiles[metric], let image = dockImages[metric] {
+                    if let tile = dockLanding.tiles[metric], let presentation = dockPresentations[metric] {
                         let rect = local(tile.frame)
-                        Image(nsImage: image).resizable().interpolation(.high)
+                        MacSystemDockTileView(presentation: presentation)
+                            .scaleEffect(x: rect.width / 128, y: rect.height / 128)
                             .frame(width: rect.width, height: rect.height)
                             .opacity(tile.opacity)
                             .offset(x: rect.minX, y: rect.minY)

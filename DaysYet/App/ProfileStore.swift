@@ -9,13 +9,14 @@ final class ProfileStore: ObservableObject {
 
     init(
         profile: UserProfile = ProfileRepository.load(),
+        appliesLaunchArguments: Bool = true,
         saveProfile: @escaping (UserProfile) -> Void = {
             ProfileRepository.save($0)
             WidgetCenter.shared.reloadAllTimelines()
         }
     ) {
 #if DEBUG
-        let arguments = ProcessInfo.processInfo.arguments
+        let arguments = appliesLaunchArguments ? ProcessInfo.processInfo.arguments : []
         // Synthetic UI-review data must never replace a person’s saved profile.
         self.saveProfile = arguments.contains("--screenshot-mode") ? { _ in } : saveProfile
         if arguments.contains("--screenshot-onboarding") {
@@ -124,6 +125,51 @@ final class ProfileStore: ObservableObject {
         guard metrics.indices.contains(index) else { return }
         metrics[index] = metric
         update { $0.circleWidgetSettings.metrics = metrics }
+    }
+
+    func removeCircleWidgetMetrics(at offsets: IndexSet) {
+        var metrics = profile.circleWidgetSettings.normalizedMetrics
+        guard !offsets.isEmpty, offsets.allSatisfy({ metrics.indices.contains($0) }),
+              offsets.count < metrics.count else { return }
+        metrics.remove(atOffsets: offsets)
+        update { $0.circleWidgetSettings.metrics = metrics }
+    }
+
+    func moveCircleWidgetMetrics(from offsets: IndexSet, to destination: Int) {
+        var metrics = profile.circleWidgetSettings.normalizedMetrics
+        guard !offsets.isEmpty, offsets.allSatisfy({ metrics.indices.contains($0) }),
+              (0...metrics.count).contains(destination) else { return }
+        metrics.move(fromOffsets: offsets, toOffset: destination)
+        update { $0.circleWidgetSettings.metrics = metrics }
+    }
+
+    /// Widgets select existing times without changing their shared contents.
+    func addCircleWidgetMetric(_ metric: MetricKind) {
+        var metrics = profile.circleWidgetSettings.normalizedMetrics
+        guard metrics.count < CircleWidgetSettings.maximumCount else { return }
+        metrics.append(metric)
+        update { $0.circleWidgetSettings.metrics = metrics }
+    }
+
+    func saveMetricSettings(_ metric: MetricKind, from draft: UserProfile) {
+        update { Self.applyMetricSettings(metric, from: draft, to: &$0) }
+    }
+
+    private static func applyMetricSettings(_ metric: MetricKind, from draft: UserProfile, to profile: inout UserProfile) {
+        switch metric {
+        case .activity: profile.dailyActivity = draft.dailyActivity
+        case .workday: profile.workActivity = draft.workActivity
+        case .study: profile.studySchedule = draft.studySchedule
+        case .healthyLife:
+            profile.birthDate = draft.birthDate
+            profile.healthyLifeYears = draft.healthyLifeYears
+        case .customLife:
+            profile.customTargetName = draft.customTargetName
+            profile.customTargetStartDate = draft.customTargetStartDate
+            profile.customTargetDate = draft.customTargetDate
+        case .week: profile.weekStartDay = draft.weekStartDay
+        case .month, .year: break
+        }
     }
 
 #if os(macOS)
