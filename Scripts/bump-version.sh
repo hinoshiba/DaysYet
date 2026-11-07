@@ -47,6 +47,18 @@ for target_name in targets:
             raise SystemExit(f'error: {target_name} must define exactly one {key}')
     target_section = target_section[:match.start()] + block + target_section[match.end():]
 
+if platform == 'macos':
+    match = re.search(r'^  DaysYetDockTile:\n(.*?)(?=^  \w|\Z)', prefix, re.M | re.S)
+    if match is None:
+        raise SystemExit('error: project.yml is missing the DaysYetDockTile template')
+    block = match[0]
+    for key, value in [('MARKETING_VERSION', version), ('CURRENT_PROJECT_VERSION', build)]:
+        block, count = re.subn(rf'^        {key}: "[^"\n]+"$',
+                              f'        {key}: "{value}"', block, flags=re.M)
+        if count != 1:
+            raise SystemExit(f'error: DaysYetDockTile must define exactly one {key}')
+    prefix = prefix[:match.start()] + block + prefix[match.end():]
+
 configuration_path = Path(configuration)
 metadata = configuration_path.read_text()
 for key, value in [('version', version), ('build', build)]:

@@ -11,7 +11,7 @@ Choose one to eight timelines. Small shows the first four; Medium and Large show
 WIDGET AND TIMES
 On Widget, choose Three rows or Circles. The installed DaysYet widget follows your layout, timelines, and theme. Tap one of four live theme previews to select it. Circle previews offer Small, Medium, and Large. Use + to add from Times, tap to replace, and Edit to reorder or remove. Schedules and dates live in Times, with Save and Cancel.
 
-The info button explains installation and includes privacy and license links. Existing custom three-row widgets keep their choices. The original circle-only widget remains as Circles (fixed). To follow the app, add DaysYet; in Edit Widget, enable Follow app appearance and choose App setting for appearance options.
+The info button opens a guide from the bottom. Timeline selection opens a separate screen with a Back button. About DaysYet, at the bottom of either tab, contains privacy, license, and data-reset controls. Existing custom three-row widgets keep their choices. The original circle-only widget remains as Circles (fixed). To follow the app, add DaysYet; in Edit Widget, enable Follow app appearance and choose App setting for appearance options.
 
 TWO ACTIVITY SCHEDULES AND YOUR WEEK
 Set names, start/end times, and active weekdays for two schedules. Overnight activities use device-local time and continue until their end even if the next day is Off. Tap a schedule in Times to edit. Tap This week to choose its first day; this also orders the study calendar without changing selected dates.
@@ -32,6 +32,6 @@ JAPANESE AND ENGLISH
 Use the app, widgets, and widget configuration in Japanese or English.
 
 ON DEVICE BY DESIGN
-No account is required. Dates, goals, schedules, and preferences stay on device and are never sent to the developer. No advertising or analytics SDKs. Delete all saved data from About DaysYet, opened with the info button at the top right of Times.
+No account is required. Dates, goals, schedules, and preferences stay on device and are never sent to the developer. No advertising or analytics SDKs. Delete all saved data from About DaysYet at the bottom of either tab.
 
 Healthy-age goals are personal planning markers, not statistics, medical advice, diagnoses, or health/lifespan predictions.

@@ -1,6 +1,10 @@
 # Release readiness
 
-## Current iOS 0.1.10 (15) submission
+## Current 0.2.0 preparation
+
+The release owner authorized iOS / iPadOS 0.2.0 (16) and native macOS 0.2.0 (13), with automatic release after approval. Local candidate tests passed: 145 iOS tests and 382 default Mac App Store tests. Release compliance passed, including current store assets and live public URLs. Updated metadata and screenshots are prepared. Both App Store Connect version drafts exist and retain automatic release to all users. Archive validation, upload, processing, exact build selection, and final App Review submission remain pending; see [0.2.0](../releases/0.2.0.md).
+
+## Historical iOS 0.1.10 (15) submission
 
 The release owner authorized merging the circle/layout, color-discovery, and Times long-press color improvements and submitting an iPhone / iPad update. Final Submit for Review succeeded for iOS 0.1.10 (15) on 2026-10-20 at 19:09 JST. The formal App Review receipt confirmed one submitted item, the exact 0.1.10 (15) build, Waiting for Review, and the 19:09 JST submission time. Automatic release after approval to all users is retained. Before this upload, App Store Connect showed iOS 0.1.9 (14) Ready for Distribution, so no withdrawal was required. Mac remains 0.1.8 (12). Approval and public availability of 0.1.10 are unconfirmed.
 
