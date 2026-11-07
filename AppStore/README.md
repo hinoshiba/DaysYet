@@ -1,8 +1,8 @@
 # App Store submission resources
 
-**Preparing iOS / iPadOS 0.2.0 (16) and macOS 0.2.0 (13).** The release owner requested App Store submission for both platforms with automatic release after approval. App Store Connect showed the previous iOS 0.1.10 (15) and macOS 0.1.8 (12) versions Ready for Distribution on 2026-11-07. New 0.2.0 version drafts exist for both platforms; archive validation, upload, processing, and final review submission are not yet complete. See the [current 0.2.0 release record](releases/0.2.0.md).
+**iOS / iPadOS 0.2.0 (16) and macOS 0.2.0 (13) are Waiting for Review.** Final Submit for Review succeeded on 2026-11-07 at 16:22 JST for iOS and 16:15 JST for Mac. Both exact builds completed upload and processing and are configured for automatic release after approval to all users. Approval and public availability are not yet confirmed. See the [current 0.2.0 release record](releases/0.2.0.md) for source tags, local verification, the hosted CI limitation, and submission receipts.
 
-The current local package contains refreshed Japanese/English descriptions, release notes, review instructions, 36 iPhone/iPad screenshots, and 14 native Mac screenshots. The Mac store package describes screen-edge placement and excludes direct-distribution Dock integration.
+The current package contains refreshed Japanese/English descriptions, release notes, review instructions, 36 iPhone/iPad screenshots, and 14 native Mac screenshots. Saved metadata matched the local files and all 50 screenshots are registered in App Store Connect. The Mac store package describes screen-edge placement and excludes direct-distribution Dock integration.
 
 ## Historical submission records
 
