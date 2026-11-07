@@ -39,7 +39,7 @@ final class WidgetNavigationTests: XCTestCase {
         let sizes = app.staticTexts["「DaysYet」の小・中・大サイズを選びます。サークルは小サイズで先頭4つ、中・大サイズで最大8つを表示します。"]
         reveal(sizes, in: app)
         attachScreenshot(app, name: "widget-guide-japanese")
-        app.buttons["完了"].tap()
+        app.navigationBars["使い方"].buttons.element(boundBy: 0).tap()
         attachScreenshot(app, name: "widget-editor-japanese-small-preview")
         XCTAssertTrue(circles.isSelected)
     }
@@ -134,14 +134,14 @@ final class WidgetNavigationTests: XCTestCase {
         XCTAssertTrue(app.buttons["times.color.reset"].waitForExistence(timeout: 5))
         XCTAssertEqual(picker.value as? String, "#000000")
         attachScreenshot(app, name: "times-color-changed-preview")
-        app.buttons["times.color.done"].tap()
+        app.navigationBars["Change color"].buttons.element(boundBy: 0).tap()
 
         let month = app.descendants(matching: .any)["times.metric.month"].firstMatch
         month.press(forDuration: 1)
         changeColor.tap()
         XCTAssertTrue(picker.waitForExistence(timeout: 5))
         XCTAssertEqual(picker.value as? String, "Palette template")
-        app.buttons["times.color.done"].tap()
+        app.navigationBars["Change color"].buttons.element(boundBy: 0).tap()
 
         week.press(forDuration: 1)
         changeColor.tap()
@@ -150,7 +150,7 @@ final class WidgetNavigationTests: XCTestCase {
         app.buttons["times.color.reset"].tap()
         XCTAssertEqual(picker.value as? String, "Palette template")
         XCTAssertFalse(app.buttons["times.color.reset"].exists)
-        app.buttons["times.color.done"].tap()
+        app.navigationBars["Change color"].buttons.element(boundBy: 0).tap()
     }
 
     @MainActor
@@ -165,7 +165,7 @@ final class WidgetNavigationTests: XCTestCase {
         changeColor.tap()
         XCTAssertTrue(app.buttons["times.color.picker"].waitForExistence(timeout: 5))
         attachScreenshot(app, name: "times-color-shortcut-japanese")
-        app.buttons["times.color.done"].tap()
+        app.navigationBars["色を変更"].buttons.element(boundBy: 0).tap()
         milestone.tap()
         XCTAssertTrue(app.textFields["customLife.name"].waitForExistence(timeout: 5))
     }
@@ -187,6 +187,8 @@ final class WidgetNavigationTests: XCTestCase {
         guide.tap()
         XCTAssertTrue(app.navigationBars["使い方"].waitForExistence(timeout: 5))
         attachScreenshot(app, name: "widget-guide-japanese-AX5")
+        app.navigationBars["使い方"].buttons.element(boundBy: 0).tap()
+        XCTAssertTrue(guide.waitForExistence(timeout: 5))
     }
 
     @MainActor

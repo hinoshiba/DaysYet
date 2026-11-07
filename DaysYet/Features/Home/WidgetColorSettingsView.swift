@@ -104,66 +104,57 @@ struct WidgetColorSettingsView: View {
 /// Circles inherit these colors unless the user has set an explicit circle override.
 struct TimelineColorSettingsView: View {
     @EnvironmentObject private var store: ProfileStore
-    @Environment(\.dismiss) private var dismiss
     let metric: MetricKind
 
     var body: some View {
-        NavigationStack {
-            Form {
-                Section {
-                    TimelineView(.periodic(from: .now, by: 60)) { context in
-                        MetricSummaryRow(
-                            snapshot: TimeProgressCalculator.snapshot(
-                                for: metric, profile: store.profile, now: context.date
-                            ),
-                            valueStyle: store.profile.dashboardValueStyle,
-                            theme: store.profile.widgetTheme,
-                            customColors: store.profile.widgetCustomColors
-                        )
-                    }
-                    .listRowInsets(EdgeInsets())
-                    .listRowBackground(Color.clear)
-                    .accessibilityIdentifier("times.color.preview")
-                }
-
-                Section {
-                    ColorPicker(
-                        L10n.text("色", "Color"),
-                        selection: colorBinding,
-                        supportsOpacity: false
+        Form {
+            Section {
+                TimelineView(.periodic(from: .now, by: 60)) { context in
+                    MetricSummaryRow(
+                        snapshot: TimeProgressCalculator.snapshot(
+                            for: metric, profile: store.profile, now: context.date
+                        ),
+                        valueStyle: store.profile.dashboardValueStyle,
+                        theme: store.profile.widgetTheme,
+                        customColors: store.profile.widgetCustomColors
                     )
-                    .accessibilityValue(
-                        store.profile.widgetCustomColors[metric]?.hex
-                            ?? L10n.text("配色テンプレート", "Palette template")
-                    )
-                    .accessibilityIdentifier("times.color.picker")
+                }
+                .listRowInsets(EdgeInsets())
+                .listRowBackground(Color.clear)
+                .accessibilityIdentifier("times.color.preview")
+            }
 
-                    if store.profile.widgetCustomColors[metric] != nil {
-                        Button(L10n.text("配色テンプレートに戻す", "Use palette color")) {
-                            store.update { $0.widgetCustomColors[metric] = nil }
-                        }
-                        .accessibilityIdentifier("times.color.reset")
+            Section {
+                ColorPicker(
+                    L10n.text("色", "Color"),
+                    selection: colorBinding,
+                    supportsOpacity: false
+                )
+                .accessibilityValue(
+                    store.profile.widgetCustomColors[metric]?.hex
+                        ?? L10n.text("配色テンプレート", "Palette template")
+                )
+                .accessibilityIdentifier("times.color.picker")
+
+                if store.profile.widgetCustomColors[metric] != nil {
+                    Button(L10n.text("配色テンプレートに戻す", "Use palette color")) {
+                        store.update { $0.widgetCustomColors[metric] = nil }
                     }
-                } header: {
-                    Text(metric.title(profile: store.profile))
-                } footer: {
-                    Text(L10n.text(
-                        "「時間」とウィジェットに反映します。サークルに個別の色を設定している場合は、その色を使います。",
-                        "Used in Times and widgets. Circles keep any color set specifically for that timeline."
-                    ))
+                    .accessibilityIdentifier("times.color.reset")
                 }
-                .listRowBackground(DaysYetTheme.panel)
+            } header: {
+                Text(metric.title(profile: store.profile))
+            } footer: {
+                Text(L10n.text(
+                    "「時間」とウィジェットに反映します。サークルに個別の色を設定している場合は、その色を使います。",
+                    "Used in Times and widgets. Circles keep any color set specifically for that timeline."
+                ))
             }
-            .daysYetBackground()
-            .navigationTitle(L10n.text("色を変更", "Change color"))
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button(L10n.text("完了", "Done")) { dismiss() }
-                        .accessibilityIdentifier("times.color.done")
-                }
-            }
+            .listRowBackground(DaysYetTheme.panel)
         }
+        .daysYetBackground()
+        .navigationTitle(L10n.text("色を変更", "Change color"))
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     private var colorBinding: Binding<Color> {

@@ -2,16 +2,18 @@ import SwiftUI
 
 enum AppRoute: Hashable {
     case appInfo
+    case usageGuide
+    case widgetColors
+    case timelineColor(MetricKind)
 }
 
 struct RootView: View {
     @EnvironmentObject private var store: ProfileStore
     @State private var selectedTab: Int
-    @State private var widgetPath: [AppRoute] = []
+    @State private var widgetPath: [AppRoute]
     @State private var timePath: [AppRoute]
 #if DEBUG
     @State private var screenshotMetricSettingsPresented: Bool
-    @State private var screenshotColorsPresented: Bool
 #endif
 
     init() {
@@ -21,11 +23,12 @@ struct RootView: View {
         let opensAppInfo = arguments.contains("--screenshot-app-info") || arguments.contains("--screenshot-settings")
         let initialTab = arguments.contains("--screenshot-times") || editsMetric || opensAppInfo ? 1 : 0
         _selectedTab = State(initialValue: initialTab)
+        _widgetPath = State(initialValue: arguments.contains("--screenshot-colors") ? [.widgetColors] : [])
         _timePath = State(initialValue: opensAppInfo && !editsMetric ? [.appInfo] : [])
         _screenshotMetricSettingsPresented = State(initialValue: editsMetric)
-        _screenshotColorsPresented = State(initialValue: arguments.contains("--screenshot-colors"))
 #else
         _selectedTab = State(initialValue: 0)
+        _widgetPath = State(initialValue: [])
         _timePath = State(initialValue: [])
 #endif
     }
@@ -33,24 +36,15 @@ struct RootView: View {
     var body: some View {
         TabView(selection: $selectedTab) {
             NavigationStack(path: $widgetPath) {
-                WidgetStudioView(openTimeLibrary: { selectedTab = 1 })
-                    .navigationDestination(for: AppRoute.self) { _ in
-                        AppInfoView(resetData: resetData)
-                    }
-#if DEBUG
-                    .navigationDestination(isPresented: $screenshotColorsPresented) {
-                        WidgetColorSettingsView(layout: store.profile.widgetLayout)
-                    }
-#endif
+                WidgetStudioView(openTimeLibrary: openTimeLibrary)
+                    .navigationDestination(for: AppRoute.self, destination: destination)
             }
             .tabItem { Label(L10n.text("ウィジェット", "Widget"), systemImage: "square.grid.2x2") }
             .tag(0)
 
             NavigationStack(path: $timePath) {
-                TimeLibraryView()
-                    .navigationDestination(for: AppRoute.self) { _ in
-                        AppInfoView(resetData: resetData)
-                    }
+                TimeLibraryView(openColorSettings: { timePath.append(.timelineColor($0)) })
+                    .navigationDestination(for: AppRoute.self, destination: destination)
 #if DEBUG
                     .sheet(isPresented: $screenshotMetricSettingsPresented) {
                         MetricSettingsView(kind: screenshotMetricKind)
@@ -64,6 +58,21 @@ struct RootView: View {
             OnboardingView()
                 .environmentObject(store)
         }
+    }
+
+    @ViewBuilder
+    private func destination(for route: AppRoute) -> some View {
+        switch route {
+        case .appInfo: AppInfoView(resetData: resetData)
+        case .usageGuide: UsageGuideView()
+        case .widgetColors: WidgetColorSettingsView(layout: store.profile.widgetLayout)
+        case .timelineColor(let metric): TimelineColorSettingsView(metric: metric)
+        }
+    }
+
+    private func openTimeLibrary() {
+        timePath.removeAll()
+        selectedTab = 1
     }
 
     private func resetData() {

@@ -12,7 +12,7 @@ extension MetricKind {
 
 struct TimeLibraryView: View {
     @EnvironmentObject private var store: ProfileStore
-    @State private var colorEditingMetric: MetricKind?
+    let openColorSettings: (MetricKind) -> Void
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 60)) { context in
@@ -28,7 +28,7 @@ struct TimeLibraryView: View {
                             valueStyle: store.profile.dashboardValueStyle,
                             theme: store.profile.widgetTheme,
                             customColors: store.profile.widgetCustomColors,
-                            editColor: { colorEditingMetric = metric }
+                            editColor: { openColorSettings(metric) }
                         )
                     }
                 } header: {
@@ -44,15 +44,12 @@ struct TimeLibraryView: View {
                 AppInfoSection()
             }
         }
-        .sheet(item: $colorEditingMetric) { metric in
-            TimelineColorSettingsView(metric: metric)
-        }
         .daysYetBackground()
         .navigationTitle(L10n.text("時間", "Times"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                UsageGuideButton(accessibilityIdentifier: "times.guide")
+                UsageGuideLink(accessibilityIdentifier: "times.guide")
             }
         }
     }
@@ -77,7 +74,7 @@ private struct MetricLibraryRow: View {
                         valueStyle: valueStyle,
                         theme: theme,
                         customColors: customColors,
-                        showsSettingsAffordance: true
+                        showsEditAction: true
                     )
                 }
                 .buttonStyle(.plain)

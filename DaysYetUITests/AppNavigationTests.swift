@@ -20,7 +20,8 @@ final class AppNavigationTests: XCTestCase {
             XCTAssertTrue(app.staticTexts["Arrange your widget"].exists)
             XCTAssertFalse(app.buttons["app.info.privacy"].exists)
             attachScreenshot(app, name: "shared-guide-\(tab)-en")
-            app.buttons["app.guide.done"].tap()
+            XCTAssertFalse(app.buttons["app.guide.done"].exists)
+            app.navigationBars["How to use"].buttons.element(boundBy: 0).tap()
             XCTAssertTrue(guide.waitForExistence(timeout: 5))
 
             let info = app.buttons["app.info.open"]
@@ -76,6 +77,12 @@ final class AppNavigationTests: XCTestCase {
     func testResetFromAboutReturnsToOnboarding() {
         // Screenshot mode uses a synthetic profile and never resets persisted data.
         let app = launchTimes(language: "en", locale: "en_US")
+        app.buttons.matching(identifier: "Widget").firstMatch.tap()
+        let colors = app.buttons["widget.colors.open"]
+        reveal(colors, in: app)
+        colors.tap()
+        XCTAssertTrue(app.navigationBars["Timeline colors"].waitForExistence(timeout: 5))
+        app.buttons.matching(identifier: "Times").firstMatch.tap()
         let info = app.buttons["app.info.open"]
         reveal(info, in: app)
         info.tap()
@@ -89,6 +96,9 @@ final class AppNavigationTests: XCTestCase {
         XCTAssertTrue(app.buttons["times.guide"].waitForExistence(timeout: 5))
         XCTAssertFalse(app.navigationBars["About DaysYet"].exists)
         XCTAssertTrue(app.buttons.matching(identifier: "Times").firstMatch.isSelected)
+        app.buttons.matching(identifier: "Widget").firstMatch.tap()
+        XCTAssertTrue(app.buttons["widget.guide"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.navigationBars["Timeline colors"].exists)
     }
 
     @MainActor
@@ -107,7 +117,7 @@ final class AppNavigationTests: XCTestCase {
             XCTAssertTrue(app.navigationBars["使い方"].waitForExistence(timeout: 5))
             XCTAssertTrue(app.staticTexts["時間を編集"].exists)
             attachScreenshot(app, name: "shared-guide-\(tab)-large-text-ja")
-            app.buttons["app.guide.done"].tap()
+            app.navigationBars["使い方"].buttons.element(boundBy: 0).tap()
 
             let info = app.buttons["app.info.open"]
             reveal(info, in: app)

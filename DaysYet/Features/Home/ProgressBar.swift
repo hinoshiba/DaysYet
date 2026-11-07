@@ -49,8 +49,8 @@ struct MetricSummaryRow: View {
     let valueStyle: MetricValueStyle
     var theme: WidgetTheme = .vividNight
     var customColors: [MetricKind: WidgetColor] = [:]
-    /// Only times with editable content show a disclosure indicator.
-    var showsSettingsAffordance = false
+    /// Editing opens a Save/Cancel sheet; it is distinct from navigating deeper.
+    var showsEditAction = false
 
     var body: some View {
         HStack(spacing: 16) {
@@ -76,19 +76,19 @@ struct MetricSummaryRow: View {
                     .monospacedDigit()
             }
 
-            Image(systemName: "chevron.right")
-                .font(.caption.weight(.semibold))
+            Image(systemName: "square.and.pencil")
+                .font(.body)
                 .foregroundStyle(.tertiary)
                 // Keep progress tracks aligned for read-only months and years.
-                .opacity(showsSettingsAffordance ? 1 : 0)
+                .opacity(showsEditAction ? 1 : 0)
                 .accessibilityHidden(true)
         }
         .padding(.vertical, 7)
         .contentShape(Rectangle())
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(snapshot.accessibilitySummary)
-        .accessibilityHint(showsSettingsAffordance
-            ? L10n.text("この時間の設定を開きます", "Opens this timer’s settings")
+        .accessibilityHint(showsEditAction
+            ? L10n.text("時刻や日付を編集します", "Edit this timeline’s schedule or dates")
             : "")
     }
 }

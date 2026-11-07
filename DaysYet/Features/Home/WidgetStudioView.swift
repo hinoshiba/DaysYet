@@ -110,9 +110,7 @@ struct WidgetStudioView: View {
                             }
                             .accessibilityIdentifier("widget.valueStyle")
                         }
-                        NavigationLink {
-                            WidgetColorSettingsView(layout: selectedLayout)
-                        } label: {
+                        NavigationLink(value: AppRoute.widgetColors) {
                             Text(L10n.text("項目ごとの色", "Timeline colors"))
                         }
                         .accessibilityIdentifier("widget.colors.open")
@@ -152,7 +150,7 @@ struct WidgetStudioView: View {
                 }
             }
             ToolbarItem(placement: .topBarTrailing) {
-                UsageGuideButton(accessibilityIdentifier: "widget.guide")
+                UsageGuideLink(accessibilityIdentifier: "widget.guide")
             }
         }
         .sheet(item: $timePicker, onDismiss: {
@@ -178,7 +176,7 @@ struct WidgetStudioView: View {
             ForEach(Array(selectedMetrics.enumerated()), id: \.offset) { index, metric in
                 Group {
                     if editMode.isEditing {
-                        WidgetMetricSettingRow(metric: metric, profile: store.profile, index: index, showsDisclosure: false)
+                        WidgetMetricSettingRow(metric: metric, profile: store.profile, index: index, showsSelectionAction: false)
                     } else {
                         Button {
                             timePicker = WidgetTimeRequest(destination: .circle(index))
