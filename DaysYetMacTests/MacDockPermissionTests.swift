@@ -4,14 +4,16 @@ import XCTest
 
 @MainActor
 final class MacDockPermissionTests: XCTestCase {
-    func testVisualHandoffRequiresItsOwnExplicitOptInAndResetRemovesIt() throws {
+    func testRetiredVisualHandoffDiscardsLegacyOptInWithoutDisablingDockPlacement() throws {
         try withPreferences { preferences, defaults in
             XCTAssertFalse(preferences.dockVisualHandoffEnabled)
-            preferences.isInSystemDock = true
-            XCTAssertFalse(preferences.dockVisualHandoffEnabled)
-            preferences.dockVisualHandoffEnabled = true
+            defaults.set(true, forKey: "mac-widget-dock-visual-handoff")
             let restored = MacWidgetPreferences(defaults: defaults, readDockPermission: { true })
-            XCTAssertTrue(restored.dockVisualHandoffEnabled)
+            XCTAssertFalse(restored.dockVisualHandoffEnabled)
+            XCTAssertNil(defaults.object(forKey: "mac-widget-dock-visual-handoff"))
+            XCTAssertTrue(restored.selectEdge(.bottom, dockEdge: .bottom))
+            XCTAssertTrue(restored.isInSystemDock)
+            XCTAssertFalse(restored.dockVisualHandoffEnabled)
             restored.reset()
             XCTAssertFalse(MacWidgetPreferences(defaults: defaults, readDockPermission: { true }).dockVisualHandoffEnabled)
         }

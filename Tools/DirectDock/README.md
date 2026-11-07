@@ -108,7 +108,15 @@ from a screen edge still unfolds the full group after the slots are ready.
 A release on another screen edge retains the existing magnetic attachment and
 helper-removal behavior. Ordinary edges unfold on contact while held.
 
-### Optional visual transition
+### Retired visual transition prototype
+
+The **Moving within the Dock** settings section and its screen-recording
+consent UI have been removed. The snapshot transition is permanently disabled,
+and preferences discard any saved opt-in from earlier builds. Dock placement
+and group dragging continue through the native movement path. The capture and
+cover implementation below is retained only as an inactive prototype.
+
+The following describes the earlier experiment:
 
 The native Dock still animates surrounding applications one exchange at a
 time. The experimental

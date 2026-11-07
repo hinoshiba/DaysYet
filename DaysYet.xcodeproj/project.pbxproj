@@ -37,7 +37,6 @@
 		22E67A312598A8E7B35D7B4B /* MacSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA2B8EC879B9A07781BC0776 /* MacSetupView.swift */; };
 		24DD53A121D0DA6BD9F70460 /* THIRD_PARTY_NOTICES.md in Resources */ = {isa = PBXBuildFile; fileRef = 37680AC2C679AD7E5923DC15 /* THIRD_PARTY_NOTICES.md */; };
 		2862772DC20692F87A366086 /* WidgetColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3495553E4DDA731CE2CDA3 /* WidgetColorTests.swift */; };
-		29E668644BBA49C02E465469 /* MacDockSnapshotSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DA1E8265CB818CA243E3D8F /* MacDockSnapshotSettings.swift */; };
 		2A7AF923DAA4DC4A617E7EE2 /* MacDockDirectDragTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E2515C0FEB68651AA97C14 /* MacDockDirectDragTests.swift */; };
 		2BA565CD144991F60BEA21CE /* MacSetupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53053C1748D1E4C40F1F9478 /* MacSetupController.swift */; };
 		2D84F53A7CF010A2A3893412 /* WidgetColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3495553E4DDA731CE2CDA3 /* WidgetColorTests.swift */; };
@@ -398,7 +397,6 @@
 		89FA560B29DF56B6FF274D66 /* MacSystemDockController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSystemDockController.swift; sourceTree = "<group>"; };
 		8AFCF242E2C62CAC2073184B /* MacDockTileDisplayStateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacDockTileDisplayStateTests.swift; sourceTree = "<group>"; };
 		8D4529A3EAFCABF61CBA729D /* ProfileRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileRepository.swift; sourceTree = "<group>"; };
-		8DA1E8265CB818CA243E3D8F /* MacDockSnapshotSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacDockSnapshotSettings.swift; sourceTree = "<group>"; };
 		8FE1F2B7FEEEBC873DF9B2C2 /* MacWidgetDragTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetDragTests.swift; sourceTree = "<group>"; };
 		8FE865DB573E3BF33345150E /* DaysYetMacTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DaysYetMacTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FEDFEC61AF3E8346BC5BB77 /* MacDockRegistrationCleanupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacDockRegistrationCleanupTests.swift; sourceTree = "<group>"; };
@@ -564,7 +562,6 @@
 				4653198ECC6C80EE4FF8F617 /* MacDockNativeURLProbeFixtures.swift */,
 				45022C1CAC2A7550CE143E00 /* MacDockRegistrationCleanup.swift */,
 				E2D07DB7C5FCD0D4D81FF251 /* MacDockSnapshotCapture.swift */,
-				8DA1E8265CB818CA243E3D8F /* MacDockSnapshotSettings.swift */,
 				E5ADF502C98902EE91835F98 /* MacDockSnapshotShield.swift */,
 				84B90E202776FC77FA72E87E /* MacDockTileProcessHost.swift */,
 				B18BD6B2B2B72D2A6012AE9D /* MacLoginItemSettings.swift */,
@@ -1371,7 +1368,6 @@
 				05A1DFCA39379EF311D449BF /* MacDockNativeURLProbeFixtures.swift in Sources */,
 				AAECD4D8CB7054A0FFB78F08 /* MacDockRegistrationCleanup.swift in Sources */,
 				E2C373F78F9FFE6FBC8CA733 /* MacDockSnapshotCapture.swift in Sources */,
-				29E668644BBA49C02E465469 /* MacDockSnapshotSettings.swift in Sources */,
 				1F31203855BEB5B9D39C53C0 /* MacDockSnapshotShield.swift in Sources */,
 				71C06F1D66BD3B4AE0CBAE1C /* MacDockTileMessage.swift in Sources */,
 				1505F4133E7CFBFBD3EE1117 /* MacDockTileProcessHost.swift in Sources */,

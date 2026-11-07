@@ -1,6 +1,6 @@
 # Privacy Policy / プライバシーポリシー
 
-最終更新 / Last updated: 2026-11-05
+最終更新 / Last updated: 2026-11-07
 
 ## 日本語
 
@@ -14,7 +14,7 @@ DaysYetは、利用者が入力した生年月日、健康でいたい年齢、�
 
 別途ビルドするMacの直接配布向け試作版はサンドボックスの外で動作し、このMacのアプリ専用設定領域を使用します。Dockへの配置にはアクセシビリティの許可が必要です。DaysYetのアイコンを見つけてまとめて移動するため、Dock項目の識別情報・順序・位置と、関連するポインタやキーのイベントをメモリ上で処理します。他アプリの識別情報や入力内容を保存・送信しません。各サークルを表示する補助プロセスには、描画画像と表示ラベルだけを端末内のパイプで渡し、プロフィール全体は渡しません。
 
-通常のDock移動に画面収録は不要です。直接配布向け試作版には、説明への同意とmacOSの画面収録許可を別途必要とする、初期状態でオフの表示実験があります。有効にした場合に限り、移動中のDockとすぐ周囲の静止画をメモリに保持します。その範囲に見える他アプリや壁紙も含まれます。画像は移動の終了・中止時に破棄し、画像ファイルの保存、音声取得、外部送信は行いません。App Store向けの通常ビルドにはこの実験とアクセシビリティによるDock操作は含まれません。
+Dock移動に画面収録は不要です。直接配布向け試作版にあった、Dock周辺の静止画で移動を覆う表示実験は終了しました。設定と同意画面を削除し、以前の有効化設定も読み込み時に消去します。現在のDock移動では画面画像や音声を取得・保存・送信しません。App Store向けの通常ビルドには、画面取得の試作コードとアクセシビリティによるDock操作は含まれません。
 
 ウィジェットをホーム画面またはロック画面に置く、またはMacの常駐パネルを表示すると、選択したタイトル、残り期間、残り割合、終了日時が端末を見ることのできる人の目に触れる場合があります。ロック画面のウィジェットは、端末がロックされている間も表示される場合があります。
 
@@ -52,7 +52,7 @@ The data stays on the device. On iPhone and iPad it is stored in an App Group co
 
 The separately built direct-distribution Mac prototype runs outside the sandbox and uses app-specific preferences on that Mac. Dock placement requires Accessibility permission. To locate and move its icons as a group, DaysYet processes Dock item identities, order, geometry, and relevant pointer or keyboard events in memory. It does not save or transmit other apps' identities or input content. Each circle's helper process receives only its rendered image and display labels through local pipes, not the full profile.
 
-Ordinary Dock movement does not require Screen Recording. The direct prototype includes an optional visual experiment that is off by default and requires both consent to its explanation and macOS Screen Recording permission. Only when enabled does it temporarily hold a still image of the Dock and its immediate surroundings in memory, including any other apps or wallpaper visible in that region. Images are discarded when the move ends or is cancelled; there are no image files, audio capture, or external transfers. Normal App Store builds exclude this experiment and Accessibility-based Dock control.
+Dock movement does not require Screen Recording. The direct prototype's experiment that covered movement with a still image of the Dock region has been retired. Its setting and consent screen are removed, and any saved opt-in is discarded when preferences load. Current Dock movement does not capture, save, or transmit screen images or audio. Normal App Store builds exclude the inactive capture prototype and Accessibility-based Dock control.
 
 If a widget is placed on the Home Screen or Lock Screen, or the Mac desktop panel is shown, its title, time left, remaining percentage, or target date may be visible to anyone who can view the device. A Lock Screen widget may remain visible while the device is locked.
 
