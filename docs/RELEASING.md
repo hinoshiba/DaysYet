@@ -44,6 +44,14 @@ checkout opens in Xcode and CI can verify reproducibility. Regenerate with
 `./build.sh project` after configuration changes; include the generated files
 in the same reviewed change.
 
+## Signing assets
+
+Applications released by the same Apple Developer Team reuse the Team-managed approved distribution signing identity; do not create an application-specific distribution private key. The certificate type must match the platform and distribution channel. App Store releases use the appropriate App Store distribution identity selected by Xcode. A Developer ID Application identity is for macOS software distributed outside the Mac App Store. See Apple's [certificate overview](https://developer.apple.com/help/account/certificates/certificates-overview).
+
+Resolve signing material only from an authorized macOS Keychain or private release system outside the checkout. Do not export it into this working tree, create a repository signing directory, or paste identity names, fingerprints, Team IDs, personal details, Keychain paths, or identity-discovery output into source, public logs, issues, pull requests, or release notes. Public CI remains unsigned.
+
+If exposure is suspected, stop the release and use the private security process. Revoke or rotate the affected credential before signing another build; deleting a file in a later commit is not remediation for material already present in Git history.
+
 ## Configure the authorized Mac
 
 1. Use a stable Xcode release and SDK accepted by App Store Connect for the

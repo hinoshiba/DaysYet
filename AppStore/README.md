@@ -24,6 +24,8 @@ review/                     Review instructions, questionnaire answers, and read
 marketing/                  Discovery research, localized social copy, and campaign links
 ```
 
+Resolve the Team-managed distribution signing identity only from an authorized Keychain or private release system outside this checkout; never copy signing material or identity output into the repository.
+
 Build and upload the release on the authorized Mac using Xcode. Follow [the local release procedure](../docs/RELEASING.md), then complete the submission in the App Store Connect browser:
 
 1. Use the existing iOS and macOS platforms in the DaysYet record; do not create another app record. `configuration.yml` describes iPhone / iPad; `macos/configuration.yml` describes native Mac. Confirm existing uploads before choosing each build number, and verify the exact processed build and reviewed source commit before submission. See [release readiness](review/release-readiness.md) and the current release record for verified status.

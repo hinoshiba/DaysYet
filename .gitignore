@@ -50,3 +50,18 @@ coverage/
 *.csr
 *.certSigningRequest
 credentials*.json
+
+# Private code-signing and release material must remain outside this checkout.
+*.der
+*.p7b
+*.p7c
+*.developerprofile
+*.app
+/.signing-private/
+/.release-private/
+/signing/
+/certificates/
+/provisioning/
+/secrets/
+/private-release/
+/release-export/

@@ -32,6 +32,8 @@ See the [0.1.8 release record](../releases/0.1.8.md) for that release's verified
 
 ## Mac submission and shared checks
 
+- [ ] The Team-managed distribution signing identity is resolved from an authorized Keychain or private release system outside the checkout; no signing material or identity output is present in the repository or public logs.
+
 - [x] The release owner selected native Mac as an additional platform on the existing DaysYet record, Apple ID `6802000765`. This does not submit an iOS update.
 - [x] The macOS platform is added to the existing DaysYet record, and version 0.1.2 is saved.
 - [ ] App Store Connect Primary Language is Japanese; English (U.S.) localization is added.
