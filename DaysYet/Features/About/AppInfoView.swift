@@ -1,5 +1,29 @@
 import SwiftUI
 
+/// The same app-information entry closes both main lists.
+struct AppInfoSection: View {
+    let openAppInfo: () -> Void
+
+    var body: some View {
+        Section {
+            Button(action: openAppInfo) {
+                HStack {
+                    Text(L10n.text("このアプリについて", "About DaysYet"))
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.footnote.weight(.semibold))
+                        .foregroundStyle(.tertiary)
+                        .accessibilityHidden(true)
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityIdentifier("app.info.open")
+        }
+        .listRowBackground(DaysYetTheme.panel)
+    }
+}
+
 struct AppInfoView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showResetConfirmation = false
@@ -92,8 +116,8 @@ struct PrivacyView: View {
         List {
             Section {
                 Text(L10n.text(
-                    "本アプリは、生年月日・目標年齢・活動時間とラベル・曜日・大切な日の起算日と目標日時・学習日の期間と曜日・個別の日付・表示設定を、アプリとウィジェットの共有領域に保存します。「時間」画面右上のⓘから「このアプリについて」を開き、いつでも全データを消去できます。",
-                    "This app stores your birth date, target age, activity hours with labels and weekdays, milestone start and target dates, study periods with weekdays and individual dates, and display choices in the private area shared by the app and its widget. You can delete all data at any time from About DaysYet, opened with the info button at the top right of Times."
+                    "本アプリは、生年月日・目標年齢・活動時間とラベル・曜日・大切な日の起算日と目標日時・学習日の期間と曜日・個別の日付・表示設定を、アプリとウィジェットの共有領域に保存します。「ウィジェット」または「時間」画面の一番下から「このアプリについて」を開き、いつでも全データを消去できます。",
+                    "This app stores your birth date, target age, activity hours with labels and weekdays, milestone start and target dates, study periods with weekdays and individual dates, and display choices in the private area shared by the app and its widget. You can delete all data at any time from About DaysYet at the bottom of either Widget or Times."
                 ))
             }
             .listRowBackground(DaysYetTheme.panel)

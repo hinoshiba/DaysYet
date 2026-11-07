@@ -41,6 +41,7 @@
 		2862772DC20692F87A366086 /* WidgetColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3495553E4DDA731CE2CDA3 /* WidgetColorTests.swift */; };
 		29E668644BBA49C02E465469 /* MacDockSnapshotSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DA1E8265CB818CA243E3D8F /* MacDockSnapshotSettings.swift */; };
 		2A7AF923DAA4DC4A617E7EE2 /* MacDockDirectDragTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8E2515C0FEB68651AA97C14 /* MacDockDirectDragTests.swift */; };
+		2B8D957D5F09BEC315A35788 /* UsageGuideView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CDDDE9CA6E494F52003B53C /* UsageGuideView.swift */; };
 		2BA565CD144991F60BEA21CE /* MacSetupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 53053C1748D1E4C40F1F9478 /* MacSetupController.swift */; };
 		2D84F53A7CF010A2A3893412 /* WidgetColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A3495553E4DDA731CE2CDA3 /* WidgetColorTests.swift */; };
 		2DCBD464C37F81B7F4FC236D /* ProfileRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D4529A3EAFCABF61CBA729D /* ProfileRepository.swift */; };
@@ -363,6 +364,7 @@
 		4989462490B5F91F83AAD1D6 /* WidgetColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetColor.swift; sourceTree = "<group>"; };
 		49F93EC8A24BBB5D349AB32F /* MacDockDirectDrag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacDockDirectDrag.swift; sourceTree = "<group>"; };
 		4AE5C12B70C3DBA89D332BFE /* MacSystemDockLandingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSystemDockLandingTests.swift; sourceTree = "<group>"; };
+		4CDDDE9CA6E494F52003B53C /* UsageGuideView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsageGuideView.swift; sourceTree = "<group>"; };
 		4F043AFA52F194DBD59AF711 /* DATA_SOURCES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = DATA_SOURCES.md; sourceTree = "<group>"; };
 		4FCA7AA269E6B8975A8FD72B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		53053C1748D1E4C40F1F9478 /* MacSetupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSetupController.swift; sourceTree = "<group>"; };
@@ -693,6 +695,7 @@
 			isa = PBXGroup;
 			children = (
 				29457B12D835B9C1B95BC250 /* AppInfoView.swift */,
+				4CDDDE9CA6E494F52003B53C /* UsageGuideView.swift */,
 			);
 			path = About;
 			sourceTree = "<group>";
@@ -1463,6 +1466,7 @@
 				A468C299613097577031EB71 /* TimeEditor.swift in Sources */,
 				B488AE222EA19AF5F4AA42DC /* TimeLibraryView.swift in Sources */,
 				567336EF98496F222B1AB276 /* TimeMetric.swift in Sources */,
+				2B8D957D5F09BEC315A35788 /* UsageGuideView.swift in Sources */,
 				11CE4CE5C819962411E0E55D /* UserProfile.swift in Sources */,
 				87B6D0840A107FE4F22AD04E /* WidgetColor.swift in Sources */,
 				DEA855224782A82C4E93C99B /* WidgetColorSettingsView.swift in Sources */,

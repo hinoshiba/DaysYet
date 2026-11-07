@@ -29,7 +29,10 @@ struct RootView: View {
     var body: some View {
         TabView(selection: $selectedTab) {
             NavigationStack {
-                WidgetStudioView(openTimeLibrary: { selectedTab = 1 })
+                WidgetStudioView(
+                    openTimeLibrary: { selectedTab = 1 },
+                    openAppInfo: { showsAppInfo = true }
+                )
 #if DEBUG
                     .navigationDestination(isPresented: $screenshotColorsPresented) {
                         WidgetColorSettingsView(layout: store.profile.widgetLayout)

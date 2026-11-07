@@ -41,6 +41,8 @@ struct TimeLibraryView: View {
                     ))
                 }
                 .listRowBackground(DaysYetTheme.panel)
+
+                AppInfoSection(openAppInfo: openAppInfo)
             }
         }
         .sheet(item: $colorEditingMetric) { metric in
@@ -51,10 +53,7 @@ struct TimeLibraryView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button(action: openAppInfo) {
-                    Label(L10n.text("このアプリについて", "About DaysYet"), systemImage: "info.circle")
-                }
-                .accessibilityIdentifier("app.info.open")
+                UsageGuideButton(accessibilityIdentifier: "times.guide")
             }
         }
     }

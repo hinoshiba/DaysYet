@@ -36,7 +36,8 @@ final class WidgetNavigationTests: XCTestCase {
         XCTAssertTrue(guide.isHittable)
         guide.tap()
 
-        XCTAssertTrue(app.staticTexts["「DaysYet」の小・中・大サイズを選びます。サークルは小サイズで先頭4つ、中・大サイズで最大8つを表示します。"].waitForExistence(timeout: 5))
+        let sizes = app.staticTexts["「DaysYet」の小・中・大サイズを選びます。サークルは小サイズで先頭4つ、中・大サイズで最大8つを表示します。"]
+        reveal(sizes, in: app)
         attachScreenshot(app, name: "widget-guide-japanese")
         app.buttons["完了"].tap()
         attachScreenshot(app, name: "widget-editor-japanese-small-preview")
@@ -84,7 +85,8 @@ final class WidgetNavigationTests: XCTestCase {
         let picker = app.segmentedControls["widget.layout"]
         XCTAssertTrue(picker.waitForExistence(timeout: 10))
         picker.buttons["Circles"].tap()
-        app.tabBars.buttons["Times"].tap()
+        let info = app.buttons["app.info.open"]
+        reveal(info, in: app)
         app.buttons["app.info.open"].tap()
         app.buttons["app.info.reset"].tap()
         app.buttons["Delete"].tap()
@@ -175,7 +177,7 @@ final class WidgetNavigationTests: XCTestCase {
         reveal(guide, in: app)
         XCTAssertTrue(guide.isHittable)
         guide.tap()
-        XCTAssertTrue(app.navigationBars["使い方・アプリ情報"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["使い方"].waitForExistence(timeout: 5))
         attachScreenshot(app, name: "widget-guide-japanese-AX5")
     }
 
