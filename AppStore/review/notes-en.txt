@@ -1,27 +1,22 @@
 DaysYet for iPhone and iPad needs no account or sign-in.
 
-New in 0.1.10 (15): Balanced Four circles with one-line names, consistent percentages, and proportionate rings. VoiceOver retains full names. Small shows the leading duration unit, two-digit years, and 24-hour activity times. Settings returns to the type chooser and remembers the last editor. Colors & palette and add/switch guidance are below the Small preview. Times cards have a Change color shortcut. Saved settings, overrides, and colors are preserved.
+New in 0.2.0 (16): A unified widget editor, one to eight circles, Medium/Large circle support, shared live theme previews, and refreshed Widget/Times tabs. The primary DaysYet widget follows the app layout. The info guide is a sheet; circle/row selection uses push and Back navigation. Existing profiles, explicit widget choices, and custom colors are preserved.
 
-Editor and colors:
-1. Complete onboarding; the milestone is optional. On Widget, choose Three timelines or Four circles. Settings > Widget settings returns to this chooser, even from Colors & palette. This edits settings; it does not replace a placed widget.
-2. Colors & palette below the preview has four templates and native color pickers. Changes save immediately. Custom colors have reset controls. Choosing a template clears that design's individual colors, including hidden timelines.
-3. On Times, touch and hold a card > Change color to open its native color picker and optional reset. An accessibility action is also available. Cards use the same colors as Three timelines; normal taps still edit schedules/dates where available.
-4. Row/circle colors save separately. Circles can follow the Three timelines palette with overrides or use an independent template. Repeated timelines share a color. Pickers allow arbitrary opaque colors.
+Editor:
+1. Complete onboarding; a milestone is optional. In Widget, choose Three rows or Circles. Tap a theme preview to apply it. Circle previews offer Small, Medium, and Large. Small shows the first four circles; Medium/Large show up to eight.
+2. Tap a row/circle to replace its timeline, or + to add a circle. Selecting a timeline applies immediately and returns. Back or edge swipe cancels without changing the selection. Edit reorders/removes circles; one must remain. Circles can repeat timelines. Selecting a row's existing timeline swaps the two rows.
+3. Open the info button for setup guidance. About DaysYet is at the bottom of both tabs and includes privacy, licenses, version, and Delete all data.
+4. Four themes are shared by rows and circles. Timeline colors opens native color pickers. Theme changes retain custom colors. In Times, touch and hold a row > Change color to customize/reset it; the accessibility action is also available. Circle-specific overrides remain intact.
 
 Home Screen:
-Add or switch on the Home Screen opens instructions. Touch and hold the Home Screen > Edit > Add Widget > DaysYet. Choose DaysYet — Three timelines (Small/Medium) or Four circles (Small/Large). To switch kinds, add the desired widget, then optionally remove the old one. Arcs show remaining percentage; center values show percentage, time left, or end date.
-
-New circles follow app settings. For existing circles, touch and hold > Edit Widget and set positions, Value style, and Theme to App setting. Explicit choices remain independent. Defaults: This week/month/year, Daily activity, Remaining percentage, and the Three timelines palette.
-
-For Three timelines, enable Use the three selected in the app and choose App setting for display mode, values, and theme. Disable that switch for separate timelines. Theme = App setting includes custom colors; an explicit theme uses its template. iOS controls refresh timing.
+Touch and hold Home Screen > Edit > Add Widget > DaysYet. The primary DaysYet widget supports Small/Medium/Large and follows the app's selected rows/circles. In Edit Widget, enable Follow app appearance and set appearance options to App setting. Existing explicit three-row settings remain independent. Circles (fixed), the previous circle-only widget, remains available. App setting includes custom colors; an explicit widget theme uses that template. iOS controls refresh timing.
 
 StandBy and Lock Screen:
-Small widgets work in StandBy while charging in landscape. iOS controls background removal, rendering mode, and red Night Mode; the app cannot force full color or translucency. Touch and hold the Lock Screen > Customize > Lock Screen > widget area > DaysYet — Lock Screen. Inline, Circular, and Rectangular forms show one timeline. Tap while customizing to select it; the default follows the first app timeline.
+Small widgets work in StandBy while charging in landscape. iOS controls background removal, rendering mode, and red Night Mode. Touch and hold Lock Screen > Customize > Lock Screen > widget area > DaysYet — Lock Screen. Inline/Circular/Rectangular forms show one timeline; tap while customizing to choose it. The default follows the first app timeline.
 
-Time settings:
-On Times, tap Daily activity, Work hours, Study days, Milestone, or Healthy-age goal to edit. Activities have names, start/end times, and weekdays. Earlier end times run overnight; equal times mean 24 hours. The starting day controls activity. Settings > Week starts on chooses the device setting or a weekday.
+Times:
+Tap an activity, Study days, Milestone, or Healthy-age goal to edit, then Save or Cancel. Activities have names, start/end times, and weekdays. Earlier end times run overnight; equal times mean 24 hours. The start day determines whether an activity runs. This week opens the week-start setting, which also orders the study calendar without changing chosen dates.
 
-Study days:
-Set an inclusive range up to 366 days, select weekdays, then add/exclude dates. Changing weekdays resets individual adjustments. Counts include today when selected; percentages measure remaining selected days, not completed sessions. No calendar access is required.
+Study days uses an inclusive range up to 366 days. Select weekdays, then add/exclude dates. Changing weekdays resets individual adjustments. Counts include today when selected; percentages measure remaining selected days, not completed sessions. No calendar access is required.
 
-Dates, goals, schedules, and timeline preferences stay on device, shared with the widget; the last editor choice is app-only. No device sync. Settings > Delete all data resets both. No application-initiated networking, analytics, ads, or third-party runtime SDKs. Public links open a browser after a tap. Healthy-age goals are planning markers, not medical advice, health measurements, or health/lifespan predictions. Activities do not track attendance or report to employers.
+Dates, goals, schedules, and preferences remain on device, shared with the widget. Devices do not sync. Delete all data resets the saved profile and returns to onboarding. There is no application-initiated networking, analytics, advertising, or third-party runtime SDK. Public links open a browser after a tap. Healthy-age goals are personal planning markers, not medical advice or health/lifespan predictions. Activities do not track attendance or report to employers.

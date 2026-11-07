@@ -1,1 +1,1 @@
-Keep time left at your Mac’s edge. Hover to expand circles and details together, double-click for settings, and drag to position the panel. Plans stay on this Mac.
+Keep time left at your Mac's edge. Drag a circle to move the group, then release near an available edge. Hover for details. Dates and settings stay on this Mac.

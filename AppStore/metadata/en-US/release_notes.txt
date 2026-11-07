@@ -1,9 +1,6 @@
-• Balanced the four-circle layout with one-line names, consistent percentage sizes, a smaller percent sign, and proportionate rings. Long names truncate inside their circles.
-• Small circles show the leading duration unit, dates with two-digit years, and activity times in 24-hour format. Large and VoiceOver retain detailed durations.
-• The circle preview now represents the Small layout.
-• Settings > Widget settings returns to the type chooser, and the app remembers your last editor selection.
-• Added a visible Add or switch on the Home Screen action below the preview.
-• Renamed Colors to Colors & palette and moved it directly below the preview.
-• Touch and hold a Times card > Change color to customize or reset its color. Cards now reflect the colors shared with Three timelines. Normal taps still open timeline settings where available.
-
-Saved settings, individual widget choices, and custom colors are preserved. The type selector chooses what to edit. To change the type on your Home Screen, add the desired widget from the system gallery.
+• Redesigned the widget editor. Switch between Three rows and Circles, and choose from four live theme previews.
+• Configure one to eight circles. Small shows the first four; Medium and Large show up to eight. Add, replace, reorder, or remove circles in the app.
+• The DaysYet widget follows the app's layout and colors. Existing individual widget choices are preserved, and the original circle-only widget remains available as Circles (fixed).
+• A refreshed Widget and Times tab layout brings consistent backgrounds and cards. Edit dates, activity schedules, and the first day of the week in Times.
+• The info guide opens from the bottom. Circle and timeline selection opens a separate screen with Back navigation.
+• Saved schedules and custom colors are preserved. About DaysYet is at the bottom of either tab.

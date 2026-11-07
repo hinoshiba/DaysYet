@@ -3,16 +3,16 @@ Make time for what matters. DaysYet keeps life and everyday countdowns at the ed
 Use it as a quiet memento mori: a reminder to be intentional with your time. Set your own healthy-age goal as a planning milestone. DaysYet counts down to that age; it does not predict health or lifespan.
 
 YOUR TIMELINES AT THE EDGE
-Start with three small remaining-time circles on the left or right and add up to eight different timelines. Top placement shows bars for the first three timelines and saves the other selections. The colored portion counts down from 100% to 0%: circles drain clockwise from the top, and bars keep their left edge fixed as they shrink from right to left. Hover to expand the black panel and reveal a timeline's details. On either side, the details follow the circle you select.
+Start with three small remaining-time circles on the left, right, or bottom and add up to eight different timelines. Top placement shows bars for the first three timelines and saves the other selections. Color counts down from 100% to 0%: circles drain clockwise from the top, and bars shrink from right to left. Hover to expand the black panel and reveal details. On either side, details follow the circle you select.
 
-Optional Graph magnification enlarges the hovered side circle to 110–180% (default 135%; off by default), moving it slightly toward the screen center. Circles and details expand/close together. Returning during closing reopens smoothly. Clicks preserve magnification. Reduce Motion skips animation.
+Optional Graph magnification enlarges the hovered circle to 110–180% (default 135%; off by default). Circles and details expand/close together. Returning during closing reopens smoothly. Clicks preserve magnification. Reduce Motion skips animation.
 
 FIT YOUR WORKSPACE
-Choose left, right, or top placement and the display to use. Drag a side widget up or down; DaysYet saves its position. Adjust the size from 80–150%. Choose from four color templates or customize each visible timeline's color, with individual and full resets to the template. Double-click to open settings, where you can show, hide, or quit the app. Enable Launch at login to start DaysYet when you sign in to your Mac.
+Choose a display and a left, right, top, or bottom edge that is not occupied by the macOS Dock. Grab a circle to gather and move the group. Approaching an available edge previews its placement; release there to save. Release away from an edge or press Esc to return. Bottom details open upward. First-run setup introduces movement and optional Launch at login. Adjust size from 80–150%, choose one of four color templates, or customize timeline colors. Double-click for settings, including show, hide, and quit.
 
 CHOOSE YOUR LEVEL OF DETAIL
 Pick a large time-left countdown, a combined view of time left, remaining percentage, and a bar, or a progress-bar view. In the progress-bar view, choose time left, remaining percentage, or the end date as the value. Details close when you move away, or you can keep them open from settings.
-Set Detail size to 100–150% (default 100%) independently of widget size at the left, right, or top edge.
+Set Detail size to 100–150% (default 100%) independently of widget size at any available edge.
 
 COUNT YOUR AVAILABLE STUDY DAYS
 Name a plan and choose a date range of up to 366 days, including both endpoints. Select weekdays, then add or exclude individual dates in the calendar. Two-week and four-week shortcuts are available. Select Study days to see how many chosen days remain, including today when selected. The percentage shows the share still available. It does not record completed study sessions. This feature does not access your Mac's calendar. Open Settings > Timelines > Choose Study Days to edit the plan.

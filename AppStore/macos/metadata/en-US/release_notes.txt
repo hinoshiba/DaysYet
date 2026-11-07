@@ -1,4 +1,5 @@
-• With graph magnification enabled at the left or right edge, circle enlargement and shrinking now stay in step with details opening and closing. Fixed cases where the circle shrank before its details closed.
-• Returning the pointer during closing smoothly reopens from the current size. Moving to the details keeps the circle magnified.
-• Fixed circles shrinking when clicked or double-clicked. Double-click still opens settings, and dragging still moves the panel.
-• Your saved dates, schedules, and display settings are preserved.
+• Redesigned widget movement. Grab a circle to gather the group, then move toward a screen edge to preview its placement. Release near the edge to save; release away from an edge or press Esc to return.
+• Added placement at the left, right, top, and bottom edges, excluding the edge occupied by the macOS Dock. Bottom placement shows a horizontal row and expands details upward.
+• First-run setup now introduces placement, movement, and Launch at login.
+• Adjust the display, size, colors, and detail view in settings. Pointer interaction and placement stability are improved.
+• Saved dates, activity schedules, study plans, and display preferences are preserved.
