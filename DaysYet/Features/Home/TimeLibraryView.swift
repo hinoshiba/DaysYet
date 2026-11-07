@@ -49,7 +49,7 @@ struct TimeLibraryView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                UsageGuideLink(accessibilityIdentifier: "times.guide")
+                UsageGuideButton(accessibilityIdentifier: "times.guide")
             }
         }
     }

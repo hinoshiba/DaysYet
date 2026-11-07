@@ -39,7 +39,7 @@ final class WidgetNavigationTests: XCTestCase {
         let sizes = app.staticTexts["「DaysYet」の小・中・大サイズを選びます。サークルは小サイズで先頭4つ、中・大サイズで最大8つを表示します。"]
         reveal(sizes, in: app)
         attachScreenshot(app, name: "widget-guide-japanese")
-        app.navigationBars["使い方"].buttons.element(boundBy: 0).tap()
+        app.buttons["app.guide.close"].tap()
         attachScreenshot(app, name: "widget-editor-japanese-small-preview")
         XCTAssertTrue(circles.isSelected)
     }
@@ -187,7 +187,7 @@ final class WidgetNavigationTests: XCTestCase {
         guide.tap()
         XCTAssertTrue(app.navigationBars["使い方"].waitForExistence(timeout: 5))
         attachScreenshot(app, name: "widget-guide-japanese-AX5")
-        app.navigationBars["使い方"].buttons.element(boundBy: 0).tap()
+        app.buttons["app.guide.close"].tap()
         XCTAssertTrue(guide.waitForExistence(timeout: 5))
     }
 

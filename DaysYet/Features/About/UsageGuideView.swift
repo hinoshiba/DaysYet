@@ -1,18 +1,29 @@
 import SwiftUI
 
-/// Both main tabs navigate to the same guide from their info button.
-struct UsageGuideLink: View {
+/// Both main tabs present the same supplementary guide from their info button.
+struct UsageGuideButton: View {
+    @State private var showsGuide = false
     let accessibilityIdentifier: String
 
     var body: some View {
-        NavigationLink(value: AppRoute.usageGuide) {
+        Button {
+            showsGuide = true
+        } label: {
             Label(L10n.text("使い方", "How to use"), systemImage: "info.circle")
         }
         .accessibilityIdentifier(accessibilityIdentifier)
+        .sheet(isPresented: $showsGuide) {
+            NavigationStack {
+                UsageGuideView()
+            }
+            .presentationDragIndicator(.visible)
+        }
     }
 }
 
 struct UsageGuideView: View {
+    @Environment(\.dismiss) private var dismiss
+
     var body: some View {
         Form {
             Section {
@@ -91,5 +102,11 @@ struct UsageGuideView: View {
         .daysYetBackground()
         .navigationTitle(L10n.text("使い方", "How to use"))
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button(L10n.text("閉じる", "Close")) { dismiss() }
+                    .accessibilityIdentifier("app.guide.close")
+            }
+        }
     }
 }

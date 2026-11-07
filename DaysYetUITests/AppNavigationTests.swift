@@ -20,9 +20,15 @@ final class AppNavigationTests: XCTestCase {
             XCTAssertTrue(app.staticTexts["Arrange your widget"].exists)
             XCTAssertFalse(app.buttons["app.info.privacy"].exists)
             attachScreenshot(app, name: "shared-guide-\(tab)-en")
-            XCTAssertFalse(app.buttons["app.guide.done"].exists)
-            app.navigationBars["How to use"].buttons.element(boundBy: 0).tap()
+            XCTAssertTrue(app.buttons["app.guide.close"].isHittable)
+            if tab == "Times" {
+                app.buttons["app.guide.close"].tap()
+            } else {
+                app.navigationBars["How to use"].coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
+                    .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.9)))
+            }
             XCTAssertTrue(guide.waitForExistence(timeout: 5))
+            XCTAssertTrue(guide.isHittable)
 
             let info = app.buttons["app.info.open"]
             reveal(info, in: app)
@@ -117,7 +123,7 @@ final class AppNavigationTests: XCTestCase {
             XCTAssertTrue(app.navigationBars["使い方"].waitForExistence(timeout: 5))
             XCTAssertTrue(app.staticTexts["時間を編集"].exists)
             attachScreenshot(app, name: "shared-guide-\(tab)-large-text-ja")
-            app.navigationBars["使い方"].buttons.element(boundBy: 0).tap()
+            app.buttons["app.guide.close"].tap()
 
             let info = app.buttons["app.info.open"]
             reveal(info, in: app)
