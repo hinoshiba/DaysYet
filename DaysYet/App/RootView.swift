@@ -1,10 +1,14 @@
 import SwiftUI
 
+enum AppRoute: Hashable {
+    case appInfo
+}
+
 struct RootView: View {
     @EnvironmentObject private var store: ProfileStore
     @State private var selectedTab: Int
-    @State private var showsAppInfo: Bool
-    @State private var resetsDataAfterAppInfoDismissal = false
+    @State private var widgetPath: [AppRoute] = []
+    @State private var timePath: [AppRoute]
 #if DEBUG
     @State private var screenshotMetricSettingsPresented: Bool
     @State private var screenshotColorsPresented: Bool
@@ -17,22 +21,22 @@ struct RootView: View {
         let opensAppInfo = arguments.contains("--screenshot-app-info") || arguments.contains("--screenshot-settings")
         let initialTab = arguments.contains("--screenshot-times") || editsMetric || opensAppInfo ? 1 : 0
         _selectedTab = State(initialValue: initialTab)
-        _showsAppInfo = State(initialValue: opensAppInfo && !editsMetric)
+        _timePath = State(initialValue: opensAppInfo && !editsMetric ? [.appInfo] : [])
         _screenshotMetricSettingsPresented = State(initialValue: editsMetric)
         _screenshotColorsPresented = State(initialValue: arguments.contains("--screenshot-colors"))
 #else
         _selectedTab = State(initialValue: 0)
-        _showsAppInfo = State(initialValue: false)
+        _timePath = State(initialValue: [])
 #endif
     }
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            NavigationStack {
-                WidgetStudioView(
-                    openTimeLibrary: { selectedTab = 1 },
-                    openAppInfo: { showsAppInfo = true }
-                )
+            NavigationStack(path: $widgetPath) {
+                WidgetStudioView(openTimeLibrary: { selectedTab = 1 })
+                    .navigationDestination(for: AppRoute.self) { _ in
+                        AppInfoView(resetData: resetData)
+                    }
 #if DEBUG
                     .navigationDestination(isPresented: $screenshotColorsPresented) {
                         WidgetColorSettingsView(layout: store.profile.widgetLayout)
@@ -42,8 +46,11 @@ struct RootView: View {
             .tabItem { Label(L10n.text("ウィジェット", "Widget"), systemImage: "square.grid.2x2") }
             .tag(0)
 
-            NavigationStack {
-                TimeLibraryView(openAppInfo: { showsAppInfo = true })
+            NavigationStack(path: $timePath) {
+                TimeLibraryView()
+                    .navigationDestination(for: AppRoute.self) { _ in
+                        AppInfoView(resetData: resetData)
+                    }
 #if DEBUG
                     .sheet(isPresented: $screenshotMetricSettingsPresented) {
                         MetricSettingsView(kind: screenshotMetricKind)
@@ -53,24 +60,16 @@ struct RootView: View {
             .tabItem { Label(L10n.text("時間", "Times"), systemImage: "circle.dotted") }
             .tag(1)
         }
-        .sheet(isPresented: $showsAppInfo, onDismiss: appInfoDidDismiss) {
-            NavigationStack {
-                AppInfoView(resetData: {
-                    resetsDataAfterAppInfoDismissal = true
-                    showsAppInfo = false
-                })
-            }
-        }
         .fullScreenCover(isPresented: onboardingPresented) {
             OnboardingView()
                 .environmentObject(store)
         }
     }
 
-    private func appInfoDidDismiss() {
-        guard resetsDataAfterAppInfoDismissal else { return }
-        resetsDataAfterAppInfoDismissal = false
-        // Present onboarding after the About sheet has finished dismissing.
+    private func resetData() {
+        // Clear both tabs so onboarding returns to their lists after a reset.
+        widgetPath.removeAll()
+        timePath.removeAll()
         store.reset()
     }
 

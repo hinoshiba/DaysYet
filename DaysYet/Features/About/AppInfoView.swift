@@ -2,22 +2,11 @@ import SwiftUI
 
 /// The same app-information entry closes both main lists.
 struct AppInfoSection: View {
-    let openAppInfo: () -> Void
-
     var body: some View {
         Section {
-            Button(action: openAppInfo) {
-                HStack {
-                    Text(L10n.text("このアプリについて", "About DaysYet"))
-                    Spacer()
-                    Image(systemName: "chevron.right")
-                        .font(.footnote.weight(.semibold))
-                        .foregroundStyle(.tertiary)
-                        .accessibilityHidden(true)
-                }
-                .contentShape(Rectangle())
+            NavigationLink(value: AppRoute.appInfo) {
+                Text(L10n.text("このアプリについて", "About DaysYet"))
             }
-            .buttonStyle(.plain)
             .accessibilityIdentifier("app.info.open")
         }
         .listRowBackground(DaysYetTheme.panel)
@@ -25,7 +14,6 @@ struct AppInfoSection: View {
 }
 
 struct AppInfoView: View {
-    @Environment(\.dismiss) private var dismiss
     @State private var showResetConfirmation = false
     let resetData: () -> Void
 
@@ -88,12 +76,6 @@ struct AppInfoView: View {
         .daysYetBackground()
         .navigationTitle(L10n.text("このアプリについて", "About DaysYet"))
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Button(L10n.text("完了", "Done")) { dismiss() }
-                    .accessibilityIdentifier("app.info.done")
-            }
-        }
         .confirmationDialog(
             L10n.text("端末内の設定をすべて消去しますか？", "Delete all on-device settings?"),
             isPresented: $showResetConfirmation,

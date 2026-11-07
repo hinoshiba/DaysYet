@@ -8,7 +8,6 @@ struct WidgetStudioView: View {
     @State private var opensTimeLibraryOnDismiss = false
     @State private var editMode: EditMode = .inactive
     let openTimeLibrary: () -> Void
-    let openAppInfo: () -> Void
 
     private var selectedLayout: WidgetLayout { store.profile.widgetLayout }
 
@@ -123,7 +122,7 @@ struct WidgetStudioView: View {
                     .listRowBackground(DaysYetTheme.panel)
                 }
 
-                AppInfoSection(openAppInfo: openAppInfo)
+                AppInfoSection()
             }
             // Keep each layout's metrics while returning to its theme previews.
             .id(selectedLayout)

@@ -12,7 +12,6 @@ extension MetricKind {
 
 struct TimeLibraryView: View {
     @EnvironmentObject private var store: ProfileStore
-    let openAppInfo: () -> Void
     @State private var colorEditingMetric: MetricKind?
 
     var body: some View {
@@ -42,7 +41,7 @@ struct TimeLibraryView: View {
                 }
                 .listRowBackground(DaysYetTheme.panel)
 
-                AppInfoSection(openAppInfo: openAppInfo)
+                AppInfoSection()
             }
         }
         .sheet(item: $colorEditingMetric) { metric in

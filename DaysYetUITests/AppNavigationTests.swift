@@ -27,7 +27,10 @@ final class AppNavigationTests: XCTestCase {
             reveal(info, in: app)
             attachScreenshot(app, name: "bottom-about-\(tab)-en")
             info.tap()
-            XCTAssertTrue(app.buttons["app.info.done"].waitForExistence(timeout: 5))
+            let about = app.navigationBars["About DaysYet"]
+            XCTAssertTrue(about.waitForExistence(timeout: 5))
+            XCTAssertTrue(about.buttons.element(boundBy: 0).isHittable)
+            XCTAssertFalse(app.buttons["app.info.done"].exists)
             XCTAssertTrue(app.staticTexts["Version"].exists)
             attachScreenshot(app, name: "app-info-from-\(tab)-en")
 
@@ -54,10 +57,18 @@ final class AppNavigationTests: XCTestCase {
                 app.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.5)).tap()
             }
             XCTAssertFalse(delete.exists)
-            app.buttons["app.info.done"].tap()
+            about.buttons.element(boundBy: 0).tap()
             XCTAssertTrue(info.waitForExistence(timeout: 5))
             XCTAssertTrue(info.isHittable)
             XCTAssertTrue(app.buttons.matching(identifier: tab).firstMatch.isSelected)
+
+            // Native push navigation also supports the standard edge-swipe back.
+            info.tap()
+            XCTAssertTrue(about.waitForExistence(timeout: 5))
+            app.coordinate(withNormalizedOffset: CGVector(dx: 0.005, dy: 0.5))
+                .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.5)))
+            XCTAssertTrue(info.waitForExistence(timeout: 5))
+            XCTAssertTrue(info.isHittable)
         }
     }
 
@@ -76,7 +87,7 @@ final class AppNavigationTests: XCTestCase {
         next.tap()
         app.buttons["Get started"].tap()
         XCTAssertTrue(app.buttons["times.guide"].waitForExistence(timeout: 5))
-        XCTAssertFalse(app.buttons["app.info.done"].exists)
+        XCTAssertFalse(app.navigationBars["About DaysYet"].exists)
         XCTAssertTrue(app.buttons.matching(identifier: "Times").firstMatch.isSelected)
     }
 
@@ -112,7 +123,7 @@ final class AppNavigationTests: XCTestCase {
             let publicPolicy = app.descendants(matching: .any).matching(identifier: "app.info.privacy.public").firstMatch
             reveal(publicPolicy, in: app)
             privacyNavigation.buttons.element(boundBy: 0).tap()
-            app.buttons["app.info.done"].tap()
+            app.navigationBars["このアプリについて"].buttons.element(boundBy: 0).tap()
             XCTAssertTrue(info.waitForExistence(timeout: 5))
             XCTAssertTrue(info.isHittable)
             XCTAssertTrue(app.buttons.matching(identifier: tab).firstMatch.isSelected)

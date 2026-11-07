@@ -86,6 +86,11 @@ final class WidgetNavigationTests: XCTestCase {
         XCTAssertTrue(picker.waitForExistence(timeout: 10))
         picker.buttons["Circles"].tap()
         let info = app.buttons["app.info.open"]
+        app.tabBars.buttons["Times"].tap()
+        reveal(info, in: app)
+        info.tap()
+        XCTAssertTrue(app.navigationBars["About DaysYet"].waitForExistence(timeout: 5))
+        app.tabBars.buttons["Widget"].tap()
         reveal(info, in: app)
         app.buttons["app.info.open"].tap()
         app.buttons["app.info.reset"].tap()
@@ -98,6 +103,9 @@ final class WidgetNavigationTests: XCTestCase {
         app.tabBars.buttons["Widget"].tap()
         XCTAssertTrue(picker.buttons["Three rows"].waitForExistence(timeout: 10))
         XCTAssertTrue(picker.buttons["Three rows"].isSelected)
+        app.tabBars.buttons["Times"].tap()
+        XCTAssertTrue(app.buttons["times.guide"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.navigationBars["About DaysYet"].exists)
     }
 
     @MainActor
