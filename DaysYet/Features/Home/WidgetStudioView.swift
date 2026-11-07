@@ -4,10 +4,8 @@ struct WidgetStudioView: View {
     @EnvironmentObject private var store: ProfileStore
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @SceneStorage("widget.circle.previewSize") private var circleSize: CircleWidgetSize = .medium
-    @State private var timePicker: WidgetTimeRequest?
-    @State private var opensTimeLibraryOnDismiss = false
     @State private var editMode: EditMode = .inactive
-    let openTimeLibrary: () -> Void
+    let openTimePicker: (WidgetTimeDestination) -> Void
 
     private var selectedLayout: WidgetLayout { store.profile.widgetLayout }
 
@@ -62,12 +60,9 @@ struct WidgetStudioView: View {
                 } else {
                     Section {
                         ForEach(Array(selectedMetrics.enumerated()), id: \.offset) { index, metric in
-                            Button {
-                                timePicker = WidgetTimeRequest(destination: .row(index))
-                            } label: {
+                            NavigationLink(value: AppRoute.widgetTime(.row(index))) {
                                 WidgetMetricSettingRow(metric: metric, profile: store.profile, index: index, isCircle: false)
                             }
-                            .buttonStyle(.plain)
                             .accessibilityIdentifier("widget.metric.\(index)")
                         }
                     } header: {
@@ -141,7 +136,7 @@ struct WidgetStudioView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         editMode = .inactive
-                        timePicker = WidgetTimeRequest(destination: .newCircle)
+                        openTimePicker(.newCircle)
                     } label: {
                         Label(L10n.text("時間から追加", "Add from Times"), systemImage: "plus")
                     }
@@ -150,23 +145,7 @@ struct WidgetStudioView: View {
                 }
             }
             ToolbarItem(placement: .topBarTrailing) {
-                UsageGuideLink(accessibilityIdentifier: "widget.guide")
-            }
-        }
-        .sheet(item: $timePicker, onDismiss: {
-            if opensTimeLibraryOnDismiss {
-                opensTimeLibraryOnDismiss = false
-                openTimeLibrary()
-            }
-        }) { request in
-            WidgetTimePicker(profile: store.profile, destination: request.destination) { metric in
-                switch request.destination {
-                case .circle(let index): store.setCircleWidgetMetric(metric, at: index)
-                case .newCircle: store.addCircleWidgetMetric(metric)
-                case .row(let index): store.setDashboardMetric(metric, at: index)
-                }
-            } onOpenTimeLibrary: {
-                opensTimeLibraryOnDismiss = true
+                UsageGuideButton(accessibilityIdentifier: "widget.guide")
             }
         }
     }
@@ -176,14 +155,11 @@ struct WidgetStudioView: View {
             ForEach(Array(selectedMetrics.enumerated()), id: \.offset) { index, metric in
                 Group {
                     if editMode.isEditing {
-                        WidgetMetricSettingRow(metric: metric, profile: store.profile, index: index, showsSelectionAction: false)
+                        WidgetMetricSettingRow(metric: metric, profile: store.profile, index: index, canSelectTime: false)
                     } else {
-                        Button {
-                            timePicker = WidgetTimeRequest(destination: .circle(index))
-                        } label: {
+                        NavigationLink(value: AppRoute.widgetTime(.circle(index))) {
                             WidgetMetricSettingRow(metric: metric, profile: store.profile, index: index)
                         }
-                        .buttonStyle(.plain)
                     }
                 }
                 .deleteDisabled(selectedMetrics.count <= 1)

@@ -2,7 +2,7 @@ import SwiftUI
 
 enum AppRoute: Hashable {
     case appInfo
-    case usageGuide
+    case widgetTime(WidgetTimeDestination)
     case widgetColors
     case timelineColor(MetricKind)
 }
@@ -36,7 +36,7 @@ struct RootView: View {
     var body: some View {
         TabView(selection: $selectedTab) {
             NavigationStack(path: $widgetPath) {
-                WidgetStudioView(openTimeLibrary: openTimeLibrary)
+                WidgetStudioView(openTimePicker: { widgetPath.append(.widgetTime($0)) })
                     .navigationDestination(for: AppRoute.self, destination: destination)
             }
             .tabItem { Label(L10n.text("ウィジェット", "Widget"), systemImage: "square.grid.2x2") }
@@ -64,13 +64,23 @@ struct RootView: View {
     private func destination(for route: AppRoute) -> some View {
         switch route {
         case .appInfo: AppInfoView(resetData: resetData)
-        case .usageGuide: UsageGuideView()
+        case .widgetTime(let destination):
+            WidgetTimePicker(profile: store.profile, destination: destination) { metric in
+                switch destination {
+                case .circle(let index): store.setCircleWidgetMetric(metric, at: index)
+                case .newCircle: store.addCircleWidgetMetric(metric)
+                case .row(let index): store.setDashboardMetric(metric, at: index)
+                }
+            } onOpenTimeLibrary: {
+                openTimeLibrary()
+            }
         case .widgetColors: WidgetColorSettingsView(layout: store.profile.widgetLayout)
         case .timelineColor(let metric): TimelineColorSettingsView(metric: metric)
         }
     }
 
     private func openTimeLibrary() {
+        widgetPath.removeAll()
         timePath.removeAll()
         selectedTab = 1
     }

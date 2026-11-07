@@ -69,7 +69,8 @@ final class CircleWidgetEditorTests: XCTestCase {
         XCTAssertEqual(app.textFields.count, 0)
         XCTAssertEqual(app.datePickers.count, 0)
         XCTAssertFalse(app.buttons["time.editor.save"].exists)
-        app.buttons["widget.time.cancel"].tap()
+        app.navigationBars["Add from Times"].buttons.element(boundBy: 0).tap()
+        XCTAssertTrue(app.buttons["widget.circle.add"].waitForExistence(timeout: 5))
         XCTAssertFalse(app.buttons["widget.circle.4"].exists)
 
         first.tap()
@@ -79,7 +80,10 @@ final class CircleWidgetEditorTests: XCTestCase {
         let workChoice = app.buttons["widget.time.workday"]
         reveal(workChoice, in: app)
         XCTAssertEqual(workChoice.value as? String, "Selected")
-        app.buttons["widget.time.cancel"].tap()
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.005, dy: 0.5))
+            .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.5)))
+        XCTAssertTrue(app.buttons["widget.circle.add"].waitForExistence(timeout: 5))
+        XCTAssertTrue(first.label.contains("Work hours"))
 
         app.buttons.matching(identifier: "Times").firstMatch.tap()
         let workCard = app.buttons["times.metric.workday"]
@@ -139,8 +143,10 @@ final class CircleWidgetEditorTests: XCTestCase {
     func testRowsUseThePickerAndLibraryNavigationSwitchesTabs() {
         let app = launchCircles(language: "en", locale: "en_US")
         app.buttons.matching(identifier: "Times").firstMatch.tap()
-        app.buttons["times.guide"].tap()
-        XCTAssertTrue(app.navigationBars["How to use"].waitForExistence(timeout: 5))
+        let info = app.buttons["app.info.open"]
+        reveal(info, in: app)
+        info.tap()
+        XCTAssertTrue(app.navigationBars["About DaysYet"].waitForExistence(timeout: 5))
         app.buttons.matching(identifier: "Widget").firstMatch.tap()
         app.segmentedControls.buttons["Three rows"].tap()
         XCTAssertFalse(app.segmentedControls["widget.circle.size"].exists)
@@ -161,14 +167,18 @@ final class CircleWidgetEditorTests: XCTestCase {
         let timesTab = app.buttons.matching(identifier: "Times").firstMatch
         let switchedTabs = XCTNSPredicateExpectation(predicate: NSPredicate(format: "selected == true"), object: timesTab)
         XCTAssertEqual(XCTWaiter.wait(for: [switchedTabs], timeout: 5), .completed)
-        XCTAssertFalse(app.buttons["widget.time.cancel"].exists)
+        XCTAssertFalse(app.navigationBars["Add from Times"].exists)
         XCTAssertFalse(app.buttons["time.editor.save"].exists)
-        XCTAssertTrue(app.buttons["times.metric.week"].exists)
-        XCTAssertFalse(app.navigationBars["How to use"].exists)
+        XCTAssertTrue(app.buttons["times.guide"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.navigationBars["About DaysYet"].exists)
+        // Returning from About preserves the Times list's previous scroll position.
+        reveal(app.buttons["times.metric.week"], in: app, scrollingUp: false)
+        attachScreenshot(app, name: "time-picker-returns-to-times-root")
 
         XCTAssertFalse(app.buttons.matching(identifier: "Settings").firstMatch.exists)
         app.buttons.matching(identifier: "Widget").firstMatch.tap()
         XCTAssertTrue(app.segmentedControls.buttons["Circles"].isSelected)
+        XCTAssertFalse(app.navigationBars["Add from Times"].exists)
         XCTAssertFalse(app.buttons["widget.circle.4"].exists)
         attachScreenshot(app, name: "time-picker-circle-list-en")
     }

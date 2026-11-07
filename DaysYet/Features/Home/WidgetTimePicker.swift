@@ -1,6 +1,6 @@
 import SwiftUI
 
-enum WidgetTimeDestination {
+enum WidgetTimeDestination: Hashable {
     case newCircle, circle(Int), row(Int)
 
     var isAdding: Bool {
@@ -36,11 +36,6 @@ enum WidgetTimeDestination {
     }
 }
 
-struct WidgetTimeRequest: Identifiable {
-    let id = UUID()
-    let destination: WidgetTimeDestination
-}
-
 /// Select an existing time; this screen never edits its schedule or dates.
 struct WidgetTimePicker: View {
     @Environment(\.dismiss) private var dismiss
@@ -50,83 +45,74 @@ struct WidgetTimePicker: View {
     let onOpenTimeLibrary: () -> Void
 
     var body: some View {
-        NavigationStack {
-            TimelineView(.periodic(from: .now, by: 60)) { context in
-                List {
-                    Section {
-                        ForEach(MetricKind.allCases) { metric in
-                            let snapshot = TimeProgressCalculator.snapshot(for: metric, profile: profile, now: context.date)
-                            let isSelected = destination.selectedMetric(in: profile) == metric
-                            Button {
-                                if !isSelected { onSelect(metric) }
-                                dismiss()
-                            } label: {
-                                HStack(spacing: 14) {
-                                    Image(systemName: metric.symbolName)
-                                        .font(.title3)
-                                        .foregroundStyle(profile.widgetTheme.palette.colors(for: metric, customColors: profile.widgetCustomColors).first ?? .accentColor)
-                                        .frame(width: 28)
-                                        .accessibilityHidden(true)
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text(snapshot.title)
-                                            .font(.headline)
-                                            .foregroundStyle(.primary)
-                                        Text(snapshot.remainingText)
-                                            .font(.subheadline.monospacedDigit())
-                                            .foregroundStyle(.secondary)
-                                        if let note = destination.placementNote(for: metric, in: profile), !isSelected {
-                                            Text(note)
-                                                .font(.caption)
-                                                .foregroundStyle(.secondary)
-                                        }
-                                    }
-                                    .fixedSize(horizontal: false, vertical: true)
-                                    Spacer(minLength: 8)
-                                    if isSelected || destination.isAdding {
-                                        Image(systemName: isSelected ? "checkmark" : "plus")
-                                            .foregroundStyle(.tint)
-                                            .accessibilityHidden(true)
-                                    }
-                                }
-                                .padding(.vertical, 5)
-                                .contentShape(Rectangle())
-                            }
-                            .buttonStyle(.plain)
-                            .accessibilityIdentifier("widget.time.\(metric.rawValue)")
-                            .accessibilityValue(isSelected ? L10n.text("選択中", "Selected") : "")
-                            .accessibilityHint(destination.isAdding
-                                ? L10n.text("サークルに追加", "Add to Circles")
-                                : L10n.text("この時間を表示", "Display this time"))
-                        }
-                    } header: {
-                        Text(L10n.text("時間の一覧", "Time library"))
-                    } footer: {
-                        Text(L10n.text("時刻・日付など、時間の内容は「時間」タブで編集できます。", "Edit schedules, dates, and other details in the Times tab."))
-                    }
-                    .listRowBackground(DaysYetTheme.panel)
-
-                    Section {
+        TimelineView(.periodic(from: .now, by: 60)) { context in
+            List {
+                Section {
+                    ForEach(MetricKind.allCases) { metric in
+                        let snapshot = TimeProgressCalculator.snapshot(for: metric, profile: profile, now: context.date)
+                        let isSelected = destination.selectedMetric(in: profile) == metric
                         Button {
-                            onOpenTimeLibrary()
+                            if !isSelected { onSelect(metric) }
                             dismiss()
                         } label: {
-                            Label(L10n.text("「時間」タブを開く", "Open Times"), systemImage: "circle.dotted")
+                            HStack(spacing: 14) {
+                                Image(systemName: metric.symbolName)
+                                    .font(.title3)
+                                    .foregroundStyle(profile.widgetTheme.palette.colors(for: metric, customColors: profile.widgetCustomColors).first ?? .accentColor)
+                                    .frame(width: 28)
+                                    .accessibilityHidden(true)
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(snapshot.title)
+                                        .font(.headline)
+                                        .foregroundStyle(.primary)
+                                    Text(snapshot.remainingText)
+                                        .font(.subheadline.monospacedDigit())
+                                        .foregroundStyle(.secondary)
+                                    if let note = destination.placementNote(for: metric, in: profile), !isSelected {
+                                        Text(note)
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+                                .fixedSize(horizontal: false, vertical: true)
+                                Spacer(minLength: 8)
+                                if isSelected || destination.isAdding {
+                                    Image(systemName: isSelected ? "checkmark" : "plus")
+                                        .foregroundStyle(.tint)
+                                        .accessibilityHidden(true)
+                                }
+                            }
+                            .padding(.vertical, 5)
+                            .contentShape(Rectangle())
                         }
-                        .accessibilityIdentifier("widget.time.openLibrary")
+                        .buttonStyle(.plain)
+                        .accessibilityIdentifier("widget.time.\(metric.rawValue)")
+                        .accessibilityValue(isSelected ? L10n.text("選択中", "Selected") : "")
+                        .accessibilityHint(destination.isAdding
+                            ? L10n.text("サークルに追加", "Add to Circles")
+                            : L10n.text("この時間を表示", "Display this time"))
                     }
-                    .listRowBackground(DaysYetTheme.panel)
+                } header: {
+                    Text(L10n.text("時間の一覧", "Time library"))
+                } footer: {
+                    Text(L10n.text("時刻・日付など、時間の内容は「時間」タブで編集できます。", "Edit schedules, dates, and other details in the Times tab."))
                 }
-            }
-            .daysYetBackground()
-            .navigationTitle(destination.title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(L10n.text("キャンセル", "Cancel")) { dismiss() }
-                        .accessibilityIdentifier("widget.time.cancel")
+                .listRowBackground(DaysYetTheme.panel)
+
+                Section {
+                    Button {
+                        onOpenTimeLibrary()
+                    } label: {
+                        Label(L10n.text("「時間」タブを開く", "Open Times"), systemImage: "circle.dotted")
+                    }
+                    .accessibilityIdentifier("widget.time.openLibrary")
                 }
+                .listRowBackground(DaysYetTheme.panel)
             }
         }
+        .daysYetBackground()
+        .navigationTitle(destination.title)
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -135,7 +121,7 @@ struct WidgetMetricSettingRow: View {
     let profile: UserProfile
     let index: Int
     var isCircle = true
-    var showsSelectionAction = true
+    var canSelectTime = true
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 60)) { context in
@@ -165,18 +151,12 @@ struct WidgetMetricSettingRow: View {
                 }
 
                 MetricTitleValueLabel(title: snapshot.title, value: snapshot.remainingText)
-                if showsSelectionAction {
-                    Image(systemName: "arrow.left.arrow.right")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.tertiary)
-                        .accessibilityHidden(true)
-                }
             }
             .padding(.vertical, 7)
             .contentShape(Rectangle())
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(positionTitle + ", " + snapshot.accessibilitySummary)
-            .accessibilityHint(showsSelectionAction ? L10n.text("時間の一覧から差し替えます", "Replace with a time from your library") : "")
+            .accessibilityHint(canSelectTime ? L10n.text("時間の一覧から差し替えます", "Replace with a time from your library") : "")
         }
     }
 
