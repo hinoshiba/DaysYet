@@ -25,7 +25,7 @@ struct ProgressBar: View {
     }
 }
 
-/// The value and name use the same hierarchy in Times and widget placement rows.
+/// Widget placement rows emphasize the value shown by the widget.
 struct MetricValueLabel: View {
     let title: String
     let value: String
@@ -61,7 +61,16 @@ struct MetricSummaryRow: View {
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 10) {
-                MetricValueLabel(title: snapshot.title, value: snapshot.valueText(style: valueStyle))
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(snapshot.title)
+                        .font(.title3.weight(.semibold))
+                        .foregroundStyle(.primary)
+                    Text(snapshot.valueText(style: valueStyle))
+                        .font(.subheadline.monospacedDigit())
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .fixedSize(horizontal: false, vertical: true)
 
                 ProgressBar(
                     fraction: snapshot.remainingFraction,
