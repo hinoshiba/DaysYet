@@ -215,13 +215,6 @@ struct MacSettingsView: View {
                     }
                 }
 
-#if DAYSYET_DIRECT_DOCK_DRAG && DAYSYET_DOCK_NATIVE_REORDER
-                Section {
-                    MacDockSnapshotSettings(preferences: preferences)
-                } header: {
-                    Text(L10n.text("Dockでの移動", "Moving within the Dock"))
-                }
-#endif
                 MacWidgetColorSettings(store: store, preferences: preferences)
             }
             .formStyle(.grouped)

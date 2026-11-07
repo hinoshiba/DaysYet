@@ -16,3 +16,4 @@ Describe user-facing changes, compatibility or migration needs, and any remainin
 - [ ] Relevant local checks pass; builds for review require no maintainer credentials.
 - [ ] No secrets, personal contact details, or generated build artifacts are included. Use support@hinoshiba.com for project contact information.
 - [ ] Third-party code and assets retain their required license notices.
+- [ ] No signing identity, private key, certificate, profile, Keychain, signed export, or identity-discovery output is included.

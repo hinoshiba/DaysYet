@@ -18,3 +18,5 @@ Please include:
 - a suggested mitigation, if known.
 
 Never send real birth dates, health details, provisioning profiles, certificates, private keys, App Store credentials, or recovery codes. No bug bounty is currently offered.
+
+If signing material may have been exposed, stop using it and report the incident privately. The affected credential must be revoked or rotated before another release; removing it only from the latest commit is not sufficient.

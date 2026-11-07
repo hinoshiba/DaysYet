@@ -138,6 +138,10 @@ final class CircleWidgetEditorTests: XCTestCase {
     @MainActor
     func testRowsUseThePickerAndLibraryNavigationSwitchesTabs() {
         let app = launchCircles(language: "en", locale: "en_US")
+        app.buttons.matching(identifier: "Times").firstMatch.tap()
+        app.buttons["times.guide"].tap()
+        XCTAssertTrue(app.navigationBars["How to use"].waitForExistence(timeout: 5))
+        app.buttons.matching(identifier: "Widget").firstMatch.tap()
         app.segmentedControls.buttons["Three rows"].tap()
         XCTAssertFalse(app.segmentedControls["widget.circle.size"].exists)
         app.buttons["widget.metric.0"].tap()
@@ -159,6 +163,8 @@ final class CircleWidgetEditorTests: XCTestCase {
         XCTAssertEqual(XCTWaiter.wait(for: [switchedTabs], timeout: 5), .completed)
         XCTAssertFalse(app.buttons["widget.time.cancel"].exists)
         XCTAssertFalse(app.buttons["time.editor.save"].exists)
+        XCTAssertTrue(app.buttons["times.metric.week"].exists)
+        XCTAssertFalse(app.navigationBars["How to use"].exists)
 
         XCTAssertFalse(app.buttons.matching(identifier: "Settings").firstMatch.exists)
         app.buttons.matching(identifier: "Widget").firstMatch.tap()

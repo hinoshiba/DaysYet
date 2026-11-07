@@ -7,7 +7,8 @@ Thank you for helping improve this project.
 - Search existing issues and pull requests.
 - Keep one issue or pull request focused on one concern.
 - Discuss large features, new SDKs, health-related claims, data sources, branding, payment, or networking in an issue before implementation.
-- Never include real birth dates, health details, signing assets, API keys, `.p8` files, profiles, or screenshots containing personal information.
+- Never include real birth dates, health details, signing assets, API keys, profiles, credentials, identity-discovery output, or screenshots containing personal information.
+- Applications in the same Apple Developer Team reuse the approved Team-managed distribution signing identity. Keep its certificate and private key in an authorized Keychain or private release system outside the checkout; never create a signing or secret directory in the repository, even temporarily. See [Repository rules](AGENTS.md) and the [release procedure](docs/RELEASING.md).
 
 ## Development
 

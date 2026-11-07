@@ -123,17 +123,7 @@ struct DaysYetWidgetEntryView: View {
         }
         .foregroundStyle(renderingMode == .fullColor && showsContainerBackground ? AnyShapeStyle(palette.foreground) : AnyShapeStyle(Color.primary))
         .containerBackground(for: .widget) {
-            ZStack {
-                palette.background
-                if entry.layout == .rows {
-                    RadialGradient(
-                        colors: [palette.glow.opacity(0.22), .clear],
-                        center: .topTrailing,
-                        startRadius: 1,
-                        endRadius: 230
-                    )
-                }
-            }
+            WidgetThemeBackground(theme: entry.theme)
         }
     }
 

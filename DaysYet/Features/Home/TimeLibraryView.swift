@@ -12,8 +12,7 @@ extension MetricKind {
 
 struct TimeLibraryView: View {
     @EnvironmentObject private var store: ProfileStore
-    let openAppInfo: () -> Void
-    @State private var colorEditingMetric: MetricKind?
+    let openColorSettings: (MetricKind) -> Void
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 60)) { context in
@@ -29,7 +28,7 @@ struct TimeLibraryView: View {
                             valueStyle: store.profile.dashboardValueStyle,
                             theme: store.profile.widgetTheme,
                             customColors: store.profile.widgetCustomColors,
-                            editColor: { colorEditingMetric = metric }
+                            editColor: { openColorSettings(metric) }
                         )
                     }
                 } header: {
@@ -40,20 +39,17 @@ struct TimeLibraryView: View {
                         "Edit schedules, dates, and other details here. Touch and hold to change a color. Choose which times to display in the Widget tab."
                     ))
                 }
+                .listRowBackground(DaysYetTheme.panel)
+
+                AppInfoSection()
             }
         }
-        .sheet(item: $colorEditingMetric) { metric in
-            TimelineColorSettingsView(metric: metric)
-        }
-        .background(Color(.systemGroupedBackground))
+        .daysYetBackground()
         .navigationTitle(L10n.text("時間", "Times"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
-                Button(action: openAppInfo) {
-                    Label(L10n.text("このアプリについて", "About DaysYet"), systemImage: "info.circle")
-                }
-                .accessibilityIdentifier("app.info.open")
+                UsageGuideLink(accessibilityIdentifier: "times.guide")
             }
         }
     }
@@ -78,7 +74,7 @@ private struct MetricLibraryRow: View {
                         valueStyle: valueStyle,
                         theme: theme,
                         customColors: customColors,
-                        showsSettingsAffordance: true
+                        showsEditAction: true
                     )
                 }
                 .buttonStyle(.plain)
@@ -126,15 +122,55 @@ struct MetricSettingsContent: View {
                         get: { store.profile.studySchedule },
                         set: { value in store.update { $0.studySchedule = value } }
                     ),
-                    weekStartDay: store.profile.weekStartDay
+                    weekStartDay: store.profile.weekStartDay,
+                    panelBackground: DaysYetTheme.panel,
+                    selectedDayForeground: DaysYetTheme.onAccent
                 )
             default:
                 Form { MetricSettingsFormContent(kind: kind) }
             }
         }
+        .daysYetBackground()
         .navigationTitle(kind.title(profile: store.profile))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar(.hidden, for: .tabBar)
+    }
+}
+
+/// Uses the same app surface as the editor and updates only its draft.
+private struct WeekStartPicker: View {
+    @Environment(\.dismiss) private var dismiss
+    @Binding var selection: WeekStartDay
+
+    var body: some View {
+        List {
+            Section {
+                ForEach(WeekStartDay.allCases) { day in
+                    Button {
+                        selection = day
+                        dismiss()
+                    } label: {
+                        HStack {
+                            Text(day.title)
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            if selection == day {
+                                Image(systemName: "checkmark")
+                                    .foregroundStyle(.tint)
+                                    .accessibilityHidden(true)
+                            }
+                        }
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityAddTraits(selection == day ? .isSelected : [])
+                }
+            }
+            .listRowBackground(DaysYetTheme.panel)
+        }
+        .daysYetBackground()
+        .navigationTitle(L10n.text("開始曜日", "First day"))
+        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -145,10 +181,10 @@ struct MetricSettingsFormContent: View {
 
     var body: some View {
         switch kind {
-        case .activity, .workday: activityHoursSection(for: kind)
-        case .healthyLife: healthyLifeSection
-        case .customLife: milestoneSection
-        case .week: weekStartSection
+        case .activity, .workday: activityHoursSection(for: kind).listRowBackground(DaysYetTheme.panel)
+        case .healthyLife: healthyLifeSection.listRowBackground(DaysYetTheme.panel)
+        case .customLife: milestoneSection.listRowBackground(DaysYetTheme.panel)
+        case .week: weekStartSection.listRowBackground(DaysYetTheme.panel)
         case .month, .year, .study: EmptyView()
         }
     }
@@ -156,10 +192,11 @@ struct MetricSettingsFormContent: View {
     private var weekStartSection: some View {
         let weekday = store.profile.weekStartDay.resolvedTitle()
         return Section {
-            Picker(L10n.text("開始曜日", "First day"), selection: binding(\.weekStartDay)) {
-                ForEach(WeekStartDay.allCases) { day in Text(day.title).tag(day) }
+            NavigationLink {
+                WeekStartPicker(selection: binding(\.weekStartDay))
+            } label: {
+                LabeledContent(L10n.text("開始曜日", "First day"), value: store.profile.weekStartDay.title)
             }
-            .pickerStyle(.navigationLink)
             .accessibilityIdentifier("week.startDay")
         } header: {
             Text(L10n.text("週の始まり", "Week starts on"))

@@ -20,6 +20,7 @@ readonly REVERSED_APP_ID="$(printf '%s.%s.%s' daysyet hinoshiba com)"
 
 required_files=(
   LICENSE NOTICE TRADEMARKS.md THIRD_PARTY_NOTICES.md ASSET_LICENSES.md
+  AGENTS.md .gitignore build.sh .github/PULL_REQUEST_TEMPLATE.md
   DATA_SOURCES.md PRIVACY.md SECURITY.md CONTRIBUTING.md project.yml
   docs/DEPENDENCY_POLICY.md docs/PRIVACY_DATA_MAP.md docs/RELEASING.md
   AppStore/configuration.yml AppStore/README.md AppStore/review/notes-en.txt
@@ -149,6 +150,45 @@ if find . -name Package.resolved -o -name Podfile.lock -o -name Cartfile.resolve
   echo "error: dependency lockfile detected; update notices, privacy review, and SBOM policy" >&2
   exit 1
 fi
+
+signing_ignore_patterns=(
+  '*.mobileprovision' '*.provisionprofile' '*.cer' '*.crt' '*.der'
+  '*.p12' '*.pkcs12' '*.pfx' '*.p8' '*.p7b' '*.p7c' '*.pem' '*.key'
+  '*.csr' '*.certSigningRequest' '*.keychain' '*.keychain-db'
+  '*.developerprofile' 'ExportOptions*.plist' '*.app' '*.pkg' '*.dmg'
+  '/.signing-private/' '/.release-private/' '/signing/' '/certificates/'
+  '/provisioning/' '/secrets/' '/private-release/' '/release-export/'
+)
+for signing_ignore_pattern in "${signing_ignore_patterns[@]}"; do
+  assert_line .gitignore "${signing_ignore_pattern}"
+done
+
+readonly FORBIDDEN_SIGNING_PATH_PATTERN='(^|/)(\.signing-private|\.release-private|signing|certificates|provisioning|secrets|private-release|release-export)(/|$)|(^|/)ExportOptions[^/]*\.plist$|(^|/)[^/]+\.(app|xcarchive|dSYM)(/|$)|\.(cer|crt|der|p12|pkcs12|pfx|p8|p7b|p7c|pem|key|csr|certSigningRequest|keychain|keychain-db|developerprofile|mobileprovision|provisionprofile|ipa|pkg|dmg|xcresult)$'
+tracked_signing_artifacts="$(git ls-files | rg -i "${FORBIDDEN_SIGNING_PATH_PATTERN}" || true)"
+if [[ -n "${tracked_signing_artifacts}" ]]; then
+  echo "error: tracked signing or private release material is forbidden:" >&2
+  echo "${tracked_signing_artifacts}" >&2
+  exit 1
+fi
+
+tracked_private_keys="$(git grep -I -n -E -- '-----BEGIN ([A-Z0-9]+ )?PRIVATE KEY-----' -- . ':(exclude)Scripts/check-compliance.sh' || true)"
+if [[ -n "${tracked_private_keys}" ]]; then
+  echo "error: tracked private-key material is forbidden" >&2
+  exit 1
+fi
+
+tracked_identity_output="$(git grep -I -n -E -- '^[[:space:]]*[0-9]+\)[[:space:]]+[0-9A-Fa-f]{40}[[:space:]]+\"[^\"]+\"' -- . || true)"
+if [[ -n "${tracked_identity_output}" ]]; then
+  echo "error: signing-identity discovery output is forbidden" >&2
+  exit 1
+fi
+
+assert_contains AGENTS.md "reuse the Team's approved existing distribution signing identity"
+assert_contains AGENTS.md 'outside this checkout'
+assert_contains AGENTS.md 'Public CI must build without signing'
+assert_contains build.sh 'CODE_SIGNING_ALLOWED=NO'
+# Fixed signing values are checked by check-public-files.py; project settings
+# may reference the authorized Mac's local configuration variables.
 
 assert_contains project.yml 'developmentLanguage: ja'
 assert_contains project.yml 'Debug: Config/Signing.xcconfig'

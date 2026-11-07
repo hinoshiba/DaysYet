@@ -36,10 +36,8 @@ final class MacWidgetPreferences: ObservableObject {
         }
     }
     @Published var systemDockError: String?
-    /// Separate, explicit consent for temporary regional screen images.
-    @Published var dockVisualHandoffEnabled: Bool {
-        didSet { defaults.set(dockVisualHandoffEnabled, forKey: Key.dockVisualHandoff) }
-    }
+    /// The snapshot transition was retired; a previous opt-in must not enable it.
+    let dockVisualHandoffEnabled = false
     @Published private(set) var dockPermissionRequired = false
     var canUseSystemDock: Bool { readDockPermission() }
     /// Remember only the edge observed on this Mac, including auto-hidden Docks.
@@ -85,7 +83,7 @@ final class MacWidgetPreferences: ObservableObject {
     private enum Key {
         static let visible = "mac-widget-visible"
         static let systemDock = "mac-widget-system-dock"
-        static let dockVisualHandoff = "mac-widget-dock-visual-handoff"
+        static let legacyDockVisualHandoff = "mac-widget-dock-visual-handoff"
         static let directDockDrag = "mac-widget-direct-dock-drag"
         static let systemDockEdge = "mac-widget-observed-dock-edge"
         static let dockPlacementVersion = "mac-widget-dock-placement-version"
@@ -106,7 +104,7 @@ final class MacWidgetPreferences: ObservableObject {
         self.readDockPermission = readDockPermission
         isVisible = defaults.object(forKey: Key.visible) as? Bool ?? true
         isInSystemDock = defaults.bool(forKey: Key.systemDock)
-        dockVisualHandoffEnabled = defaults.bool(forKey: Key.dockVisualHandoff)
+        defaults.removeObject(forKey: Key.legacyDockVisualHandoff)
         edge = MacWidgetEdge(rawValue: defaults.string(forKey: Key.edge) ?? "") ?? .right
         let position = defaults.object(forKey: Key.position) as? Double ?? 0.5
         verticalPosition = position.isFinite ? min(max(position, 0), 1) : 0.5
@@ -212,7 +210,6 @@ final class MacWidgetPreferences: ObservableObject {
         isVisible = true
         isInSystemDock = false
         systemDockError = nil
-        dockVisualHandoffEnabled = false
         clearDockPermissionNotice()
         edge = .right
         verticalPosition = 0.5
@@ -224,7 +221,7 @@ final class MacWidgetPreferences: ObservableObject {
         hoverScale = 1.35
         detailScale = 1
         resetCustomColors()
-        [Key.visible, Key.systemDock, Key.dockVisualHandoff, Key.directDockDrag, Key.systemDockEdge, Key.edge, Key.position, Key.horizontalPosition, Key.display, Key.details, Key.scale,
+        [Key.visible, Key.systemDock, Key.legacyDockVisualHandoff, Key.directDockDrag, Key.systemDockEdge, Key.edge, Key.position, Key.horizontalPosition, Key.display, Key.details, Key.scale,
          Key.magnifiesOnHover, Key.hoverScale, Key.detailScale].forEach(defaults.removeObject(forKey:))
         if let resolvedDockEdge { reconcileDockLocation(resolvedDockEdge) }
     }

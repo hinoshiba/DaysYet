@@ -1,7 +1,19 @@
 import SwiftUI
 
+/// The same app-information entry closes both main lists.
+struct AppInfoSection: View {
+    var body: some View {
+        Section {
+            NavigationLink(value: AppRoute.appInfo) {
+                Text(L10n.text("このアプリについて", "About DaysYet"))
+            }
+            .accessibilityIdentifier("app.info.open")
+        }
+        .listRowBackground(DaysYetTheme.panel)
+    }
+}
+
 struct AppInfoView: View {
-    @Environment(\.dismiss) private var dismiss
     @State private var showResetConfirmation = false
     let resetData: () -> Void
 
@@ -35,6 +47,7 @@ struct AppInfoView: View {
             } header: {
                 Text(L10n.text("プライバシー", "Privacy"))
             }
+            .listRowBackground(DaysYetTheme.panel)
 
             Section {
                 Link(destination: ProjectLinks.sourceCode) {
@@ -58,15 +71,11 @@ struct AppInfoView: View {
             } footer: {
                 Text(L10n.text("人生のTokenを、大切なことへ。", "Life’s tokens. Make them count."))
             }
+            .listRowBackground(DaysYetTheme.panel)
         }
+        .daysYetBackground()
         .navigationTitle(L10n.text("このアプリについて", "About DaysYet"))
         .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Button(L10n.text("完了", "Done")) { dismiss() }
-                    .accessibilityIdentifier("app.info.done")
-            }
-        }
         .confirmationDialog(
             L10n.text("端末内の設定をすべて消去しますか？", "Delete all on-device settings?"),
             isPresented: $showResetConfirmation,
@@ -89,10 +98,11 @@ struct PrivacyView: View {
         List {
             Section {
                 Text(L10n.text(
-                    "本アプリは、生年月日・目標年齢・活動時間とラベル・曜日・大切な日の起算日と目標日時・学習日の期間と曜日・個別の日付・表示設定を、アプリとウィジェットの共有領域に保存します。「時間」画面右上のⓘから「このアプリについて」を開き、いつでも全データを消去できます。",
-                    "This app stores your birth date, target age, activity hours with labels and weekdays, milestone start and target dates, study periods with weekdays and individual dates, and display choices in the private area shared by the app and its widget. You can delete all data at any time from About DaysYet, opened with the info button at the top right of Times."
+                    "本アプリは、生年月日・目標年齢・活動時間とラベル・曜日・大切な日の起算日と目標日時・学習日の期間と曜日・個別の日付・表示設定を、アプリとウィジェットの共有領域に保存します。「ウィジェット」または「時間」画面の一番下から「このアプリについて」を開き、いつでも全データを消去できます。",
+                    "This app stores your birth date, target age, activity hours with labels and weekdays, milestone start and target dates, study periods with weekdays and individual dates, and display choices in the private area shared by the app and its widget. You can delete all data at any time from About DaysYet at the bottom of either Widget or Times."
                 ))
             }
+            .listRowBackground(DaysYetTheme.panel)
 
             Section {
                 Text(L10n.text(
@@ -102,11 +112,15 @@ struct PrivacyView: View {
             } header: {
                 Text(L10n.text("健康に関する免責", "Health disclaimer"))
             }
+            .listRowBackground(DaysYetTheme.panel)
 
             Link(L10n.text("公開プライバシーポリシー", "Public privacy policy"), destination: ProjectLinks.privacyPolicy)
+                .listRowBackground(DaysYetTheme.panel)
                 .accessibilityIdentifier("app.info.privacy.public")
             Link(L10n.text("サポート", "Support"), destination: ProjectLinks.support)
+                .listRowBackground(DaysYetTheme.panel)
         }
+        .daysYetBackground()
         .navigationTitle(L10n.text("プライバシー", "Privacy"))
     }
 }
@@ -148,6 +162,7 @@ struct LicenseView: View {
             }
             .padding(20)
         }
+        .daysYetBackground()
         .navigationTitle(L10n.text("ライセンス", "License"))
     }
 
@@ -181,6 +196,7 @@ private struct BundledTextView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(20)
         }
+        .daysYetBackground()
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
     }

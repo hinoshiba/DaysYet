@@ -260,7 +260,8 @@ final class CircleWidgetRenderingTests: XCTestCase {
         )
         .padding(16)
         .frame(width: size, height: size)
-        .background(theme.palette.background, in: RoundedRectangle(cornerRadius: compact ? 22 : 28))
+        .background { WidgetThemeBackground(theme: theme) }
+        .clipShape(RoundedRectangle(cornerRadius: compact ? 22 : 28))
         .environment(\.colorScheme, .light)
         .environment(\.dynamicTypeSize, dynamicTypeSize)
         .environment(\.locale, locale)
