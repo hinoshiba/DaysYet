@@ -164,7 +164,7 @@ struct WidgetMetricSettingRow: View {
                         .accessibilityHidden(true)
                 }
 
-                MetricValueLabel(title: snapshot.title, value: snapshot.remainingText)
+                MetricTitleValueLabel(title: snapshot.title, value: snapshot.remainingText)
                 if showsDisclosure {
                     Image(systemName: "chevron.right")
                         .font(.caption.weight(.semibold))

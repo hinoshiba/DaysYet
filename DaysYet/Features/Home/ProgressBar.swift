@@ -25,18 +25,18 @@ struct ProgressBar: View {
     }
 }
 
-/// Widget placement rows emphasize the value shown by the widget.
-struct MetricValueLabel: View {
+/// Times and widget settings use the name to identify each timeline.
+struct MetricTitleValueLabel: View {
     let title: String
     let value: String
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(value)
-                .font(.title2.weight(.regular).monospacedDigit())
-                .foregroundStyle(.primary)
             Text(title)
-                .font(.subheadline)
+                .font(.title3.weight(.semibold))
+                .foregroundStyle(.primary)
+            Text(value)
+                .font(.subheadline.monospacedDigit())
                 .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -61,16 +61,7 @@ struct MetricSummaryRow: View {
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 10) {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(snapshot.title)
-                        .font(.title3.weight(.semibold))
-                        .foregroundStyle(.primary)
-                    Text(snapshot.valueText(style: valueStyle))
-                        .font(.subheadline.monospacedDigit())
-                        .foregroundStyle(.secondary)
-                }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .fixedSize(horizontal: false, vertical: true)
+                MetricTitleValueLabel(title: snapshot.title, value: snapshot.valueText(style: valueStyle))
 
                 ProgressBar(
                     fraction: snapshot.remainingFraction,
