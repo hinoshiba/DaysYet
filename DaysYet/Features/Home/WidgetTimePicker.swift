@@ -103,18 +103,21 @@ struct WidgetTimePicker: View {
                     } footer: {
                         Text(L10n.text("時刻・日付など、時間の内容は「時間」タブで編集できます。", "Edit schedules, dates, and other details in the Times tab."))
                     }
+                    .listRowBackground(DaysYetTheme.panel)
 
                     Section {
                         Button {
                             onOpenTimeLibrary()
                             dismiss()
                         } label: {
-                            Label(L10n.text("「時間」タブを開く", "Open Times"), systemImage: "arrow.right")
+                            Label(L10n.text("「時間」タブを開く", "Open Times"), systemImage: "circle.dotted")
                         }
                         .accessibilityIdentifier("widget.time.openLibrary")
                     }
+                    .listRowBackground(DaysYetTheme.panel)
                 }
             }
+            .daysYetBackground()
             .navigationTitle(destination.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -132,7 +135,7 @@ struct WidgetMetricSettingRow: View {
     let profile: UserProfile
     let index: Int
     var isCircle = true
-    var showsDisclosure = true
+    var showsSelectionAction = true
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 60)) { context in
@@ -161,9 +164,9 @@ struct WidgetMetricSettingRow: View {
                         .accessibilityHidden(true)
                 }
 
-                MetricValueLabel(title: snapshot.title, value: snapshot.remainingText)
-                if showsDisclosure {
-                    Image(systemName: "chevron.right")
+                MetricTitleValueLabel(title: snapshot.title, value: snapshot.remainingText)
+                if showsSelectionAction {
+                    Image(systemName: "arrow.left.arrow.right")
                         .font(.caption.weight(.semibold))
                         .foregroundStyle(.tertiary)
                         .accessibilityHidden(true)
@@ -173,7 +176,7 @@ struct WidgetMetricSettingRow: View {
             .contentShape(Rectangle())
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(positionTitle + ", " + snapshot.accessibilitySummary)
-            .accessibilityHint(showsDisclosure ? L10n.text("表示する時間を選ぶ", "Choose a time to display") : "")
+            .accessibilityHint(showsSelectionAction ? L10n.text("時間の一覧から差し替えます", "Replace with a time from your library") : "")
         }
     }
 

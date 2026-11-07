@@ -25,18 +25,18 @@ struct ProgressBar: View {
     }
 }
 
-/// The value and name use the same hierarchy in Times and widget placement rows.
-struct MetricValueLabel: View {
+/// Times and widget settings use the name to identify each timeline.
+struct MetricTitleValueLabel: View {
     let title: String
     let value: String
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(value)
-                .font(.title2.weight(.regular).monospacedDigit())
-                .foregroundStyle(.primary)
             Text(title)
-                .font(.subheadline)
+                .font(.title3.weight(.semibold))
+                .foregroundStyle(.primary)
+            Text(value)
+                .font(.subheadline.monospacedDigit())
                 .foregroundStyle(.secondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -49,8 +49,8 @@ struct MetricSummaryRow: View {
     let valueStyle: MetricValueStyle
     var theme: WidgetTheme = .vividNight
     var customColors: [MetricKind: WidgetColor] = [:]
-    /// Only times with editable content show a disclosure indicator.
-    var showsSettingsAffordance = false
+    /// Editing opens a Save/Cancel sheet; it is distinct from navigating deeper.
+    var showsEditAction = false
 
     var body: some View {
         HStack(spacing: 16) {
@@ -61,7 +61,7 @@ struct MetricSummaryRow: View {
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 10) {
-                MetricValueLabel(title: snapshot.title, value: snapshot.valueText(style: valueStyle))
+                MetricTitleValueLabel(title: snapshot.title, value: snapshot.valueText(style: valueStyle))
 
                 ProgressBar(
                     fraction: snapshot.remainingFraction,
@@ -76,19 +76,19 @@ struct MetricSummaryRow: View {
                     .monospacedDigit()
             }
 
-            Image(systemName: "chevron.right")
-                .font(.caption.weight(.semibold))
+            Image(systemName: "square.and.pencil")
+                .font(.body)
                 .foregroundStyle(.tertiary)
                 // Keep progress tracks aligned for read-only months and years.
-                .opacity(showsSettingsAffordance ? 1 : 0)
+                .opacity(showsEditAction ? 1 : 0)
                 .accessibilityHidden(true)
         }
         .padding(.vertical, 7)
         .contentShape(Rectangle())
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(snapshot.accessibilitySummary)
-        .accessibilityHint(showsSettingsAffordance
-            ? L10n.text("この時間の設定を開きます", "Opens this timer’s settings")
+        .accessibilityHint(showsEditAction
+            ? L10n.text("時刻や日付を編集します", "Edit this timeline’s schedule or dates")
             : "")
     }
 }

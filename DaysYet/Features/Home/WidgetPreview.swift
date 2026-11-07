@@ -26,23 +26,18 @@ struct WidgetPreview: View {
             .padding(.vertical, compact ? 10 : 12)
         }
         .foregroundStyle(palette.foreground)
-        .background {
-            ZStack {
-                palette.background
-                RadialGradient(
-                    colors: [palette.glow.opacity(0.22), .clear],
-                    center: .topTrailing,
-                    startRadius: 4,
-                    endRadius: 240
-                )
+        .widgetPreviewSurface(theme: profile.widgetTheme)
+    }
+}
+
+extension View {
+    func widgetPreviewSurface(theme: WidgetTheme) -> some View {
+        background { WidgetThemeBackground(theme: theme) }
+            .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 28, style: .continuous)
+                    .strokeBorder(theme.palette.foreground.opacity(0.1), lineWidth: 1)
             }
-        }
-        .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
-        .overlay {
-            RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .stroke(palette.foreground.opacity(0.1), lineWidth: 1)
-        }
-        .shadow(color: palette.glow.opacity(0.16), radius: 18, y: 10)
     }
 }
 

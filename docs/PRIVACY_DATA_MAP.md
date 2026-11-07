@@ -1,6 +1,6 @@
 # Privacy data map
 
-For iPhone / iPad, open Times → the top-right info button → About DaysYet → Delete all data. On Mac, use Settings → Delete all data. Both require confirmation and affect only the current device.
+For iPhone / iPad, scroll to the bottom of Widget or Times → About DaysYet → Delete all data. On Mac, use Settings → Delete all data. Both require confirmation and affect only the current device.
 
 | Data | Source | Purpose | Storage | Shared with | User deletion |
 |---|---|---|---|---|---|

@@ -81,6 +81,8 @@ final class StudyDaysEditorTests: XCTestCase {
         let originalLabel = firstDay.label
         let originalValue = firstDay.value as? String
         firstDay.tap()
+        XCTAssertTrue(app.buttons["Monday"].waitForExistence(timeout: 5))
+        attachScreenshot(app, name: "week-first-day-choices-en")
         app.buttons["Monday"].tap()
         app.buttons["time.editor.cancel"].tap()
 

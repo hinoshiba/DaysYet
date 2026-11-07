@@ -2,44 +2,65 @@ import SwiftUI
 
 enum DaysYetTheme {
     static let ink = Color(red: 0.035, green: 0.047, blue: 0.12)
-    static let paper = Color(red: 0.96, green: 0.95, blue: 0.91)
+    static let paper = Color(red: 247.0 / 255, green: 243.0 / 255, blue: 234.0 / 255)
+    static let paperShade = Color(red: 0.94, green: 0.91, blue: 0.86)
+    static let inkShade = Color(red: 21.0 / 255, green: 22.0 / 255, blue: 38.0 / 255)
     static let coral = Color(red: 1.0, green: 0.39, blue: 0.34)
     static let amber = Color(red: 1.0, green: 0.68, blue: 0.16)
     static let lime = Color(red: 0.76, green: 0.88, blue: 0.19)
 
+    // App surfaces and controls stay consistent across widget themes.
+    // Named colors adapt to light, dark, and increased-contrast appearances.
+    static let panel = Color("PanelColor")
+    static let onAccent = Color("OnAccentColor")
+
     static func colors(for kind: MetricKind, theme: WidgetTheme = .vividNight) -> [Color] {
         theme.palette.colors(for: kind)
-    }
-
-    static func appBackground(for theme: WidgetTheme, colorScheme: ColorScheme) -> Color {
-        switch (theme, colorScheme) {
-        case (.vividNight, .dark): ink
-        case (.vividNight, _): paper
-        case (.quietForest, .dark): Color(red: 0.055, green: 0.10, blue: 0.075)
-        case (.quietForest, _): Color(red: 0.94, green: 0.96, blue: 0.92)
-        case (.softDawn, .dark): Color(red: 0.13, green: 0.075, blue: 0.085)
-        case (.softDawn, _): Color(red: 0.98, green: 0.95, blue: 0.91)
-        case (.calmSea, .dark): Color(red: 0.045, green: 0.095, blue: 0.12)
-        case (.calmSea, _): Color(red: 0.93, green: 0.97, blue: 0.98)
-        }
     }
 }
 
 struct DaysYetBackground: View {
     @Environment(\.colorScheme) private var colorScheme
-    var theme: WidgetTheme = .vividNight
+    @Environment(\.colorSchemeContrast) private var contrast
 
     var body: some View {
-        ZStack {
-            DaysYetTheme.appBackground(for: theme, colorScheme: colorScheme)
-            RadialGradient(
-                colors: [theme.palette.accent.opacity(colorScheme == .dark ? 0.14 : 0.08), .clear],
-                center: .topTrailing,
-                startRadius: 10,
-                endRadius: 430
-            )
+        GeometryReader { geometry in
+            let isDark = colorScheme == .dark
+            let radius = max(geometry.size.width, geometry.size.height) * 0.75
+            ZStack {
+                LinearGradient(
+                    colors: isDark ? [DaysYetTheme.ink, DaysYetTheme.inkShade]
+                        : [DaysYetTheme.paper, DaysYetTheme.paperShade],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                if contrast != .increased {
+                    RadialGradient(
+                        colors: [DaysYetTheme.coral.opacity(isDark ? 0.12 : 0.11), .clear],
+                        center: .topTrailing,
+                        startRadius: 0,
+                        endRadius: radius
+                    )
+                    RadialGradient(
+                        colors: [DaysYetTheme.amber.opacity(isDark ? 0.05 : 0.06), .clear],
+                        center: UnitPoint(x: 0, y: 0.6),
+                        startRadius: 0,
+                        endRadius: radius * 0.7
+                    )
+                }
+            }
         }
         .ignoresSafeArea()
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
+    }
+}
+
+extension View {
+    /// Keep the app's paper-and-coral surface consistent while widget themes change.
+    func daysYetBackground() -> some View {
+        scrollContentBackground(.hidden)
+            .background { DaysYetBackground() }
     }
 }
 

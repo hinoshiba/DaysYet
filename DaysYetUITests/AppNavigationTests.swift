@@ -6,76 +6,86 @@ final class AppNavigationTests: XCTestCase {
     }
 
     @MainActor
-    func testAboutReplacesSettingsAndReturnsToTimes() {
+    func testBothTabsOpenTheSameGuideAndBottomAboutReturnsToItsTab() {
         let app = launchTimes(language: "en", locale: "en_US")
-        XCTAssertTrue(app.buttons.matching(identifier: "Widget").firstMatch.exists)
-        XCTAssertTrue(app.buttons.matching(identifier: "Times").firstMatch.isSelected)
         XCTAssertFalse(app.buttons.matching(identifier: "Settings").firstMatch.exists)
 
-        app.buttons["app.info.open"].tap()
-        XCTAssertTrue(app.buttons["app.info.done"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.staticTexts["Version"].exists)
-        XCTAssertFalse(app.buttons["settings.widgets"].exists)
-        attachScreenshot(app, name: "app-info-en")
+        for tab in ["Times", "Widget"] {
+            app.buttons.matching(identifier: tab).firstMatch.tap()
+            let guide = app.buttons[tab == "Times" ? "times.guide" : "widget.guide"]
+            XCTAssertEqual(guide.label, "How to use")
+            guide.tap()
+            XCTAssertTrue(app.navigationBars["How to use"].waitForExistence(timeout: 5))
+            XCTAssertTrue(app.staticTexts["Edit your times"].exists)
+            XCTAssertTrue(app.staticTexts["Arrange your widget"].exists)
+            XCTAssertFalse(app.buttons["app.info.privacy"].exists)
+            attachScreenshot(app, name: "shared-guide-\(tab)-en")
+            XCTAssertFalse(app.buttons["app.guide.done"].exists)
+            app.navigationBars["How to use"].buttons.element(boundBy: 0).tap()
+            XCTAssertTrue(guide.waitForExistence(timeout: 5))
 
-        app.buttons["app.info.privacy"].tap()
-        let privacy = app.navigationBars["Privacy"]
-        XCTAssertTrue(privacy.waitForExistence(timeout: 5))
-        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "info button at the top right of Times")).firstMatch.exists)
-        privacy.buttons.element(boundBy: 0).tap()
+            let info = app.buttons["app.info.open"]
+            reveal(info, in: app)
+            attachScreenshot(app, name: "bottom-about-\(tab)-en")
+            info.tap()
+            let about = app.navigationBars["About DaysYet"]
+            XCTAssertTrue(about.waitForExistence(timeout: 5))
+            XCTAssertTrue(about.buttons.element(boundBy: 0).isHittable)
+            XCTAssertFalse(app.buttons["app.info.done"].exists)
+            XCTAssertTrue(app.staticTexts["Version"].exists)
+            attachScreenshot(app, name: "app-info-from-\(tab)-en")
 
-        app.buttons["app.info.license"].tap()
-        XCTAssertTrue(app.staticTexts["Apache License 2.0"].waitForExistence(timeout: 5))
-        app.navigationBars["License"].buttons.element(boundBy: 0).tap()
+            app.buttons["app.info.privacy"].tap()
+            let privacy = app.navigationBars["Privacy"]
+            XCTAssertTrue(privacy.waitForExistence(timeout: 5))
+            XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "at the bottom of either Widget or Times")).firstMatch.exists)
+            let publicPolicy = app.descendants(matching: .any).matching(identifier: "app.info.privacy.public").firstMatch
+            reveal(publicPolicy, in: app)
+            privacy.buttons.element(boundBy: 0).tap()
 
-        app.buttons["app.info.reset"].tap()
-        let delete = app.buttons["Delete"]
-        XCTAssertTrue(delete.waitForExistence(timeout: 5))
-        let cancel = app.buttons["Cancel"]
-        if cancel.exists {
-            cancel.tap()
-        } else {
-            // iPad dismisses a confirmation popover by tapping outside it.
-            app.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.5)).tap()
+            app.buttons["app.info.license"].tap()
+            XCTAssertTrue(app.staticTexts["Apache License 2.0"].waitForExistence(timeout: 5))
+            app.navigationBars["License"].buttons.element(boundBy: 0).tap()
+
+            app.buttons["app.info.reset"].tap()
+            let delete = app.buttons["Delete"]
+            XCTAssertTrue(delete.waitForExistence(timeout: 5))
+            let cancel = app.buttons["Cancel"]
+            if cancel.exists {
+                cancel.tap()
+            } else {
+                // iPad dismisses a confirmation popover by tapping outside it.
+                app.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.5)).tap()
+            }
+            XCTAssertFalse(delete.exists)
+            about.buttons.element(boundBy: 0).tap()
+            XCTAssertTrue(info.waitForExistence(timeout: 5))
+            XCTAssertTrue(info.isHittable)
+            XCTAssertTrue(app.buttons.matching(identifier: tab).firstMatch.isSelected)
+
+            // Native push navigation also supports the standard edge-swipe back.
+            info.tap()
+            XCTAssertTrue(about.waitForExistence(timeout: 5))
+            app.coordinate(withNormalizedOffset: CGVector(dx: 0.005, dy: 0.5))
+                .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.5)))
+            XCTAssertTrue(info.waitForExistence(timeout: 5))
+            XCTAssertTrue(info.isHittable)
         }
-        XCTAssertFalse(delete.exists)
-        app.buttons["app.info.done"].tap()
-        XCTAssertTrue(app.buttons["app.info.open"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.buttons.matching(identifier: "Times").firstMatch.isSelected)
-        XCTAssertTrue(app.buttons["times.metric.week"].exists)
-
-        app.buttons.matching(identifier: "Widget").firstMatch.tap()
-        XCTAssertTrue(app.buttons["widget.guide"].waitForExistence(timeout: 5))
-        XCTAssertFalse(app.buttons["app.info.done"].exists)
-        attachScreenshot(app, name: "two-tabs-widget-en")
-        app.buttons["widget.guide"].tap()
-        let guidePrivacy = app.buttons["app.info.privacy"]
-        reveal(guidePrivacy, in: app)
-        attachScreenshot(app, name: "widget-guide-legal-links-en")
-        guidePrivacy.tap()
-        XCTAssertTrue(privacy.waitForExistence(timeout: 5))
-        let publicPolicy = app.descendants(matching: .any).matching(identifier: "app.info.privacy.public").firstMatch
-        reveal(publicPolicy, in: app)
-        XCTAssertTrue(publicPolicy.isHittable)
-        privacy.buttons.element(boundBy: 0).tap()
-        let guideLicense = app.buttons["app.info.license"]
-        reveal(guideLicense, in: app)
-        guideLicense.tap()
-        XCTAssertTrue(app.staticTexts["Apache License 2.0"].waitForExistence(timeout: 5))
-        app.navigationBars["License"].buttons.element(boundBy: 0).tap()
-        app.buttons["widget.guide.done"].tap()
-        XCTAssertTrue(app.buttons["widget.guide"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.buttons.matching(identifier: "Widget").firstMatch.isSelected)
-        app.buttons.matching(identifier: "Times").firstMatch.tap()
-        XCTAssertTrue(app.buttons["app.info.open"].waitForExistence(timeout: 5))
-        attachScreenshot(app, name: "two-tabs-times-en")
     }
 
     @MainActor
     func testResetFromAboutReturnsToOnboarding() {
         // Screenshot mode uses a synthetic profile and never resets persisted data.
         let app = launchTimes(language: "en", locale: "en_US")
-        app.buttons["app.info.open"].tap()
+        app.buttons.matching(identifier: "Widget").firstMatch.tap()
+        let colors = app.buttons["widget.colors.open"]
+        reveal(colors, in: app)
+        colors.tap()
+        XCTAssertTrue(app.navigationBars["Timeline colors"].waitForExistence(timeout: 5))
+        app.buttons.matching(identifier: "Times").firstMatch.tap()
+        let info = app.buttons["app.info.open"]
+        reveal(info, in: app)
+        info.tap()
         app.buttons["app.info.reset"].tap()
         app.buttons["Delete"].tap()
         let next = app.buttons["Continue"]
@@ -83,48 +93,52 @@ final class AppNavigationTests: XCTestCase {
         next.tap()
         next.tap()
         app.buttons["Get started"].tap()
-        XCTAssertTrue(app.buttons["app.info.open"].waitForExistence(timeout: 5))
-        XCTAssertFalse(app.buttons["app.info.done"].exists)
-        XCTAssertTrue(app.buttons["times.metric.week"].exists)
+        XCTAssertTrue(app.buttons["times.guide"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.navigationBars["About DaysYet"].exists)
+        XCTAssertTrue(app.buttons.matching(identifier: "Times").firstMatch.isSelected)
+        app.buttons.matching(identifier: "Widget").firstMatch.tap()
+        XCTAssertTrue(app.buttons["widget.guide"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.navigationBars["Timeline colors"].exists)
     }
 
     @MainActor
-    func testJapaneseAboutWithLargeText() {
+    func testJapaneseGuideAndBottomAboutWithLargeText() {
         let app = launchTimes(language: "ja", locale: "ja_JP", largeText: true)
-        let info = app.buttons["app.info.open"]
-        XCTAssertEqual(info.label, "このアプリについて")
-        XCTAssertTrue(info.isHittable)
-        attachScreenshot(app, name: "two-tabs-times-large-text-ja")
-        info.tap()
-        let privacy = app.buttons["app.info.privacy"]
-        for _ in 0..<8 {
-            if privacy.exists && privacy.isHittable { break }
-            app.swipeUp()
-        }
-        XCTAssertTrue(privacy.isHittable)
-        attachScreenshot(app, name: "app-info-large-text-ja")
-        privacy.tap()
-        let privacyNavigation = app.navigationBars["プライバシー"]
-        XCTAssertTrue(privacyNavigation.waitForExistence(timeout: 5))
-        privacyNavigation.buttons.element(boundBy: 0).tap()
-        app.buttons["app.info.done"].tap()
-        XCTAssertTrue(info.waitForExistence(timeout: 5))
-        XCTAssertTrue(app.buttons.matching(identifier: "時間").firstMatch.isSelected)
-        XCTAssertFalse(app.buttons.matching(identifier: "設定").firstMatch.exists)
+        for tab in ["時間", "ウィジェット"] {
+            app.buttons.matching(identifier: tab).firstMatch.tap()
+            if tab == "ウィジェット" {
+                app.buttons["widget.layout"].tap()
+                app.buttons["サークル"].tap()
+            }
+            let guide = app.buttons[tab == "時間" ? "times.guide" : "widget.guide"]
+            XCTAssertEqual(guide.label, "使い方")
+            XCTAssertTrue(guide.isHittable)
+            guide.tap()
+            XCTAssertTrue(app.navigationBars["使い方"].waitForExistence(timeout: 5))
+            XCTAssertTrue(app.staticTexts["時間を編集"].exists)
+            attachScreenshot(app, name: "shared-guide-\(tab)-large-text-ja")
+            app.navigationBars["使い方"].buttons.element(boundBy: 0).tap()
 
-        app.buttons.matching(identifier: "ウィジェット").firstMatch.tap()
-        app.buttons["widget.guide"].tap()
-        reveal(privacy, in: app)
-        attachScreenshot(app, name: "widget-guide-legal-links-large-text-ja")
-        privacy.tap()
-        XCTAssertTrue(privacyNavigation.waitForExistence(timeout: 5))
-        let publicPolicy = app.descendants(matching: .any).matching(identifier: "app.info.privacy.public").firstMatch
-        reveal(publicPolicy, in: app)
-        XCTAssertTrue(publicPolicy.isHittable)
-        privacyNavigation.buttons.element(boundBy: 0).tap()
-        app.buttons["widget.guide.done"].tap()
-        XCTAssertTrue(app.buttons["widget.guide"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.buttons.matching(identifier: "ウィジェット").firstMatch.isSelected)
+            let info = app.buttons["app.info.open"]
+            reveal(info, in: app)
+            XCTAssertEqual(info.label, "このアプリについて")
+            attachScreenshot(app, name: "bottom-about-\(tab)-large-text-ja")
+            info.tap()
+            let privacy = app.buttons["app.info.privacy"]
+            reveal(privacy, in: app)
+            attachScreenshot(app, name: "app-info-from-\(tab)-large-text-ja")
+            privacy.tap()
+            let privacyNavigation = app.navigationBars["プライバシー"]
+            XCTAssertTrue(privacyNavigation.waitForExistence(timeout: 5))
+            let publicPolicy = app.descendants(matching: .any).matching(identifier: "app.info.privacy.public").firstMatch
+            reveal(publicPolicy, in: app)
+            privacyNavigation.buttons.element(boundBy: 0).tap()
+            app.navigationBars["このアプリについて"].buttons.element(boundBy: 0).tap()
+            XCTAssertTrue(info.waitForExistence(timeout: 5))
+            XCTAssertTrue(info.isHittable)
+            XCTAssertTrue(app.buttons.matching(identifier: tab).firstMatch.isSelected)
+            XCTAssertFalse(app.buttons.matching(identifier: "設定").firstMatch.exists)
+        }
     }
 
     @MainActor
@@ -144,7 +158,7 @@ final class AppNavigationTests: XCTestCase {
             app.launchArguments += ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"]
         }
         app.launch()
-        XCTAssertTrue(app.buttons["app.info.open"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["times.guide"].waitForExistence(timeout: 10))
         return app
     }
 

@@ -5,6 +5,8 @@ import SwiftUI
 struct StudyScheduleEditor: View {
     @Binding var schedule: StudySchedule
     let weekStartDay: WeekStartDay
+    var panelBackground: Color? = nil
+    var selectedDayForeground: Color = .white
 
     @State private var visibleMonth = Date.now
     @ScaledMetric(relativeTo: .body) private var daySize: CGFloat = 44
@@ -33,8 +35,11 @@ struct StudyScheduleEditor: View {
 #else
             Form {
                 planSection
+                    .listRowBackground(panelBackground)
                 weekdaySection
+                    .listRowBackground(panelBackground)
                 calendarSection
+                    .listRowBackground(panelBackground)
             }
             .formStyle(.grouped)
 #endif
@@ -389,13 +394,13 @@ struct StudyScheduleEditor: View {
                     Text("\(calendar.component(.day, from: date))")
                         .font(.body.weight(selected || isToday ? .semibold : .regular))
                         .monospacedDigit()
-                        .underline(isToday, pattern: .solid, color: selected ? .white : .primary)
+                        .underline(isToday, pattern: .solid, color: selected ? selectedDayForeground : .primary)
                     Image(systemName: "checkmark")
                         .font(.system(size: 8, weight: .bold))
                         .opacity(selected ? 1 : 0)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .foregroundStyle(selected ? Color.white : inRange ? .primary : Color.secondary.opacity(0.35))
+                .foregroundStyle(selected ? selectedDayForeground : inRange ? .primary : Color.secondary.opacity(0.35))
             }
             .frame(height: daySize)
             .contentShape(RoundedRectangle(cornerRadius: 11))
