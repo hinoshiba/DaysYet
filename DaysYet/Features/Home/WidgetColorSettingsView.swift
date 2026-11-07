@@ -72,7 +72,9 @@ struct WidgetColorSettingsView: View {
                      ? L10n.text("個別の色は、バーを含む表示方法で反映されます。", "Timeline colors appear in display modes that include bars.")
                      : L10n.text("色をタップすると、パレットから選んだり、自由に調整したりできます。", "Tap a color to choose from the palette or adjust it freely."))
             }
+            .listRowBackground(DaysYetTheme.panel)
         }
+        .daysYetBackground()
         .navigationTitle(L10n.text("項目ごとの色", "Timeline colors"))
         .navigationBarTitleDisplayMode(.inline)
     }
@@ -150,7 +152,9 @@ struct TimelineColorSettingsView: View {
                         "Used in Times and widgets. Circles keep any color set specifically for that timeline."
                     ))
                 }
+                .listRowBackground(DaysYetTheme.panel)
             }
+            .daysYetBackground()
             .navigationTitle(L10n.text("色を変更", "Change color"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -201,8 +205,7 @@ struct WidgetEditorPreview: View {
                 .padding(16)
                 .aspectRatio(2.05, contentMode: .fit)
                 .frame(maxWidth: 360)
-                .background(configuration.resolvedTheme(profile: profile).palette.background,
-                            in: RoundedRectangle(cornerRadius: 24))
+                .widgetPreviewSurface(theme: configuration.resolvedTheme(profile: profile))
             }
         }
     }

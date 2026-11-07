@@ -103,6 +103,7 @@ struct WidgetTimePicker: View {
                     } footer: {
                         Text(L10n.text("時刻・日付など、時間の内容は「時間」タブで編集できます。", "Edit schedules, dates, and other details in the Times tab."))
                     }
+                    .listRowBackground(DaysYetTheme.panel)
 
                     Section {
                         Button {
@@ -113,8 +114,10 @@ struct WidgetTimePicker: View {
                         }
                         .accessibilityIdentifier("widget.time.openLibrary")
                     }
+                    .listRowBackground(DaysYetTheme.panel)
                 }
             }
+            .daysYetBackground()
             .navigationTitle(destination.title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

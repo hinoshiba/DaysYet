@@ -12,7 +12,7 @@ struct OnboardingView: View {
 
     var body: some View {
         ZStack {
-            DaysYetBackground(theme: store.profile.widgetTheme)
+            DaysYetBackground()
             VStack(spacing: 0) {
                 HStack(spacing: 8) {
                     ForEach(0..<3, id: \.self) { index in
@@ -196,6 +196,7 @@ struct OnboardingView: View {
                 }
             } label: {
                 Text(step == 2 ? L10n.text("はじめる", "Get started") : L10n.text("続ける", "Continue"))
+                    .foregroundStyle(DaysYetTheme.onAccent)
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)

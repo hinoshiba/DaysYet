@@ -35,6 +35,7 @@ struct AppInfoView: View {
             } header: {
                 Text(L10n.text("プライバシー", "Privacy"))
             }
+            .listRowBackground(DaysYetTheme.panel)
 
             Section {
                 Link(destination: ProjectLinks.sourceCode) {
@@ -58,7 +59,9 @@ struct AppInfoView: View {
             } footer: {
                 Text(L10n.text("人生のTokenを、大切なことへ。", "Life’s tokens. Make them count."))
             }
+            .listRowBackground(DaysYetTheme.panel)
         }
+        .daysYetBackground()
         .navigationTitle(L10n.text("このアプリについて", "About DaysYet"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -93,6 +96,7 @@ struct PrivacyView: View {
                     "This app stores your birth date, target age, activity hours with labels and weekdays, milestone start and target dates, study periods with weekdays and individual dates, and display choices in the private area shared by the app and its widget. You can delete all data at any time from About DaysYet, opened with the info button at the top right of Times."
                 ))
             }
+            .listRowBackground(DaysYetTheme.panel)
 
             Section {
                 Text(L10n.text(
@@ -102,11 +106,15 @@ struct PrivacyView: View {
             } header: {
                 Text(L10n.text("健康に関する免責", "Health disclaimer"))
             }
+            .listRowBackground(DaysYetTheme.panel)
 
             Link(L10n.text("公開プライバシーポリシー", "Public privacy policy"), destination: ProjectLinks.privacyPolicy)
+                .listRowBackground(DaysYetTheme.panel)
                 .accessibilityIdentifier("app.info.privacy.public")
             Link(L10n.text("サポート", "Support"), destination: ProjectLinks.support)
+                .listRowBackground(DaysYetTheme.panel)
         }
+        .daysYetBackground()
         .navigationTitle(L10n.text("プライバシー", "Privacy"))
     }
 }
@@ -148,6 +156,7 @@ struct LicenseView: View {
             }
             .padding(20)
         }
+        .daysYetBackground()
         .navigationTitle(L10n.text("ライセンス", "License"))
     }
 
@@ -181,6 +190,7 @@ private struct BundledTextView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(20)
         }
+        .daysYetBackground()
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.inline)
     }

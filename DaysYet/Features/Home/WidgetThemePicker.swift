@@ -43,7 +43,7 @@ struct WidgetThemePicker<Preview: View>: View {
                         .padding(.bottom, 4)
                     }
                     .padding(6)
-                    .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 20))
+                    .background(DaysYetTheme.panel, in: RoundedRectangle(cornerRadius: 20))
                     .overlay {
                         RoundedRectangle(cornerRadius: 20)
                             .strokeBorder(selectedTheme == theme ? Color.accentColor : Color.secondary.opacity(0.2),

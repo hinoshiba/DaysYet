@@ -76,6 +76,7 @@ struct WidgetStudioView: View {
                     } footer: {
                         Text(L10n.text("タップして「時間」の一覧から選びます。", "Tap a row to choose from your Times."))
                     }
+                    .listRowBackground(DaysYetTheme.panel)
                 }
 
                 if !editMode.isEditing {
@@ -119,12 +120,13 @@ struct WidgetStudioView: View {
                     } header: {
                         Text(L10n.text("表示", "Display"))
                     }
+                    .listRowBackground(DaysYetTheme.panel)
                 }
             }
             // Keep each layout's metrics while returning to its theme previews.
             .id(selectedLayout)
         }
-        .background(Color(.systemGroupedBackground))
+        .daysYetBackground()
         .navigationTitle(L10n.text("ウィジェット", "Widget"))
         .navigationBarTitleDisplayMode(.inline)
         .environment(\.editMode, $editMode)
@@ -215,6 +217,7 @@ struct WidgetStudioView: View {
                 }
             }
         }
+        .listRowBackground(DaysYetTheme.panel)
     }
 
     private var circleSizePicker: some View {
@@ -241,7 +244,6 @@ struct WidgetStudioView: View {
     private func preview(for theme: WidgetTheme) -> some View {
         if selectedLayout == .rows {
             WidgetPreview(profile: themedPreviewProfile(theme))
-                .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
         } else {
             TimelineView(.periodic(from: .now, by: 60)) { context in
                 CircleWidgetGrid(
@@ -255,8 +257,7 @@ struct WidgetStudioView: View {
                     customColors: store.profile.resolvedCircleWidgetCustomColors
                 )
                 .padding(circleSize == .small ? 12 : 16)
-                .background(theme.palette.background,
-                            in: RoundedRectangle(cornerRadius: 24))
+                .widgetPreviewSurface(theme: theme)
             }
         }
     }
@@ -375,6 +376,7 @@ private struct WidgetGuideView: View {
                         "The layout and theme you choose in the app also apply to the Home Screen. Preview size only changes the preview."
                     ))
                 }
+                .listRowBackground(DaysYetTheme.panel)
 
                 Section {
                     Label(L10n.text("ウィジェットを長押し → ウィジェットを編集", "Touch and hold the widget → Edit Widget"), systemImage: "hand.tap")
@@ -385,12 +387,14 @@ private struct WidgetGuideView: View {
                 } footer: {
                     Text(L10n.text("ウィジェットの選択・配置・表示は自動で保存されます。時刻・日付は「時間」タブで編集します。ウィジェットの更新時刻はiOSが調整します。", "Widget choices, order, and appearance save automatically. Edit schedules and dates in Times. Widget refresh timing is controlled by iOS."))
                 }
+                .listRowBackground(DaysYetTheme.panel)
 
                 Section {
                     Text(L10n.text("横向きで充電中のスタンバイには、小サイズを追加できます。ウィジェットを長押しして編集します。", "In StandBy while charging in landscape, add a Small widget. Touch and hold it to edit."))
                 } header: {
                     Text(L10n.text("スタンバイ", "StandBy"))
                 }
+                .listRowBackground(DaysYetTheme.panel)
 
                 Section {
                     Label(L10n.text("ロック画面を長押し → カスタマイズ", "Touch and hold the Lock Screen → Customize"), systemImage: "1.circle")
@@ -401,6 +405,7 @@ private struct WidgetGuideView: View {
                 } footer: {
                     Text(L10n.text("背景の半透明化、ロック画面の単色表示、スタンバイの夜間の色はiOSが調整します。", "iOS controls translucent backgrounds, monochrome Lock Screen widgets, and StandBy's nighttime colors."))
                 }
+                .listRowBackground(DaysYetTheme.panel)
 
                 Section {
                     NavigationLink(L10n.text("プライバシーポリシー", "Privacy policy")) {
@@ -415,7 +420,9 @@ private struct WidgetGuideView: View {
                 } header: {
                     Text(L10n.text("このアプリについて", "About DaysYet"))
                 }
+                .listRowBackground(DaysYetTheme.panel)
             }
+            .daysYetBackground()
             .navigationTitle(L10n.text("使い方・アプリ情報", "Help & app info"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

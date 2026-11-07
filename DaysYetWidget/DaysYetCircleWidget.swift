@@ -85,7 +85,7 @@ struct DaysYetCircleWidgetEntryView: View {
             customColors: entry.customColors
         )
         .containerBackground(for: .widget) {
-            entry.theme.palette.background
+            WidgetThemeBackground(theme: entry.theme)
         }
     }
 }
