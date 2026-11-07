@@ -1,8 +1,8 @@
 # Release readiness
 
-## Current 0.2.0 preparation
+## Current 0.2.0 submission
 
-The release owner authorized iOS / iPadOS 0.2.0 (16) and native macOS 0.2.0 (13), with automatic release after approval. Local candidate tests passed: 145 iOS tests and 382 default Mac App Store tests. Release compliance passed, including current store assets and live public URLs. Updated metadata and screenshots are prepared. Both App Store Connect version drafts exist and retain automatic release to all users. Archive validation, upload, processing, exact build selection, and final App Review submission remain pending; see [0.2.0](../releases/0.2.0.md).
+**iOS / iPadOS 0.2.0 (16) and native macOS 0.2.0 (13) are Waiting for Review.** Final submissions were accepted on 2026-11-07 at 16:22 JST and 16:15 JST respectively. Automatic release after approval to all users is enabled for both. The clean archive source is `6c06c267e85b845c906e60551c08a9d7a825b225`, preserved by immutable platform tags. Local candidate tests passed: 145 iOS tests and 382 default Mac App Store tests. Release compliance, archive audits, upload/processing checks, saved metadata readback, and all 50 screenshot registrations passed. Hosted CI could not start because of the owner's billing/account restriction; it is not a passing check. No new physical-device VoiceOver, Home Screen hosting, Lock Screen, or StandBy check is claimed. Approval and public availability are not yet confirmed; see the [0.2.0 release record](../releases/0.2.0.md).
 
 ## Historical iOS 0.1.10 (15) submission
 
