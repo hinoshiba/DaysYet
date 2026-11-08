@@ -176,7 +176,7 @@ final class MacWidgetHandoffTests: XCTestCase {
         try XCTSkipIf(NSScreen.screens.isEmpty, "A WindowServer display is required for drawing-order coverage.")
         let suite = "com.hinoshiba.daysyet.handoff.tests.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
-        let preferences = MacWidgetPreferences(defaults: defaults, readDockPermission: { allowsDock })
+        let preferences = MacWidgetPreferences(defaults: defaults, supportsSystemDock: true, readDockPermission: { allowsDock })
         preferences.edge = .right
         preferences.verticalPosition = 0.24
         preferences.magnifiesOnHover = true

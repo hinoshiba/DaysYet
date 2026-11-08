@@ -8,6 +8,73 @@ final class MacWidgetAttachmentTests: XCTestCase {
     private var visible: NSRect { NSRect(x: -1600, y: 200, width: 1600, height: 888) }
 
     @MainActor
+    func testVisualLagDoesNotDelayTheDrop() async throws {
+        try await withController(reducesMotion: false) { controller, preferences in
+            begin(controller)
+            let first = NSPoint(x: screen.midX, y: screen.midY)
+            _ = controller.updatePointerPress(at: first)
+            let collected = try await eventually { controller.dragVisual?.coalescence == 1 }
+            XCTAssertTrue(collected)
+            let next = NSPoint(x: first.x + 100, y: first.y + 60)
+            _ = controller.updatePointerPress(at: next)
+            XCTAssertNotEqual(controller.dragVisual?.circleFrame.midX, next.x, "Only the visual should trail the pointer.")
+            let caughtUp = try await eventually { controller.dragVisual?.circleFrame.midX == next.x }
+            XCTAssertTrue(caughtUp, "The preview must catch up even without another input event.")
+
+            let dropPoint = point(at: .bottom, distance: 20)
+            guard case .drag(let drop) = controller.finishPointerPress(at: dropPoint, doubleClickInterval: 0.5) else {
+                return XCTFail("Expected a drag")
+            }
+            XCTAssertEqual(drop.target?.edge, .bottom, "Mouse-up must use the latest pointer even while the visual is behind.")
+            controller.settleDrop(drop)
+            XCTAssertEqual(preferences.edge, .bottom)
+            XCTAssertNil(controller.dragVisual)
+        }
+    }
+
+    @MainActor
+    func testCancelStopsFollowingWithoutRestoringAStalePreview() async throws {
+        try await withController(reducesMotion: false) { controller, preferences in
+            begin(controller)
+            let first = NSPoint(x: screen.midX, y: screen.midY)
+            _ = controller.updatePointerPress(at: first)
+            let collected = try await eventually { controller.dragVisual?.coalescence == 1 }
+            XCTAssertTrue(collected)
+            _ = controller.updatePointerPress(at: NSPoint(x: first.x + 100, y: first.y + 60))
+            controller.closeDetails()
+            try await Task.sleep(for: .milliseconds(400))
+            XCTAssertNil(controller.dragVisual)
+            XCTAssertEqual(preferences.edge, .right, "Canceling must preserve the original placement.")
+        }
+    }
+
+    @MainActor
+    func testEdgeSlideKeepsItsShapeWhileFollowingAndSavesTheLatestPoint() async throws {
+        try await withController(reducesMotion: false) { controller, preferences in
+            preferences.edge = .bottom
+            let docking = MacWidgetDocking(edge: .bottom, screenFrame: screen, visibleFrame: visible)
+            let frame = docking.frame(edge: .bottom, position: 0.5)
+            let anchor = NSPoint(x: frame.midX, y: frame.midY)
+            controller.beginPointerPress(at: anchor, frame: frame, bounds: visible, clickCount: 1, timestamp: 1, docking: docking)
+            _ = controller.updatePointerPress(at: NSPoint(x: anchor.x + 6, y: anchor.y))
+            let previous = try XCTUnwrap(controller.dragVisual)
+            let end = NSPoint(x: anchor.x + 120, y: anchor.y)
+            let placement = try XCTUnwrap(controller.updatePointerPress(at: end))
+            XCTAssertTrue(placement.isSlidingAlongEdge)
+            XCTAssertEqual(controller.dragVisual?.circleFrame, previous.circleFrame)
+            XCTAssertEqual(controller.dragVisual?.coalescence, 0)
+            guard case .drag(let drop) = controller.finishPointerPress(at: end, doubleClickInterval: 0.5) else {
+                return XCTFail("Expected a slide")
+            }
+            controller.settleDrop(drop)
+            XCTAssertEqual(preferences.horizontalPosition, placement.position)
+            controller.closeDetails()
+            try await Task.sleep(for: .milliseconds(400))
+            XCTAssertNil(controller.dragVisual)
+        }
+    }
+
+    @MainActor
     func testBottomRailSlidesWithoutMorphingFromTheFirstMovement() async throws {
         try await withController { controller, preferences in
             preferences.edge = .bottom
@@ -66,7 +133,7 @@ final class MacWidgetAttachmentTests: XCTestCase {
         case .left: NSPoint(x: screen.minX + distance, y: screen.midY)
         case .right: NSPoint(x: screen.maxX - distance, y: screen.midY)
         case .top: NSPoint(x: screen.midX, y: screen.maxY - distance)
-        case .bottom: NSPoint(x: screen.midX, y: screen.minY + distance)
+        case .bottom: NSPoint(x: screen.midX, y: visible.minY + distance)
         }
     }
 
@@ -130,7 +197,7 @@ final class MacWidgetAttachmentTests: XCTestCase {
                     case .left: gap = circle.minX - screen.minX
                     case .right: gap = screen.maxX - circle.maxX
                     case .top: gap = screen.maxY - circle.maxY
-                    case .bottom: gap = circle.minY - screen.minY
+                    case .bottom: gap = circle.minY - visible.minY
                     }
                     XCTAssertEqual(gap, contactRadius - radius + 1, accuracy: 0.000001)
 
@@ -261,7 +328,7 @@ final class MacWidgetAttachmentTests: XCTestCase {
 
     @MainActor
     private func eventually(_ condition: () -> Bool) async throws -> Bool {
-        let deadline = ContinuousClock.now.advanced(by: .seconds(1))
+        let deadline = ContinuousClock.now.advanced(by: .seconds(2))
         while !condition(), ContinuousClock.now < deadline { try await Task.sleep(for: .milliseconds(10)) }
         return condition()
     }

@@ -212,7 +212,7 @@ final class MacSystemDockTransitionTests: XCTestCase {
         let suite = "com.hinoshiba.daysyet.dock-transition.tests.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
         defer { defaults.removePersistentDomain(forName: suite) }
-        let preferences = MacWidgetPreferences(defaults: defaults, readDockPermission: { true })
+        let preferences = MacWidgetPreferences(defaults: defaults, supportsSystemDock: true, readDockPermission: { true })
         preferences.edge = inDock ? .bottom : .right
         preferences.verticalPosition = 0.24
         preferences.horizontalPosition = 0.72

@@ -4,7 +4,7 @@ import XCTest
 @testable import DaysYetMac
 
 final class MacBottomSurfaceTests: XCTestCase {
-    func testExpansionKeepsCirclesOnThePhysicalEdgeAndDetailsClearOfThem() {
+    func testExpansionKeepsCirclesAboveTheDockAndDetailsClearOfThem() {
         let screen = NSRect(x: -1600, y: 120, width: 1600, height: 1000)
         let visible = NSRect(x: -1520, y: 200, width: 1520, height: 888)
         for count in [3, 6, 8] {
@@ -16,8 +16,8 @@ final class MacBottomSurfaceTests: XCTestCase {
                         let opened = MacWidgetPlacement.frame(in: visible, edge: .bottom, position: 0.37,
                             expanded: true, scale: scale, screenFrame: screen, metricCount: count,
                             hoverScale: hoverScale, detailScale: detailScale)
-                        XCTAssertEqual(closed.minY, screen.minY)
-                        XCTAssertEqual(opened.minY, screen.minY)
+                        XCTAssertEqual(closed.minY, visible.minY)
+                        XCTAssertEqual(opened.minY, visible.minY)
                         XCTAssertEqual(closed.minX, opened.minX)
                         XCTAssertEqual(closed.width, opened.width)
                         for index in 0..<count {

@@ -541,7 +541,7 @@ final class MacSystemDockLandingTests: XCTestCase {
         let suite = "com.hinoshiba.daysyet.dock-landing.tests.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
         defer { defaults.removePersistentDomain(forName: suite) }
-        let preferences = MacWidgetPreferences(defaults: defaults, readDockPermission: { true })
+        let preferences = MacWidgetPreferences(defaults: defaults, supportsSystemDock: true, readDockPermission: { true })
         let store = ProfileStore(profile: .initial, saveProfile: { _ in })
         return try body(MacWidgetController(store: store, preferences: preferences, reducesMotion: { false }), preferences, store)
     }
@@ -552,7 +552,7 @@ final class MacSystemDockLandingTests: XCTestCase {
         let suite = "com.hinoshiba.daysyet.dock-landing.tests.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
         defer { defaults.removePersistentDomain(forName: suite) }
-        let preferences = MacWidgetPreferences(defaults: defaults, readDockPermission: { true })
+        let preferences = MacWidgetPreferences(defaults: defaults, supportsSystemDock: true, readDockPermission: { true })
         if let edge = nativeDockEdge {
             // Establish the source before observing preference changes. A real
             // edge change during a held drag deliberately cancels that drag.

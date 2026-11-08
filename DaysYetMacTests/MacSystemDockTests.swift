@@ -12,13 +12,13 @@ final class MacSystemDockTests: XCTestCase {
             preferences.horizontalPosition = 0.78
             preferences.verticalPosition = 0.23
             preferences.isInSystemDock = true
-            let restored = MacWidgetPreferences(defaults: defaults, readDockPermission: { true })
+            let restored = MacWidgetPreferences(defaults: defaults, supportsSystemDock: true, readDockPermission: { true })
             XCTAssertTrue(restored.isInSystemDock)
             XCTAssertEqual(restored.edge, .bottom)
             XCTAssertEqual(restored.horizontalPosition, 0.78)
             XCTAssertEqual(restored.verticalPosition, 0.23)
             restored.reset()
-            XCTAssertFalse(MacWidgetPreferences(defaults: defaults, readDockPermission: { true }).isInSystemDock)
+            XCTAssertFalse(MacWidgetPreferences(defaults: defaults, supportsSystemDock: true, readDockPermission: { true }).isInSystemDock)
         }
     }
 
@@ -152,13 +152,13 @@ final class MacSystemDockTests: XCTestCase {
             preferences.isInSystemDock = true
             preferences.verticalPosition = 0.23
             preferences.horizontalPosition = 0.78
-            let migrated = MacWidgetPreferences(defaults: defaults, readDockPermission: { true })
+            let migrated = MacWidgetPreferences(defaults: defaults, supportsSystemDock: true, readDockPermission: { true })
             migrated.reconcileDockLocation(.left)
             XCTAssertTrue(migrated.isInSystemDock)
             XCTAssertEqual(migrated.edge, .left)
             XCTAssertEqual(migrated.verticalPosition, 0.23)
             XCTAssertEqual(migrated.horizontalPosition, 0.78)
-            let relaunched = MacWidgetPreferences(defaults: defaults, readDockPermission: { true })
+            let relaunched = MacWidgetPreferences(defaults: defaults, supportsSystemDock: true, readDockPermission: { true })
             relaunched.reconcileDockLocation(.bottom)
             XCTAssertEqual(relaunched.edge, .left)
             XCTAssertFalse(relaunched.isInSystemDock)
@@ -223,7 +223,7 @@ final class MacSystemDockTests: XCTestCase {
             widget.saveDrop(.init(frame: frame, position: 0.6, edge: .bottom, target: target))
             XCTAssertEqual(preferences.edge, .bottom)
             XCTAssertTrue(preferences.isInSystemDock)
-            let restored = MacWidgetPreferences(defaults: defaults, readDockPermission: { true })
+            let restored = MacWidgetPreferences(defaults: defaults, supportsSystemDock: true, readDockPermission: { true })
             restored.reconcileDockLocation(.bottom)
             XCTAssertEqual(restored.edge, .bottom)
             XCTAssertTrue(restored.isInSystemDock)
@@ -340,7 +340,7 @@ final class MacSystemDockTests: XCTestCase {
         let suite = "com.hinoshiba.daysyet.system-dock.tests.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
         defer { defaults.removePersistentDomain(forName: suite) }
-        try body(MacWidgetPreferences(defaults: defaults, readDockPermission: { true }), defaults)
+        try body(MacWidgetPreferences(defaults: defaults, supportsSystemDock: true, readDockPermission: { true }), defaults)
     }
 
     @MainActor
@@ -348,7 +348,7 @@ final class MacSystemDockTests: XCTestCase {
         let suite = "com.hinoshiba.daysyet.system-dock.tests.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
         defer { defaults.removePersistentDomain(forName: suite) }
-        try await body(MacWidgetPreferences(defaults: defaults, readDockPermission: { true }), defaults)
+        try await body(MacWidgetPreferences(defaults: defaults, supportsSystemDock: true, readDockPermission: { true }), defaults)
     }
 
     @MainActor

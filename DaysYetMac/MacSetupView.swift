@@ -141,8 +141,8 @@ struct MacSetupView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     Label(text("離した場所が、新しい定位置に。", "Release to save your new spot."), systemImage: "cursorarrow.motionlines")
                         .font(.callout.weight(.medium))
-                    Text(text("画面の中央で離すか、Escキーを押すと元の位置に戻ります。Dockがある辺以外から、好きな位置を選んでください。",
-                              "Release in the center or press Esc to return. Choose your favorite position along an edge without the Dock."))
+                    Text(text("画面の中央で離すか、Escキーを押すと元の位置に戻ります。上下左右の好きな辺に配置できます。Dockがある辺では、Dockに重ならない位置に表示します。",
+                              "Release in the center or press Esc to return. Choose any screen edge; the widget stays clear of the Dock."))
                         .font(.callout).foregroundStyle(.secondary)
                     Text(text("設定はウィジェットをダブルクリック。いつでも配置や見た目を変えられます。",
                               "Double-click the widget to open settings and adjust its position or appearance."))

@@ -71,7 +71,7 @@ final class MacWidgetDockingTests: XCTestCase {
                     XCTAssertEqual(result.frame.maxY, screen.maxY)
                     XCTAssertEqual(result.frame.midX, screen.midX)
                 } else if destination == .bottom {
-                    XCTAssertEqual(result.frame.minY, screen.minY)
+                    XCTAssertEqual(result.frame.minY, visible.minY)
                 }
             }
         }
