@@ -1,5 +1,8 @@
 # Direct Dock drag experiment
 
+This is an unpublished development experiment, not a distributed DaysYet
+edition. DaysYet is distributed only through the Mac App Store.
+
 This optional macOS build locates DaysYet's helper icons using Accessibility
 and protects each verified tile's full rectangular area with an input panel. The panel owns a normal
 mouse sequence and feeds the existing circle morph and edge docking code.

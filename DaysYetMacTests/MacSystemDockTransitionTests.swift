@@ -47,6 +47,27 @@ final class MacSystemDockTransitionTests: XCTestCase {
         }
     }
 
+    func testAutoHiddenDockCanBeDetectedFromItsSmallActivationStrip() {
+        for edge in [MacWidgetEdge.left, .right, .bottom] {
+            for inset in [CGFloat(0.5), 1, 2] {
+                var visible = NSRect(x: screen.minX, y: screen.minY,
+                    width: screen.width, height: screen.height - 32)
+                switch edge {
+                case .left: visible.origin.x += inset; visible.size.width -= inset
+                case .right: visible.size.width -= inset
+                case .bottom: visible.origin.y += inset; visible.size.height -= inset
+                case .top: XCTFail("The Dock cannot be at the top")
+                }
+                XCTAssertEqual(MacSystemDockLocation.reservedEdge(screen: screen, visible: visible), edge,
+                    "A hidden Dock's activation strip must not be discarded just because it is small.")
+            }
+        }
+        let menuBarOnly = NSRect(x: screen.minX, y: screen.minY,
+            width: screen.width, height: screen.height - 32)
+        XCTAssertNil(MacSystemDockLocation.reservedEdge(screen: screen, visible: menuBarOnly),
+            "An absent Dock inset must remain unknown, not become a bottom observation.")
+    }
+
     @MainActor
     func testDraggingAnyCircleOutMovesTheWholeGroupAndRemovesEveryDockTile() async throws {
         try await withContext(inDock: true, count: 8) { controller, preferences, store in

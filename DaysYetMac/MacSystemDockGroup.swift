@@ -15,7 +15,11 @@ enum MacSystemDockLocation {
             (.right, screen.maxX - visible.maxX),
             (.bottom, visible.minY - screen.minY)
         ]
-        return insets.filter { $0.1 > 2 }.max { $0.1 < $1.1 }?.0
+        // NSScreen.visibleFrame can reserve a thin activation strip even when
+        // the Dock is hidden. It may be only one or two points (or a fractional
+        // point on a scaled display); discarding it loses the Dock's edge.
+        // The menu bar/notch inset is deliberately excluded above.
+        return insets.filter { $0.1 > 0 }.max { $0.1 < $1.1 }?.0
     }
 
     static func clickedEdge(at point: NSPoint, screen: NSRect) -> MacWidgetEdge {
@@ -35,8 +39,9 @@ enum MacSystemDockLocation {
         for other in NSScreen.screens {
             if let edge = reservedEdge(screen: other.frame, visible: other.visibleFrame) { return edge }
         }
-        // Auto-hidden Docks reserve no screen space. Read only their orientation
-        // when macOS makes it available; keep observed geometry as the fallback.
+        // Some display configurations expose no measurable Dock inset. Try its
+        // orientation only when macOS makes it readable; sandboxed apps cannot
+        // depend on access to another process's preference domain.
         let orientation = CFPreferencesCopyAppValue("orientation" as CFString, "com.apple.dock" as CFString) as? String
         if let edge = configuredEdge(orientation: orientation) { return edge }
         return fallback
