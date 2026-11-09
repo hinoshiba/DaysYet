@@ -23,6 +23,48 @@ final class MacDockPermissionTests: XCTestCase {
         XCTAssertEqual(restored.horizontalPosition, 0.73)
     }
 
+    func testStandardBuildCanMoveToBottomWithALeftDockOrUnknownDockLocation() throws {
+        let suite = "com.hinoshiba.daysyet.left-dock-bottom.tests.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let screen = NSRect(x: 0, y: 0, width: 1512, height: 982)
+        let preferences = MacWidgetPreferences(defaults: defaults, supportsSystemDock: false)
+        let widget = MacWidgetController(store: store(), preferences: preferences, reducesMotion: { true })
+        for leftInset in [CGFloat(80), 0] {
+            let visible = NSRect(x: leftInset, y: 0, width: screen.width - leftInset, height: screen.height - 38)
+            // A hidden Dock can have no measurable inset. If orientation is
+            // unavailable too, the observer can still report its bottom fallback.
+            for observedDockEdge in [MacWidgetEdge.left, .bottom] {
+                preferences.edge = .right
+                XCTAssertTrue(preferences.selectEdge(.bottom, dockEdge: observedDockEdge))
+                preferences.reconcileDockLocation(observedDockEdge)
+                XCTAssertEqual(preferences.edge, .bottom)
+                XCTAssertFalse(preferences.isInSystemDock)
+
+                preferences.edge = .right
+                let geometry = MacWidgetDocking(edge: .right, screenFrame: screen,
+                    visibleFrame: visible, systemDockEdge: observedDockEdge)
+                let frame = geometry.frame(edge: .right, position: 0.5)
+                let dropPoint = NSPoint(x: visible.midX, y: screen.minY + 20)
+                widget.beginPointerPress(at: NSPoint(x: frame.midX, y: frame.midY), frame: frame,
+                    bounds: visible, clickCount: 1, timestamp: 1, docking: geometry)
+                let preview = try XCTUnwrap(widget.updatePointerPress(at: dropPoint)?.attachment)
+                XCTAssertEqual(preview.edge, .bottom)
+                XCTAssertFalse(preview.isSystemDock)
+                XCTAssertEqual(preview.frame.minY, screen.minY)
+                XCTAssertTrue(visible.contains(preview.frame))
+                guard case .drag(let drop) = widget.finishPointerPress(at: dropPoint, doubleClickInterval: 0.5) else {
+                    return XCTFail("Expected a bottom drop while the Dock is on the left")
+                }
+                widget.settleDrop(drop)
+                preferences.reconcileDockLocation(observedDockEdge)
+                XCTAssertEqual(preferences.edge, .bottom)
+                XCTAssertFalse(preferences.isInSystemDock)
+                XCTAssertFalse(preferences.dockPermissionRequired)
+            }
+        }
+    }
+
     func testStandardBuildDragPreviewsAndSavesEveryDockSideAsAnOrdinaryRail() throws {
         let suite = "com.hinoshiba.daysyet.edge-drop.tests.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
