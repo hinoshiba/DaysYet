@@ -137,9 +137,7 @@ struct MacWidgetDocking {
 
     func target(at point: NSPoint, previous: MacWidgetEdge?, originalFrame: NSRect,
                 anchor: NSPoint) -> MacWidgetDropTarget? {
-        guard point.x.isFinite, point.y.isFinite,
-              screenFrame.width > 0, screenFrame.height > 0,
-              screenFrame.insetBy(dx: -1, dy: -1).contains(point) else { return nil }
+        guard contains(point) else { return nil }
         // Use the physical display for the zones; the Dock and menu bar only
         // affect where the widget is laid out after choosing an edge.
         let distances = MacWidgetEdge.allCases.compactMap { edge -> (MacWidgetEdge, CGFloat)? in
@@ -151,7 +149,21 @@ struct MacWidgetDocking {
         // At a corner, the nearer edge wins immediately. Keep history only
         // for an exact tie so it cannot override the user's closer edge.
         let choice = distances.first { $0.0 == previous && abs($0.1 - nearest.1) < 0.0001 } ?? nearest
-        let candidate = choice.0
+        return target(on: choice.0, at: point, originalFrame: originalFrame, anchor: anchor)
+    }
+
+    func slidingTarget(at point: NSPoint, originalFrame: NSRect, anchor: NSPoint) -> MacWidgetDropTarget? {
+        guard edge != .top, edge != systemDockEdge, contains(point) else { return nil }
+        return target(on: edge, at: point, originalFrame: originalFrame, anchor: anchor)
+    }
+
+    private func contains(_ point: NSPoint) -> Bool {
+        point.x.isFinite && point.y.isFinite && screenFrame.width > 0 && screenFrame.height > 0
+            && screenFrame.insetBy(dx: -1, dy: -1).contains(point)
+    }
+
+    private func target(on candidate: MacWidgetEdge, at point: NSPoint, originalFrame: NSRect,
+                        anchor: NSPoint) -> MacWidgetDropTarget {
         if candidate == systemDockEdge {
             let layout = MacSystemDockGroupLayout(edge: candidate, count: metricCount, scale: scale)
             return MacWidgetDropTarget(edge: candidate, position: 0.5,
