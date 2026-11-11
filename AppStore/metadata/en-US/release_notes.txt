@@ -1,6 +1,5 @@
-• Redesigned the widget editor. Switch between Three rows and Circles, and choose from four live theme previews.
-• Configure one to eight circles. Small shows the first four; Medium and Large show up to eight. Add, replace, reorder, or remove circles in the app.
-• The DaysYet widget follows the app's layout and colors. Existing individual widget choices are preserved, and the original circle-only widget remains available as Circles (fixed).
-• A refreshed Widget and Times tab layout brings consistent backgrounds and cards. Edit dates, activity schedules, and the first day of the week in Times.
-• The info guide opens from the bottom. Circle and timeline selection opens a separate screen with Back navigation.
-• Saved schedules and custom colors are preserved. About DaysYet is at the bottom of either tab.
+• Start without entering a birth date. Choose Set up later and add your healthy-age goal whenever you are ready.
+• See your healthy-age countdown and remaining percentage update live as you adjust the birth date or target age during setup.
+• Clearer setup explanations and improved scrolling at larger text sizes.
+• Renamed Milestone to Target date, with guidance for exams, trips, deadlines, and other dates.
+• Existing dates, schedules, widget choices, and colors are preserved.

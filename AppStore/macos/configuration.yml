@@ -1,6 +1,6 @@
 # Native macOS update on the existing DaysYet App Store record.
-# 0.2.0 (13) Waiting for Review on 2026-11-07; auto-release after approval.
-# See ../releases/0.2.0.md for the submission and verification record.
+# 0.2.1 (14) release candidate; 0.2.0 is Ready for Distribution on 2026-11-11.
+# See ../releases/0.2.1.md for the candidate verification record.
 # Retain the record's existing shared name, categories, pricing, availability,
 # and release settings. Do not create a separate SKU or App Store record.
 app_name: DaysYet
@@ -13,8 +13,8 @@ app_store_id: 6802000765
 bundle_id: com.hinoshiba.daysyet
 scheme: DaysYetMac
 # macOS 0.1.8 (12) was Ready for Distribution on 2026-11-07.
-version: 0.2.0
-build: 13
+version: 0.2.1
+build: 14
 initial_release: false
 minimum_os: "14.0"
 standard_eula: true

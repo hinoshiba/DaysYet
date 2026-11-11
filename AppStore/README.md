@@ -1,5 +1,11 @@
 # App Store submission resources
 
+## Current 0.2.1 candidates
+
+**iOS / iPadOS 0.2.1 (17) and macOS 0.2.1 (14) are being prepared for App Review.** The previous 0.2.0 versions are Ready for Distribution as confirmed in App Store Connect on 2026-11-11. Local unit and focused onboarding UI tests passed. Hosted CI remains blocked by the account billing restriction. See the [0.2.1 release record](releases/0.2.1.md) for the candidate checks and current submission status.
+
+## Historical 0.2.0 submission
+
 **iOS / iPadOS 0.2.0 (16) and macOS 0.2.0 (13) are Waiting for Review.** Final Submit for Review succeeded on 2026-11-07 at 16:22 JST for iOS and 16:15 JST for Mac. Both exact builds completed upload and processing and are configured for automatic release after approval to all users. Approval and public availability are not yet confirmed. See the [current 0.2.0 release record](releases/0.2.0.md) for source tags, local verification, the hosted CI limitation, and submission receipts.
 
 The current package contains refreshed Japanese/English descriptions, release notes, review instructions, 36 iPhone/iPad screenshots, and 14 native Mac screenshots. Saved metadata matched the local files and all 50 screenshots are registered in App Store Connect. The Mac store package describes screen-edge placement and excludes direct-distribution Dock integration.
