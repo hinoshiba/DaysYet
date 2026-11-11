@@ -13,8 +13,8 @@ app_group: group.com.hinoshiba.daysyet
 widget_kind: com.hinoshiba.daysyet.widget.progress
 circle_widget_kind: com.hinoshiba.daysyet.widget.circles
 lock_screen_widget_kind: com.hinoshiba.daysyet.widget.lock-screen
-# 0.2.1 (17) release candidate; 0.2.0 is Ready for Distribution on 2026-11-11.
-# See releases/0.2.1.md for the candidate verification record.
+# 0.2.1 (17) Waiting for Review since 2026-11-11 15:18 JST.
+# See releases/0.2.1.md for verification and submission receipts.
 # iOS 0.1.10 (15) was Ready for Distribution on 2026-11-07.
 version: 0.2.1
 build: 17
