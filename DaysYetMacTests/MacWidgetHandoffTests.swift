@@ -100,6 +100,38 @@ final class MacWidgetHandoffTests: XCTestCase {
     }
 
     @MainActor
+    func testReleasingATrailingPreviewAnimatesToTheCommittedPanelBeforeHandoff() async throws {
+        try await withWindow(reducesMotion: false, supportsSystemDock: false) { controller, window, host in
+            let (drop, overlay) = try await release(controller, window: window, at: .bottom, slideBeforeRelease: 120)
+            let trailing = try XCTUnwrap(controller.dragVisual)
+            XCTAssertEqual(trailing.coalescence, 0)
+            XCTAssertGreaterThan(abs(trailing.imageFrame.minX - drop.frame.minX), 1)
+            var drewWhileCovered = false
+            host.onDraw = {
+                if host.alphaValue == 1, overlay.isVisible { drewWhileCovered = true }
+            }
+            controller.settleDrop(drop)
+            XCTAssertEqual(controller.dragVisual?.imageFrame, trailing.imageFrame,
+                "Releasing must start the landing from the visible position, without snapping ahead.")
+            let panelFocus = MacWidgetDragGeometry.focusFrame(in: window.frame, edge: .bottom,
+                index: 1, scale: 1, metricCount: 3, topInfo: MacTopNotchInfo())
+            let dropFocus = MacWidgetDragGeometry.focusFrame(in: drop.frame, edge: .bottom,
+                index: 1, scale: 1, metricCount: 3, topInfo: MacTopNotchInfo())
+            XCTAssertEqual(panelFocus, dropFocus,
+                "The live circle must occupy the committed destination, including inside a larger hover canvas.")
+            XCTAssertTrue(overlay.isVisible)
+            XCTAssertEqual(host.alphaValue, 0)
+            let finished = try await eventually { controller.dragVisual == nil }
+            XCTAssertTrue(finished)
+            XCTAssertTrue(drewWhileCovered)
+            XCTAssertEqual(host.alphaValue, 1)
+            XCTAssertFalse(overlay.isVisible)
+            XCTAssertEqual(controller.preferences.edge, .bottom)
+            XCTAssertEqual(controller.preferences.horizontalPosition, drop.position)
+        }
+    }
+
+    @MainActor
     func testEscapeAndHideDuringHandoffCannotRestartOrResurrectTheDrag() async throws {
         for hide in [false, true] {
             try await withWindow(reducesMotion: false) { controller, window, host in
@@ -137,7 +169,7 @@ final class MacWidgetHandoffTests: XCTestCase {
 
     @MainActor
     private func release(_ controller: MacWidgetController, window: NSWindow,
-                         at edge: MacWidgetEdge?) async throws -> (MacWidgetPointerInteraction.Placement, NSWindow) {
+                         at edge: MacWidgetEdge?, slideBeforeRelease: CGFloat = 0) async throws -> (MacWidgetPointerInteraction.Placement, NSWindow) {
         let screen = try XCTUnwrap(NSScreen.screens.first)
         let docking = MacWidgetDocking(edge: .right, screenFrame: screen.frame, visibleFrame: screen.visibleFrame)
         let frame = window.frame
@@ -164,7 +196,9 @@ final class MacWidgetHandoffTests: XCTestCase {
             $0.isVisible && $0.contentView is NSHostingView<MacWidgetDragOverlay>
         })
         XCTAssertEqual(window.contentView?.alphaValue, 0)
-        guard case .drag(let drop) = controller.finishPointerPress(at: point, doubleClickInterval: 0.5) else {
+        let releasePoint = NSPoint(x: point.x + slideBeforeRelease, y: point.y)
+        if slideBeforeRelease != 0 { _ = controller.updatePointerPress(at: releasePoint) }
+        guard case .drag(let drop) = controller.finishPointerPress(at: releasePoint, doubleClickInterval: 0.5) else {
             throw NSError(domain: "Expected completed drag", code: 1)
         }
         return (drop, overlay)
@@ -172,11 +206,12 @@ final class MacWidgetHandoffTests: XCTestCase {
 
     @MainActor
     private func withWindow(reducesMotion: Bool, allowsDock: Bool = false,
+                            supportsSystemDock: Bool = true,
                             _ body: (MacWidgetController, NSWindow, DrawRecordingWidgetHost) async throws -> Void) async throws {
         try XCTSkipIf(NSScreen.screens.isEmpty, "A WindowServer display is required for drawing-order coverage.")
         let suite = "com.hinoshiba.daysyet.handoff.tests.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
-        let preferences = MacWidgetPreferences(defaults: defaults, readDockPermission: { allowsDock })
+        let preferences = MacWidgetPreferences(defaults: defaults, supportsSystemDock: supportsSystemDock, readDockPermission: { allowsDock })
         preferences.edge = .right
         preferences.verticalPosition = 0.24
         preferences.magnifiesOnHover = true

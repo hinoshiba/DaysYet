@@ -120,6 +120,8 @@ final class MacWidgetController: ObservableObject {
     private var settleTask: Task<Void, Never>?
     private var collapseTask: Task<Void, Never>?
     private var attachmentTask: Task<Void, Never>?
+    private var followTask: Task<Void, Never>?
+    private var followDestination: MacWidgetDragVisual?
     private var dragPreviewEdge: MacWidgetEdge?
     private var dragPreviewImages: [MacWidgetEdge: NSImage] = [:]
     private var dragDocking: MacWidgetDocking?
@@ -841,6 +843,8 @@ final class MacWidgetController: ObservableObject {
     func beginPointerPress(at point: NSPoint, frame: NSRect, bounds: NSRect?,
                            clickCount: Int, timestamp: TimeInterval, docking: MacWidgetDocking? = nil,
                            dockGroupIndex: Int? = nil, nativeDockMetric: MetricKind? = nil) {
+        var docking = docking
+        if !preferences.supportsSystemDock { docking?.systemDockEdge = nil }
         clearDragPresentation()
         captureDragOrigin(at: point, frame: frame, docking: docking, dockGroupIndex: dockGroupIndex, nativeDockMetric: nativeDockMetric)
         closeTask?.cancel()
@@ -892,6 +896,7 @@ final class MacWidgetController: ObservableObject {
         // Mouse-up can be the first event beyond the drag threshold.
         _ = updatePointerPress(at: point)
         let completion = pointerInteraction.finish(at: point, doubleClickInterval: doubleClickInterval)
+        stopFollowingDrag()
         if case .drag = completion { hoveredMetric = nil }
         else { clearDragPresentation() }
         return completion
@@ -983,8 +988,7 @@ final class MacWidgetController: ObservableObject {
             dragWidgetImage = attachmentImage(for: target)
             dragPreviewEdge = target.edge
             dragAttachment = target
-            dragVisual = attachmentVisual(for: target, coalescence: 0)
-            refreshDragOverlay()
+            if let destination = attachmentVisual(for: target, coalescence: 0) { followDrag(to: destination) }
             hideDragSourceAfterDrawingOverlay()
             return
         }
@@ -1004,7 +1008,7 @@ final class MacWidgetController: ObservableObject {
                 collapseTask = Task { [weak self] in
                     while !Task.isCancelled {
                         guard let self else { return }
-                        let progress = min((ProcessInfo.processInfo.systemUptime - start) / 0.18, 1)
+                        let progress = min((ProcessInfo.processInfo.systemUptime - start) / MacWidgetDragMotion.lift, 1)
                         self.updateDragLift(progress: progress)
                         if progress >= 1 {
                             self.collapseTask = nil
@@ -1017,7 +1021,7 @@ final class MacWidgetController: ObservableObject {
         }
         if updateHeldAttachment(placement.attachment) { return }
         if collapseTask == nil {
-            updateDragLift(progress: 1)
+            updateDragLift(progress: 1, followsPointer: true)
         } else {
             refreshDragOverlay()
         }
@@ -1028,6 +1032,7 @@ final class MacWidgetController: ObservableObject {
     private func updateHeldAttachment(_ target: MacWidgetDropTarget?) -> Bool {
         let previous = dragAttachment
         dragAttachment = target
+        if previous?.edge != target?.edge { stopFollowingDrag() }
         if let target, target.isSystemDock {
             // One carried circle represents the insertion gap. Expanding the
             // whole row here hides that gap and makes its anchor ambiguous.
@@ -1046,7 +1051,7 @@ final class MacWidgetController: ObservableObject {
                 refreshDragOverlay()
             } else {
                 attachmentTask = Task { [weak self] in
-                    guard let self, await self.animateHeldAttachment(coalescence: 1, duration: 0.14) else { return }
+                    guard let self, await self.animateHeldAttachment(coalescence: 1, duration: MacWidgetDragMotion.collect) else { return }
                     self.attachmentTask = nil
                 }
             }
@@ -1054,8 +1059,9 @@ final class MacWidgetController: ObservableObject {
         }
         if let target {
             if previous?.edge == target.edge {
-                if attachmentTask == nil { dragVisual = attachmentVisual(for: target, coalescence: 0) }
-                refreshDragOverlay()
+                if attachmentTask == nil, let destination = attachmentVisual(for: target, coalescence: 0) {
+                    followDrag(to: destination)
+                }
                 return true
             }
             collapseTask?.cancel()
@@ -1072,13 +1078,14 @@ final class MacWidgetController: ObservableObject {
                     guard let self else { return }
                     if var collected = self.dragVisual, collected.coalescence < 1 {
                         collected.coalescence = 1
-                        guard await self.animateDrag(to: collected, duration: 0.08) else { return }
+                        guard await self.animateDrag(to: collected, duration: MacWidgetDragMotion.collect) else { return }
                     }
                     guard !Task.isCancelled, let latest = self.dragAttachment else { return }
                     self.dragWidgetImage = self.attachmentImage(for: latest)
                     self.dragPreviewEdge = latest.edge
-                    guard await self.animateHeldAttachment(coalescence: 1, duration: 0.12),
-                          await self.animateHeldAttachment(coalescence: 0, duration: 0.16) else { return }
+                    guard await self.animateHeldAttachment(coalescence: 1, duration: MacWidgetDragMotion.attach) else { return }
+                    try? await Task.sleep(for: MacWidgetDragMotion.landingPause)
+                    guard await self.animateHeldAttachment(coalescence: 0, duration: MacWidgetDragMotion.unfold) else { return }
                     self.attachmentTask = nil
                 }
             }
@@ -1096,7 +1103,7 @@ final class MacWidgetController: ObservableObject {
             collapseTask = Task { [weak self] in
                 while !Task.isCancelled {
                     guard let self, let pointer = self.dragPresentation?.pointer else { return }
-                    let progress = min((ProcessInfo.processInfo.systemUptime - start) / 0.14, 1)
+                    let progress = min((ProcessInfo.processInfo.systemUptime - start) / MacWidgetDragMotion.collect, 1)
                     var collected = initial
                     collected.circleFrame = MacWidgetDragGeometry.circleFrame(center: pointer, scale: docking.scale)
                     collected.coalescence = 1
@@ -1155,7 +1162,7 @@ final class MacWidgetController: ObservableObject {
         return false
     }
 
-    private func updateDragLift(progress: Double) {
+    private func updateDragLift(progress: Double, followsPointer: Bool = false) {
         guard let origin = dragOrigin, let docking = dragDocking, let placement = dragPresentation,
               let pointer = placement.pointer else { return }
         let center = NSPoint(x: origin.focusFrame.midX, y: origin.focusFrame.midY)
@@ -1166,8 +1173,46 @@ final class MacWidgetController: ObservableObject {
             circleFrame: MacWidgetDragGeometry.circleFrame(center: center, scale: docking.scale), coalescence: 0)
         let target = MacWidgetDragVisual(widgetFrame: origin.widgetFrame, focusFrame: origin.focusFrame,
             circleFrame: MacWidgetDragGeometry.circleFrame(center: destination, scale: docking.scale), coalescence: 1)
-        dragVisual = initial.interpolated(to: target, progress: progress)
-        refreshDragOverlay()
+        if followsPointer {
+            followDrag(to: target)
+        } else {
+            dragVisual = initial.interpolated(to: target, progress: progress)
+            refreshDragOverlay()
+        }
+    }
+
+    private func stopFollowingDrag() {
+        followTask?.cancel()
+        followTask = nil
+        followDestination = nil
+    }
+
+    private func followDrag(to target: MacWidgetDragVisual) {
+        guard !reducesMotion(), dragVisual != nil else {
+            stopFollowingDrag()
+            dragVisual = target
+            refreshDragOverlay()
+            return
+        }
+        followDestination = target
+        guard followTask == nil else { return }
+        var lastFrame = ProcessInfo.processInfo.systemUptime
+        followTask = Task { [weak self] in
+            while !Task.isCancelled {
+                guard let self, self.pointerInteraction.isPressed,
+                      let current = self.dragVisual, let target = self.followDestination else { return }
+                let now = ProcessInfo.processInfo.systemUptime
+                self.dragVisual = current.following(target, elapsed: now - lastFrame)
+                lastFrame = now
+                self.refreshDragOverlay()
+                if self.dragVisual == target {
+                    self.followTask = nil
+                    self.followDestination = nil
+                    return
+                }
+                try? await Task.sleep(for: .milliseconds(8))
+            }
+        }
     }
 
     private func refreshDragOverlay() {
@@ -1250,6 +1295,7 @@ final class MacWidgetController: ObservableObject {
     }
 
     private func clearDragPresentation() {
+        stopFollowingDrag()
         let wasNativeDock = dragOrigin?.isNativeDock == true
         let wasDockLanding = isDockLanding
         collapseTask?.cancel()
@@ -1301,6 +1347,7 @@ final class MacWidgetController: ObservableObject {
     }
 
     func settleDrop(_ placement: MacWidgetPointerInteraction.Placement?) {
+        stopFollowingDrag()
         if placement?.target?.isSystemDock == true, !preferences.canUseSystemDock {
             // Returning uses the original edge and both saved coordinates.
             settleDrop(nil)
@@ -1358,13 +1405,14 @@ final class MacWidgetController: ObservableObject {
             dragWidgetImage = destinationImage
             var opened = destination
             opened.coalescence = 0
-            if visual.coalescence == 0 {
+            if visual == opened {
                 dragVisual = opened
                 refreshDragOverlay()
                 settleTask = Task { [weak self] in await self?.finishEdgeHandoff() }
             } else {
                 settleTask = Task { [weak self] in
-                    guard let self, await self.animateDrag(to: opened, duration: 0.14) else { return }
+                    let duration = visual.coalescence == 0 ? MacWidgetDragMotion.attach : MacWidgetDragMotion.unfold
+                    guard let self, await self.animateDrag(to: opened, duration: duration) else { return }
                     await self.finishEdgeHandoff()
                 }
             }
@@ -1376,13 +1424,14 @@ final class MacWidgetController: ObservableObject {
             if visual.coalescence < 1 {
                 var collected = visual
                 collected.coalescence = 1
-                guard await self.animateDrag(to: collected, duration: 0.08) else { return }
+                guard await self.animateDrag(to: collected, duration: MacWidgetDragMotion.collect) else { return }
             }
             self.dragWidgetImage = destinationImage
-            guard await self.animateDrag(to: destination, duration: 0.26, spring: true) else { return }
+            guard await self.animateDrag(to: destination, duration: MacWidgetDragMotion.travel, spring: true) else { return }
+            try? await Task.sleep(for: MacWidgetDragMotion.landingPause)
             var opened = destination
             opened.coalescence = 0
-            guard await self.animateDrag(to: opened, duration: 0.18) else { return }
+            guard await self.animateDrag(to: opened, duration: MacWidgetDragMotion.unfold) else { return }
             await self.finishEdgeHandoff()
         }
     }
@@ -1645,6 +1694,7 @@ final class MacWidgetController: ObservableObject {
         settleTask?.cancel()
         collapseTask?.cancel()
         attachmentTask?.cancel()
+        followTask?.cancel()
         closeTask?.cancel()
         intentTask?.cancel()
         intentTask = nil

@@ -4,6 +4,28 @@ import XCTest
 @testable import DaysYetMac
 
 final class MacWidgetDragMorphTests: XCTestCase {
+    func testVisualFollowingIsBoundedAndIndependentOfRefreshRate() {
+        let initial = MacWidgetDragVisual(widgetFrame: .zero, focusFrame: .zero,
+            circleFrame: NSRect(x: 0, y: 0, width: 40, height: 40), coalescence: 1)
+        var target = initial
+        target.circleFrame = initial.circleFrame.offsetBy(dx: 600, dy: -300)
+        var results: [MacWidgetDragVisual] = []
+        for fps in [60, 120] {
+            var visual = initial
+            for _ in 0..<(fps / 10) {
+                visual = visual.following(target, elapsed: 1 / Double(fps))
+                XCTAssertGreaterThan(visual.circleFrame.minX, 0)
+                XCTAssertLessThan(visual.circleFrame.minX, 600)
+                XCTAssertEqual(visual.coalescence, 1)
+                XCTAssertEqual(visual.circleOpacity, 1)
+            }
+            results.append(visual)
+        }
+        XCTAssertEqual(results[0].circleFrame.minX, results[1].circleFrame.minX, accuracy: 0.000001)
+        XCTAssertEqual(results[0].circleFrame.minY, results[1].circleFrame.minY, accuracy: 0.000001)
+        XCTAssertGreaterThan(results[0].circleFrame.minX, 500, "The lag must stay short enough to follow a drag.")
+    }
+
     @MainActor
     func testDragCollectsTheMetricUnderThePointerOnEveryEdge() throws {
         try withController { controller, preferences in

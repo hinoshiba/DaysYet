@@ -166,11 +166,8 @@ struct MacSettingsView: View {
                         Text(error).font(.caption).foregroundStyle(.red)
                     }
                     if preferences.dockPermissionRequired {
-                        Text(MacDockPermission.canRequest
-                             ? L10n.text("Dockに入れるにはアクセシビリティの許可が必要です。許可後に、もう一度Dock側の辺へ移動してください。",
-                                         "Accessibility permission is required to enter the Dock. After allowing it, move to the Dock’s edge again.")
-                             : L10n.text("Dockがある辺には配置できません。ほかの辺を選んでください。",
-                                         "The Dock’s edge is unavailable. Choose another screen edge."))
+                        Text(L10n.text("Dockに入れるにはアクセシビリティの許可が必要です。許可後に、もう一度Dock側の辺へ移動してください。",
+                                       "Accessibility permission is required to enter the Dock. After allowing it, move to the Dock’s edge again."))
                             .font(.caption).foregroundStyle(.secondary)
 #if DAYSYET_DIRECT_DOCK_DRAG
                         if let direct = controller.directDockDrag {
@@ -235,7 +232,8 @@ struct MacSettingsView: View {
             Text(MacDockPermission.canRequest ? L10n.text(
                 "macOSのDockがある辺を選ぶと、アクセシビリティの許可を確認してDock内へ入ります。ほかの辺では、画面の端に吸着して表示します。",
                 "Choosing the macOS Dock’s edge checks Accessibility permission before joining it. Other edges show the widget attached to the screen."
-            ) : L10n.text("Dockがある辺以外に配置できます。", "Choose a screen edge without the Dock."))
+            ) : L10n.text("上下左右に配置できます。Dockがある辺では、Dockに重ならない位置に表示します。",
+                          "Choose any screen edge. At the Dock’s edge, the widget stays clear of the Dock."))
             .font(.caption).foregroundStyle(.secondary)
 
             Picker(L10n.text("ディスプレイ", "Display"), selection: $preferences.displayID) {

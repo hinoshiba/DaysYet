@@ -4,18 +4,147 @@ import XCTest
 
 @MainActor
 final class MacDockPermissionTests: XCTestCase {
+    func testStandardBuildCanSelectAndRestoreTheBottomEdgeWithABottomDock() throws {
+        // This is the App Store configuration: Dock integration is compiled out.
+        let suite = "com.hinoshiba.daysyet.bottom-regression.tests.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let preferences = MacWidgetPreferences(defaults: defaults, supportsSystemDock: false)
+        preferences.verticalPosition = 0.27
+        preferences.horizontalPosition = 0.73
+        XCTAssertTrue(preferences.selectEdge(.bottom, dockEdge: .bottom))
+        XCTAssertEqual(preferences.edge, .bottom)
+        XCTAssertFalse(preferences.isInSystemDock)
+        XCTAssertFalse(preferences.dockPermissionRequired)
+        let restored = MacWidgetPreferences(defaults: defaults, supportsSystemDock: false)
+        restored.reconcileDockLocation(.bottom)
+        XCTAssertEqual(restored.edge, .bottom)
+        XCTAssertEqual(restored.verticalPosition, 0.27)
+        XCTAssertEqual(restored.horizontalPosition, 0.73)
+    }
+
+    func testStandardBuildCanMoveToBottomWithALeftDockOrUnknownDockLocation() throws {
+        let suite = "com.hinoshiba.daysyet.left-dock-bottom.tests.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let screen = NSRect(x: 0, y: 0, width: 1512, height: 982)
+        let preferences = MacWidgetPreferences(defaults: defaults, supportsSystemDock: false)
+        let widget = MacWidgetController(store: store(), preferences: preferences, reducesMotion: { true })
+        for leftInset in [CGFloat(80), 0] {
+            let visible = NSRect(x: leftInset, y: 0, width: screen.width - leftInset, height: screen.height - 38)
+            // A hidden Dock can have no measurable inset. If orientation is
+            // unavailable too, the observer can still report its bottom fallback.
+            for observedDockEdge in [MacWidgetEdge.left, .bottom] {
+                preferences.edge = .right
+                XCTAssertTrue(preferences.selectEdge(.bottom, dockEdge: observedDockEdge))
+                preferences.reconcileDockLocation(observedDockEdge)
+                XCTAssertEqual(preferences.edge, .bottom)
+                XCTAssertFalse(preferences.isInSystemDock)
+
+                preferences.edge = .right
+                let geometry = MacWidgetDocking(edge: .right, screenFrame: screen,
+                    visibleFrame: visible, systemDockEdge: observedDockEdge)
+                let frame = geometry.frame(edge: .right, position: 0.5)
+                let dropPoint = NSPoint(x: visible.midX, y: screen.minY + 20)
+                widget.beginPointerPress(at: NSPoint(x: frame.midX, y: frame.midY), frame: frame,
+                    bounds: visible, clickCount: 1, timestamp: 1, docking: geometry)
+                let preview = try XCTUnwrap(widget.updatePointerPress(at: dropPoint)?.attachment)
+                XCTAssertEqual(preview.edge, .bottom)
+                XCTAssertFalse(preview.isSystemDock)
+                XCTAssertEqual(preview.frame.minY, screen.minY)
+                XCTAssertTrue(visible.contains(preview.frame))
+                guard case .drag(let drop) = widget.finishPointerPress(at: dropPoint, doubleClickInterval: 0.5) else {
+                    return XCTFail("Expected a bottom drop while the Dock is on the left")
+                }
+                widget.settleDrop(drop)
+                preferences.reconcileDockLocation(observedDockEdge)
+                XCTAssertEqual(preferences.edge, .bottom)
+                XCTAssertFalse(preferences.isInSystemDock)
+                XCTAssertFalse(preferences.dockPermissionRequired)
+            }
+        }
+    }
+
+    func testStandardBuildDragPreviewsAndSavesEveryDockSideAsAnOrdinaryRail() throws {
+        let suite = "com.hinoshiba.daysyet.edge-drop.tests.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        // Even an old Accessibility grant must not enable omitted Dock integration.
+        let preferences = MacWidgetPreferences(defaults: defaults, supportsSystemDock: false, readDockPermission: { true })
+        XCTAssertFalse(preferences.canUseSystemDock)
+        let widget = MacWidgetController(store: store(), preferences: preferences, reducesMotion: { true })
+        defer { widget.closeDetails() }
+        for origin in [NSPoint.zero, NSPoint(x: -1512, y: 120)] {
+            let screen = NSRect(origin: origin, size: NSSize(width: 1512, height: 982))
+            for dockEdge in [MacWidgetEdge.bottom, .left, .right] {
+                var visible = screen
+                visible.size.height -= 38
+                if dockEdge == .bottom { visible.origin.y += 80; visible.size.height -= 80 }
+                if dockEdge == .left { visible.origin.x += 80; visible.size.width -= 80 }
+                if dockEdge == .right { visible.size.width -= 80 }
+                preferences.edge = .top
+                preferences.reconcileDockLocation(dockEdge)
+                let geometry = MacWidgetDocking(edge: .top, screenFrame: screen,
+                    visibleFrame: visible, systemDockEdge: dockEdge)
+                let frame = geometry.frame(edge: .top, position: 0.5)
+                widget.beginPointerPress(at: NSPoint(x: frame.midX, y: frame.midY), frame: frame,
+                    bounds: visible, clickCount: 1, timestamp: 1, docking: geometry)
+                let point: NSPoint
+                switch dockEdge {
+                case .bottom: point = NSPoint(x: visible.midX + 80, y: visible.minY + 20)
+                case .left: point = NSPoint(x: visible.minX + 20, y: visible.midY)
+                case .right: point = NSPoint(x: visible.maxX - 20, y: visible.midY)
+                case .top: fatalError("The macOS Dock cannot be at the top.")
+                }
+                let preview = try XCTUnwrap(widget.updatePointerPress(at: point))
+                let target = try XCTUnwrap(preview.attachment)
+                XCTAssertEqual(target.edge, dockEdge)
+                XCTAssertFalse(target.isSystemDock)
+                XCTAssertTrue(visible.contains(target.frame), "The rail must be visible above or beside the Dock.")
+                XCTAssertEqual(widget.dragVisual?.coalescence, 0)
+                XCTAssertEqual(preferences.edge, .top, "Holding a preview must not save it.")
+                guard case .drag(let drop) = widget.finishPointerPress(at: point, doubleClickInterval: 0.5) else {
+                    return XCTFail("Expected a completed edge drop")
+                }
+                widget.saveDrop(drop)
+                preferences.reconcileDockLocation(dockEdge)
+                XCTAssertEqual(preferences.edge, dockEdge)
+                XCTAssertFalse(preferences.isInSystemDock)
+                XCTAssertFalse(preferences.dockPermissionRequired)
+            }
+        }
+    }
+
+    func testStandardBuildRestoresLegacyDockPlacementWithoutStartingHelpers() throws {
+        let suite = "com.hinoshiba.daysyet.dock-migration.tests.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        defaults.set(true, forKey: "mac-widget-system-dock")
+        defaults.set("bottom", forKey: "mac-widget-edge")
+        let preferences = MacWidgetPreferences(defaults: defaults, supportsSystemDock: false)
+        var batches: [[MacSystemDockPresentation]] = []
+        let dock = MacSystemDockController(store: store(), preferences: preferences, openSettings: {},
+            readDockEdge: { .bottom }, present: { batches.append($0) })
+        dock.start()
+        defer { dock.stop() }
+        XCTAssertEqual(preferences.edge, .bottom)
+        XCTAssertFalse(preferences.isInSystemDock)
+        XCTAssertFalse(preferences.dockPermissionRequired)
+        XCTAssertTrue(batches.allSatisfy(\.isEmpty))
+    }
+
     func testRetiredVisualHandoffDiscardsLegacyOptInWithoutDisablingDockPlacement() throws {
         try withPreferences { preferences, defaults in
             XCTAssertFalse(preferences.dockVisualHandoffEnabled)
             defaults.set(true, forKey: "mac-widget-dock-visual-handoff")
-            let restored = MacWidgetPreferences(defaults: defaults, readDockPermission: { true })
+            let restored = MacWidgetPreferences(defaults: defaults, supportsSystemDock: true, readDockPermission: { true })
             XCTAssertFalse(restored.dockVisualHandoffEnabled)
             XCTAssertNil(defaults.object(forKey: "mac-widget-dock-visual-handoff"))
             XCTAssertTrue(restored.selectEdge(.bottom, dockEdge: .bottom))
             XCTAssertTrue(restored.isInSystemDock)
             XCTAssertFalse(restored.dockVisualHandoffEnabled)
             restored.reset()
-            XCTAssertFalse(MacWidgetPreferences(defaults: defaults, readDockPermission: { true }).dockVisualHandoffEnabled)
+            XCTAssertFalse(MacWidgetPreferences(defaults: defaults, supportsSystemDock: true, readDockPermission: { true }).dockVisualHandoffEnabled)
         }
     }
 
@@ -51,7 +180,7 @@ final class MacDockPermissionTests: XCTestCase {
         try withPreferences { preferences, defaults in
             preferences.edge = .left
             preferences.isInSystemDock = true
-            let restored = MacWidgetPreferences(defaults: defaults, readDockPermission: { false })
+            let restored = MacWidgetPreferences(defaults: defaults, supportsSystemDock: true, readDockPermission: { false })
             var batches: [[MacSystemDockPresentation]] = []
             let dock = MacSystemDockController(store: store(), preferences: restored, openSettings: {},
                 readDockEdge: { .left }, present: { batches.append($0) })
@@ -190,6 +319,6 @@ final class MacDockPermissionTests: XCTestCase {
         let suite = "com.hinoshiba.daysyet.dock-permission.tests.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
         defer { defaults.removePersistentDomain(forName: suite) }
-        try body(MacWidgetPreferences(defaults: defaults, readDockPermission: permission), defaults)
+        try body(MacWidgetPreferences(defaults: defaults, supportsSystemDock: true, readDockPermission: permission), defaults)
     }
 }

@@ -63,16 +63,14 @@ struct MacWidgetPointerInteraction {
         if hypot(dx, dy) >= Self.dragThreshold { press.crossedThreshold = true }
         if let docking = press.docking, press.crossedThreshold {
             let distance = hypot(dx, dy)
-            let candidate = docking.target(at: point, previous: press.target?.edge,
-                originalFrame: press.frame, anchor: press.point)
             let normal = docking.edge == .left || docking.edge == .right ? abs(dx) : abs(dy)
             let tangent = docking.edge == .left || docking.edge == .right ? abs(dy) : abs(dx)
-            // A horizontal bottom rail is inset above the physical edge, so
-            // its pressed circle may be outside the free-circle contact band.
-            // Tangential movement keeps the original attachment and shape.
-            if !press.detached, docking.edge != .top, docking.edge != docking.systemDockEdge,
-               candidate?.edge == docking.edge, normal < MacWidgetDocking.releaseDistance,
-               press.isSlidingAlongEdge || tangent > normal, let candidate {
+            // Preserve the starting edge during tangential movement, even
+            // near a corner or beyond a snap zone because of a Dock inset.
+            // Choose the nearest physical edge only after pulling away.
+            if !press.detached, normal < MacWidgetDocking.releaseDistance,
+               press.isSlidingAlongEdge || tangent > normal,
+               let candidate = docking.slidingTarget(at: point, originalFrame: press.frame, anchor: press.point) {
                 press.isSlidingAlongEdge = true
                 press.target = candidate
                 press.attachment = candidate
@@ -83,7 +81,8 @@ struct MacWidgetPointerInteraction {
             press.isSlidingAlongEdge = false
             press.detached = press.detached || distance >= MacWidgetDocking.releaseDistance
             if press.detached {
-                press.target = candidate
+                press.target = docking.target(at: point, previous: press.target?.edge,
+                    originalFrame: press.frame, anchor: press.point)
                 press.attachment = docking.attachment(at: point, target: press.target, previous: press.attachment?.edge)
             }
             self.press = press

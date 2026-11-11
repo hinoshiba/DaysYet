@@ -137,9 +137,7 @@ struct MacWidgetDocking {
 
     func target(at point: NSPoint, previous: MacWidgetEdge?, originalFrame: NSRect,
                 anchor: NSPoint) -> MacWidgetDropTarget? {
-        guard point.x.isFinite, point.y.isFinite,
-              screenFrame.width > 0, screenFrame.height > 0,
-              screenFrame.insetBy(dx: -1, dy: -1).contains(point) else { return nil }
+        guard contains(point) else { return nil }
         // Use the physical display for the zones; the Dock and menu bar only
         // affect where the widget is laid out after choosing an edge.
         let distances = MacWidgetEdge.allCases.compactMap { edge -> (MacWidgetEdge, CGFloat)? in
@@ -151,7 +149,21 @@ struct MacWidgetDocking {
         // At a corner, the nearer edge wins immediately. Keep history only
         // for an exact tie so it cannot override the user's closer edge.
         let choice = distances.first { $0.0 == previous && abs($0.1 - nearest.1) < 0.0001 } ?? nearest
-        let candidate = choice.0
+        return target(on: choice.0, at: point, originalFrame: originalFrame, anchor: anchor)
+    }
+
+    func slidingTarget(at point: NSPoint, originalFrame: NSRect, anchor: NSPoint) -> MacWidgetDropTarget? {
+        guard edge != .top, edge != systemDockEdge, contains(point) else { return nil }
+        return target(on: edge, at: point, originalFrame: originalFrame, anchor: anchor)
+    }
+
+    private func contains(_ point: NSPoint) -> Bool {
+        point.x.isFinite && point.y.isFinite && screenFrame.width > 0 && screenFrame.height > 0
+            && screenFrame.insetBy(dx: -1, dy: -1).contains(point)
+    }
+
+    private func target(on candidate: MacWidgetEdge, at point: NSPoint, originalFrame: NSRect,
+                        anchor: NSPoint) -> MacWidgetDropTarget {
         if candidate == systemDockEdge {
             let layout = MacSystemDockGroupLayout(edge: candidate, count: metricCount, scale: scale)
             return MacWidgetDropTarget(edge: candidate, position: 0.5,
@@ -180,17 +192,18 @@ struct MacWidgetDocking {
         let reach = target.edge == previous ? radius + Self.attachmentReleaseGap
             : radius * Self.attachmentDiameterMultiplier
         // Screen-coordinate subtraction can round fractional contact points.
-        // Dock circles sit inside a reserved strip, away from the physical
-        // screen edge. Sliding across that strip retains the Dock insertion target.
-        let dockDepth: CGFloat
-        if target.isSystemDock {
-            switch target.edge {
-            case .bottom: dockDepth = max(visibleFrame.minY - screenFrame.minY, sourceDockDepth)
-            case .left: dockDepth = max(visibleFrame.minX - screenFrame.minX, sourceDockDepth)
-            case .right: dockDepth = max(screenFrame.maxX - visibleFrame.maxX, sourceDockDepth)
-            case .top: dockDepth = 0
-            }
-        } else { dockDepth = 0 }
+        // Both native Dock tiles and an ordinary rail can be inset from the
+        // physical edge. Contact follows the visible landing surface, while
+        // target selection above still uses the full display's quarter zones.
+        let boundary = target.isSystemDock ? visibleFrame : target.frame
+        let inset: CGFloat
+        switch target.edge {
+        case .bottom: inset = boundary.minY - screenFrame.minY
+        case .left: inset = boundary.minX - screenFrame.minX
+        case .right: inset = screenFrame.maxX - boundary.maxX
+        case .top: inset = 0
+        }
+        let dockDepth = target.isSystemDock ? max(inset, sourceDockDepth) : inset
         return distance(to: target.edge, from: point) <= max(dockDepth, 0) + reach + 0.0001 ? target : nil
     }
 
@@ -242,6 +255,16 @@ enum MacWidgetDragGeometry {
     }
 }
 
+enum MacWidgetDragMotion {
+    static let lift: TimeInterval = 0.28
+    static let collect: TimeInterval = 0.16
+    static let attach: TimeInterval = 0.20
+    static let travel: TimeInterval = 0.34
+    static let unfold: TimeInterval = 0.28
+    static let landingPause: Duration = .milliseconds(55)
+    static let followResponse: TimeInterval = 0.045
+}
+
 /// Both directions use the same focus: the other parts converge on the grabbed
 /// circle, and unfold from that circle only after it reaches its destination.
 struct MacWidgetDragVisual: Equatable {
@@ -265,7 +288,9 @@ struct MacWidgetDragVisual: Equatable {
     func interpolated(to target: Self, progress: Double, spring: Bool = false) -> Self {
         let t = min(max(progress, 0), 1)
         if t >= 1 { return target }
-        let eased = 1 - pow(1 - t, 3)
+        // Ease into the transformation as well as out of it, so collection
+        // and unfolding remain visible instead of completing in the first frames.
+        let eased = t * t * (3 - 2 * t)
         let travel = spring && t < 1 ? 1 - exp(-8 * t) * cos(10 * t) : eased
         return Self(widgetFrame: target.widgetFrame, focusFrame: target.focusFrame,
                     circleFrame: NSRect(x: circleFrame.minX + (target.circleFrame.minX - circleFrame.minX) * travel,
@@ -274,6 +299,18 @@ struct MacWidgetDragVisual: Equatable {
                                         height: circleFrame.height + (target.circleFrame.height - circleFrame.height) * eased),
                     coalescence: coalescence + (target.coalescence - coalescence) * eased,
                     opacity: opacity + (target.opacity - opacity) * eased)
+    }
+
+    /// A short, frame-rate-independent visual lag. Hit testing and the saved
+    /// destination continue to use the actual pointer, including on mouse-up.
+    func following(_ target: Self, elapsed: TimeInterval) -> Self {
+        let dx = target.circleFrame.midX - circleFrame.midX
+        let dy = target.circleFrame.midY - circleFrame.midY
+        guard hypot(dx, dy) > 0.25 else { return target }
+        let remaining = exp(-max(elapsed, 0) / MacWidgetDragMotion.followResponse)
+        var result = target
+        result.circleFrame = target.circleFrame.offsetBy(dx: -dx * remaining, dy: -dy * remaining)
+        return result
     }
 }
 

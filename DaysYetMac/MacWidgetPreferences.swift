@@ -39,7 +39,9 @@ final class MacWidgetPreferences: ObservableObject {
     /// The snapshot transition was retired; a previous opt-in must not enable it.
     let dockVisualHandoffEnabled = false
     @Published private(set) var dockPermissionRequired = false
-    var canUseSystemDock: Bool { readDockPermission() }
+    /// App Store builds still support every screen edge, without native Dock tiles.
+    let supportsSystemDock: Bool
+    var canUseSystemDock: Bool { supportsSystemDock && readDockPermission() }
     /// Remember only the edge observed on this Mac, including auto-hidden Docks.
     var lastSystemDockEdge: MacWidgetEdge {
         get {
@@ -99,8 +101,10 @@ final class MacWidgetPreferences: ObservableObject {
         static let customColors = "mac-widget-custom-colors"
     }
 
-    init(defaults: UserDefaults = .standard, readDockPermission: @escaping () -> Bool = { MacDockPermission.isGranted() }) {
+    init(defaults: UserDefaults = .standard, supportsSystemDock: Bool = MacDockPermission.canRequest,
+         readDockPermission: @escaping () -> Bool = { MacDockPermission.isGranted() }) {
         self.defaults = defaults
+        self.supportsSystemDock = supportsSystemDock
         self.readDockPermission = readDockPermission
         isVisible = defaults.object(forKey: Key.visible) as? Bool ?? true
         isInSystemDock = defaults.bool(forKey: Key.systemDock)
@@ -151,8 +155,7 @@ final class MacWidgetPreferences: ObservableObject {
         defaults.removeObject(forKey: Key.customColors)
     }
 
-    /// Placement has one choice: the screen edge. Dock membership follows that
-    /// edge, including choices made in Settings and changes to the macOS Dock.
+    /// Only builds with native Dock integration turn an edge choice into Dock membership.
     func reconcileDockLocation(_ dockEdge: MacWidgetEdge) {
         guard dockEdge != .top else { return }
         if defaults.integer(forKey: Key.dockPlacementVersion) < 1 {
@@ -167,7 +170,7 @@ final class MacWidgetPreferences: ObservableObject {
     }
 
     private func updateDockPresentation(for dockEdge: MacWidgetEdge) {
-        let inDock = edge == dockEdge
+        let inDock = supportsSystemDock && edge == dockEdge
         if inDock, !canUseSystemDock {
             requireDockPermission()
             returnToScreenEdge()
@@ -178,7 +181,7 @@ final class MacWidgetPreferences: ObservableObject {
 
     @discardableResult
     func selectEdge(_ selected: MacWidgetEdge, dockEdge: MacWidgetEdge) -> Bool {
-        guard selected != dockEdge || canUseSystemDock else {
+        guard !supportsSystemDock || selected != dockEdge || canUseSystemDock else {
             requireDockPermission()
             return false
         }
@@ -189,6 +192,7 @@ final class MacWidgetPreferences: ObservableObject {
     }
 
     func requireDockPermission() {
+        guard supportsSystemDock else { return }
         if !dockPermissionRequired { dockPermissionRequired = true }
     }
 
@@ -198,9 +202,9 @@ final class MacWidgetPreferences: ObservableObject {
 
     func returnToScreenEdge() {
         let dockEdge = resolvedDockEdge ?? lastSystemDockEdge
-        // A Dock-side rail is no longer a separate mode. Returning must choose
-        // a different physical edge, also preventing a retry loop on failure.
-        if edge == dockEdge || isInSystemDock {
+        // Native Dock integration must leave its edge to prevent a retry loop.
+        // Standard builds can retain the same edge as an ordinary rail.
+        if supportsSystemDock && (edge == dockEdge || isInSystemDock) {
             edge = dockEdge == .right ? .left : .right
         }
         isInSystemDock = false
@@ -370,7 +374,9 @@ enum MacWidgetPlacement {
         let fraction = position.isFinite ? min(max(position, 0), 1) : 0.5
         if edge == .bottom {
             let baseHeight = expanded ? dockExpandedHeight(detailScale: detail, hoverScale: hoverScale) : dockHeight
-            let bottom = screenFrame?.minY ?? visibleFrame.minY
+            // A standard build can share the Dock's edge. Keep its rail above
+            // the Dock's reserved area so it remains visible and draggable.
+            let bottom = visibleFrame.minY
             let dockFactor = min(factor, visibleFrame.width / dockWidth(for: metricCount, detailScale: detail),
                                  max(visibleFrame.maxY - bottom, 0) / baseHeight)
             let width = dockWidth(for: metricCount, detailScale: detail) * dockFactor

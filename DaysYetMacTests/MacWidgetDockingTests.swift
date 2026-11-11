@@ -71,7 +71,7 @@ final class MacWidgetDockingTests: XCTestCase {
                     XCTAssertEqual(result.frame.maxY, screen.maxY)
                     XCTAssertEqual(result.frame.midX, screen.midX)
                 } else if destination == .bottom {
-                    XCTAssertEqual(result.frame.minY, screen.minY)
+                    XCTAssertEqual(result.frame.minY, visible.minY)
                 }
             }
         }
@@ -143,6 +143,57 @@ final class MacWidgetDockingTests: XCTestCase {
                 }
             }
         }
+    }
+
+    func testBottomRailSlidesNearEitherCornerAboveTheDock() throws {
+        for count in [3, 8] {
+            for position in [0.0, 1.0] {
+                let docking = MacWidgetDocking(edge: .bottom, screenFrame: screen,
+                    visibleFrame: visible, metricCount: count)
+                let frame = docking.frame(edge: .bottom, position: position)
+                let focus = MacWidgetDragGeometry.focusFrame(in: frame, edge: .bottom,
+                    index: position == 0 ? 0 : count - 1, scale: 1,
+                    metricCount: count, topInfo: docking.topInfo)
+                let anchor = NSPoint(x: focus.midX, y: focus.midY)
+                var interaction = MacWidgetPointerInteraction()
+                interaction.begin(at: anchor, frame: frame, bounds: visible, position: position,
+                    clickCount: 1, timestamp: 1, docking: docking)
+                let direction: CGFloat = position == 0 ? 1 : -1
+                for distance in [CGFloat(6), 12, 40] {
+                    let point = NSPoint(x: anchor.x + direction * distance, y: anchor.y)
+                    let placement = try XCTUnwrap(interaction.update(at: point))
+                    XCTAssertTrue(placement.isSlidingAlongEdge)
+                    XCTAssertEqual(placement.attachment?.edge, .bottom)
+                    XCTAssertEqual(placement.frame.minX, frame.minX + direction * distance, accuracy: 0.001)
+                }
+                let release = NSPoint(x: anchor.x + direction * 40, y: anchor.y)
+                guard case .drag(let drop) = interaction.finish(at: release, doubleClickInterval: 0.5) else {
+                    return XCTFail("Expected a bottom slide")
+                }
+                XCTAssertEqual(drop.target?.edge, .bottom)
+                XCTAssertEqual(drop.frame.minX, frame.minX + direction * 40, accuracy: 0.001)
+            }
+        }
+    }
+
+    func testInsetBottomRailCanSlideOutsideThePhysicalSnapZone() throws {
+        let screen = NSRect(x: -1280, y: 120, width: 1280, height: 600)
+        let visible = NSRect(x: screen.minX, y: screen.minY + 140, width: screen.width, height: 428)
+        let docking = MacWidgetDocking(edge: .bottom, screenFrame: screen, visibleFrame: visible)
+        let frame = docking.frame(edge: .bottom, position: 0.5)
+        let anchor = NSPoint(x: frame.midX, y: frame.midY)
+        var interaction = MacWidgetPointerInteraction()
+        interaction.begin(at: anchor, frame: frame, bounds: visible, position: 0.5,
+            clickCount: 1, timestamp: 1, docking: docking)
+        let point = NSPoint(x: anchor.x + 80, y: anchor.y)
+        let placement = try XCTUnwrap(interaction.update(at: point))
+        XCTAssertTrue(placement.isSlidingAlongEdge)
+        XCTAssertEqual(placement.attachment?.edge, .bottom)
+        guard case .drag(let drop) = interaction.finish(at: point, doubleClickInterval: 0.5) else {
+            return XCTFail("Expected a bottom slide")
+        }
+        XCTAssertEqual(drop.target?.edge, .bottom)
+        XCTAssertEqual(drop.frame.minX, frame.minX + 80, accuracy: 0.001)
     }
 
     func testSameEdgeDropsPreserveTheGrabOffsetAndCancelDoesNotCompleteADrop() throws {
