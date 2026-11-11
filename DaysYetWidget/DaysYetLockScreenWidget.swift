@@ -174,7 +174,8 @@ struct DaysYetLockScreenWidgetEntryView: View {
     }
 
     private var roundedPercentageText: String {
-        snapshot.isOff ? "Off" : RemainingPercentage.compactText(for: snapshot.remainingFraction)
+        if snapshot.requiresSetup { return "—" }
+        return snapshot.isOff ? "Off" : RemainingPercentage.compactText(for: snapshot.remainingFraction)
     }
 }
 

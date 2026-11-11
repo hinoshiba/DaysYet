@@ -30,6 +30,30 @@ struct WidgetPreview: View {
     }
 }
 
+/// Shows a draft time using the same row and surface as the finished widget.
+struct MetricWidgetPreview: View {
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    let profile: UserProfile
+    let metric: MetricKind
+
+    var body: some View {
+        TimelineView(.periodic(from: .now, by: 60)) { context in
+            WidgetPreviewMetricRow(
+                snapshot: TimeProgressCalculator.snapshot(for: metric, profile: profile, now: context.date),
+                mode: .progressBars,
+                valueStyle: .remaining,
+                theme: profile.widgetTheme,
+                compact: false,
+                customColors: profile.widgetCustomColors,
+                stacksBarLabels: dynamicTypeSize.isAccessibilitySize
+            )
+            .padding(20)
+        }
+        .foregroundStyle(profile.widgetTheme.palette.foreground)
+        .widgetPreviewSurface(theme: profile.widgetTheme)
+    }
+}
+
 extension View {
     func widgetPreviewSurface(theme: WidgetTheme) -> some View {
         background { WidgetThemeBackground(theme: theme) }
@@ -49,6 +73,7 @@ private struct WidgetPreviewMetricRow: View {
     let theme: WidgetTheme
     let compact: Bool
     let customColors: [MetricKind: WidgetColor]
+    var stacksBarLabels = false
 
     private var palette: WidgetThemePalette { theme.palette }
 
@@ -176,6 +201,28 @@ private struct WidgetPreviewMetricRow: View {
 
     private var progressBar: some View {
         VStack(alignment: .leading, spacing: compact ? 4 : 5) {
+            progressBarLabels
+                .font(.system(.caption, design: .rounded, weight: .semibold))
+
+            ProgressBar(
+                fraction: snapshot.remainingFraction,
+                colors: palette.colors(for: snapshot.kind, customColors: customColors),
+                height: compact ? 5 : 6,
+                trackColor: palette.track
+            )
+        }
+    }
+
+    @ViewBuilder
+    private var progressBarLabels: some View {
+        if stacksBarLabels {
+            VStack(alignment: .leading, spacing: 4) {
+                Text(snapshot.title)
+                Text(snapshot.valueText(style: valueStyle, compact: compact))
+                    .monospacedDigit()
+            }
+            .fixedSize(horizontal: false, vertical: true)
+        } else {
             HStack(alignment: .firstTextBaseline) {
                 Text(snapshot.title)
                     .lineLimit(1)
@@ -187,14 +234,6 @@ private struct WidgetPreviewMetricRow: View {
                     .monospacedDigit()
                     .layoutPriority(1)
             }
-            .font(.system(.caption, design: .rounded, weight: .semibold))
-
-            ProgressBar(
-                fraction: snapshot.remainingFraction,
-                colors: palette.colors(for: snapshot.kind, customColors: customColors),
-                height: compact ? 5 : 6,
-                trackColor: palette.track
-            )
         }
     }
 }

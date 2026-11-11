@@ -15,8 +15,8 @@
     },
     "metric.milestone" : {
       "localizations" : {
-        "en" : { "stringUnit" : { "state" : "translated", "value" : "Milestone" } },
-        "ja" : { "stringUnit" : { "state" : "translated", "value" : "大切な日" } }
+        "en" : { "stringUnit" : { "state" : "translated", "value" : "Target date" } },
+        "ja" : { "stringUnit" : { "state" : "translated", "value" : "目標日まで" } }
       }
     },
     "metric.month" : {

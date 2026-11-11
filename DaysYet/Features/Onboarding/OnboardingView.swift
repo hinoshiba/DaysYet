@@ -2,13 +2,11 @@ import SwiftUI
 
 struct OnboardingView: View {
     @EnvironmentObject private var store: ProfileStore
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @State private var step = 0
     @State private var birthDate = UserProfile.initial.birthDate
     @State private var healthyLifeYears = UserProfile.initial.healthyLifeYears
-    @State private var customTargetName = UserProfile.initial.customTargetName
-    @State private var customTargetStartDate = UserProfile.initial.customTargetStartDate
-    @State private var customTargetDate = UserProfile.initial.customTargetDate
-    @State private var showsMilestoneSetup = false
+    @State private var defersHealthyLifeSetup = false
 
     var body: some View {
         ZStack {
@@ -41,11 +39,6 @@ struct OnboardingView: View {
         .onAppear {
             birthDate = store.profile.birthDate
             healthyLifeYears = store.profile.healthyLifeYears
-            customTargetName = store.profile.customTargetName
-            customTargetStartDate = Calendar.autoupdatingCurrent.startOfDay(
-                for: store.profile.customTargetStartDate
-            )
-            customTargetDate = store.profile.customTargetDate
         }
     }
 
@@ -74,78 +67,74 @@ struct OnboardingView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
                 VStack(alignment: .leading, spacing: 8) {
-                    EyebrowLabel(text: L10n.text("あなたの時間", "Your time"))
-                    Text(L10n.text("基準を決める", "Set your reference points"))
+                    Text(L10n.text("健康でいたい年齢まで", "Until your healthy-age goal"))
                         .font(.largeTitle.bold())
-                    Text(L10n.text("すべて端末内に保存されます。後からいつでも変更できます。", "Everything stays on device and can be changed anytime."))
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text(L10n.text(
+                        "生年月日から、目標年齢までの残り時間を表示します。",
+                        "Your birth date lets us show the time remaining until your target age."
+                    ))
                         .foregroundStyle(.secondary)
+                        .accessibilityIdentifier("onboarding.birthDateReason")
                 }
 
+                MetricWidgetPreview(profile: healthyLifePreviewProfile, metric: .healthyLife)
+                    .accessibilityIdentifier("onboarding.healthyLifePreview")
+
                 VStack(spacing: 0) {
-                    DatePicker(
-                        L10n.text("生年月日", "Birth date"),
-                        selection: $birthDate,
-                        in: earliestBirthDate ... Date.now,
-                        displayedComponents: .date
-                    )
-                    .padding(16)
+                    birthDateInput
+                        .padding(16)
 
                     Divider().padding(.leading, 16)
 
                     VStack(alignment: .leading, spacing: 12) {
                         HStack {
-                            Text(L10n.text("健康でいたい年齢", "Healthy-age goal"))
+                            Text(L10n.text("目標年齢", "Target age"))
                             Spacer()
                             Text("\(Int(healthyLifeYears))")
                                 .font(.headline.monospacedDigit())
                         }
                         Slider(value: $healthyLifeYears, in: 50...110, step: 1)
-                    }
-                    .padding(16)
-
-                    Divider().padding(.leading, 16)
-
-                    DisclosureGroup(isExpanded: $showsMilestoneSetup) {
-                        VStack(alignment: .leading, spacing: 12) {
-                            TextField(L10n.text("節目の名前", "Milestone name"), text: $customTargetName)
-                            DatePicker(
-                                L10n.text("起算日", "Start date"),
-                                selection: milestoneStartDateBinding,
-                                in: earliestMilestoneDate ... latestStartDate,
-                                displayedComponents: .date
-                            )
-                            DatePicker(
-                                L10n.text("目標日時", "Target date and time"),
-                                selection: $customTargetDate,
-                                in: minimumTargetDate ... latestTargetDate,
-                                displayedComponents: [.date, .hourAndMinute]
-                            )
-                        }
-                        .padding(.top, 12)
-                    } label: {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(L10n.text("大切な日（任意）", "Milestone (optional)"))
-                            Text(L10n.text(
-                                "設定しなくても始められます。後から「時間」で追加できます。",
-                                "You can get started without one and add it later from Times."
-                            ))
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                        }
+                            .accessibilityLabel(L10n.text("目標年齢", "Target age"))
+                            .accessibilityIdentifier("onboarding.healthyLifeYears")
                     }
                     .padding(16)
                 }
                 .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
 
-                Label(
-                    L10n.text("「健康でいたい年齢」は診断や寿命予測ではなく、ご自身で決める計画上の目標です。", "The healthy-age goal is a personal planning marker, not a diagnosis or life-expectancy prediction."),
-                    systemImage: "info.circle"
-                )
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(L10n.text("自分で決める目標です。寿命の予測ではありません。", "A goal you choose, not a lifespan prediction."))
+                    Text(L10n.text("端末内に保存・あとから変更できます", "Saved on this device. Change it anytime."))
+                }
                 .font(.footnote)
                 .foregroundStyle(.secondary)
             }
             .padding(24)
         }
+    }
+
+    @ViewBuilder
+    private var birthDateInput: some View {
+        if dynamicTypeSize.isAccessibilitySize {
+            VStack(alignment: .leading, spacing: 12) {
+                Text(L10n.text("生年月日", "Birth date"))
+                birthDatePicker
+                    .labelsHidden()
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        } else {
+            birthDatePicker
+        }
+    }
+
+    private var birthDatePicker: some View {
+        DatePicker(
+            L10n.text("生年月日", "Birth date"),
+            selection: $birthDate,
+            in: earliestBirthDate ... Date.now,
+            displayedComponents: .date
+        )
+        .accessibilityIdentifier("onboarding.birthDate")
     }
 
     private var preview: some View {
@@ -155,8 +144,11 @@ struct OnboardingView: View {
                     EyebrowLabel(text: L10n.text("準備完了", "Ready"))
                     Text(L10n.text("大切な時間を、\nひと目に。", "Your time,\none glance."))
                         .font(.largeTitle.bold())
-                    Text(L10n.text("最初は「今月・今年・健康でいたい年齢」。アプリ内で自由に入れ替えられます。", "Start with month, year, and your healthy-age goal. Change them anytime in the app."))
+                    Text(defersHealthyLifeSetup
+                         ? L10n.text("健康目標は、あとから「時間」で設定できます。", "Set your healthy-age goal later in Times.")
+                         : L10n.text("あとから「時間」で変更できます。", "Change your times anytime in Times."))
                         .foregroundStyle(.secondary)
+                        .accessibilityIdentifier("onboarding.previewDescription")
                 }
 
                 WidgetPreview(profile: previewProfile)
@@ -173,79 +165,76 @@ struct OnboardingView: View {
     }
 
     private var controls: some View {
-        HStack(spacing: 14) {
-            if step > 0 {
-                Button(L10n.text("戻る", "Back")) {
-                    withAnimation(.snappy) { step -= 1 }
+        VStack(spacing: 12) {
+            HStack(spacing: 14) {
+                if step > 0 {
+                    Button {
+                        withAnimation(.snappy) { step -= 1 }
+                    } label: {
+                        if dynamicTypeSize.isAccessibilitySize {
+                            Image(systemName: "chevron.backward")
+                                .accessibilityLabel(L10n.text("戻る", "Back"))
+                        } else {
+                            Text(L10n.text("戻る", "Back"))
+                        }
+                    }
+                    .buttonStyle(.bordered)
+                    .buttonBorderShape(.roundedRectangle(radius: 16))
+                    .accessibilityIdentifier("onboarding.back")
                 }
-                .buttonStyle(.bordered)
+
+                Button {
+                    if step < 2 {
+                        if step == 1 { defersHealthyLifeSetup = false }
+                        withAnimation(.snappy) { step += 1 }
+                    } else {
+                        store.completeOnboarding(
+                            birthDate: defersHealthyLifeSetup ? nil : birthDate,
+                            healthyLifeYears: healthyLifeYears
+                        )
+                    }
+                } label: {
+                    Text(step == 2 ? L10n.text("はじめる", "Get started") : L10n.text("続ける", "Continue"))
+                        .foregroundStyle(DaysYetTheme.onAccent)
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
                 .buttonBorderShape(.roundedRectangle(radius: 16))
+                .accessibilityIdentifier("onboarding.continue")
             }
 
-            Button {
-                if step < 2 {
-                    withAnimation(.snappy) { step += 1 }
-                } else {
-                    store.completeOnboarding(
-                        birthDate: birthDate,
-                        healthyLifeYears: healthyLifeYears,
-                        customTargetName: customTargetName,
-                        customTargetStartDate: customTargetStartDate,
-                        customTargetDate: customTargetDate
-                    )
+            if step == 1 {
+                Button(L10n.text("あとで設定", "Set up later")) {
+                    defersHealthyLifeSetup = true
+                    withAnimation(.snappy) { step = 2 }
                 }
-            } label: {
-                Text(step == 2 ? L10n.text("はじめる", "Get started") : L10n.text("続ける", "Continue"))
-                    .foregroundStyle(DaysYetTheme.onAccent)
-                    .frame(maxWidth: .infinity)
+                .buttonStyle(.plain)
+                .font(.body.weight(.semibold))
+                .foregroundStyle(.secondary)
+                .frame(minHeight: 44)
+                .accessibilityIdentifier("onboarding.skip")
             }
-            .buttonStyle(.borderedProminent)
-            .buttonBorderShape(.roundedRectangle(radius: 16))
         }
         .controlSize(.large)
     }
 
-    private var previewProfile: UserProfile {
+    private var healthyLifePreviewProfile: UserProfile {
         var profile = store.profile
         profile.birthDate = birthDate
         profile.healthyLifeYears = healthyLifeYears
-        profile.customTargetName = customTargetName
-        profile.customTargetStartDate = customTargetStartDate
-        profile.customTargetDate = customTargetDate
-        profile.dashboardMetrics = [.month, .year, .healthyLife]
+        profile.isHealthyLifeConfigured = true
+        return profile
+    }
+
+    private var previewProfile: UserProfile {
+        var profile = defersHealthyLifeSetup ? store.profile : healthyLifePreviewProfile
+        profile.isHealthyLifeConfigured = !defersHealthyLifeSetup
+        profile.dashboardMetrics = defersHealthyLifeSetup ? [.week, .month, .year] : [.month, .year, .healthyLife]
         return profile
     }
 
     private var earliestBirthDate: Date {
         Calendar.current.date(from: DateComponents(year: 1900, month: 1, day: 1)) ?? .distantPast
-    }
-
-    private var earliestMilestoneDate: Date { earliestBirthDate }
-
-    private var latestStartDate: Date {
-        latestTargetDate.addingTimeInterval(-60)
-    }
-
-    private var minimumTargetDate: Date {
-        customTargetStartDate.addingTimeInterval(60)
-    }
-
-    private var milestoneStartDateBinding: Binding<Date> {
-        Binding(
-            get: { customTargetStartDate },
-            set: { newValue in
-                customTargetStartDate = Calendar.autoupdatingCurrent.startOfDay(for: newValue)
-                if customTargetDate < minimumTargetDate {
-                    let suggestedTarget = Calendar.current.date(byAdding: .year, value: 1, to: customTargetStartDate)
-                        ?? minimumTargetDate
-                    customTargetDate = min(suggestedTarget, latestTargetDate)
-                }
-            }
-        )
-    }
-
-    private var latestTargetDate: Date {
-        Calendar.current.date(byAdding: .year, value: 100, to: .now) ?? .distantFuture
     }
 }
 

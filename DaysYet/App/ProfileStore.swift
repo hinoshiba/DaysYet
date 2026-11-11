@@ -30,6 +30,7 @@ final class ProfileStore: ObservableObject {
                 from: DateComponents(year: 1992, month: 4, day: 12)
             ) ?? screenshotProfile.birthDate
             screenshotProfile.healthyLifeYears = 82
+            screenshotProfile.isHealthyLifeConfigured = true
             screenshotProfile.customTargetName = L10n.text("大切な節目", "A milestone")
             screenshotProfile.customTargetStartDate = calendar.date(
                 byAdding: .year,
@@ -72,6 +73,7 @@ final class ProfileStore: ObservableObject {
         } else if arguments.contains("--skip-onboarding") {
             var previewProfile = profile
             previewProfile.isConfigured = true
+            previewProfile.isHealthyLifeConfigured = true
             self.profile = previewProfile
         } else {
             self.profile = profile
@@ -164,6 +166,7 @@ final class ProfileStore: ObservableObject {
         case .healthyLife:
             profile.birthDate = draft.birthDate
             profile.healthyLifeYears = draft.healthyLifeYears
+            profile.isHealthyLifeConfigured = true
         case .customLife:
             profile.customTargetName = draft.customTargetName
             profile.customTargetStartDate = draft.customTargetStartDate
@@ -190,19 +193,16 @@ final class ProfileStore: ObservableObject {
 #endif
 
     func completeOnboarding(
-        birthDate: Date,
-        healthyLifeYears: Double,
-        customTargetName: String,
-        customTargetStartDate: Date,
-        customTargetDate: Date
+        birthDate: Date?,
+        healthyLifeYears: Double
     ) {
         update {
-            $0.birthDate = birthDate
-            $0.healthyLifeYears = healthyLifeYears
-            $0.customTargetName = customTargetName
-            $0.customTargetStartDate = customTargetStartDate
-            $0.customTargetDate = customTargetDate
-            $0.dashboardMetrics = [.month, .year, .healthyLife]
+            if let birthDate {
+                $0.birthDate = birthDate
+                $0.healthyLifeYears = healthyLifeYears
+            }
+            $0.isHealthyLifeConfigured = birthDate != nil
+            $0.dashboardMetrics = birthDate == nil ? [.week, .month, .year] : [.month, .year, .healthyLife]
             $0.isConfigured = true
         }
     }

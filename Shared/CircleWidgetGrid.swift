@@ -188,6 +188,7 @@ private struct CircleWidgetMetric: View {
     }
 
     private var valueText: String {
+        if snapshot.requiresSetup { return snapshot.remainingText }
         if snapshot.isOff { return "Off" }
         if !snapshot.hasScheduledTime { return compact ? "—" : snapshot.remainingText }
         if valueStyle == .percentage {

@@ -210,6 +210,13 @@ struct MetricSettingsFormContent: View {
 
     private var healthyLifeSection: some View {
         Section {
+            Text(L10n.text(
+                "目標年齢までの残り時間を表示するため、生年月日と健康でいたい年齢を設定してください。",
+                "Set your birth date and healthy-age goal to see the time remaining until that age."
+            ))
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+
             DatePicker(
                 L10n.text("生年月日", "Birth date"),
                 selection: binding(\.birthDate),
@@ -229,7 +236,7 @@ struct MetricSettingsFormContent: View {
                     .accessibilityIdentifier("healthyLife.years")
             }
         } header: {
-            Text(L10n.text("人生の基準", "Life reference points"))
+            Text(L10n.text("健康でいたい年齢", "Healthy-age goal"))
         } footer: {
             Text(L10n.text(
                 "「健康でいたい年齢」は、ご自身で決める計画上の目標です。医学的な診断、健康状態、実際の寿命を示すものではありません。",
@@ -240,6 +247,13 @@ struct MetricSettingsFormContent: View {
 
     private var milestoneSection: some View {
         Section {
+            Text(L10n.text(
+                "試験・旅行・締め切りなど、指定した日までの残り時間を表示します。",
+                "See the time remaining until an exam, trip, deadline, or another date you choose."
+            ))
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+
             TextField(L10n.text("名前", "Name"), text: binding(\.customTargetName))
                 .accessibilityIdentifier("customLife.name")
             DatePicker(
@@ -257,7 +271,7 @@ struct MetricSettingsFormContent: View {
             )
             .accessibilityIdentifier("customLife.targetDate")
         } header: {
-            Text(L10n.text("大切な日", "Milestone"))
+            Text(L10n.text("目標日まで", "Target date"))
         } footer: {
             Text(L10n.text(
                 "起算日を100%として、目標日時に0%となる残りの割合を計算します。",
