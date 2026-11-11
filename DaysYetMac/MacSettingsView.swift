@@ -621,7 +621,7 @@ struct MacSettingsView: View {
             }
 
             Section {
-                TextField(L10n.text("名前", "Name"), text: personalBinding(\.customTargetName), prompt: Text(L10n.text("大切な日", "A milestone")))
+                TextField(L10n.text("名前", "Name"), text: personalBinding(\.customTargetName), prompt: Text(L10n.text("目標日まで", "Target date")))
                 DatePicker(
                     L10n.text("起算日", "Start date"),
                     selection: milestoneStartBinding,
@@ -634,7 +634,7 @@ struct MacSettingsView: View {
                     displayedComponents: [.date, .hourAndMinute]
                 )
             } header: {
-                Text(L10n.text("大切な日（任意）", "Milestone (optional)"))
+                Text(L10n.text("目標日まで（任意）", "Target date (optional)"))
             } footer: {
                 Text(L10n.text(
                     "起算日の午前0時を100%として、目標日時に0%となる残り時間を表示します。設定は自動で保存されます。",
@@ -819,6 +819,9 @@ struct MacSettingsView: View {
         Binding(get: { store.profile[keyPath: keyPath] }, set: { newValue in
             store.update {
                 $0[keyPath: keyPath] = newValue
+                if keyPath == \UserProfile.birthDate || keyPath == \UserProfile.healthyLifeYears {
+                    $0.isHealthyLifeConfigured = true
+                }
                 $0.isConfigured = true
             }
         })
@@ -1073,7 +1076,8 @@ private struct MacPlacementPreview: View {
     private func previewMetric(_ kind: MetricKind, scale: CGFloat = 0.5625) -> some View {
         let snapshot = TimeProgressCalculator.snapshot(for: kind, profile: profile)
         let accent = MacWidgetStyle.accent(for: kind, theme: profile.widgetTheme, customColors: customColors)
-        return MacPercentageRing(fraction: snapshot.remainingFraction, accent: accent, isOff: snapshot.isOff)
+        return MacPercentageRing(fraction: snapshot.remainingFraction, accent: accent,
+                                 isOff: snapshot.isOff, requiresSetup: snapshot.requiresSetup)
             .scaleEffect(scale)
             .frame(width: 32 * scale, height: 32 * scale)
     }

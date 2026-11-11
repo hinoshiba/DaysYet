@@ -172,7 +172,8 @@ struct MacDesktopWidgetView: View {
                         MacPercentageRing(fraction: snapshot.remainingFraction,
                             accent: MacWidgetStyle.accent(for: kind, theme: store.profile.widgetTheme, customColors: preferences.customColors),
                             selected: isExpanded && controller.selectedMetric == kind,
-                            subdued: isExpanded && controller.selectedMetric != kind, isOff: snapshot.isOff)
+                            subdued: isExpanded && controller.selectedMetric != kind,
+                            isOff: snapshot.isOff, requiresSetup: snapshot.requiresSetup)
                             .scaleEffect(factor * magnification)
                             .frame(width: ring.width, height: ring.height)
                             .position(x: ring.midX, y: ring.midY)
@@ -301,6 +302,7 @@ struct MacPercentageRing: View {
     var selected = false
     var subdued = false
     var isOff = false
+    var requiresSetup = false
 
     var body: some View {
         ZStack {
@@ -315,7 +317,10 @@ struct MacPercentageRing: View {
             }
             .opacity(selected ? 1 : (subdued ? 0.68 : 0.80))
             HStack(alignment: .firstTextBaseline, spacing: 0.5) {
-                if isOff {
+                if requiresSetup {
+                    Text("—")
+                        .font(.system(size: 10, weight: .medium))
+                } else if isOff {
                     Text("Off")
                         .font(.system(size: 9, weight: .medium))
                 } else {
@@ -360,7 +365,8 @@ struct MacTimeRailView: View {
         let accent = MacWidgetStyle.accent(for: snapshot.kind, theme: store.profile.widgetTheme,
                                           customColors: preferences.customColors)
         return MacPercentageRing(fraction: snapshot.remainingFraction, accent: accent,
-                                 selected: selected, subdued: isExpanded && !selected, isOff: snapshot.isOff)
+                                 selected: selected, subdued: isExpanded && !selected,
+                                 isOff: snapshot.isOff, requiresSetup: snapshot.requiresSetup)
         .scaleEffect(magnification)
         .offset(x: shift)
         // Keep the target fixed while the ring grows, so adjacent rows do not

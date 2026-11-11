@@ -118,6 +118,7 @@
 		819469D71ECF379414FE26AE /* MacDockGroupReorderPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9525463E7E2BE84C763E234D /* MacDockGroupReorderPreview.swift */; };
 		8446329E28073B053BE07FD5 /* WidgetTimePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2FAD1DAFA35F125DDED96B9 /* WidgetTimePicker.swift */; };
 		85EABD42E7FC7E7ADDCA3C2B /* TimeMetric.swift in Sources */ = {isa = PBXBuildFile; fileRef = 787BB50AE053C559748C39E4 /* TimeMetric.swift */; };
+		87884508F563429D3AF1DF28 /* OnboardingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF43983DD2BE3B75538EC26 /* OnboardingTests.swift */; };
 		87B6D0840A107FE4F22AD04E /* WidgetColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4989462490B5F91F83AAD1D6 /* WidgetColor.swift */; };
 		886044372D7059D081A8429E /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EE63803F7DD28421990C806 /* main.swift */; };
 		8884C49053255442004E4076 /* MacLoginItemSettingsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABC46F615264F47CAE996877 /* MacLoginItemSettingsTests.swift */; };
@@ -127,6 +128,7 @@
 		8D94FE156D09773633D1A844 /* MacSystemDockTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 15AD9451FC49DF6EAE2DF61F /* MacSystemDockTests.swift */; };
 		8E5C94002BD49BCB08660381 /* StudyScheduleEditor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BBDAAB14865688B102E5DF7 /* StudyScheduleEditor.swift */; };
 		911CFACAA2105B38DA30CCE7 /* DaysYetDock_year.app in Embed Dependencies */ = {isa = PBXBuildFile; fileRef = 3D33B7E998BEE745C6395C00 /* DaysYetDock_year.app */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		91B39FD363D55A559229CDA1 /* OnboardingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AF43983DD2BE3B75538EC26 /* OnboardingTests.swift */; };
 		943AF5ED0EF0C3BFC7DA2557 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 07705141EA121C9FBCD0F6E8 /* InfoPlist.strings */; };
 		94479AEE70C99AAF3C2210B8 /* MacWidgetPointerInteraction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80547D3903A118C0591FA41E /* MacWidgetPointerInteraction.swift */; };
 		99225524141B870101355042 /* MacDockTileMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95E3F8357874BCD0D68CDB55 /* MacDockTileMessage.swift */; };
@@ -181,6 +183,7 @@
 		DD89238334AF18D0CC63BFE1 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D89EF74F000C25DDC5B0E5A8 /* InfoPlist.strings */; };
 		DEA855224782A82C4E93C99B /* WidgetColorSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A19A9E6B143F4543BF250C55 /* WidgetColorSettingsView.swift */; };
 		DFAB566A99FE9D4C3B9DF254 /* WidgetThemePalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223C8EC7373FA0756EAB7C3B /* WidgetThemePalette.swift */; };
+		E0D61E1A75AB837321ACCD59 /* OnboardingFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E68B7E5DC86DE0FED101EF /* OnboardingFlowTests.swift */; };
 		E2C373F78F9FFE6FBC8CA733 /* MacDockSnapshotCapture.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2D07DB7C5FCD0D4D81FF251 /* MacDockSnapshotCapture.swift */; };
 		E3E2174926AFE6402CD2BCBC /* WeekStartTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62BD112C3BA9417B89662401 /* WeekStartTests.swift */; };
 		E599D0FABAA625A46424AD4D /* WidgetThemePalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 223C8EC7373FA0756EAB7C3B /* WidgetThemePalette.swift */; };
@@ -354,6 +357,7 @@
 		37E7472AD057480189BEFED2 /* MacWidgetHandoffTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetHandoffTests.swift; sourceTree = "<group>"; };
 		384A48AF89CB9A3882D2A4F9 /* MacWidgetDockingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetDockingTests.swift; sourceTree = "<group>"; };
 		3A3495553E4DDA731CE2CDA3 /* WidgetColorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetColorTests.swift; sourceTree = "<group>"; };
+		3AF43983DD2BE3B75538EC26 /* OnboardingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingTests.swift; sourceTree = "<group>"; };
 		3AF94C4766A5314BA911FD5D /* WidgetConfigurationIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetConfigurationIntent.swift; sourceTree = "<group>"; };
 		3D33B7E998BEE745C6395C00 /* DaysYetDock_year.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DaysYetDock_year.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F77164C8657A0EC8BACA618 /* MacSystemDockTransitionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSystemDockTransitionTests.swift; sourceTree = "<group>"; };
@@ -420,6 +424,7 @@
 		A0945BA8F502C495BF9B906F /* TimeEditor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeEditor.swift; sourceTree = "<group>"; };
 		A19A9E6B143F4543BF250C55 /* WidgetColorSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetColorSettingsView.swift; sourceTree = "<group>"; };
 		A1B11D4C863E5F66FF0D5780 /* MacSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacSettingsView.swift; sourceTree = "<group>"; };
+		A1E68B7E5DC86DE0FED101EF /* OnboardingFlowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlowTests.swift; sourceTree = "<group>"; };
 		A40CE81B58E035A5129E7D2E /* DaysYetTheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaysYetTheme.swift; sourceTree = "<group>"; };
 		A5077CE484DDB9FA8448530A /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		A595FB6033234CAF7CA04E0C /* MacWidgetController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MacWidgetController.swift; sourceTree = "<group>"; };
@@ -522,6 +527,7 @@
 				9343DDFBBCF17E411BE089AE /* AppColorContrastTests.swift */,
 				0B41D138481FF74278B3C1E4 /* CircleWidgetConfigurationTests.swift */,
 				34148161730120070F15AE90 /* CircleWidgetRenderingTests.swift */,
+				3AF43983DD2BE3B75538EC26 /* OnboardingTests.swift */,
 				643338F9F52FABE2D2989A81 /* StudyScheduleTests.swift */,
 				091F1E00C9DBA9A030F1A29D /* TimeProgressCalculatorTests.swift */,
 				62BD112C3BA9417B89662401 /* WeekStartTests.swift */,
@@ -667,6 +673,7 @@
 			children = (
 				E61A82113E48B35C0007D920 /* AppNavigationTests.swift */,
 				D72FF208B078BDEF99EB7AAB /* CircleWidgetEditorTests.swift */,
+				A1E68B7E5DC86DE0FED101EF /* OnboardingFlowTests.swift */,
 				01F02E0CDB3E124DF4630BAD /* StudyDaysEditorTests.swift */,
 				E867D01984ABF659B7C9A245 /* WidgetNavigationTests.swift */,
 			);
@@ -1435,6 +1442,7 @@
 			files = (
 				F38185E310F879C7CB105BF5 /* AppNavigationTests.swift in Sources */,
 				165F927ED9D9E74AEE11E89C /* CircleWidgetEditorTests.swift in Sources */,
+				E0D61E1A75AB837321ACCD59 /* OnboardingFlowTests.swift in Sources */,
 				A305EED064E52EA26F880C65 /* StudyDaysEditorTests.swift in Sources */,
 				DAA02694F4BB593855ACA4F1 /* WidgetNavigationTests.swift in Sources */,
 			);
@@ -1492,6 +1500,7 @@
 				3FDF060D4037A35A0A8752DA /* AppColorContrastTests.swift in Sources */,
 				B2B166B3D54AF08AE3B21409 /* CircleWidgetConfigurationTests.swift in Sources */,
 				6E602E8C7B44F4C38C197894 /* CircleWidgetRenderingTests.swift in Sources */,
+				87884508F563429D3AF1DF28 /* OnboardingTests.swift in Sources */,
 				F1C690026702A4AAC963828E /* StudyScheduleTests.swift in Sources */,
 				B5DAF61685AE2120FC34313D /* TimeProgressCalculatorTests.swift in Sources */,
 				C8E7D8C6C12AE8C965D8F11A /* WeekStartTests.swift in Sources */,
@@ -1546,6 +1555,7 @@
 				C5FFD3A0BCC08174065295DB /* MacWidgetSelectionTests.swift in Sources */,
 				CFDADD3AD39F8A8248936B23 /* MacWidgetTests.swift in Sources */,
 				F2A3AC241AF4291382F95BE3 /* MacWorkTimeEditorTests.swift in Sources */,
+				91B39FD363D55A559229CDA1 /* OnboardingTests.swift in Sources */,
 				7D931002DC755EF2AD7D7F44 /* StudyScheduleTests.swift in Sources */,
 				F12A599B4D7C4566D140AFA1 /* TimeProgressCalculatorTests.swift in Sources */,
 				E3E2174926AFE6402CD2BCBC /* WeekStartTests.swift in Sources */,

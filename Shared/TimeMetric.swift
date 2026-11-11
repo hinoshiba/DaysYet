@@ -30,7 +30,7 @@ enum MetricKind: String, Codable, CaseIterable, Identifiable, Sendable {
         case .month: L10n.text("今月", "This month")
         case .year: L10n.text("今年", "This year")
         case .healthyLife: L10n.text("健康でいたい年齢", "Healthy-age goal")
-        case .customLife: L10n.text("大切な日", "Milestone")
+        case .customLife: L10n.text("目標日まで", "Target date")
         case .activity: L10n.text("1日の活動", "Daily activity")
         case .workday: L10n.text("勤務時間", "Work hours")
         case .study: L10n.text("学習日", "Study days")
@@ -65,7 +65,7 @@ enum MetricKind: String, Codable, CaseIterable, Identifiable, Sendable {
         case .month: return L10n.text("今月", "Month")
         case .year: return L10n.text("今年", "Year")
         case .healthyLife: return L10n.text("健康目標", "Health goal")
-        case .customLife: return L10n.text("大切な日", "Milestone")
+        case .customLife: return L10n.text("目標日まで", "Target date")
         case .activity: return L10n.text("活動", "Activity")
         case .workday: return L10n.text("勤務", "Work")
         case .study: return L10n.text("学習日", "Study")
@@ -75,7 +75,7 @@ enum MetricKind: String, Codable, CaseIterable, Identifiable, Sendable {
     var shortTitle: String {
         switch self {
         case .healthyLife: L10n.text("健康目標", "Health goal")
-        case .customLife: L10n.text("節目", "Goal")
+        case .customLife: L10n.text("目標日", "Target")
         default: title
         }
     }
@@ -398,6 +398,7 @@ struct MetricSnapshot: Identifiable, Equatable, Sendable {
     let targetDate: Date
     var isOff: Bool = false
     var hasScheduledTime: Bool = true
+    var requiresSetup: Bool = false
     var circleTitle: String? = nil
 
     var id: String { kind.rawValue }
@@ -405,16 +406,21 @@ struct MetricSnapshot: Identifiable, Equatable, Sendable {
     /// The available portion of the period. An empty study plan has no budget,
     /// while an upcoming scheduled period still has its full budget remaining.
     var remainingFraction: Double {
-        guard !isOff, hasScheduledTime else { return 0 }
+        guard !isOff, hasScheduledTime, !requiresSetup else { return 0 }
         return 1 - min(max(elapsedFraction, 0), 1)
     }
-    var percentageText: String { isOff ? "Off" : RemainingPercentage.text(for: remainingFraction) }
+    var percentageText: String {
+        if requiresSetup { return "—" }
+        return isOff ? "Off" : RemainingPercentage.text(for: remainingFraction)
+    }
 
     var percentageRemainingText: String {
-        isOff ? "Off" : L10n.text("残り\(percentageText)", "\(percentageText) left")
+        if requiresSetup { return remainingText }
+        return isOff ? "Off" : L10n.text("残り\(percentageText)", "\(percentageText) left")
     }
 
     func valueText(style: MetricValueStyle, compact: Bool = false) -> String {
+        if requiresSetup { return remainingText }
         if isOff { return "Off" }
         switch style {
         case .remaining:
@@ -427,6 +433,7 @@ struct MetricSnapshot: Identifiable, Equatable, Sendable {
     }
 
     func targetDateText(compact: Bool = false) -> String {
+        if requiresSetup { return remainingText }
         if isOff { return "Off" }
         let formatted: String
         if kind == .study {
@@ -448,6 +455,7 @@ struct MetricSnapshot: Identifiable, Equatable, Sendable {
     }
 
     func secondarySummary(excluding style: MetricValueStyle) -> String {
+        if requiresSetup { return context }
         if isOff { return context }
         switch style {
         case .remaining:
@@ -460,6 +468,7 @@ struct MetricSnapshot: Identifiable, Equatable, Sendable {
     }
 
     var accessibilitySummary: String {
+        if requiresSetup { return "\(title)。\(remainingText)。\(context)。" }
         if isOff { return "\(title)。Off。\(context)。" }
         return "\(title)。\(remainingText)。\(percentageRemainingText)。\(targetDateText())。"
     }
@@ -484,6 +493,19 @@ enum TimeProgressCalculator {
         now: Date = .now,
         calendar: Calendar = .autoupdatingCurrent
     ) -> MetricSnapshot {
+        if kind == .healthyLife, !profile.isHealthyLifeConfigured {
+            return MetricSnapshot(
+                kind: kind,
+                title: kind.title,
+                context: L10n.text("生年月日と目標年齢を設定してください。", "Set your birth date and target age."),
+                countdown: CountdownPresentation(prefix: "", components: [], suffix: "", terminalText: L10n.text("未設定", "Not set")),
+                elapsedFraction: 0,
+                targetDate: now,
+                hasScheduledTime: false,
+                requiresSetup: true,
+                circleTitle: kind.circleTitle(profile: profile)
+            )
+        }
         if kind == .study {
             return studySnapshot(profile: profile, now: now, calendar: calendar)
         }

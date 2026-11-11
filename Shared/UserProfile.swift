@@ -127,6 +127,7 @@ struct CircleWidgetSettings: Codable, Equatable, Sendable {
 struct UserProfile: Codable, Equatable, Sendable {
     var birthDate: Date
     var healthyLifeYears: Double
+    var isHealthyLifeConfigured: Bool
     var customTargetName: String
     var customTargetStartDate: Date
     var customTargetDate: Date
@@ -195,6 +196,7 @@ struct UserProfile: Codable, Equatable, Sendable {
     private enum CodingKeys: String, CodingKey {
         case birthDate
         case healthyLifeYears
+        case isHealthyLifeConfigured
         case customTargetName
         case customTargetStartDate
         case customTargetDate
@@ -233,10 +235,12 @@ struct UserProfile: Codable, Equatable, Sendable {
         studySchedule: StudySchedule = .initial,
         circleWidgetSettings: CircleWidgetSettings = CircleWidgetSettings(),
         widgetCustomColors: [MetricKind: WidgetColor] = [:],
-        widgetLayout: WidgetLayout = .rows
+        widgetLayout: WidgetLayout = .rows,
+        isHealthyLifeConfigured: Bool? = nil
     ) {
         self.birthDate = birthDate
         self.healthyLifeYears = healthyLifeYears
+        self.isHealthyLifeConfigured = isHealthyLifeConfigured ?? isConfigured
         self.customTargetName = customTargetName
         self.customTargetStartDate = customTargetStartDate
         self.customTargetDate = customTargetDate
@@ -288,12 +292,16 @@ struct UserProfile: Codable, Equatable, Sendable {
         circleWidgetSettings = (try? container.decode(CircleWidgetSettings.self, forKey: .circleWidgetSettings))
             ?? CircleWidgetSettings()
         isConfigured = try container.decode(Bool.self, forKey: .isConfigured)
+        // Older onboarding always included the birth date and healthy-age goal.
+        isHealthyLifeConfigured = try container.decodeIfPresent(Bool.self, forKey: .isHealthyLifeConfigured)
+            ?? isConfigured
     }
 
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(birthDate, forKey: .birthDate)
         try container.encode(healthyLifeYears, forKey: .healthyLifeYears)
+        try container.encode(isHealthyLifeConfigured, forKey: .isHealthyLifeConfigured)
         try container.encode(customTargetName, forKey: .customTargetName)
         try container.encode(customTargetStartDate, forKey: .customTargetStartDate)
         try container.encode(customTargetDate, forKey: .customTargetDate)

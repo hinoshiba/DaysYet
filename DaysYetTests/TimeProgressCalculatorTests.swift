@@ -42,6 +42,7 @@ final class TimeProgressCalculatorTests: XCTestCase {
 
     func testPastHealthyTargetClampsRemainingFractionToZero() throws {
         var profile = UserProfile.initial
+        profile.isHealthyLifeConfigured = true
         profile.birthDate = try XCTUnwrap(calendar.date(from: DateComponents(year: 1900, month: 1, day: 1)))
         profile.healthyLifeYears = 50
         let now = try XCTUnwrap(calendar.date(from: DateComponents(year: 2026, month: 8, day: 15)))
@@ -61,6 +62,7 @@ final class TimeProgressCalculatorTests: XCTestCase {
 
     func testHealthyTargetHasNothingRemainingAtConfiguredAge() throws {
         var profile = UserProfile.initial
+        profile.isHealthyLifeConfigured = true
         profile.birthDate = try XCTUnwrap(calendar.date(from: DateComponents(year: 1950, month: 1, day: 1)))
         profile.healthyLifeYears = 75
         let target = try XCTUnwrap(calendar.date(from: DateComponents(year: 2025, month: 1, day: 1)))
@@ -79,6 +81,7 @@ final class TimeProgressCalculatorTests: XCTestCase {
 
     func testHealthyTargetCountsDownFromFullAtBirth() throws {
         var profile = UserProfile.initial
+        profile.isHealthyLifeConfigured = true
         let birthDate = try XCTUnwrap(calendar.date(from: DateComponents(year: 2000, month: 1, day: 1)))
         profile.birthDate = birthDate
         profile.healthyLifeYears = 80
@@ -290,6 +293,7 @@ final class TimeProgressCalculatorTests: XCTestCase {
 
     func testHealthyGoalKeepsPositiveTinyBalanceDistinctFromDepletedBalance() throws {
         var profile = UserProfile.initial
+        profile.isHealthyLifeConfigured = true
         profile.birthDate = try XCTUnwrap(calendar.date(from: DateComponents(year: 2000, month: 1, day: 1)))
         profile.healthyLifeYears = 75
         let target = try XCTUnwrap(calendar.date(from: DateComponents(year: 2075, month: 1, day: 1)))
