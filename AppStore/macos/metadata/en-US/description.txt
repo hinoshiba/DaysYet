@@ -8,7 +8,7 @@ Start with three small remaining-time circles on the left, right, or bottom and 
 Optional Graph magnification enlarges the hovered circle to 110–180% (default 135%; off by default). Circles and details expand/close together. Returning during closing reopens smoothly. Clicks preserve magnification. Reduce Motion skips animation.
 
 FIT YOUR WORKSPACE
-Choose a display and a left, right, top, or bottom edge that is not occupied by the macOS Dock. Grab a circle to gather and move the group. Approaching an available edge previews its placement; release there to save. Release away from an edge or press Esc to return. Bottom details open upward. First-run setup introduces movement and optional Launch at login. Adjust size from 80–150%, choose one of four color templates, or customize timeline colors. Double-click for settings, including show, hide, and quit.
+Choose a display and any screen edge. At the Dock’s edge, the widget stays clear of the Dock. Grab a circle to gather and move the group. Approaching an available edge previews its placement; release there to save. Release away from an edge or press Esc to return. Bottom details open upward. First-run setup introduces movement and optional Launch at login. Adjust size from 80–150%, choose one of four color templates, or customize timeline colors. Double-click for settings, including show, hide, and quit.
 
 CHOOSE YOUR LEVEL OF DETAIL
 Pick a large time-left countdown, a combined view of time left, remaining percentage, and a bar, or a progress-bar view. In the progress-bar view, choose time left, remaining percentage, or the end date as the value. Details close when you move away, or you can keep them open from settings.
@@ -21,7 +21,7 @@ TWO ACTIVITY SCHEDULES AND YOUR WEEK
 Set up two activities, such as your whole day and work hours, with custom names, start and end times, and active weekdays. Set weekdays to Off and use overnight schedules in your Mac's local time. An activity that has started continues until its end, even if the next day is Off. Start This week on the day set by your Mac calendar or choose any weekday. Edit these settings in the Timelines tab. Your existing work times and display selections are preserved.
 
 IMPORTANT DATES AND PERSONAL GOALS
-Choose from this week, this month, this year, two activity schedules, study days, a milestone with its own start date, and a healthy-age goal you set. Week, month, and year need no personal dates. Japanese and English are supported.
+Choose from this week, this month, this year, two activity schedules, study days, a target date with its own start date, and a healthy-age goal you set. Week, month, and year need no personal dates. Japanese and English are supported.
 
 STORED ON THIS MAC
 No account is required. Dates, activity names, times and weekdays, study plans, week-start choices, and display settings stay on your Mac and are not sent to the developer. DaysYet has no advertising or analytics SDKs. Each device has separate settings, without iPhone/iPad sync. Delete all saved data from Settings at any time.

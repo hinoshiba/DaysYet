@@ -1,6 +1,10 @@
 # Release readiness
 
-## Current 0.2.0 submission
+## Current 0.2.1 candidates
+
+**iOS / iPadOS 0.2.1 (17) and macOS 0.2.1 (14) are being prepared for App Review.** The previous 0.2.0 versions are Ready for Distribution as confirmed in App Store Connect on 2026-11-11. Local unit and focused onboarding UI tests passed. Hosted CI remains blocked by the account billing restriction. See the [0.2.1 release record](../releases/0.2.1.md) for the candidate checks and current submission status.
+
+## Historical 0.2.0 submission
 
 **iOS / iPadOS 0.2.0 (16) and native macOS 0.2.0 (13) are Waiting for Review.** Final submissions were accepted on 2026-11-07 at 16:22 JST and 16:15 JST respectively. Automatic release after approval to all users is enabled for both. The clean archive source is `6c06c267e85b845c906e60551c08a9d7a825b225`, preserved by immutable platform tags. Local candidate tests passed: 145 iOS tests and 382 default Mac App Store tests. Release compliance, archive audits, upload/processing checks, saved metadata readback, and all 50 screenshot registrations passed. Hosted CI could not start because of the owner's billing/account restriction; it is not a passing check. No new physical-device VoiceOver, Home Screen hosting, Lock Screen, or StandBy check is claimed. Approval and public availability are not yet confirmed; see the [0.2.0 release record](../releases/0.2.0.md).
 
