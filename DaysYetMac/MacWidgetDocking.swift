@@ -258,10 +258,12 @@ enum MacWidgetDragGeometry {
 enum MacWidgetDragMotion {
     static let lift: TimeInterval = 0.28
     static let collect: TimeInterval = 0.16
-    static let attach: TimeInterval = 0.20
-    static let travel: TimeInterval = 0.34
-    static let unfold: TimeInterval = 0.28
-    static let landingPause: Duration = .milliseconds(55)
+    // Give edge arrival and unfolding time to read as separate steps while
+    // keeping pickup, pull-away, and pointer following responsive.
+    static let attach: TimeInterval = 0.40
+    static let travel: TimeInterval = 0.68
+    static let unfold: TimeInterval = 0.56
+    static let landingPause: Duration = .milliseconds(110)
     static let followResponse: TimeInterval = 0.045
 }
 

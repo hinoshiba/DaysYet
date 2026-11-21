@@ -1472,7 +1472,9 @@ final class MacWidgetController: ObservableObject {
                 guard await self.animateDrag(to: collected, duration: MacWidgetDragMotion.collect) else { return }
             }
             self.dragWidgetImage = destinationImage
-            guard await self.animateDrag(to: destination, duration: MacWidgetDragMotion.travel, spring: true) else { return }
+            // Ease across the full travel time; a spring reaches the edge in
+            // its first few frames even when its total duration is extended.
+            guard await self.animateDrag(to: destination, duration: MacWidgetDragMotion.travel) else { return }
             try? await Task.sleep(for: MacWidgetDragMotion.landingPause)
             var opened = destination
             opened.coalescence = 0
