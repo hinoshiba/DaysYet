@@ -100,6 +100,146 @@ final class MacWidgetDockingTests: XCTestCase {
         }
     }
 
+    func testEveryEdgeCanLandOnAnotherDisplayInEitherDirection() throws {
+        let primaryFrame = NSRect(x: 0, y: 0, width: 1512, height: 982)
+        let secondaryFrames = [
+            NSRect(x: -1920, y: 120, width: 1920, height: 1080),
+            NSRect(x: 1512, y: -120, width: 1920, height: 1080),
+            NSRect(x: -180, y: 982, width: 1920, height: 1080),
+            NSRect(x: 180, y: -1080, width: 1920, height: 1080)
+        ]
+        for secondaryFrame in secondaryFrames {
+            let primary = dragDisplay(id: "primary", frame: primaryFrame, notch: 32)
+            let secondary = dragDisplay(id: "secondary", frame: secondaryFrame)
+            for (source, destination) in [(primary, secondary), (secondary, primary)] {
+                let frame = source.docking.frame(edge: .right, position: 0.3)
+                let anchor = NSPoint(x: frame.midX, y: frame.midY)
+                let bounds = destination.docking.screenFrame
+                let points: [MacWidgetEdge: NSPoint] = [
+                    .left: NSPoint(x: bounds.minX + 2, y: bounds.midY),
+                    .right: NSPoint(x: bounds.maxX - 2, y: bounds.midY),
+                    .top: NSPoint(x: bounds.midX, y: bounds.maxY - 2),
+                    .bottom: NSPoint(x: bounds.midX, y: bounds.minY + 2)
+                ]
+                for edge in MacWidgetEdge.allCases {
+                    for mouseUpOnly in [false, true] {
+                        var interaction = MacWidgetPointerInteraction()
+                        interaction.begin(at: anchor, frame: frame, bounds: source.docking.visibleFrame,
+                            position: 0.3, clickCount: 1, timestamp: 1, docking: source.docking,
+                            displays: [primary, secondary])
+                        XCTAssertEqual(interaction.displayID, source.id)
+                        let point = try XCTUnwrap(points[edge])
+                        let expected = try XCTUnwrap(destination.docking.target(at: point, previous: nil,
+                            originalFrame: frame, anchor: anchor))
+                        if !mouseUpOnly {
+                            let preview = try XCTUnwrap(interaction.update(at: point))
+                            XCTAssertTrue(preview.isDetached)
+                            XCTAssertEqual(preview.target, expected)
+                            XCTAssertEqual(interaction.displayID, destination.id)
+                            XCTAssertEqual(interaction.docking?.topInfo, destination.docking.topInfo)
+                            XCTAssertEqual(interaction.originalFrame, frame)
+                        }
+                        guard case .drag(let drop) = interaction.finish(at: point, doubleClickInterval: 0.5) else {
+                            return XCTFail("Crossing displays must also work when mouse-up supplies the first movement.")
+                        }
+                        XCTAssertEqual(drop.target, expected)
+                        XCTAssertEqual(drop.edge, edge)
+                        XCTAssertTrue(bounds.contains(drop.frame))
+                    }
+                }
+            }
+        }
+    }
+
+    func testTangentialSlideDetachesWhenItCrossesOntoAnotherDisplay() throws {
+        let source = dragDisplay(id: "source", frame: NSRect(x: 0, y: 0, width: 1512, height: 982), edge: .bottom)
+        let destination = dragDisplay(id: "destination", frame: NSRect(x: 1512, y: 0, width: 1920, height: 1080), edge: .bottom)
+        let frame = source.docking.frame(edge: .bottom, position: 0.5)
+        let anchor = NSPoint(x: frame.midX, y: frame.midY)
+        var interaction = MacWidgetPointerInteraction()
+        interaction.begin(at: anchor, frame: frame, bounds: source.docking.visibleFrame, position: 0.5,
+            clickCount: 1, timestamp: 1, docking: source.docking, displays: [source, destination])
+        XCTAssertEqual(interaction.update(at: NSPoint(x: anchor.x + 80, y: anchor.y))?.isSlidingAlongEdge, true)
+        let point = NSPoint(x: destination.docking.screenFrame.midX, y: anchor.y)
+        let preview = try XCTUnwrap(interaction.update(at: point))
+        XCTAssertTrue(preview.isDetached)
+        XCTAssertFalse(preview.isSlidingAlongEdge)
+        XCTAssertEqual(preview.target?.edge, .bottom)
+        XCTAssertEqual(interaction.displayID, destination.id)
+        XCTAssertTrue(destination.docking.screenFrame.contains(try XCTUnwrap(preview.target).frame))
+        XCTAssertEqual(preview.frame, frame.offsetBy(dx: point.x - anchor.x, dy: 0),
+                       "Changing displays must preserve the original drag anchor.")
+    }
+
+    func testDisplayGapAndDestinationCenterHaveNoLandingAndCancelRetainsSource() throws {
+        let source = dragDisplay(id: "source", frame: NSRect(x: 0, y: 0, width: 1512, height: 982))
+        let destination = dragDisplay(id: "destination", frame: NSRect(x: 1700, y: 0, width: 1920, height: 1080))
+        let frame = source.docking.frame(edge: .right, position: 0.3)
+        let anchor = NSPoint(x: frame.midX, y: frame.midY)
+        for release in [NSPoint(x: 1600, y: 500), NSPoint(x: 2660, y: 540)] {
+            var interaction = MacWidgetPointerInteraction()
+            interaction.begin(at: anchor, frame: frame, bounds: source.docking.visibleFrame, position: 0.3,
+                clickCount: 1, timestamp: 1, docking: source.docking, displays: [source, destination])
+            XCTAssertNotNil(interaction.update(at: NSPoint(x: 1710, y: 500))?.attachment)
+            let preview = try XCTUnwrap(interaction.update(at: release))
+            XCTAssertNil(preview.target)
+            XCTAssertNil(preview.attachment)
+            guard case .drag(let drop) = interaction.finish(at: release, doubleClickInterval: 0.5) else {
+                return XCTFail("Expected a canceled landing.")
+            }
+            XCTAssertNil(drop.target)
+            XCTAssertEqual(drop.frame, frame)
+            XCTAssertEqual(drop.position, 0.3)
+            XCTAssertEqual(drop.edge, .right)
+        }
+        var interaction = MacWidgetPointerInteraction()
+        interaction.begin(at: anchor, frame: frame, bounds: source.docking.visibleFrame, position: 0.3,
+            clickCount: 1, timestamp: 1, docking: source.docking, displays: [source, destination])
+        _ = interaction.update(at: NSPoint(x: 1710, y: 500))
+        interaction.cancel()
+        XCTAssertNil(interaction.displayID)
+        XCTAssertEqual(interaction.finish(at: anchor, doubleClickInterval: 0.5), .none)
+    }
+
+    func testChangingDisplaysClearsAttachmentHysteresisAndSourceDockDepth() throws {
+        let source = dragDisplay(id: "source", frame: NSRect(x: 0, y: 0, width: 1512, height: 982), edge: .left)
+        let destination = dragDisplay(id: "destination", frame: NSRect(x: 1512, y: 0, width: 1920, height: 1080), edge: .left)
+        let frame = source.docking.frame(edge: .left, position: 0.5)
+        let anchor = NSPoint(x: frame.midX, y: frame.midY)
+        var interaction = MacWidgetPointerInteraction()
+        interaction.begin(at: anchor, frame: frame, bounds: source.docking.visibleFrame, position: 0.5,
+            clickCount: 1, timestamp: 1, docking: source.docking, displays: [source, destination])
+        XCTAssertEqual(interaction.update(at: NSPoint(x: 10, y: 800))?.attachment?.edge, .left)
+        let crossing = try XCTUnwrap(interaction.update(at: NSPoint(x: 1550, y: 500)))
+        XCTAssertEqual(crossing.target?.edge, .left)
+        XCTAssertNil(crossing.attachment, "A new display must use the entry distance, not the old edge's release distance.")
+
+        var dockSource = source.docking
+        dockSource.systemDockEdge = .bottom
+        dockSource.sourceDockDepth = 140
+        var dockDestination = destination.docking
+        dockDestination.systemDockEdge = .bottom
+        interaction.begin(at: anchor, frame: frame, bounds: source.docking.visibleFrame, position: 0.5,
+            clickCount: 1, timestamp: 2, docking: dockSource, displays: [
+                MacWidgetDragDisplay(id: source.id, docking: dockSource),
+                MacWidgetDragDisplay(id: destination.id, docking: dockDestination)
+            ])
+        let otherDock = try XCTUnwrap(interaction.update(at: NSPoint(x: 2472, y: 100)))
+        XCTAssertEqual(otherDock.target?.isSystemDock, true)
+        XCTAssertNil(otherDock.attachment)
+        XCTAssertEqual(interaction.docking?.sourceDockDepth, 0)
+        let originalDock = try XCTUnwrap(interaction.update(at: NSPoint(x: 756, y: 100)))
+        XCTAssertEqual(originalDock.attachment?.isSystemDock, true)
+        XCTAssertEqual(interaction.docking?.sourceDockDepth, 140)
+    }
+
+    private func dragDisplay(id: String, frame: NSRect, edge: MacWidgetEdge = .right,
+                             notch: CGFloat = 0) -> MacWidgetDragDisplay {
+        MacWidgetDragDisplay(id: id, docking: MacWidgetDocking(edge: edge, screenFrame: frame,
+            visibleFrame: NSRect(x: frame.minX, y: frame.minY, width: frame.width, height: frame.height - 32),
+            topInfo: MacTopNotchInfo(cameraInset: notch, notchWidth: notch > 0 ? 180 : 0, centerX: frame.midX)))
+    }
+
     func testQuarterDisplayZonesScaleWithThePhysicalScreen() {
         for size in [NSSize(width: 1600, height: 1000), NSSize(width: 900, height: 1600), NSSize(width: 5120, height: 2880)] {
             let screen = NSRect(origin: NSPoint(x: -1920, y: 144), size: size)

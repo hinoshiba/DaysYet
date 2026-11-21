@@ -1,5 +1,10 @@
 import AppKit
 
+struct MacWidgetDragDisplay {
+    let id: String
+    let docking: MacWidgetDocking
+}
+
 /// Separates clicks from a captured drag without consulting windows or user defaults.
 struct MacWidgetPointerInteraction {
     struct Placement: Equatable {
@@ -27,7 +32,10 @@ struct MacWidgetPointerInteraction {
         let position: Double
         let clickCount: Int
         let timestamp: TimeInterval
-        let docking: MacWidgetDocking?
+        let sourceDocking: MacWidgetDocking?
+        let displays: [MacWidgetDragDisplay]
+        var docking: MacWidgetDocking?
+        var displayID: String?
         var crossedThreshold = false
         var detached = false
         var target: MacWidgetDropTarget?
@@ -42,18 +50,24 @@ struct MacWidgetPointerInteraction {
     var isDragging: Bool { press?.crossedThreshold == true }
     var originalFrame: NSRect? { press?.frame }
     var docking: MacWidgetDocking? { press?.docking }
+    var displayID: String? { press?.displayID }
 
     /// Quartz and AppKit share global point units, but opposite vertical axes.
     static func appKitPoint(fromQuartz point: CGPoint, primaryScreenMaxY: CGFloat) -> NSPoint {
         NSPoint(x: point.x, y: primaryScreenMaxY - point.y)
     }
 
-    /// Docking captures a complete screen; bounds alone retain single-edge
-    /// sliding. With neither available, a press can only become a click.
+    /// Display geometry is captured for the gesture, while the pointer chooses
+    /// its current display. Bounds alone retain single-edge sliding.
     mutating func begin(at point: NSPoint, frame: NSRect, bounds: NSRect?, position: Double,
-                        clickCount: Int, timestamp: TimeInterval, docking: MacWidgetDocking? = nil) {
+                        clickCount: Int, timestamp: TimeInterval, docking: MacWidgetDocking? = nil,
+                        displays: [MacWidgetDragDisplay] = []) {
+        let source = displays.first { $0.docking.screenFrame == docking?.screenFrame }
+            ?? displays.first { $0.docking.screenFrame.contains(point) }
+        let sourceDocking = docking ?? source?.docking
         press = Press(point: point, frame: frame, bounds: bounds, position: position,
-                      clickCount: clickCount, timestamp: timestamp, docking: docking)
+                      clickCount: clickCount, timestamp: timestamp, sourceDocking: sourceDocking,
+                      displays: displays, docking: sourceDocking, displayID: source?.id)
     }
 
     mutating func update(at point: NSPoint) -> Placement? {
@@ -61,6 +75,31 @@ struct MacWidgetPointerInteraction {
         let dx = point.x - press.point.x
         let dy = point.y - press.point.y
         if hypot(dx, dy) >= Self.dragThreshold { press.crossedThreshold = true }
+        let display = press.displays.first { $0.docking.screenFrame.contains(point) }
+        let hasDestination = press.displays.isEmpty || display != nil
+        if let display {
+            if display.id != press.displayID {
+                // Crossing a screen boundary releases even a tangential slide.
+                // Attachment hysteresis belongs to one display's edges only.
+                press.detached = true
+                press.isSlidingAlongEdge = false
+                press.target = nil
+                press.attachment = nil
+            }
+            var docking = display.docking
+            // Native Dock depth is measured at the original press and must not
+            // enlarge attachment zones on a different display.
+            docking.sourceDockDepth = docking.screenFrame == press.sourceDocking?.screenFrame
+                ? (press.sourceDocking?.sourceDockDepth ?? 0) : 0
+            press.docking = docking
+            press.displayID = display.id
+        } else if !hasDestination {
+            // Keep the last display for rendering across a gap, but never
+            // retain its previous landing target outside connected screens.
+            press.target = nil
+            press.attachment = nil
+            press.isSlidingAlongEdge = false
+        }
         if let docking = press.docking, press.crossedThreshold {
             let distance = hypot(dx, dy)
             let normal = docking.edge == .left || docking.edge == .right ? abs(dx) : abs(dy)
@@ -68,7 +107,7 @@ struct MacWidgetPointerInteraction {
             // Preserve the starting edge during tangential movement, even
             // near a corner or beyond a snap zone because of a Dock inset.
             // Choose the nearest physical edge only after pulling away.
-            if !press.detached, normal < MacWidgetDocking.releaseDistance,
+            if hasDestination, !press.detached, normal < MacWidgetDocking.releaseDistance,
                press.isSlidingAlongEdge || tangent > normal,
                let candidate = docking.slidingTarget(at: point, originalFrame: press.frame, anchor: press.point) {
                 press.isSlidingAlongEdge = true
@@ -81,8 +120,8 @@ struct MacWidgetPointerInteraction {
             press.isSlidingAlongEdge = false
             press.detached = press.detached || distance >= MacWidgetDocking.releaseDistance
             if press.detached {
-                press.target = docking.target(at: point, previous: press.target?.edge,
-                    originalFrame: press.frame, anchor: press.point)
+                press.target = hasDestination ? docking.target(at: point, previous: press.target?.edge,
+                    originalFrame: press.frame, anchor: press.point) : nil
                 press.attachment = docking.attachment(at: point, target: press.target, previous: press.attachment?.edge)
             }
             self.press = press
@@ -111,7 +150,8 @@ struct MacWidgetPointerInteraction {
             if let docking = press.docking {
                 let target = press.target
                 return .drag(Placement(frame: target?.frame ?? press.frame, position: target?.position ?? press.position,
-                                       edge: target?.edge ?? docking.edge, target: target, attachment: press.attachment,
+                                       edge: target?.edge ?? press.sourceDocking?.edge ?? docking.edge,
+                                       target: target, attachment: press.attachment,
                                        isSlidingAlongEdge: press.isSlidingAlongEdge))
             }
             return placement.map(Completion.drag) ?? .none

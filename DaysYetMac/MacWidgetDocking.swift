@@ -109,7 +109,7 @@ struct MacWidgetDropTarget: Equatable {
     var isSystemDock = false
 }
 
-/// Screen geometry is frozen for a press. Only a completed edge drop is saved.
+/// Each display's geometry is frozen for a press. Only a completed edge drop is saved.
 struct MacWidgetDocking {
     let edge: MacWidgetEdge
     let screenFrame: NSRect
@@ -324,9 +324,12 @@ struct MacWidgetDragOverlay: View {
     let accent: Color
     var dockLanding: MacSystemDockLandingVisual? = nil
     var dockPresentations: [MetricKind: MacSystemDockPresentation] = [:]
+    var canvasFrame: NSRect? = nil
+
+    private var screenFrame: NSRect { canvasFrame ?? docking.screenFrame }
 
     private func local(_ frame: NSRect) -> CGRect {
-        CGRect(x: frame.minX - docking.screenFrame.minX, y: docking.screenFrame.maxY - frame.maxY,
+        CGRect(x: frame.minX - screenFrame.minX, y: screenFrame.maxY - frame.maxY,
                width: frame.width, height: frame.height)
     }
 
@@ -364,7 +367,7 @@ struct MacWidgetDragOverlay: View {
             .offset(x: circle.minX, y: circle.minY)
             }
         }
-        .frame(width: docking.screenFrame.width, height: docking.screenFrame.height, alignment: .topLeading)
+        .frame(width: screenFrame.width, height: screenFrame.height, alignment: .topLeading)
         .allowsHitTesting(false)
         .accessibilityHidden(true)
     }

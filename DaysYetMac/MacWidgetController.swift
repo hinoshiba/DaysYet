@@ -115,8 +115,12 @@ final class MacWidgetController: ObservableObject {
     private var localPointerMonitor: Any?
     private var animationPointerTimer: Timer?
     private var pointerInteraction = MacWidgetPointerInteraction()
-    private var dragOverlay: MacWidgetPanel?
-    private var dragOverlayHost: NSHostingView<MacWidgetDragOverlay>?
+    private struct DragOverlay {
+        let window: MacWidgetPanel
+        let host: NSHostingView<MacWidgetDragOverlay>
+    }
+    private var dragOverlays: [DragOverlay] = []
+    private var dragDisplayFrames: [NSRect] = []
     private var settleTask: Task<Void, Never>?
     private var collapseTask: Task<Void, Never>?
     private var attachmentTask: Task<Void, Never>?
@@ -125,6 +129,7 @@ final class MacWidgetController: ObservableObject {
     private var dragPreviewEdge: MacWidgetEdge?
     private var dragPreviewImages: [MacWidgetEdge: NSImage] = [:]
     private var dragDocking: MacWidgetDocking?
+    private var dragSourceDocking: MacWidgetDocking?
     private var dragWidgetImage: NSImage?
     private var dockLandingPresentations: [MetricKind: MacSystemDockPresentation] = [:]
     private let landingLog = Logger(subsystem: "com.hinoshiba.daysyet", category: "dock-landing")
@@ -317,6 +322,10 @@ final class MacWidgetController: ObservableObject {
         return MacWidgetDocking(edge: edge, screenFrame: screen.frame, visibleFrame: screen.visibleFrame,
             topInfo: info, scale: preferences.scale, metricCount: store.profile.macDashboardMetrics.count,
             detailScale: preferences.detailScale, systemDockEdge: dockEdge)
+    }
+
+    private func dragDisplays(edge: MacWidgetEdge) -> [MacWidgetDragDisplay] {
+        NSScreen.screens.map { MacWidgetDragDisplay(id: displayID(for: $0), docking: docking(on: $0, edge: edge)) }
     }
 
     func metricHoverChanged(_ metric: MetricKind, hovering: Bool) {
@@ -774,8 +783,8 @@ final class MacWidgetController: ObservableObject {
             beginPointerPress(at: pointer, frame: currentFrame,
                 bounds: selectedScreen?.visibleFrame,
                 clickCount: event.clickCount, timestamp: event.timestamp,
-                docking: selectedScreen.map { docking(on: $0, edge: preferences.edge) })
-            dragDisplayID = selectedScreen.map { displayID(for: $0) }
+                docking: selectedScreen.map { docking(on: $0, edge: preferences.edge) },
+                displays: dragDisplays(edge: preferences.edge))
             panel.ignoresMouseEvents = false
             return true
         case .leftMouseDragged:
@@ -823,8 +832,8 @@ final class MacWidgetController: ObservableObject {
             guard let index = layout.index(at: local) else { return false }
             beginPointerPress(at: point, frame: window.frame, bounds: screen.visibleFrame,
                 clickCount: event.clickCount, timestamp: event.timestamp,
-                docking: docking(on: screen, edge: dockGroupEdge), dockGroupIndex: index)
-            dragDisplayID = displayID(for: screen)
+                docking: docking(on: screen, edge: dockGroupEdge), dockGroupIndex: index,
+                displays: dragDisplays(edge: dockGroupEdge))
             return true
         case .leftMouseDragged:
             guard pointerInteraction.isPressed else { return false }
@@ -842,10 +851,22 @@ final class MacWidgetController: ObservableObject {
 
     func beginPointerPress(at point: NSPoint, frame: NSRect, bounds: NSRect?,
                            clickCount: Int, timestamp: TimeInterval, docking: MacWidgetDocking? = nil,
-                           dockGroupIndex: Int? = nil, nativeDockMetric: MetricKind? = nil) {
+                           dockGroupIndex: Int? = nil, nativeDockMetric: MetricKind? = nil,
+                           displays: [MacWidgetDragDisplay] = []) {
         var docking = docking
         if !preferences.supportsSystemDock { docking?.systemDockEdge = nil }
+        let displays = displays.map { display in
+            var geometry = display.docking
+            if !preferences.supportsSystemDock { geometry.systemDockEdge = nil }
+            return MacWidgetDragDisplay(id: display.id, docking: geometry)
+        }
         clearDragPresentation()
+        // Keep one canvas per display so Spaces and display clipping cannot
+        // hide the carried circle when it crosses a screen boundary.
+        for frame in displays.map({ $0.docking.screenFrame }) + (docking.map { [$0.screenFrame] } ?? []) {
+            if !dragDisplayFrames.contains(frame) { dragDisplayFrames.append(frame) }
+        }
+        dragSourceDocking = docking
         captureDragOrigin(at: point, frame: frame, docking: docking, dockGroupIndex: dockGroupIndex, nativeDockMetric: nativeDockMetric)
         closeTask?.cancel()
         intentTask?.cancel()
@@ -858,7 +879,8 @@ final class MacWidgetController: ObservableObject {
         magnificationTask?.cancel()
         pointerInteraction.begin(at: point, frame: frame, bounds: bounds,
             position: preferences.edge == .bottom ? preferences.horizontalPosition : preferences.verticalPosition,
-            clickCount: clickCount, timestamp: timestamp, docking: docking)
+            clickCount: clickCount, timestamp: timestamp, docking: docking, displays: displays)
+        dragDisplayID = pointerInteraction.displayID
     }
 
     /// A real mouse sequence owned by our transparent input panel over a Dock
@@ -875,13 +897,29 @@ final class MacWidgetController: ObservableObject {
         var geometry = docking(on: screen, edge: edge)
         geometry.sourceDockDepth = geometry.distance(to: edge, from: point)
         beginPointerPress(at: point, frame: frame, bounds: screen.visibleFrame, clickCount: clickCount,
-            timestamp: timestamp, docking: geometry, nativeDockMetric: metric)
+            timestamp: timestamp, docking: geometry, nativeDockMetric: metric,
+            displays: dragDisplays(edge: edge))
         nativeDockInputPanel = inputPanel
-        dragDisplayID = displayID(for: screen)
     }
 
     func updatePointerPress(at point: NSPoint) -> MacWidgetPointerInteraction.Placement? {
         var placement = pointerInteraction.update(at: point)
+        if let docking = pointerInteraction.docking {
+            if docking.screenFrame != dragDocking?.screenFrame {
+                // A matching edge on another display can have a different
+                // notch, Dock inset and size. Discard its old preview too.
+                stopFollowingDrag()
+                collapseTask?.cancel()
+                collapseTask = nil
+                attachmentTask?.cancel()
+                attachmentTask = nil
+                dragAttachment = nil
+                dragPreviewEdge = nil
+                dragPreviewImages = [:]
+            }
+            dragDocking = docking
+            dragDisplayID = pointerInteraction.displayID
+        }
         if placement?.attachment?.isSystemDock == true, !preferences.canUseSystemDock {
             // Keep the moving circle collected; a blocked edge must not preview
             // a Dock insertion that cannot be committed on release.
@@ -1217,16 +1255,18 @@ final class MacWidgetController: ObservableObject {
 
     private func refreshDragOverlay() {
         guard panel != nil, let docking = dragDocking, let visual = dragVisual, let snapshot = dragMetricSnapshot else { return }
-        let view = MacWidgetDragOverlay(docking: docking,
-            visual: visual, widgetImage: dragWidgetImage, snapshot: snapshot, accent: dragAccent,
-            dockLanding: dockLandingVisual, dockPresentations: dockLandingPresentations)
-        if let host = dragOverlayHost {
-            host.rootView = view
-        } else {
-            let overlay = MacWidgetPanel(contentRect: docking.screenFrame, styleMask: [.borderless, .nonactivatingPanel],
+        for frame in dragDisplayFrames {
+            let view = MacWidgetDragOverlay(docking: docking,
+                visual: visual, widgetImage: dragWidgetImage, snapshot: snapshot, accent: dragAccent,
+                dockLanding: dockLandingVisual, dockPresentations: dockLandingPresentations, canvasFrame: frame)
+            if let overlay = dragOverlays.first(where: { $0.window.frame == frame }) {
+                overlay.host.rootView = view
+                continue
+            }
+            let overlay = MacWidgetPanel(contentRect: frame, styleMask: [.borderless, .nonactivatingPanel],
                                          backing: .buffered, defer: false)
             overlay.attachesToPhysicalEdge = true
-            overlay.setFrame(docking.screenFrame, display: false)
+            overlay.setFrame(frame, display: false)
             overlay.isOpaque = false
             overlay.backgroundColor = .clear
             overlay.hasShadow = false
@@ -1239,8 +1279,7 @@ final class MacWidgetController: ObservableObject {
             overlay.isReleasedWhenClosed = false
             let host = NSHostingView(rootView: view)
             overlay.contentView = host
-            dragOverlay = overlay
-            dragOverlayHost = host
+            dragOverlays.append(DragOverlay(window: overlay, host: host))
             overlay.orderFrontRegardless()
         }
     }
@@ -1255,19 +1294,19 @@ final class MacWidgetController: ObservableObject {
     }
 
     private func recordDockLanding(_ phase: String) {
-        let visible = dragOverlay?.isVisible ?? false
-        let alpha = dragOverlay?.alphaValue ?? 0
+        let visible = dragOverlays.contains { $0.window.isVisible }
+        let alpha = dragOverlays.map { $0.window.alphaValue }.max() ?? 0
         let count = dockLandingPresentations.count
         let activeOpacity = dragOrigin.flatMap { dockLandingVisual?.tiles[$0.metric]?.opacity } ?? -1
         landingLog.notice("phase=\(phase, privacy: .public) windowVisible=\(visible) windowAlpha=\(alpha) circles=\(count) carriedOpacity=\(activeOpacity) appActive=\(NSApp.isActive)")
     }
 
     private func hideDragSourceAfterDrawingOverlay() {
-        guard let overlay = dragOverlay, let source = eventOwningPanel?.contentView,
+        guard !dragOverlays.isEmpty, let source = eventOwningPanel?.contentView,
               source.alphaValue > 0 else { return }
         // The fullscreen hosting view may not have drawn its first frame yet.
         // Keep the real widget visible until its moving replacement is ready.
-        drawWindowNow(overlay)
+        for overlay in dragOverlays { drawWindowNow(overlay.window) }
         source.alphaValue = 0
     }
 
@@ -1316,6 +1355,8 @@ final class MacWidgetController: ObservableObject {
         dragPreviewEdge = nil
         dragPreviewImages = [:]
         dragDocking = nil
+        dragSourceDocking = nil
+        dragDisplayFrames = []
         dragWidgetImage = nil
         dragMetricSnapshot = nil
         dragDisplayID = nil
@@ -1323,9 +1364,8 @@ final class MacWidgetController: ObservableObject {
         dockGroupPanel?.contentView?.alphaValue = 1
         nativeDockInputPanel?.contentView?.alphaValue = 1
         nativeDockInputPanel = nil
-        dragOverlay?.orderOut(nil)
-        dragOverlay = nil
-        dragOverlayHost = nil
+        for overlay in dragOverlays { overlay.window.orderOut(nil) }
+        dragOverlays = []
         if hasDragCursor {
             NSCursor.pop()
             hasDragCursor = false
@@ -1359,6 +1399,11 @@ final class MacWidgetController: ObservableObject {
         attachmentTask?.cancel()
         attachmentTask = nil
         settleTask?.cancel()
+        if placement?.target == nil {
+            // Escape and center releases return using the source display's
+            // geometry, including a native Dock's original inset.
+            dragDocking = dragSourceDocking
+        }
         let origin = dragOrigin
         if placement?.target?.isSystemDock == true, origin != nil, !isDockLanding {
             isDockLanding = true
@@ -1549,7 +1594,7 @@ final class MacWidgetController: ObservableObject {
         })
         dockLandingVisual = initial
         refreshDragOverlay()
-        if let overlay = dragOverlay { drawWindowNow(overlay) }
+        for overlay in dragOverlays { drawWindowNow(overlay.window) }
         recordDockLanding("prepared")
         let dropPoint = dragPresentation?.pointer ?? origin.pointer
         settleTask = Task { [weak self] in
