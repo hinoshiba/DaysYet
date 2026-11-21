@@ -29,8 +29,8 @@ targetTemplates:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.hinoshiba.daysyet.dock.${metric}
         PRODUCT_MODULE_NAME: DaysYetDock_${metric}
-        MARKETING_VERSION: "0.2.1"
-        CURRENT_PROJECT_VERSION: "14"
+        MARKETING_VERSION: "0.2.2"
+        CURRENT_PROJECT_VERSION: "15"
         GENERATE_INFOPLIST_FILE: YES
         INFOPLIST_KEY_CFBundleDisplayName: DaysYet · ${metric_title}
         INFOPLIST_KEY_LSUIElement: YES
@@ -196,8 +196,8 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.hinoshiba.daysyet
-        MARKETING_VERSION: "0.2.1"
-        CURRENT_PROJECT_VERSION: "14"
+        MARKETING_VERSION: "0.2.2"
+        CURRENT_PROJECT_VERSION: "15"
         PRODUCT_NAME: DaysYet
         PRODUCT_MODULE_NAME: DaysYetMac
         GENERATE_INFOPLIST_FILE: NO
@@ -277,8 +277,8 @@ targets:
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.hinoshiba.daysyet.mac.tests
-        MARKETING_VERSION: "0.2.1"
-        CURRENT_PROJECT_VERSION: "14"
+        MARKETING_VERSION: "0.2.2"
+        CURRENT_PROJECT_VERSION: "15"
         GENERATE_INFOPLIST_FILE: YES
         CODE_SIGNING_ALLOWED: NO
 

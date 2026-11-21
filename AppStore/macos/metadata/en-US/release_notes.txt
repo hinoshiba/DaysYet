@@ -1,5 +1,3 @@
-• Choose any of the four screen edges. The widget stays clear of the macOS Dock, with improved placement when the Dock is on the left, right, or hidden.
-• Smoother dragging, gathering, and unfolding animations, with more stable movement along an edge.
-• Clearer settings guidance for screen-edge widgets in the App Store version.
-• Renamed Milestone to Target date for clearer date-based countdowns.
+• Fixed dragging widgets between displays, including saving the destination display and restoring the original placement when canceled.
+• Slower, smoother edge attachment and unfolding make widget movement easier to follow.
 • Existing dates, schedules, colors, and display preferences are preserved.
