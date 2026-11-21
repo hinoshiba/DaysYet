@@ -141,6 +141,41 @@ final class MacWidgetDragMorphTests: XCTestCase {
     }
 
     @MainActor
+    func testCarriedCircleRendersInEachDisplaysOwnCanvas() throws {
+        try withController { controller, _ in
+            let sourceFrame = NSRect(x: 0, y: 0, width: 480, height: 320)
+            let docking = MacWidgetDocking(edge: .right, screenFrame: sourceFrame, visibleFrame: sourceFrame)
+            let widget = docking.frame(edge: .right, position: 0.5)
+            let focus = MacWidgetDragGeometry.focusFrame(in: widget, edge: .right, index: 1,
+                scale: 1, metricCount: 3, topInfo: docking.topInfo)
+            let metric = controller.activeMetrics[1]
+            let snapshot = TimeProgressCalculator.snapshot(for: metric, profile: controller.store.profile)
+            for canvas in [NSRect(x: -480, y: 120, width: 480, height: 320),
+                           NSRect(x: 480, y: -320, width: 480, height: 320),
+                           NSRect(x: 0, y: 320, width: 480, height: 320)] {
+                let center = NSPoint(x: canvas.minX + 180, y: canvas.minY + 100)
+                let visual = MacWidgetDragVisual(widgetFrame: widget, focusFrame: focus,
+                    circleFrame: MacWidgetDragGeometry.circleFrame(center: center, scale: 1), coalescence: 1)
+                for scale in [CGFloat(1), 2] {
+                    let renderer = ImageRenderer(content: MacWidgetDragOverlay(docking: docking,
+                        visual: visual, widgetImage: nil, snapshot: snapshot,
+                        accent: MacWidgetStyle.accent(for: metric, theme: .vividNight), canvasFrame: canvas))
+                    renderer.scale = scale
+                    let image = try XCTUnwrap(renderer.cgImage)
+                    let bitmap = NSBitmapImageRep(cgImage: image)
+                    XCTAssertEqual(bitmap.pixelsWide, Int(canvas.width * scale))
+                    XCTAssertEqual(bitmap.pixelsHigh, Int(canvas.height * scale))
+                    let x = Int((center.x - canvas.minX) * scale)
+                    let y = Int((canvas.maxY - center.y) * scale)
+                    XCTAssertGreaterThan(try XCTUnwrap(bitmap.colorAt(x: x, y: y)).alphaComponent, 0.9,
+                        "Global coordinates must be converted using the overlay's display, including negative origins.")
+                    XCTAssertLessThan(try XCTUnwrap(bitmap.colorAt(x: 10, y: 10)).alphaComponent, 0.01)
+                }
+            }
+        }
+    }
+
+    @MainActor
     private func withController(_ body: (MacWidgetController, MacWidgetPreferences) throws -> Void) throws {
         let suite = "com.hinoshiba.daysyet.drag-morph.tests.\(UUID().uuidString)"
         let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))

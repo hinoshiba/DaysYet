@@ -269,8 +269,8 @@ struct MacSettingsView: View {
                     .foregroundStyle(.secondary)
             }
             Text(L10n.text(
-                "端から約1/4が吸着エリアで、角では近い辺を選びます。丸を画面の縁に近づけると、触れる少し手前で吸着して展開します。引き離すと丸に戻り、離すと位置を保存。中央で離すかEscで元に戻ります。",
-                "Each outer quarter is a drop zone; corners use the nearer edge. Bring the circle near the screen edge to snap and unfold just before contact. Pull away to collect it again. Release to save; release in the center or press Esc to return."
+                "別のディスプレイへもドラッグで移動できます。各画面の端から約1/4が吸着エリアで、角では近い辺を選びます。丸を画面の縁に近づけると、触れる少し手前で吸着して展開します。引き離すと丸に戻り、離すと画面と位置を保存。中央で離すかEscで元の画面と位置に戻ります。",
+                "Drag to another display to move there. Each display’s outer quarter is a drop zone; corners use the nearer edge. Bring the circle near an edge to snap and unfold. Pull away to collect it again. Release to save the display and position; release in the center or press Esc to return to the original display and position."
             ))
             .font(.caption)
             .foregroundStyle(.secondary)

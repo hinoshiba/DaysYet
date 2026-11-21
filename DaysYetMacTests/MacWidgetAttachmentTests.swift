@@ -8,6 +8,100 @@ final class MacWidgetAttachmentTests: XCTestCase {
     private var visible: NSRect { NSRect(x: -1600, y: 200, width: 1600, height: 888) }
 
     @MainActor
+    func testCrossDisplayDropSavesDestinationAndSurvivesReload() throws {
+        let suite = "com.hinoshiba.daysyet.display-drop.tests.\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        let preferences = MacWidgetPreferences(defaults: defaults, supportsSystemDock: false)
+        preferences.edge = .right
+        preferences.displayID = "source"
+        preferences.verticalPosition = 0.24
+        preferences.horizontalPosition = 0.72
+        let controller = MacWidgetController(store: ProfileStore(profile: .initial, saveProfile: { _ in }),
+            preferences: preferences, reducesMotion: { true })
+        let source = MacWidgetDocking(edge: .right, screenFrame: screen, visibleFrame: visible)
+        let destinationFrame = NSRect(x: 0, y: 0, width: 1920, height: 1080)
+        let destination = MacWidgetDocking(edge: .right, screenFrame: destinationFrame, visibleFrame: destinationFrame)
+        begin(controller, source: source, destination: destination)
+        // Mouse-up may be the first input delivered on the other display.
+        let point = NSPoint(x: destinationFrame.midX + 200, y: destinationFrame.minY + 8)
+        guard case .drag(let placement) = controller.finishPointerPress(at: point, doubleClickInterval: 0.5) else {
+            return XCTFail("Expected a cross-display drop")
+        }
+        let target = try XCTUnwrap(placement.target)
+        XCTAssertEqual(target.edge, .bottom)
+        XCTAssertTrue(destinationFrame.contains(target.frame))
+        XCTAssertEqual(preferences.displayID, "source", "A preview must not change the saved display.")
+        controller.saveDrop(placement)
+        let reloaded = MacWidgetPreferences(defaults: defaults, supportsSystemDock: false)
+        XCTAssertEqual(reloaded.displayID, "destination")
+        XCTAssertEqual(reloaded.edge, .bottom)
+        XCTAssertEqual(reloaded.horizontalPosition, target.position)
+        XCTAssertEqual(reloaded.verticalPosition, 0.24)
+        controller.closeDetails()
+    }
+
+    @MainActor
+    func testCrossDisplayCenterReleaseAndEscapePreserveSourcePlacement() async throws {
+        for escape in [false, true] {
+            try await withController { controller, preferences in
+                preferences.displayID = "source"
+                let source = MacWidgetDocking(edge: .right, screenFrame: screen, visibleFrame: visible)
+                let destinationFrame = NSRect(x: 0, y: -1080, width: 1920, height: 1080)
+                let destination = MacWidgetDocking(edge: .right, screenFrame: destinationFrame, visibleFrame: destinationFrame)
+                begin(controller, source: source, destination: destination)
+                _ = controller.updatePointerPress(at: NSPoint(x: destinationFrame.midX, y: destinationFrame.minY + 8))
+                XCTAssertEqual(controller.dragAttachment?.edge, .bottom)
+                XCTAssertEqual(preferences.displayID, "source")
+                if escape {
+                    controller.closeDetails()
+                } else {
+                    let center = NSPoint(x: destinationFrame.midX, y: destinationFrame.midY)
+                    guard case .drag(let placement) = controller.finishPointerPress(at: center, doubleClickInterval: 0.5) else {
+                        return XCTFail("Expected a completed drag")
+                    }
+                    XCTAssertNil(placement.target)
+                    controller.settleDrop(placement)
+                }
+                XCTAssertEqual(preferences.displayID, "source")
+                XCTAssertEqual(preferences.edge, .right)
+                XCTAssertEqual(preferences.verticalPosition, 0.24)
+                XCTAssertEqual(preferences.horizontalPosition, 0.72)
+                XCTAssertNil(controller.dragVisual)
+            }
+        }
+    }
+
+    @MainActor
+    func testSameEdgePreviewUsesEachDisplaysNotchWhenCrossingAndReturning() async throws {
+        try await withController { controller, preferences in
+            preferences.displayID = "source"
+            let source = MacWidgetDocking(edge: .right, screenFrame: screen, visibleFrame: visible,
+                topInfo: MacTopNotchInfo(cameraInset: 32, notchWidth: 180, centerX: screen.midX))
+            let destinationFrame = NSRect(x: 0, y: 240, width: 1920, height: 1080)
+            let destination = MacWidgetDocking(edge: .right, screenFrame: destinationFrame, visibleFrame: destinationFrame,
+                topInfo: MacTopNotchInfo(cameraInset: 0, notchWidth: 320, centerX: destinationFrame.midX))
+            begin(controller, source: source, destination: destination)
+            for geometry in [source, destination, source] {
+                let point = NSPoint(x: geometry.screenFrame.midX, y: geometry.screenFrame.maxY - 4)
+                let placement = try XCTUnwrap(controller.updatePointerPress(at: point))
+                let target = try XCTUnwrap(placement.attachment)
+                XCTAssertEqual(target.edge, .top)
+                let visual = try XCTUnwrap(controller.dragVisual)
+                XCTAssertEqual(visual.coalescence, 0)
+                XCTAssertEqual(visual.widgetFrame, geometry.frame(edge: .top, position: target.position))
+                let metric = try XCTUnwrap(controller.dragOrigin?.metric)
+                let index = try XCTUnwrap(controller.store.profile.macWidgetMetrics(for: .top).firstIndex(of: metric))
+                let expectedFocus = MacWidgetDragGeometry.focusFrame(in: target.frame, edge: .top, index: index,
+                    scale: 1, metricCount: 3, topInfo: geometry.topInfo)
+                XCTAssertEqual(visual.focusFrame, expectedFocus)
+                XCTAssertEqual(preferences.displayID, "source")
+            }
+            controller.closeDetails()
+        }
+    }
+
+    @MainActor
     func testVisualLagDoesNotDelayTheDrop() async throws {
         try await withController(reducesMotion: false) { controller, preferences in
             begin(controller)
@@ -297,6 +391,15 @@ final class MacWidgetAttachmentTests: XCTestCase {
             XCTAssertEqual(controller.dragAttachment?.edge, .top)
             controller.closeDetails()
         }
+    }
+
+    @MainActor
+    private func begin(_ controller: MacWidgetController, source: MacWidgetDocking, destination: MacWidgetDocking) {
+        let frame = source.frame(edge: .right, position: 0.24)
+        controller.beginPointerPress(at: NSPoint(x: frame.midX, y: frame.midY), frame: frame,
+            bounds: source.visibleFrame, clickCount: 1, timestamp: 1, docking: source,
+            displays: [MacWidgetDragDisplay(id: "source", docking: source),
+                       MacWidgetDragDisplay(id: "destination", docking: destination)])
     }
 
     @MainActor
