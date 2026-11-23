@@ -322,7 +322,7 @@ final class MacWidgetDragMorphTests: XCTestCase {
                     let reveal = MacWidgetAttachmentReveal(edge: edge, focusFrame: focus, progress: progress,
                         finalSurface: finalSurface)
                     let outline = reveal.path(in: bounds)
-                    if progress == 0.1 {
+                    if progress <= 0.85 {
                         let vertical = edge == .left || edge == .right
                         let length = vertical ? bounds.height : bounds.width
                         let contact = stride(from: CGFloat(0.5), to: length, by: 0.5).filter { along in
@@ -335,10 +335,14 @@ final class MacWidgetDragMorphTests: XCTestCase {
                             }
                             return outline.contains(point)
                         }
-                        let contactSpan = try XCTUnwrap(contact.last) - XCTUnwrap(contact.first)
-                        let bodySpan = vertical ? outline.boundingRect.height : outline.boundingRect.width
-                        XCTAssertLessThan(contactSpan, bodySpan * 0.85,
-                            "Wetting contact must lag the rounded outer lobe, forming a concave meniscus rather than a uniform zoom.")
+                        let bodyLower = vertical ? outline.boundingRect.minY : outline.boundingRect.minX
+                        let bodyUpper = vertical ? outline.boundingRect.maxY : outline.boundingRect.maxX
+                        let contactLower = try XCTUnwrap(contact.first)
+                        let contactUpper = try XCTUnwrap(contact.last)
+                        let freeTipOverhang = max(contactLower - bodyLower, bodyUpper - contactUpper)
+                        let focusDiameter = vertical ? focus.height : focus.width
+                        XCTAssertLessThanOrEqual(freeTipOverhang, focusDiameter / 4,
+                            "The rounded tips must spread close to the wall contact instead of forming long free hooks.")
                         assertConnectedSurface(outline)
                     }
                     var visual = fixture.arrived

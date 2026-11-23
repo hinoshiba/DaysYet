@@ -526,12 +526,18 @@ struct MacWidgetAttachmentReveal: Shape {
             let p = min(max(value, 0), 1)
             return p * p * (3 - 2 * p)
         }
-        let bodyTravel = eased(phase / 0.72)
+        // A broad wetting front travels along the wall. Keeping contact close
+        // behind the body prevents the shoulders from stretching into horns.
+        let bodyTravel = eased(phase / 0.76)
         let recoilPhase = min(max((phase - 0.45) / 0.55, 0), 1)
-        let bodyRecoil = 0.055 * pow(sin(.pi * recoilPhase), 2)
-        let contactTravel = eased(phase / 0.92)
+        let recoil = pow(sin(.pi * recoilPhase), 2)
+        let bodyRecoil = 0.035 * recoil
+        let contactRecoil = 0.028 * recoil
+        let contactTravel = eased(phase / 0.80)
+        // Arrive on a small contact patch, then wet the wall as the drop spreads.
+        let contactSeedScale = 0.27 + (0.65 - 0.27) * eased(phase / 0.20)
         let energy = pow(sin(.pi * phase), 2)
-        let compression = 1 - 0.10 * energy + 0.055 * sin(3 * .pi * phase) * energy
+        let compression = 1 - 0.035 * energy + 0.020 * sin(3 * .pi * phase) * energy
         func deform(_ point: CGPoint) -> CGPoint {
             let u = vertical ? point.y : point.x
             let depth: CGFloat
@@ -543,13 +549,15 @@ struct MacWidgetAttachmentReveal: Shape {
             }
             let span = max(u < focusU ? focusU - lower : upper - focusU, 1)
             let seed = min(seedHalf / span, 1)
-            let contactSeed = min(seedHalf * 0.27 / span, 1)
+            let contactSeed = min(seedHalf * contactSeedScale / span, 1)
             let body = seed + (1 - seed) * bodyTravel + bodyRecoil
-            let contact = contactSeed + (1 - contactSeed) * contactTravel
+            let contact = contactSeed + (1 - contactSeed) * contactTravel + contactRecoil
             let spread = contact + (body - contact) * eased(depth / depthLimit)
             let q = abs(u - focusU) / span
-            let lobe = 0.18 * exp(-pow((q - 0.73) / 0.17, 2))
-            let neck = 0.10 * exp(-pow((q - 0.43) / 0.16, 2))
+            // Distribute tension over a rounded shoulder instead of a narrow
+            // bulge followed by a deep notch. The core remains fixed below.
+            let lobe = 0.085 * exp(-pow((q - 0.64) / 0.36, 2))
+            let neck = 0.018 * exp(-pow((q - 0.26) / 0.32, 2))
             let newU = focusU + (u - focusU) * spread
             var newDepth = max(depth * (compression + (lobe - neck) * energy), 0)
             if edge != .top {
