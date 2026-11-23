@@ -1,5 +1,7 @@
 # Native Mac screenshots
 
+The 0.2.3 (16) candidate reuses these fourteen screenshots because the static settings and widget layouts are unchanged. No new 0.2.3 screenshot capture is claimed. Hash, dimensions, and RGB/no-alpha checks passed during preparation; candidate visual confirmation and App Store Connect registration/readback remain separate steps. See the [0.2.3 release record](../../releases/0.2.3-macos.md).
+
 The Japanese and English folders contain seven screenshots each. The two widget-settings images were refreshed on 2026-11-21 from macOS 0.2.2 (15), with the default App Store feature flags and synthetic data. They show all four screen edges, placement clear of the Dock, and the updated cross-display movement and cancellation guidance. The other twelve images from 0.2.0 (13) depict unchanged functionality and are retained. See the [0.2.2 release record](../../releases/0.2.2-macos.md) for submission status.
 
 | File | Current app content |
