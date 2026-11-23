@@ -196,9 +196,11 @@ final class MacWidgetHandoffTests: XCTestCase {
         try await withWindow(reducesMotion: false, supportsSystemDock: false) { controller, window, _ in
             let (point, overlay, overlayHost) = try await beginPartialUnfold(controller, window: window)
             let partial = try XCTUnwrap(controller.dragVisual)
-            let frame = partial.imageFrame
+            let frame = partial.renderedFrame
             let screen = try XCTUnwrap(NSScreen.screens.first)
+            XCTAssertEqual(overlayHost.rootView.visual, partial)
             let before = try render(overlayHost.rootView, in: frame, scale: screen.backingScaleFactor)
+            XCTAssertEqual(controller.dragVisual, partial)
             let center = NSPoint(x: screen.frame.midX, y: point.y)
             let detached = try XCTUnwrap(controller.updatePointerPress(at: center))
             XCTAssertNil(detached.attachment)
@@ -212,7 +214,10 @@ final class MacWidgetHandoffTests: XCTestCase {
             XCTAssertTrue(collecting)
             let frozen = try XCTUnwrap(overlayHost.rootView.widgetImage)
             let frozenImage = try XCTUnwrap(frozen.cgImage(forProposedRect: nil, context: nil, hints: nil))
-            let after = NSBitmapImageRep(cgImage: frozenImage)
+            // NSImage may use the display's profile while ImageRenderer uses
+            // sRGB. Normalize the bitmaps before comparing component values.
+            let after = try XCTUnwrap(NSBitmapImageRep(cgImage: frozenImage)
+                .converting(to: .sRGB, renderingIntent: .relativeColorimetric))
             XCTAssertEqual(after.pixelsWide, before.pixelsWide)
             XCTAssertEqual(after.pixelsHigh, before.pixelsHigh)
             var maximumDifference: CGFloat = 0
@@ -340,7 +345,8 @@ final class MacWidgetHandoffTests: XCTestCase {
         preview.canvasFrame = frame
         let renderer = ImageRenderer(content: preview)
         renderer.scale = scale
-        return NSBitmapImageRep(cgImage: try XCTUnwrap(renderer.cgImage))
+        return try XCTUnwrap(NSBitmapImageRep(cgImage: try XCTUnwrap(renderer.cgImage))
+            .converting(to: .sRGB, renderingIntent: .relativeColorimetric))
     }
 
     @MainActor

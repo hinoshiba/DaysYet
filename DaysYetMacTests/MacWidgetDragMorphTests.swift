@@ -206,10 +206,11 @@ final class MacWidgetDragMorphTests: XCTestCase {
                         // 8-bit levels even when no focus pixels are clipped.
                         XCTAssertLessThanOrEqual(difference, 2.0 / 255,
                             "The grabbed ring/segment must remain one fixed-size rendering: \(edge), scale \(scale), progress \(progress).")
-                        // Fractional widget coordinates antialias the final wall
-                        // too; contact must match that same destination pixel.
-                        XCTAssertEqual(try XCTUnwrap(frame.colorAt(x: wallX, y: wallY)).alphaComponent,
-                            finishedWallAlpha, accuracy: 2.0 / 255,
+                        // The vector surface can cover more of a fractional
+                        // boundary pixel than the resampled final snapshot,
+                        // but it must never open a gap at the contact point.
+                        XCTAssertGreaterThanOrEqual(try XCTUnwrap(frame.colorAt(x: wallX, y: wallY)).alphaComponent,
+                            finishedWallAlpha - 2.0 / 255,
                             "The material must touch the wall throughout unfolding: \(edge), scale \(scale), progress \(progress).")
                     }
                 }
@@ -281,7 +282,8 @@ final class MacWidgetDragMorphTests: XCTestCase {
                         let ring = local(ringFrame)
                         var previousOpacity = 0.0
                         for step in 0...100 {
-                            let reveal = MacWidgetAttachmentReveal(edge: edge, focusFrame: focus, progress: CGFloat(step) / 100)
+                            let reveal = MacWidgetAttachmentReveal(edge: edge, focusFrame: focus, progress: CGFloat(step) / 100,
+                                finalSurface: fixture.arrived.attachmentSurface)
                             let opacity = reveal.contentOpacity(for: ring, in: bounds)
                             XCTAssertGreaterThanOrEqual(opacity, previousOpacity)
                             XCTAssertLessThanOrEqual(opacity, 1)
@@ -300,6 +302,118 @@ final class MacWidgetDragMorphTests: XCTestCase {
                 }
             }
         }
+    }
+
+    @MainActor
+    func testLiquidSurfaceBulgesBeyondTheFinalSilhouetteAndSettlesExactly() throws {
+        try withController { controller, preferences in
+            for edge in [MacWidgetEdge.left, .right, .bottom] {
+                let fixture = try attachmentFixture(controller: controller, preferences: preferences, edge: edge, scale: 1)
+                let widget = fixture.arrived.widgetFrame
+                let bounds = CGRect(origin: .zero, size: widget.size)
+                let focus = CGRect(x: fixture.arrived.focusFrame.minX - widget.minX,
+                    y: widget.maxY - fixture.arrived.focusFrame.maxY,
+                    width: fixture.arrived.focusFrame.width, height: fixture.arrived.focusFrame.height)
+                let finalSurface = try XCTUnwrap(fixture.arrived.attachmentSurface)
+                let finalBitmap = try renderAttachment(fixture, progress: 1)
+                var bulgingSamples = 0
+                var visibleBulgingSamples = 0
+                for progress in [CGFloat(0.1), 0.25, 0.4, 0.55, 0.7, 0.85, 0.95] {
+                    let reveal = MacWidgetAttachmentReveal(edge: edge, focusFrame: focus, progress: progress,
+                        finalSurface: finalSurface)
+                    let outline = reveal.path(in: bounds)
+                    if progress == 0.1 {
+                        let vertical = edge == .left || edge == .right
+                        let length = vertical ? bounds.height : bounds.width
+                        let contact = stride(from: CGFloat(0.5), to: length, by: 0.5).filter { along in
+                            let point: CGPoint
+                            switch edge {
+                            case .left: point = CGPoint(x: 0.5, y: along)
+                            case .right: point = CGPoint(x: bounds.width - 0.5, y: along)
+                            case .bottom: point = CGPoint(x: along, y: bounds.height - 0.5)
+                            case .top: point = CGPoint(x: along, y: 0.5)
+                            }
+                            return outline.contains(point)
+                        }
+                        let contactSpan = try XCTUnwrap(contact.last) - XCTUnwrap(contact.first)
+                        let bodySpan = vertical ? outline.boundingRect.height : outline.boundingRect.width
+                        XCTAssertLessThan(contactSpan, bodySpan * 0.85,
+                            "Wetting contact must lag the rounded outer lobe, forming a concave meniscus rather than a uniform zoom.")
+                        assertConnectedSurface(outline)
+                    }
+                    var visual = fixture.arrived
+                    visual.coalescence = 1 - progress
+                    let outlineBounds = outline.boundingRect
+                    let globalOutline = NSRect(x: widget.minX + outlineBounds.minX,
+                        y: widget.maxY - outlineBounds.maxY, width: outlineBounds.width, height: outlineBounds.height)
+                    XCTAssertTrue(visual.renderedFrame.contains(globalOutline),
+                        "An interrupted liquid contour must fit completely inside its recapture canvas.")
+                    let bitmap = try renderAttachment(fixture,
+                        progress: MacWidgetDragMotion.unfoldPhase(coalescence: 1 - progress))
+                    XCTAssertTrue(bounds.insetBy(dx: -24, dy: -24).contains(outline.boundingRect),
+                        "Surface tension must remain a small deformation around the destination rail.")
+                    for y in stride(from: Int(floor(bounds.minY - 12)), through: Int(ceil(bounds.maxY + 12)), by: 2) {
+                        for x in stride(from: Int(floor(bounds.minX - 12)), through: Int(ceil(bounds.maxX + 12)), by: 2) {
+                            let point = CGPoint(x: CGFloat(x) + 0.5, y: CGFloat(y) + 0.5)
+                            if outline.contains(point), !finalSurface.contains(point) {
+                                bulgingSamples += 1
+                                let pixelX = Int((widget.minX - fixture.canvas.minX + point.x) * 2)
+                                let pixelY = Int((fixture.canvas.maxY - widget.maxY + point.y) * 2)
+                                let originalAlpha = try XCTUnwrap(finalBitmap.colorAt(x: pixelX, y: pixelY)).alphaComponent
+                                let liquidAlpha = try XCTUnwrap(bitmap.colorAt(x: pixelX, y: pixelY)).alphaComponent
+                                if originalAlpha < 0.1, liquidAlpha > 0.5 { visibleBulgingSamples += 1 }
+                            }
+                        }
+                    }
+                }
+                XCTAssertGreaterThan(bulgingSamples, 4,
+                    "A liquid surface must deform beyond its final silhouette, not just reveal a clipped rectangle.")
+                XCTAssertGreaterThan(visibleBulgingSamples, 4,
+                    "The native renderer must draw the liquid bulge, not clip it back to the final snapshot's alpha.")
+                let settled = MacWidgetAttachmentReveal(edge: edge, focusFrame: focus, progress: 1,
+                    finalSurface: finalSurface).path(in: bounds)
+                XCTAssertEqual(settled.cgPath, finalSurface, "The liquid must finish on the exact live surface.")
+                let almostSettled = MacWidgetAttachmentReveal(edge: edge, focusFrame: focus, progress: 0.9999,
+                    finalSurface: finalSurface).path(in: bounds).boundingRect
+                XCTAssertEqual(almostSettled.minX, settled.boundingRect.minX, accuracy: 0.25)
+                XCTAssertEqual(almostSettled.maxX, settled.boundingRect.maxX, accuracy: 0.25)
+                XCTAssertEqual(almostSettled.minY, settled.boundingRect.minY, accuracy: 0.25)
+                XCTAssertEqual(almostSettled.maxY, settled.boundingRect.maxY, accuracy: 0.25)
+            }
+        }
+    }
+
+    private func assertConnectedSurface(_ outline: Path, file: StaticString = #filePath, line: UInt = #line) {
+        let bounds = outline.boundingRect.insetBy(dx: -1, dy: -1).integral
+        let width = Int(bounds.width)
+        let height = Int(bounds.height)
+        var filled = Set<Int>()
+        for y in 0..<height {
+            for x in 0..<width where outline.contains(CGPoint(x: bounds.minX + CGFloat(x) + 0.5,
+                                                             y: bounds.minY + CGFloat(y) + 0.5)) {
+                filled.insert(y * width + x)
+            }
+        }
+        guard let first = filled.first else {
+            return XCTFail("The liquid surface must contain visible material.", file: file, line: line)
+        }
+        var pending = [first]
+        var visited: Set<Int> = [first]
+        while let current = pending.popLast() {
+            let x = current % width
+            let y = current / width
+            for dy in -1...1 {
+                for dx in -1...1 where dx != 0 || dy != 0 {
+                    let nx = x + dx
+                    let ny = y + dy
+                    guard (0..<width).contains(nx), (0..<height).contains(ny) else { continue }
+                    let next = ny * width + nx
+                    if filled.contains(next), visited.insert(next).inserted { pending.append(next) }
+                }
+            }
+        }
+        XCTAssertEqual(visited.count, filled.count,
+            "The rounded lobe, central core, and wall contact must form one connected liquid surface.", file: file, line: line)
     }
 
     private struct AttachmentRenderFixture {
@@ -339,7 +453,11 @@ final class MacWidgetDragMorphTests: XCTestCase {
         }
         let arrived = MacWidgetDragVisual(widgetFrame: widget, focusFrame: focus,
             circleFrame: MacWidgetDragGeometry.attachmentCircleFrame(focus: focus, edge: edge, scale: scale),
-            coalescence: 1, attachmentEdge: edge, attachmentRingFrames: rings)
+            coalescence: 1, attachmentEdge: edge, attachmentRingFrames: rings,
+            attachmentSurface: MacWidgetSurface.path(in: widget.size, edge: edge,
+                selectedIndex: controller.selectionPosition, scale: scale,
+                topCameraInset: docking.topInfo.cameraInset, topNotchWidth: docking.topInfo.notchWidth,
+                metricCount: metrics.count, detailScale: docking.detailScale, sideExpansion: 0))
         return AttachmentRenderFixture(docking: docking, arrived: arrived, source: source,
             snapshot: TimeProgressCalculator.snapshot(for: metric, profile: controller.store.profile),
             accent: MacWidgetStyle.accent(for: metric, theme: controller.store.profile.widgetTheme),

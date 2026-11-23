@@ -1168,7 +1168,8 @@ final class MacWidgetController: ObservableObject {
     /// replacing a partly revealed rail with a scaled full-widget snapshot.
     private func prepareAttachmentCollection() {
         guard var visual = dragVisual, visual.attachmentEdge != nil else { return }
-        let frame = visual.imageFrame
+        let imageFrame = visual.imageFrame
+        let frame = visual.coalescence > 0 ? visual.renderedFrame : imageFrame
         if visual.coalescence > 0 {
             guard let docking = dragDocking, let snapshot = dragMetricSnapshot else { return }
             let renderer = ImageRenderer(content: MacWidgetDragOverlay(docking: docking,
@@ -1178,12 +1179,13 @@ final class MacWidgetController: ObservableObject {
             guard let image = renderer.nsImage else { return }
             dragWidgetImage = image
         }
-        visual.focusFrame = visual.focusFrame.offsetBy(dx: frame.minX - visual.widgetFrame.minX,
-                                                       dy: frame.minY - visual.widgetFrame.minY)
+        visual.focusFrame = visual.focusFrame.offsetBy(dx: imageFrame.minX - visual.widgetFrame.minX,
+                                                       dy: imageFrame.minY - visual.widgetFrame.minY)
         visual.widgetFrame = frame
         visual.coalescence = 0
         visual.attachmentEdge = nil
         visual.attachmentRingFrames = []
+        visual.attachmentSurface = nil
         dragVisual = visual
     }
 
@@ -1218,9 +1220,14 @@ final class MacWidgetController: ObservableObject {
             MacWidgetDragGeometry.focusFrame(in: target.frame, edge: target.edge, index: $0,
                 scale: docking.scale, metricCount: metrics.count, topInfo: docking.topInfo, detailScale: docking.detailScale)
         }
+        let surface = MacWidgetSurface.path(in: target.frame.size, edge: target.edge,
+            selectedIndex: selectionPosition, scale: docking.scale,
+            topCameraInset: docking.topInfo.cameraInset, topNotchWidth: docking.topInfo.notchWidth,
+            metricCount: metrics.count, detailScale: docking.detailScale, sideExpansion: 0)
         return MacWidgetDragVisual(widgetFrame: target.frame, focusFrame: focus,
             circleFrame: MacWidgetDragGeometry.attachmentCircleFrame(focus: focus, edge: target.edge, scale: docking.scale),
-            coalescence: coalescence, attachmentEdge: coalescence == 0 ? target.edge : nil, attachmentRingFrames: rings)
+            coalescence: coalescence, attachmentEdge: coalescence == 0 ? target.edge : nil,
+            attachmentRingFrames: rings, attachmentSurface: surface)
     }
 
     private func animateHeldAttachment(coalescence: CGFloat, duration: TimeInterval,
@@ -1494,9 +1501,14 @@ final class MacWidgetController: ObservableObject {
                 detailScale: preferences.detailScale)
         }
         let destinationImage = widgetImage(in: destinationFrame.size)
+        let surface = MacWidgetSurface.path(in: destinationFrame.size, edge: preferences.edge,
+            selectedIndex: selectionPosition, scale: preferences.scale,
+            topCameraInset: topInfo.cameraInset, topNotchWidth: topInfo.notchWidth,
+            metricCount: activeMetrics.count, hoverScale: hoverScaleLimit, detailScale: preferences.detailScale,
+            magnifications: indexedMagnifications, sideExpansion: sideHoverExpansion)
         let destination = MacWidgetDragVisual(widgetFrame: destinationFrame, focusFrame: focus,
             circleFrame: MacWidgetDragGeometry.attachmentCircleFrame(focus: focus, edge: preferences.edge, scale: docking.scale),
-            coalescence: 1, attachmentRingFrames: rings)
+            coalescence: 1, attachmentRingFrames: rings, attachmentSurface: surface)
         if reducesMotion() {
             dragWidgetImage = destinationImage
             var opened = destination
