@@ -192,6 +192,91 @@ final class MacWidgetHandoffTests: XCTestCase {
     }
 
     @MainActor
+    func testPullingAwayDuringUnfoldingCollectsExactlyTheVisibleSurface() async throws {
+        try await withWindow(reducesMotion: false, supportsSystemDock: false) { controller, window, _ in
+            let (point, overlay, overlayHost) = try await beginPartialUnfold(controller, window: window)
+            let partial = try XCTUnwrap(controller.dragVisual)
+            let frame = partial.imageFrame
+            let screen = try XCTUnwrap(NSScreen.screens.first)
+            let before = try render(overlayHost.rootView, in: frame, scale: screen.backingScaleFactor)
+            let center = NSPoint(x: screen.frame.midX, y: point.y)
+            let detached = try XCTUnwrap(controller.updatePointerPress(at: center))
+            XCTAssertNil(detached.attachment)
+            let collectedStart = try XCTUnwrap(controller.dragVisual)
+            XCTAssertNil(collectedStart.attachmentEdge)
+            XCTAssertEqual(collectedStart.coalescence, 0)
+            XCTAssertEqual(collectedStart.imageFrame, frame,
+                "Recollection must begin from the visible rail's position and size.")
+            XCTAssertEqual(collectedStart.circleFrame, partial.circleFrame)
+            let collecting = try await eventually { overlayHost.rootView.visual.attachmentEdge == nil }
+            XCTAssertTrue(collecting)
+            let frozen = try XCTUnwrap(overlayHost.rootView.widgetImage)
+            let frozenImage = try XCTUnwrap(frozen.cgImage(forProposedRect: nil, context: nil, hints: nil))
+            let after = NSBitmapImageRep(cgImage: frozenImage)
+            XCTAssertEqual(after.pixelsWide, before.pixelsWide)
+            XCTAssertEqual(after.pixelsHigh, before.pixelsHigh)
+            var maximumDifference: CGFloat = 0
+            for y in 0..<min(before.pixelsHigh, after.pixelsHigh) {
+                for x in 0..<min(before.pixelsWide, after.pixelsWide) {
+                    let lhs = try XCTUnwrap(before.colorAt(x: x, y: y)?.usingColorSpace(.deviceRGB))
+                    let rhs = try XCTUnwrap(after.colorAt(x: x, y: y)?.usingColorSpace(.deviceRGB))
+                    maximumDifference = max(maximumDifference, abs(lhs.alphaComponent - rhs.alphaComponent))
+                    if max(lhs.alphaComponent, rhs.alphaComponent) > 0.01 {
+                        maximumDifference = max(maximumDifference, abs(lhs.redComponent - rhs.redComponent),
+                            abs(lhs.greenComponent - rhs.greenComponent), abs(lhs.blueComponent - rhs.blueComponent))
+                    }
+                }
+            }
+            XCTAssertLessThanOrEqual(maximumDifference, 2.0 / 255,
+                "The collection snapshot must contain the partial reveal, not the complete unrevealed rail.")
+            let carried = try await eventually { controller.dragVisual?.coalescence == 1 }
+            XCTAssertTrue(carried)
+            guard case .drag(let drop) = controller.finishPointerPress(at: center, doubleClickInterval: 0.5) else {
+                return XCTFail("Expected a completed center release")
+            }
+            XCTAssertNil(drop.target)
+            controller.settleDrop(drop)
+            let finished = try await eventually { controller.dragVisual == nil }
+            XCTAssertTrue(finished)
+            XCTAssertEqual(controller.preferences.edge, .right)
+            XCTAssertFalse(overlay.isVisible)
+            XCTAssertEqual(window.contentView?.alphaValue, 1)
+        }
+    }
+
+    @MainActor
+    func testReleasingDuringUnfoldingKeepsTheAttachedCircleAndWallFixed() async throws {
+        try await withWindow(reducesMotion: false, supportsSystemDock: false) { controller, window, host in
+            let (point, overlay, _) = try await beginPartialUnfold(controller, window: window)
+            let partial = try XCTUnwrap(controller.dragVisual)
+            guard case .drag(let drop) = controller.finishPointerPress(at: point, doubleClickInterval: 0.5) else {
+                return XCTFail("Expected a completed release during unfolding")
+            }
+            controller.settleDrop(drop)
+            XCTAssertEqual(controller.dragVisual, partial,
+                "Mouse-up must not replace the attached presentation or restart from a carried circle.")
+            var previousCoalescence = partial.coalescence
+            var sawContinuation = false
+            let finished = try await eventually {
+                guard let visual = controller.dragVisual else { return true }
+                XCTAssertEqual(visual.attachmentEdge, .left)
+                XCTAssertEqual(visual.circleFrame, partial.circleFrame)
+                XCTAssertEqual(visual.imageFrame.minX, partial.imageFrame.minX, accuracy: 0.000001)
+                XCTAssertEqual(visual.circleOpacity, 0, "Only the native snapshot may draw the attached circle.")
+                XCTAssertLessThanOrEqual(visual.coalescence, previousCoalescence)
+                if visual.coalescence < partial.coalescence { sawContinuation = true }
+                previousCoalescence = visual.coalescence
+                return false
+            }
+            XCTAssertTrue(finished)
+            XCTAssertTrue(sawContinuation)
+            XCTAssertEqual(controller.preferences.edge, .left)
+            XCTAssertFalse(overlay.isVisible)
+            XCTAssertEqual(host.alphaValue, 1)
+        }
+    }
+
+    @MainActor
     func testEscapeAndHideDuringHandoffCannotRestartOrResurrectTheDrag() async throws {
         for hide in [false, true] {
             try await withWindow(reducesMotion: false) { controller, window, host in
@@ -225,6 +310,37 @@ final class MacWidgetHandoffTests: XCTestCase {
             XCTAssertFalse(overlay.isVisible)
             XCTAssertFalse(window.isVisible)
         }
+    }
+
+    @MainActor
+    private func beginPartialUnfold(_ controller: MacWidgetController, window: NSWindow) async throws
+        -> (NSPoint, NSWindow, NSHostingView<MacWidgetDragOverlay>) {
+        let screen = try XCTUnwrap(NSScreen.screens.first)
+        let docking = MacWidgetDocking(edge: .right, screenFrame: screen.frame, visibleFrame: screen.visibleFrame)
+        let focus = MacWidgetDragGeometry.focusFrame(in: window.frame, edge: .right, index: 1,
+            scale: 1, metricCount: 3, topInfo: docking.topInfo)
+        controller.beginPointerPress(at: NSPoint(x: focus.midX, y: focus.midY), frame: window.frame,
+            bounds: screen.visibleFrame, clickCount: 1, timestamp: 1, docking: docking)
+        let point = NSPoint(x: screen.frame.minX + 20, y: screen.frame.midY)
+        _ = controller.updatePointerPress(at: point)
+        let partial = try await eventually {
+            guard let visual = controller.dragVisual else { return false }
+            return visual.attachmentEdge == .left && visual.coalescence < 0.75 && visual.coalescence > 0.2
+        }
+        XCTAssertTrue(partial)
+        let overlay = try XCTUnwrap(NSApp.windows.first {
+            $0.isVisible && $0.contentView is NSHostingView<MacWidgetDragOverlay>
+        })
+        return (point, overlay, try XCTUnwrap(overlay.contentView as? NSHostingView<MacWidgetDragOverlay>))
+    }
+
+    @MainActor
+    private func render(_ view: MacWidgetDragOverlay, in frame: NSRect, scale: CGFloat) throws -> NSBitmapImageRep {
+        var preview = view
+        preview.canvasFrame = frame
+        let renderer = ImageRenderer(content: preview)
+        renderer.scale = scale
+        return NSBitmapImageRep(cgImage: try XCTUnwrap(renderer.cgImage))
     }
 
     @MainActor

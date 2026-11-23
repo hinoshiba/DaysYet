@@ -234,6 +234,16 @@ enum MacWidgetDragGeometry {
         return NSRect(x: center.x - diameter / 2, y: center.y - diameter / 2, width: diameter, height: diameter)
     }
 
+    /// Match the carried ring to the destination before the surrounding rail
+    /// opens. The focus includes the native ring's 0.75pt stroke on each side.
+    static func attachmentCircleFrame(focus: NSRect, edge: MacWidgetEdge, scale: Double) -> NSRect {
+        let center = NSPoint(x: focus.midX, y: focus.midY)
+        guard edge != .top else { return circleFrame(center: center, scale: scale) }
+        let size = NSSize(width: 44 * focus.width / 33.5, height: 44 * focus.height / 33.5)
+        return NSRect(x: center.x - size.width / 2, y: center.y - size.height / 2,
+                      width: size.width, height: size.height)
+    }
+
     /// A metric's visible ring (or top segment), in AppKit screen coordinates.
     static func focusFrame(in frame: NSRect, edge: MacWidgetEdge, index: Int, scale: Double,
                            metricCount: Int, topInfo: MacTopNotchInfo, magnification: Double = 1, detailScale: Double = 1) -> NSRect {
@@ -264,6 +274,20 @@ enum MacWidgetDragMotion {
     static let unfold: TimeInterval = 0.56
     static let landingPause: Duration = .milliseconds(110)
     static let followResponse: TimeInterval = 0.045
+
+    /// Recover the original smoothstep clock so mouse-up can continue an
+    /// unfolding in place without restarting a full-duration ease from rest.
+    static func unfoldPhase(coalescence: CGFloat) -> Double {
+        let value = min(max(Double(coalescence), 0), 1)
+        return 0.5 - sin(asin(min(max(2 * value - 1, -1), 1)) / 3)
+    }
+
+    static func unfoldingCoalescence(from initial: CGFloat, elapsed: TimeInterval) -> CGFloat {
+        let initial = min(max(initial, 0), 1)
+        let phase = min(unfoldPhase(coalescence: initial) + max(elapsed, 0) / unfold, 1)
+        let coalescence = CGFloat(1 - phase * phase * (3 - 2 * phase))
+        return min(max(coalescence, 0), initial)
+    }
 }
 
 /// Return at a consistent speed across distances, with brief acceleration and
@@ -312,8 +336,18 @@ struct MacWidgetDragVisual: Equatable {
     var circleFrame: NSRect
     var coalescence: CGFloat
     var opacity: Double = 1
+    /// Once attached, reveal the final-size rail around its fixed focus instead
+    /// of scaling the snapshot and crossfading a second copy of its circle.
+    var attachmentEdge: MacWidgetEdge? = nil
+    /// Native ring bounds in screen coordinates, used to reveal neighboring
+    /// circles whole after the surface has expanded far enough to hold them.
+    var attachmentRingFrames: [NSRect] = []
 
     var imageFrame: NSRect {
+        if attachmentEdge != nil {
+            return widgetFrame.offsetBy(dx: circleFrame.midX - focusFrame.midX,
+                                        dy: circleFrame.midY - focusFrame.midY)
+        }
         let endScale = min(circleFrame.width / max(widgetFrame.width, widgetFrame.height, 1), 1)
         let scale = 1 + (endScale - 1) * coalescence
         return NSRect(x: circleFrame.midX + (widgetFrame.minX - focusFrame.midX) * scale,
@@ -321,8 +355,8 @@ struct MacWidgetDragVisual: Equatable {
                       width: widgetFrame.width * scale, height: widgetFrame.height * scale)
     }
 
-    var imageOpacity: Double { Double(1 - coalescence * coalescence) }
-    var circleOpacity: Double { Double(coalescence * coalescence) }
+    var imageOpacity: Double { attachmentEdge == nil ? Double(1 - coalescence * coalescence) : 1 }
+    var circleOpacity: Double { attachmentEdge == nil ? Double(coalescence * coalescence) : 0 }
 
     func interpolated(to target: Self, progress: Double, spring: Bool = false,
                       flight: MacWidgetReturnFlight? = nil) -> Self {
@@ -342,7 +376,9 @@ struct MacWidgetDragVisual: Equatable {
         return Self(widgetFrame: target.widgetFrame, focusFrame: target.focusFrame,
                     circleFrame: NSRect(x: x, y: y, width: width, height: height),
                     coalescence: coalescence + (target.coalescence - coalescence) * eased,
-                    opacity: opacity + (target.opacity - opacity) * eased)
+                    opacity: opacity + (target.opacity - opacity) * eased,
+                    attachmentEdge: target.attachmentEdge,
+                    attachmentRingFrames: target.attachmentRingFrames)
     }
 
     /// A short, frame-rate-independent visual lag. Hit testing and the saved
@@ -355,6 +391,95 @@ struct MacWidgetDragVisual: Equatable {
         var result = target
         result.circleFrame = target.circleFrame.offsetBy(dx: -dx * remaining, dy: -dy * remaining)
         return result
+    }
+}
+
+/// Grow the visible surface along its wall without transforming the snapshot's
+/// rings or labels. Focus coordinates use the image's top-left origin.
+struct MacWidgetAttachmentReveal: Shape {
+    let edge: MacWidgetEdge
+    let focusFrame: CGRect
+    var progress: CGFloat
+
+    /// Wait until the whole ring and its antialiasing margin fit, then reveal
+    /// its glyphs together instead of wiping through half a number or stroke.
+    func contentOpacity(for ring: CGRect, in bounds: CGRect) -> Double {
+        if abs(ring.midX - focusFrame.midX) < 0.001,
+           abs(ring.midY - focusFrame.midY) < 0.001 { return 1 }
+        let t = min(max(progress.isFinite ? progress : 0, 0), 1)
+        guard t < 1 else { return 1 }
+        let padded = ring.offsetBy(dx: bounds.minX, dy: bounds.minY).insetBy(dx: -1, dy: -1)
+        let corners = [CGPoint(x: padded.minX, y: padded.minY), CGPoint(x: padded.maxX, y: padded.minY),
+                       CGPoint(x: padded.minX, y: padded.maxY), CGPoint(x: padded.maxX, y: padded.maxY)]
+        var lower: CGFloat = 0
+        var upper: CGFloat = 1
+        for _ in 0..<10 {
+            var candidate = self
+            candidate.progress = (lower + upper) / 2
+            let outline = candidate.path(in: bounds)
+            if corners.allSatisfy({ outline.contains($0) }) { upper = candidate.progress }
+            else { lower = candidate.progress }
+        }
+        let span = min(0.18, 1 - upper)
+        guard span > 0 else { return 0 }
+        let fade = min(max((t - upper) / span, 0), 1)
+        return Double(fade * fade * (3 - 2 * fade))
+    }
+
+    func frame(in bounds: CGRect) -> CGRect {
+        let t = min(max(progress.isFinite ? progress : 0, 0), 1)
+        guard t < 1 else { return bounds }
+        let focus = focusFrame.offsetBy(dx: bounds.minX, dy: bounds.minY)
+        let padded = focus.insetBy(dx: -5.25 * focus.width / 33.5,
+                                  dy: -5.25 * focus.height / 33.5)
+        var seed = padded.intersection(bounds)
+        guard !seed.isNull else { return .zero }
+        switch edge {
+        case .left:
+            seed = CGRect(x: bounds.minX, y: seed.minY, width: seed.maxX - bounds.minX, height: seed.height)
+        case .right:
+            seed.size.width = bounds.maxX - seed.minX
+        case .top:
+            seed = CGRect(x: seed.minX, y: bounds.minY, width: seed.width, height: seed.maxY - bounds.minY)
+        case .bottom:
+            seed.size.height = bounds.maxY - seed.minY
+        }
+        return CGRect(x: seed.minX + (bounds.minX - seed.minX) * t,
+                      y: seed.minY + (bounds.minY - seed.minY) * t,
+                      width: seed.width + (bounds.width - seed.width) * t,
+                      height: seed.height + (bounds.height - seed.height) * t)
+    }
+
+    func path(in rect: CGRect) -> Path {
+        let visible = frame(in: rect)
+        guard visible.width > 0, visible.height > 0 else { return Path() }
+        if progress >= 1 { return Path(rect) }
+        // A camera inset can make the top surface tall while its progress
+        // strip stays thin; cap its shoulders to avoid clipping strip ends.
+        let cornerHeight = edge == .top ? min(visible.height, focusFrame.height * 44 / 33.5) : visible.height
+        let radius = min(visible.width, cornerHeight) / 2 * (1 - min(max(progress, 0), 1))
+        // Keep wall-side corners square so the contact remains flush while
+        // the rounded inward shoulders advance away from the grabbed circle.
+        let topLeft = edge == .right || edge == .bottom ? radius : 0
+        let topRight = edge == .left || edge == .bottom ? radius : 0
+        let bottomLeft = edge == .right || edge == .top ? radius : 0
+        let bottomRight = edge == .left || edge == .top ? radius : 0
+        var path = Path()
+        path.move(to: CGPoint(x: visible.minX + topLeft, y: visible.minY))
+        path.addLine(to: CGPoint(x: visible.maxX - topRight, y: visible.minY))
+        path.addQuadCurve(to: CGPoint(x: visible.maxX, y: visible.minY + topRight),
+                          control: CGPoint(x: visible.maxX, y: visible.minY))
+        path.addLine(to: CGPoint(x: visible.maxX, y: visible.maxY - bottomRight))
+        path.addQuadCurve(to: CGPoint(x: visible.maxX - bottomRight, y: visible.maxY),
+                          control: CGPoint(x: visible.maxX, y: visible.maxY))
+        path.addLine(to: CGPoint(x: visible.minX + bottomLeft, y: visible.maxY))
+        path.addQuadCurve(to: CGPoint(x: visible.minX, y: visible.maxY - bottomLeft),
+                          control: CGPoint(x: visible.minX, y: visible.maxY))
+        path.addLine(to: CGPoint(x: visible.minX, y: visible.minY + topLeft))
+        path.addQuadCurve(to: CGPoint(x: visible.minX + topLeft, y: visible.minY),
+                          control: CGPoint(x: visible.minX, y: visible.minY))
+        path.closeSubpath()
+        return path
     }
 }
 
@@ -391,12 +516,41 @@ struct MacWidgetDragOverlay: View {
                     }
                 }
             } else {
-            if let widgetImage, visual.coalescence < 1 {
+            if let widgetImage, visual.coalescence < 1 || visual.attachmentEdge != nil {
                 let rect = local(visual.imageFrame)
-                Image(nsImage: widgetImage).resizable().interpolation(.high)
-                    .frame(width: rect.width, height: rect.height)
-                    .opacity(visual.imageOpacity * visual.opacity)
-                    .offset(x: rect.minX, y: rect.minY)
+                Group {
+                    if let edge = visual.attachmentEdge, visual.coalescence > 0 {
+                        let focus = CGRect(x: visual.focusFrame.minX - visual.widgetFrame.minX,
+                                           y: visual.widgetFrame.maxY - visual.focusFrame.maxY,
+                                           width: visual.focusFrame.width, height: visual.focusFrame.height)
+                        let reveal = MacWidgetAttachmentReveal(edge: edge, focusFrame: focus,
+                                                               progress: 1 - visual.coalescence)
+                        ZStack(alignment: .topLeading) {
+                            Image(nsImage: widgetImage).resizable().interpolation(.high)
+                                .frame(width: rect.width, height: rect.height)
+                            ForEach(Array(visual.attachmentRingFrames.enumerated()), id: \.offset) { _, frame in
+                                let ring = CGRect(x: frame.minX - visual.widgetFrame.minX,
+                                                  y: visual.widgetFrame.maxY - frame.maxY,
+                                                  width: frame.width, height: frame.height)
+                                if abs(ring.midX - focus.midX) >= 0.001 || abs(ring.midY - focus.midY) >= 0.001 {
+                                    let cover = ring.insetBy(dx: -1, dy: -1)
+                                    Rectangle().fill(MacWidgetStyle.background)
+                                        .frame(width: cover.width, height: cover.height)
+                                        .opacity(1 - reveal.contentOpacity(for: ring,
+                                            in: CGRect(origin: .zero, size: rect.size)))
+                                        .offset(x: cover.minX, y: cover.minY)
+                                }
+                            }
+                        }
+                        .frame(width: rect.width, height: rect.height, alignment: .topLeading)
+                        .mask(reveal)
+                    } else {
+                        Image(nsImage: widgetImage).resizable().interpolation(.high)
+                            .frame(width: rect.width, height: rect.height)
+                    }
+                }
+                .opacity(visual.imageOpacity * visual.opacity)
+                .offset(x: rect.minX, y: rect.minY)
             }
             let circle = local(visual.circleFrame)
             ZStack {
@@ -404,7 +558,7 @@ struct MacWidgetDragOverlay: View {
                     .shadow(color: .black.opacity(0.28), radius: 8, y: 3)
                 Circle().strokeBorder(.white.opacity(0.14), lineWidth: 1)
                 MacPercentageRing(fraction: snapshot.remainingFraction, accent: accent, selected: true, isOff: snapshot.isOff)
-                    .scaleEffect(circle.width / 44)
+                    .scaleEffect(x: circle.width / 44, y: circle.height / 44)
             }
             .frame(width: circle.width, height: circle.height)
             .opacity((widgetImage == nil ? 1 : visual.circleOpacity) * visual.opacity)

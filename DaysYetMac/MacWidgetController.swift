@@ -1084,6 +1084,7 @@ final class MacWidgetController: ObservableObject {
             attachmentTask?.cancel()
             attachmentTask = nil
             dragPreviewEdge = nil
+            prepareAttachmentCollection()
             if reducesMotion() || dragVisual?.coalescence == 1 {
                 dragVisual = attachmentVisual(for: target, coalescence: 1)
                 refreshDragOverlay()
@@ -1113,7 +1114,8 @@ final class MacWidgetController: ObservableObject {
                 refreshDragOverlay()
             } else {
                 attachmentTask = Task { [weak self] in
-                    guard let self else { return }
+                    guard let self, !Task.isCancelled else { return }
+                    self.prepareAttachmentCollection()
                     if var collected = self.dragVisual, collected.coalescence < 1 {
                         collected.coalescence = 1
                         guard await self.animateDrag(to: collected, duration: MacWidgetDragMotion.collect) else { return }
@@ -1123,6 +1125,7 @@ final class MacWidgetController: ObservableObject {
                     self.dragPreviewEdge = latest.edge
                     guard await self.animateHeldAttachment(coalescence: 1, duration: MacWidgetDragMotion.attach,
                                                            usesFlightTiming: true) else { return }
+                    self.pinDragToEdge(latest.edge)
                     try? await Task.sleep(for: MacWidgetDragMotion.landingPause)
                     guard await self.animateHeldAttachment(coalescence: 0, duration: MacWidgetDragMotion.unfold) else { return }
                     self.attachmentTask = nil
@@ -1134,6 +1137,7 @@ final class MacWidgetController: ObservableObject {
         attachmentTask?.cancel()
         attachmentTask = nil
         collapseTask?.cancel()
+        prepareAttachmentCollection()
         if reducesMotion() || dragVisual?.coalescence == 1 {
             collapseTask = nil
             updateDragLift(progress: 1)
@@ -1159,6 +1163,37 @@ final class MacWidgetController: ObservableObject {
         return true
     }
 
+    /// Freeze only our own rendered preview before recollecting an interrupted
+    /// reveal. Pickup then starts from exactly the visible shape, rather than
+    /// replacing a partly revealed rail with a scaled full-widget snapshot.
+    private func prepareAttachmentCollection() {
+        guard var visual = dragVisual, visual.attachmentEdge != nil else { return }
+        let frame = visual.imageFrame
+        if visual.coalescence > 0 {
+            guard let docking = dragDocking, let snapshot = dragMetricSnapshot else { return }
+            let renderer = ImageRenderer(content: MacWidgetDragOverlay(docking: docking,
+                visual: visual, widgetImage: dragWidgetImage, snapshot: snapshot, accent: dragAccent,
+                canvasFrame: frame))
+            renderer.scale = selectedScreen?.backingScaleFactor ?? 2
+            guard let image = renderer.nsImage else { return }
+            dragWidgetImage = image
+        }
+        visual.focusFrame = visual.focusFrame.offsetBy(dx: frame.minX - visual.widgetFrame.minX,
+                                                       dy: frame.minY - visual.widgetFrame.minY)
+        visual.widgetFrame = frame
+        visual.coalescence = 0
+        visual.attachmentEdge = nil
+        visual.attachmentRingFrames = []
+        dragVisual = visual
+    }
+
+    private func pinDragToEdge(_ edge: MacWidgetEdge) {
+        guard var visual = dragVisual else { return }
+        visual.attachmentEdge = edge
+        dragVisual = visual
+        refreshDragOverlay()
+    }
+
     private func attachmentImage(for target: MacWidgetDropTarget) -> NSImage? {
         if let image = dragPreviewImages[target.edge] { return image }
         let image = target.isSystemDock ? groupImage(edge: target.edge, landing: true)
@@ -1179,9 +1214,13 @@ final class MacWidgetController: ObservableObject {
         let index = metrics.firstIndex(of: origin.metric) ?? 0
         let focus = MacWidgetDragGeometry.focusFrame(in: target.frame, edge: target.edge, index: index,
             scale: docking.scale, metricCount: metrics.count, topInfo: docking.topInfo, detailScale: docking.detailScale)
+        let rings = target.edge == .top ? [] : metrics.indices.map {
+            MacWidgetDragGeometry.focusFrame(in: target.frame, edge: target.edge, index: $0,
+                scale: docking.scale, metricCount: metrics.count, topInfo: docking.topInfo, detailScale: docking.detailScale)
+        }
         return MacWidgetDragVisual(widgetFrame: target.frame, focusFrame: focus,
-            circleFrame: MacWidgetDragGeometry.circleFrame(center: NSPoint(x: focus.midX, y: focus.midY), scale: docking.scale),
-            coalescence: coalescence)
+            circleFrame: MacWidgetDragGeometry.attachmentCircleFrame(focus: focus, edge: target.edge, scale: docking.scale),
+            coalescence: coalescence, attachmentEdge: coalescence == 0 ? target.edge : nil, attachmentRingFrames: rings)
     }
 
     private func animateHeldAttachment(coalescence: CGFloat, duration: TimeInterval,
@@ -1194,15 +1233,23 @@ final class MacWidgetController: ObservableObject {
         } else {
             flight = nil
         }
-        let duration = flight?.duration ?? duration
+        let continuesUnfold = coalescence == 0
+        let duration = continuesUnfold
+            ? MacWidgetDragMotion.unfold * (1 - MacWidgetDragMotion.unfoldPhase(coalescence: initial.coalescence))
+            : flight?.duration ?? duration
         let start = ProcessInfo.processInfo.systemUptime
         while !Task.isCancelled {
             guard pointerInteraction.isPressed, let target = dragAttachment,
                   let destination = attachmentVisual(for: target, coalescence: coalescence) else { return false }
-            let progress = duration > 0 ? min((ProcessInfo.processInfo.systemUptime - start) / duration, 1) : 1
+            let elapsed = ProcessInfo.processInfo.systemUptime - start
+            let progress = duration > 0 ? min(elapsed / duration, 1) : 1
             // Read the latest point on every frame so sliding along the edge
             // does not restart the unfolding animation on each mouse event.
-            dragVisual = initial.interpolated(to: destination, progress: progress, flight: flight)
+            var visual = initial.interpolated(to: destination, progress: progress, flight: flight)
+            if continuesUnfold {
+                visual.coalescence = MacWidgetDragMotion.unfoldingCoalescence(from: initial.coalescence, elapsed: elapsed)
+            }
+            dragVisual = visual
             refreshDragOverlay()
             if progress >= 1 { return true }
             try? await Task.sleep(for: .milliseconds(16))
@@ -1441,14 +1488,20 @@ final class MacWidgetController: ObservableObject {
         let index = activeMetrics.firstIndex(of: origin.metric) ?? 0
         let focus = MacWidgetDragGeometry.focusFrame(in: destinationFrame, edge: preferences.edge, index: index,
             scale: preferences.scale, metricCount: activeMetrics.count, topInfo: topInfo, detailScale: preferences.detailScale)
+        let rings = preferences.edge == .top ? [] : activeMetrics.indices.map {
+            MacWidgetDragGeometry.focusFrame(in: destinationFrame, edge: preferences.edge, index: $0,
+                scale: preferences.scale, metricCount: activeMetrics.count, topInfo: topInfo,
+                detailScale: preferences.detailScale)
+        }
         let destinationImage = widgetImage(in: destinationFrame.size)
         let destination = MacWidgetDragVisual(widgetFrame: destinationFrame, focusFrame: focus,
-            circleFrame: MacWidgetDragGeometry.circleFrame(center: NSPoint(x: focus.midX, y: focus.midY), scale: docking.scale),
-            coalescence: 1)
+            circleFrame: MacWidgetDragGeometry.attachmentCircleFrame(focus: focus, edge: preferences.edge, scale: docking.scale),
+            coalescence: 1, attachmentRingFrames: rings)
         if reducesMotion() {
             dragWidgetImage = destinationImage
             var opened = destination
             opened.coalescence = 0
+            opened.attachmentEdge = preferences.edge
             dragVisual = opened
             refreshDragOverlay()
             settleTask = Task { [weak self] in await self?.finishEdgeHandoff() }
@@ -1460,6 +1513,7 @@ final class MacWidgetController: ObservableObject {
             dragWidgetImage = destinationImage
             var opened = destination
             opened.coalescence = 0
+            opened.attachmentEdge = preferences.edge
             if visual == opened {
                 dragVisual = opened
                 refreshDragOverlay()
@@ -1472,7 +1526,8 @@ final class MacWidgetController: ObservableObject {
             } else {
                 settleTask = Task { [weak self] in
                     let duration = visual.coalescence == 0 ? MacWidgetDragMotion.attach : MacWidgetDragMotion.unfold
-                    guard let self, await self.animateDrag(to: opened, duration: duration) else { return }
+                    guard let self, await self.animateDrag(to: opened, duration: duration,
+                        continuesUnfold: visual.attachmentEdge != nil && visual.coalescence > 0) else { return }
                     await self.finishEdgeHandoff()
                 }
             }
@@ -1480,9 +1535,9 @@ final class MacWidgetController: ObservableObject {
         }
         refreshDragOverlay()
         settleTask = Task { [weak self] in
-            guard let self else { return }
-            if visual.coalescence < 1 {
-                var collected = visual
+            guard let self, !Task.isCancelled else { return }
+            self.prepareAttachmentCollection()
+            if var collected = self.dragVisual, collected.coalescence < 1 {
                 collected.coalescence = 1
                 guard await self.animateDrag(to: collected, duration: MacWidgetDragMotion.collect) else { return }
             }
@@ -1498,10 +1553,12 @@ final class MacWidgetController: ObservableObject {
         // a brief acceleration and braking period at either end.
         let flight = MacWidgetReturnFlight(from: visual.circleFrame, to: destination.circleFrame)
         guard await animateDrag(to: destination, duration: flight.duration, flight: flight) else { return false }
+        pinDragToEdge(preferences.edge)
         try? await Task.sleep(for: MacWidgetDragMotion.landingPause)
         var opened = destination
         opened.coalescence = 0
-        return await animateDrag(to: opened, duration: MacWidgetDragMotion.unfold)
+        opened.attachmentEdge = preferences.edge
+        return await animateDrag(to: opened, duration: MacWidgetDragMotion.unfold, continuesUnfold: true)
     }
 
     private func finishEdgeHandoff() async {
@@ -1726,12 +1783,20 @@ final class MacWidgetController: ObservableObject {
     }
 
     private func animateDrag(to target: MacWidgetDragVisual, duration: TimeInterval, spring: Bool = false,
-                             flight: MacWidgetReturnFlight? = nil) async -> Bool {
+                             flight: MacWidgetReturnFlight? = nil, continuesUnfold: Bool = false) async -> Bool {
         guard let initial = dragVisual else { return false }
+        let duration = continuesUnfold
+            ? MacWidgetDragMotion.unfold * (1 - MacWidgetDragMotion.unfoldPhase(coalescence: initial.coalescence))
+            : duration
         let start = ProcessInfo.processInfo.systemUptime
         while !Task.isCancelled {
-            let progress = duration > 0 ? min((ProcessInfo.processInfo.systemUptime - start) / duration, 1) : 1
-            dragVisual = initial.interpolated(to: target, progress: progress, spring: spring, flight: flight)
+            let elapsed = ProcessInfo.processInfo.systemUptime - start
+            let progress = duration > 0 ? min(elapsed / duration, 1) : 1
+            var visual = initial.interpolated(to: target, progress: progress, spring: spring, flight: flight)
+            if continuesUnfold {
+                visual.coalescence = MacWidgetDragMotion.unfoldingCoalescence(from: initial.coalescence, elapsed: elapsed)
+            }
+            dragVisual = visual
             refreshDragOverlay()
             if progress >= 1 { return true }
             try? await Task.sleep(for: .milliseconds(16))

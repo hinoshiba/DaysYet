@@ -38,6 +38,20 @@ final class MacWidgetDockingTests: XCTestCase {
         }
     }
 
+    func testInterruptedUnfoldContinuesTheOriginalPhaseWithoutSlowingDown() {
+        for interruption in [0.0, 0.1, 0.28, 0.5] {
+            let initial = MacWidgetDragMotion.unfoldingCoalescence(from: 1, elapsed: interruption)
+            XCTAssertEqual(MacWidgetDragMotion.unfoldPhase(coalescence: initial),
+                interruption / MacWidgetDragMotion.unfold, accuracy: 0.000001)
+            for elapsed in [0.0, 1.0 / 60, 0.05, 0.2, 0.56] {
+                let resumed = MacWidgetDragMotion.unfoldingCoalescence(from: initial, elapsed: elapsed)
+                let uninterrupted = MacWidgetDragMotion.unfoldingCoalescence(from: 1, elapsed: interruption + elapsed)
+                XCTAssertEqual(resumed, uninterrupted, accuracy: 0.000001,
+                    "Mouse-up must continue the same reveal curve instead of starting another full-duration easing.")
+            }
+        }
+    }
+
     func testReturnFlightIsBoundedAndMonotonicForShortLongAndDiagonalPaths() {
         let source = NSRect(x: -1920, y: -1080, width: 40, height: 40)
         for distance in [CGFloat(0), 0.001, 40, 108, 600, 8000] {
