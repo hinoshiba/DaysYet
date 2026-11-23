@@ -21,6 +21,103 @@ final class MacWidgetDockingTests: XCTestCase {
         return (interaction, frame, anchor)
     }
 
+    func testReturnFlightMaintainsCruiseSpeedAcrossDistancesAndRefreshRates() {
+        let source = NSRect(x: -1200, y: -400, width: 40, height: 40)
+        for distance in [CGFloat(300), 600, 1800] {
+            let flight = MacWidgetReturnFlight(from: source, to: source.offsetBy(dx: distance, dy: 0))
+            for fps in [60.0, 120.0] {
+                let elapsed = 0.1
+                let step = 1 / fps
+                let displacement = Double(distance) * (flight.progress(at: elapsed + step) - flight.progress(at: elapsed))
+                XCTAssertEqual(displacement, 1800 / fps, accuracy: 0.000001,
+                    "Cruising speed must not change with the destination distance or refresh rate.")
+            }
+            let at60Hz = flight.progress(at: 9.0 / 60)
+            let at120Hz = flight.progress(at: 18.0 / 120)
+            XCTAssertEqual(at60Hz, at120Hz)
+        }
+    }
+
+    func testReturnFlightIsBoundedAndMonotonicForShortLongAndDiagonalPaths() {
+        let source = NSRect(x: -1920, y: -1080, width: 40, height: 40)
+        for distance in [CGFloat(0), 0.001, 40, 108, 600, 8000] {
+            for direction in [CGFloat(-1), 1] {
+                let destination = source.offsetBy(dx: direction * distance * 0.6, dy: direction * distance * 0.8)
+                let flight = MacWidgetReturnFlight(from: source, to: destination)
+                XCTAssertTrue(flight.duration.isFinite)
+                XCTAssertGreaterThanOrEqual(flight.duration, 0)
+                if distance == 0 {
+                    XCTAssertEqual(flight.duration, 0)
+                    XCTAssertEqual(flight.progress(at: 0), 1)
+                    continue
+                }
+                XCTAssertEqual(flight.progress(at: -1), 0)
+                XCTAssertEqual(flight.progress(at: 0), 0)
+                XCTAssertEqual(flight.progress(at: flight.duration), 1)
+                XCTAssertEqual(flight.progress(at: flight.duration + 1), 1)
+                var previous = 0.0
+                for sample in 0...1000 {
+                    let progress = flight.progress(at: flight.duration * Double(sample) / 1000)
+                    XCTAssertGreaterThanOrEqual(progress, previous)
+                    XCTAssertLessThanOrEqual(progress, 1, "A return must stop at the edge without overshooting.")
+                    previous = progress
+                }
+            }
+        }
+    }
+
+    func testReturnFlightVelocityIsContinuousThroughAccelerationAndBraking() {
+        let source = NSRect(x: 0, y: 0, width: 40, height: 40)
+        for distance in [CGFloat(40), 600] {
+            let flight = MacWidgetReturnFlight(from: source, to: source.offsetBy(dx: distance, dy: 0))
+            let ramp = min(0.06, flight.duration / 2)
+            let step = 0.000001
+            for boundary in [ramp, flight.duration - ramp] {
+                let before = Double(distance) * (flight.progress(at: boundary) - flight.progress(at: boundary - step)) / step
+                let after = Double(distance) * (flight.progress(at: boundary + step) - flight.progress(at: boundary)) / step
+                XCTAssertEqual(before, after, accuracy: 0.04,
+                    "Changing between acceleration, cruise, and braking must not jump velocity.")
+            }
+            XCTAssertLessThan(Double(distance) * flight.progress(at: step) / step, 1)
+            XCTAssertLessThan(Double(distance) * (1 - flight.progress(at: flight.duration - step)) / step, 1)
+        }
+    }
+
+    func testReturnFlightDoesNotStretchTinyCorrectionsOverAMinimumDuration() {
+        let source = NSRect(x: 0, y: 0, width: 40, height: 40)
+        let tiny = MacWidgetReturnFlight(from: source, to: source.offsetBy(dx: 0.001, dy: 0))
+        let near = MacWidgetReturnFlight(from: source, to: source.offsetBy(dx: 40, dy: 0))
+        let normal = MacWidgetReturnFlight(from: source, to: source.offsetBy(dx: 600, dy: 0))
+        XCTAssertLessThan(tiny.duration, 1.0 / 120)
+        XCTAssertGreaterThan(near.duration, tiny.duration)
+        XCTAssertLessThan(near.duration, 0.1)
+        XCTAssertGreaterThan(normal.duration, 0.68 / 2)
+        XCTAssertLessThan(normal.duration, 0.68 * 2 / 3,
+            "A typical return should take half to two thirds of the previous 680ms flight.")
+    }
+
+    func testReturnFlightTracksCentersIndependentlyOfCircleSizeAndMorphing() {
+        let source = NSRect(x: -420, y: -320, width: 40, height: 40)
+        let destination = NSRect(x: 177, y: 477, width: 46, height: 46)
+        let flight = MacWidgetReturnFlight(from: source, to: destination)
+        let reference = MacWidgetReturnFlight(from: source, to: source.offsetBy(dx: 600, dy: 800))
+        XCTAssertEqual(flight.duration, reference.duration, accuracy: 0.000001)
+        let initial = MacWidgetDragVisual(widgetFrame: source, focusFrame: source,
+            circleFrame: source, coalescence: 1)
+        let target = MacWidgetDragVisual(widgetFrame: destination, focusFrame: destination,
+            circleFrame: destination, coalescence: 0, opacity: 0.5)
+        for progress in [0.0, 0.1, 0.25, 0.5, 0.9, 1.0] {
+            let visual = initial.interpolated(to: target, progress: progress, flight: flight)
+            let morph = initial.interpolated(to: target, progress: progress)
+            let traveled = reference.progress(at: progress * reference.duration)
+            XCTAssertEqual(visual.circleFrame.midX, source.midX + 600 * traveled, accuracy: 0.000001)
+            XCTAssertEqual(visual.circleFrame.midY, source.midY + 800 * traveled, accuracy: 0.000001)
+            XCTAssertEqual(visual.circleFrame.size, morph.circleFrame.size)
+            XCTAssertEqual(visual.coalescence, morph.coalescence)
+            XCTAssertEqual(visual.opacity, morph.opacity)
+        }
+    }
+
     func testEveryEdgeResistsThenDetachesAndRetainsTheCapturedAnchor() throws {
         for edge in MacWidgetEdge.allCases {
             var (interaction, frame, anchor) = begin(edge)

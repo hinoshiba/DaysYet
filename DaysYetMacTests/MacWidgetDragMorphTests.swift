@@ -88,14 +88,15 @@ final class MacWidgetDragMorphTests: XCTestCase {
                     circleFrame: MacWidgetDragGeometry.circleFrame(center: NSPoint(x: 650, y: 400), scale: scale), coalescence: 1)
                 var arrived = flying
                 arrived.circleFrame = MacWidgetDragGeometry.circleFrame(center: NSPoint(x: focus.midX, y: focus.midY), scale: scale)
+                let flight = MacWidgetReturnFlight(from: flying.circleFrame, to: arrived.circleFrame)
                 for progress in [0.0, 0.25, 0.5, 0.75, 1.0] {
-                    let visual = flying.interpolated(to: arrived, progress: progress, spring: true)
+                    let visual = flying.interpolated(to: arrived, progress: progress, flight: flight)
                     XCTAssertEqual(visual.circleFrame.width, visual.circleFrame.height)
                     XCTAssertLessThanOrEqual(visual.circleFrame.width, 46)
                     XCTAssertEqual(visual.imageOpacity, 0, "The complete rail must not reappear during the return flight.")
                     XCTAssertEqual(visual.circleOpacity, 1)
                 }
-                XCTAssertEqual(flying.interpolated(to: arrived, progress: 1, spring: true), arrived)
+                XCTAssertEqual(flying.interpolated(to: arrived, progress: 1, flight: flight), arrived)
             }
         }
     }

@@ -1121,7 +1121,8 @@ final class MacWidgetController: ObservableObject {
                     guard !Task.isCancelled, let latest = self.dragAttachment else { return }
                     self.dragWidgetImage = self.attachmentImage(for: latest)
                     self.dragPreviewEdge = latest.edge
-                    guard await self.animateHeldAttachment(coalescence: 1, duration: MacWidgetDragMotion.attach) else { return }
+                    guard await self.animateHeldAttachment(coalescence: 1, duration: MacWidgetDragMotion.attach,
+                                                           usesFlightTiming: true) else { return }
                     try? await Task.sleep(for: MacWidgetDragMotion.landingPause)
                     guard await self.animateHeldAttachment(coalescence: 0, duration: MacWidgetDragMotion.unfold) else { return }
                     self.attachmentTask = nil
@@ -1183,16 +1184,25 @@ final class MacWidgetController: ObservableObject {
             coalescence: coalescence)
     }
 
-    private func animateHeldAttachment(coalescence: CGFloat, duration: TimeInterval) async -> Bool {
+    private func animateHeldAttachment(coalescence: CGFloat, duration: TimeInterval,
+                                       usesFlightTiming: Bool = false) async -> Bool {
         guard let initial = dragVisual else { return false }
+        let flight: MacWidgetReturnFlight?
+        if usesFlightTiming, let target = dragAttachment,
+           let destination = attachmentVisual(for: target, coalescence: coalescence) {
+            flight = MacWidgetReturnFlight(from: initial.circleFrame, to: destination.circleFrame)
+        } else {
+            flight = nil
+        }
+        let duration = flight?.duration ?? duration
         let start = ProcessInfo.processInfo.systemUptime
         while !Task.isCancelled {
             guard pointerInteraction.isPressed, let target = dragAttachment,
                   let destination = attachmentVisual(for: target, coalescence: coalescence) else { return false }
-            let progress = min((ProcessInfo.processInfo.systemUptime - start) / duration, 1)
+            let progress = duration > 0 ? min((ProcessInfo.processInfo.systemUptime - start) / duration, 1) : 1
             // Read the latest point on every frame so sliding along the edge
             // does not restart the unfolding animation on each mouse event.
-            dragVisual = initial.interpolated(to: destination, progress: progress)
+            dragVisual = initial.interpolated(to: destination, progress: progress, flight: flight)
             refreshDragOverlay()
             if progress >= 1 { return true }
             try? await Task.sleep(for: .milliseconds(16))
@@ -1454,6 +1464,11 @@ final class MacWidgetController: ObservableObject {
                 dragVisual = opened
                 refreshDragOverlay()
                 settleTask = Task { [weak self] in await self?.finishEdgeHandoff() }
+            } else if visual.coalescence == 1 {
+                settleTask = Task { [weak self] in
+                    guard let self, await self.animateEdgeArrival(to: destination) else { return }
+                    await self.finishEdgeHandoff()
+                }
             } else {
                 settleTask = Task { [weak self] in
                     let duration = visual.coalescence == 0 ? MacWidgetDragMotion.attach : MacWidgetDragMotion.unfold
@@ -1472,15 +1487,21 @@ final class MacWidgetController: ObservableObject {
                 guard await self.animateDrag(to: collected, duration: MacWidgetDragMotion.collect) else { return }
             }
             self.dragWidgetImage = destinationImage
-            // Ease across the full travel time; a spring reaches the edge in
-            // its first few frames even when its total duration is extended.
-            guard await self.animateDrag(to: destination, duration: MacWidgetDragMotion.travel) else { return }
-            try? await Task.sleep(for: MacWidgetDragMotion.landingPause)
-            var opened = destination
-            opened.coalescence = 0
-            guard await self.animateDrag(to: opened, duration: MacWidgetDragMotion.unfold) else { return }
+            guard await self.animateEdgeArrival(to: destination) else { return }
             await self.finishEdgeHandoff()
         }
+    }
+
+    private func animateEdgeArrival(to destination: MacWidgetDragVisual) async -> Bool {
+        guard let visual = dragVisual else { return false }
+        // Keep the same cruising speed for nearby and distant edges, with
+        // a brief acceleration and braking period at either end.
+        let flight = MacWidgetReturnFlight(from: visual.circleFrame, to: destination.circleFrame)
+        guard await animateDrag(to: destination, duration: flight.duration, flight: flight) else { return false }
+        try? await Task.sleep(for: MacWidgetDragMotion.landingPause)
+        var opened = destination
+        opened.coalescence = 0
+        return await animateDrag(to: opened, duration: MacWidgetDragMotion.unfold)
     }
 
     private func finishEdgeHandoff() async {
@@ -1704,12 +1725,13 @@ final class MacWidgetController: ObservableObject {
         return false
     }
 
-    private func animateDrag(to target: MacWidgetDragVisual, duration: TimeInterval, spring: Bool = false) async -> Bool {
+    private func animateDrag(to target: MacWidgetDragVisual, duration: TimeInterval, spring: Bool = false,
+                             flight: MacWidgetReturnFlight? = nil) async -> Bool {
         guard let initial = dragVisual else { return false }
         let start = ProcessInfo.processInfo.systemUptime
         while !Task.isCancelled {
-            let progress = min((ProcessInfo.processInfo.systemUptime - start) / duration, 1)
-            dragVisual = initial.interpolated(to: target, progress: progress, spring: spring)
+            let progress = duration > 0 ? min((ProcessInfo.processInfo.systemUptime - start) / duration, 1) : 1
+            dragVisual = initial.interpolated(to: target, progress: progress, spring: spring, flight: flight)
             refreshDragOverlay()
             if progress >= 1 { return true }
             try? await Task.sleep(for: .milliseconds(16))

@@ -132,6 +132,66 @@ final class MacWidgetHandoffTests: XCTestCase {
     }
 
     @MainActor
+    func testReleasingDuringHeldFlightReachesTheEdgeBeforeUnfolding() async throws {
+        try await withWindow(reducesMotion: false, supportsSystemDock: false) { controller, window, host in
+            let screen = try XCTUnwrap(NSScreen.screens.first)
+            let docking = MacWidgetDocking(edge: .right, screenFrame: screen.frame, visibleFrame: screen.visibleFrame)
+            let sourceFocus = MacWidgetDragGeometry.focusFrame(in: window.frame, edge: .right, index: 1,
+                scale: 1, metricCount: 3, topInfo: docking.topInfo)
+            controller.beginPointerPress(at: NSPoint(x: sourceFocus.midX, y: sourceFocus.midY), frame: window.frame,
+                bounds: screen.visibleFrame, clickCount: 1, timestamp: 1, docking: docking)
+            let point = NSPoint(x: screen.frame.minX + 20, y: screen.frame.midY)
+            let preview = try XCTUnwrap(controller.updatePointerPress(at: point)?.attachment)
+            XCTAssertEqual(preview.edge, .left)
+            // Switching the visual's geometry to the target marks the start of
+            // held flight, after collection but before the circle arrives.
+            let flying = try await eventually {
+                controller.dragVisual?.widgetFrame == preview.frame && controller.dragVisual?.coalescence == 1
+            }
+            XCTAssertTrue(flying)
+            let beforeRelease = try XCTUnwrap(controller.dragVisual)
+            XCTAssertGreaterThan(abs(beforeRelease.circleFrame.midX - preview.frame.midX), 20)
+            let overlay = try XCTUnwrap(NSApp.windows.first {
+                $0.isVisible && $0.contentView is NSHostingView<MacWidgetDragOverlay>
+            })
+            var drewWhileCovered = false
+            host.onDraw = {
+                if host.alphaValue == 1, overlay.isVisible { drewWhileCovered = true }
+            }
+            guard case .drag(let drop) = controller.finishPointerPress(at: point, doubleClickInterval: 0.5) else {
+                return XCTFail("Expected a completed edge drop during flight")
+            }
+            controller.settleDrop(drop)
+            XCTAssertEqual(controller.dragVisual?.circleFrame, beforeRelease.circleFrame,
+                "Releasing must continue from the visible circle instead of jumping to the edge.")
+            let destination = MacWidgetDragGeometry.focusFrame(in: window.frame, edge: .left, index: 1,
+                scale: 1, metricCount: 3, topInfo: docking.topInfo)
+            var sawFlight = false
+            var sawUnfolding = false
+            let finished = try await eventually {
+                guard let visual = controller.dragVisual else { return true }
+                let remaining = hypot(visual.circleFrame.midX - destination.midX,
+                                      visual.circleFrame.midY - destination.midY)
+                if remaining > 0.001 {
+                    sawFlight = true
+                    XCTAssertEqual(visual.coalescence, 1,
+                        "The rail must not unfold while the released circle is still traveling to the edge.")
+                } else if visual.coalescence < 1 {
+                    sawUnfolding = true
+                }
+                return false
+            }
+            XCTAssertTrue(finished)
+            XCTAssertTrue(sawFlight)
+            XCTAssertTrue(sawUnfolding)
+            XCTAssertTrue(drewWhileCovered)
+            XCTAssertEqual(host.alphaValue, 1)
+            XCTAssertFalse(overlay.isVisible)
+            XCTAssertEqual(controller.preferences.edge, .left)
+        }
+    }
+
+    @MainActor
     func testEscapeAndHideDuringHandoffCannotRestartOrResurrectTheDrag() async throws {
         for hide in [false, true] {
             try await withWindow(reducesMotion: false) { controller, window, host in
@@ -242,7 +302,9 @@ final class MacWidgetHandoffTests: XCTestCase {
 
     @MainActor
     private func eventually(_ predicate: () -> Bool) async throws -> Bool {
-        let deadline = ContinuousClock.now.advanced(by: .seconds(2))
+        // Flight duration follows distance, so real large displays need more
+        // time than the former fixed-duration return plus unfolding.
+        let deadline = ContinuousClock.now.advanced(by: .seconds(5))
         while !predicate(), ContinuousClock.now < deadline { try await Task.sleep(for: .milliseconds(5)) }
         return predicate()
     }

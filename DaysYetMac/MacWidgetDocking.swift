@@ -261,10 +261,47 @@ enum MacWidgetDragMotion {
     // Give edge arrival and unfolding time to read as separate steps while
     // keeping pickup, pull-away, and pointer following responsive.
     static let attach: TimeInterval = 0.40
-    static let travel: TimeInterval = 0.68
     static let unfold: TimeInterval = 0.56
     static let landingPause: Duration = .milliseconds(110)
     static let followResponse: TimeInterval = 0.045
+}
+
+/// Return at a consistent speed across distances, with brief acceleration and
+/// braking. Nearby destinations use a triangular velocity profile instead of
+/// stretching a small movement over a fixed minimum duration.
+struct MacWidgetReturnFlight {
+    private static let cruiseSpeed = 1800.0
+    private static let rampDuration: TimeInterval = 0.06
+    private static let acceleration = cruiseSpeed / rampDuration
+
+    let duration: TimeInterval
+    private let distance: Double
+    private let ramp: TimeInterval
+    private let speed: Double
+
+    init(from source: NSRect, to destination: NSRect) {
+        let distance = Double(hypot(destination.midX - source.midX, destination.midY - source.midY))
+        self.distance = distance.isFinite ? distance : 0
+        ramp = min(Self.rampDuration, sqrt(self.distance / Self.acceleration))
+        speed = Self.acceleration * ramp
+        duration = speed > 0 ? self.distance / speed + ramp : 0
+    }
+
+    func progress(at elapsed: TimeInterval) -> Double {
+        guard distance > 0 else { return 1 }
+        guard elapsed > 0 else { return 0 }
+        guard elapsed < duration else { return 1 }
+        let traveled: Double
+        if elapsed < ramp {
+            traveled = 0.5 * Self.acceleration * elapsed * elapsed
+        } else if elapsed > duration - ramp {
+            let remaining = duration - elapsed
+            traveled = distance - 0.5 * Self.acceleration * remaining * remaining
+        } else {
+            traveled = speed * (elapsed - ramp / 2)
+        }
+        return min(max(traveled / distance, 0), 1)
+    }
 }
 
 /// Both directions use the same focus: the other parts converge on the grabbed
@@ -287,18 +324,23 @@ struct MacWidgetDragVisual: Equatable {
     var imageOpacity: Double { Double(1 - coalescence * coalescence) }
     var circleOpacity: Double { Double(coalescence * coalescence) }
 
-    func interpolated(to target: Self, progress: Double, spring: Bool = false) -> Self {
+    func interpolated(to target: Self, progress: Double, spring: Bool = false,
+                      flight: MacWidgetReturnFlight? = nil) -> Self {
         let t = min(max(progress, 0), 1)
         if t >= 1 { return target }
         // Ease into the transformation as well as out of it, so collection
         // and unfolding remain visible instead of completing in the first frames.
         let eased = t * t * (3 - 2 * t)
-        let travel = spring && t < 1 ? 1 - exp(-8 * t) * cos(10 * t) : eased
+        let travel = flight.map { $0.progress(at: t * $0.duration) }
+            ?? (spring && t < 1 ? 1 - exp(-8 * t) * cos(10 * t) : eased)
+        let width = circleFrame.width + (target.circleFrame.width - circleFrame.width) * eased
+        let height = circleFrame.height + (target.circleFrame.height - circleFrame.height) * eased
+        let x = flight == nil ? circleFrame.minX + (target.circleFrame.minX - circleFrame.minX) * travel
+            : circleFrame.midX + (target.circleFrame.midX - circleFrame.midX) * travel - width / 2
+        let y = flight == nil ? circleFrame.minY + (target.circleFrame.minY - circleFrame.minY) * travel
+            : circleFrame.midY + (target.circleFrame.midY - circleFrame.midY) * travel - height / 2
         return Self(widgetFrame: target.widgetFrame, focusFrame: target.focusFrame,
-                    circleFrame: NSRect(x: circleFrame.minX + (target.circleFrame.minX - circleFrame.minX) * travel,
-                                        y: circleFrame.minY + (target.circleFrame.minY - circleFrame.minY) * travel,
-                                        width: circleFrame.width + (target.circleFrame.width - circleFrame.width) * eased,
-                                        height: circleFrame.height + (target.circleFrame.height - circleFrame.height) * eased),
+                    circleFrame: NSRect(x: x, y: y, width: width, height: height),
                     coalescence: coalescence + (target.coalescence - coalescence) * eased,
                     opacity: opacity + (target.opacity - opacity) * eased)
     }
