@@ -1,8 +1,8 @@
 # Release readiness
 
-## Current macOS 0.2.3 preparation
+## Current macOS 0.2.3 submission
 
-**macOS 0.2.3 (16) is being prepared.** The update refines distance-based return motion and rounded liquid attachment along the screen edge while preserving the selected circle's size. Local Mac/iOS tests and release compliance passed. Localized update notes and Mac review notes are saved in the App Store Connect draft; exact-source hosted CI, archive, upload, and review submission remain pending. iOS remains 0.2.1 (17). See the [0.2.3 Mac release record](../releases/0.2.3-macos.md) for current evidence and remaining steps.
+**macOS 0.2.3 (16) is Waiting for Review** after final submission on 2026-11-24 at 09:32 JST for one Mac item. Local checks, exact-source CI, Apple validation, upload, and processing completed; Japanese/English metadata and all fourteen reused screenshots were verified. Automatic release after approval is enabled, phased release is off, and iOS remains 0.2.1 (17); Apple approval and public availability of 0.2.3 remain unconfirmed. See the [0.2.3 Mac release record](../releases/0.2.3-macos.md) for source, checks, limitations, and the receipt.
 
 ## Historical macOS 0.2.2 submission
 

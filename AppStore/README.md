@@ -1,8 +1,8 @@
 # App Store submission resources
 
-## Current macOS 0.2.3 preparation
+## Current macOS 0.2.3 submission
 
-**macOS 0.2.3 (16) is being prepared.** The update refines distance-based return motion and rounded liquid attachment along the screen edge while preserving the selected circle's size. Localized update notes and Mac review notes are prepared locally; release-candidate verification, exact-source hosted CI, archive, upload, and review submission remain pending. iOS remains 0.2.1 (17). See the [0.2.3 Mac release record](releases/0.2.3-macos.md) for current evidence and remaining steps.
+**macOS 0.2.3 (16) is Waiting for Review** after final submission on 2026-11-24 at 09:32 JST for one Mac item. Local checks, exact-source CI, Apple validation, upload, and processing completed; Japanese/English metadata and all fourteen reused screenshots were verified. Automatic release after approval is enabled, phased release is off, and iOS remains 0.2.1 (17); Apple approval and public availability of 0.2.3 remain unconfirmed. See the [0.2.3 Mac release record](releases/0.2.3-macos.md) for source, checks, limitations, and the receipt.
 
 ## Historical macOS 0.2.2 submission
 
@@ -18,7 +18,7 @@ The following is the November 7 submission record. Both 0.2.0 versions were subs
 
 **iOS / iPadOS 0.2.0 (16) and macOS 0.2.0 (13) were Waiting for Review on November 7.** Final Submit for Review succeeded on 2026-11-07 at 16:22 JST for iOS and 16:15 JST for Mac. Both exact builds completed upload and processing and are configured for automatic release after approval to all users. The subsequent Ready for Distribution state supersedes that review status. See the [0.2.0 release record](releases/0.2.0.md) for source tags, local verification, the hosted CI limitation, and submission receipts.
 
-The submission package contains Japanese/English descriptions, release notes, review instructions, 36 iPhone/iPad screenshots, and 14 native Mac screenshots. The previous submissions verified saved metadata and all 50 screenshot registrations. The new 0.2.3 update notes and review notes still require App Store Connect save/readback. The Mac store package describes screen-edge placement and excludes direct-distribution Dock integration.
+The submission package contains Japanese/English descriptions, release notes, review instructions, 36 iPhone/iPad screenshots, and 14 native Mac screenshots. The previous submissions verified saved metadata and all 50 screenshot registrations. The 0.2.3 Japanese/English update notes and Mac review notes were saved in App Store Connect and matched after reload; its draft inherited all fourteen Mac screenshots, seven per localization. The Mac store package describes screen-edge placement and excludes direct-distribution Dock integration.
 
 ## Historical submission records
 
