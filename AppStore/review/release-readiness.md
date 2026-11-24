@@ -1,12 +1,16 @@
 # Release readiness
 
-## Current macOS 0.2.2 submission
+## Current macOS 0.2.3 preparation
 
-**macOS 0.2.2 (15) is Waiting for Review.** Final Submit for Review succeeded on 2026-11-21 at 18:22 JST for one macOS item. Automatic release after approval to all users is enabled. Local verification, Apple validation, upload, processing, and exact-source hosted CI passed. Japanese/English release notes, Mac review notes, and all fourteen Mac screenshots are saved. This release changes only macOS; iOS remains 0.2.1 (17). Apple approval and public availability of 0.2.2 are unconfirmed. See the [0.2.2 Mac release record](../releases/0.2.2-macos.md) for source, checks, limitations, and the receipt.
+**macOS 0.2.3 (16) is being prepared.** The update refines distance-based return motion and rounded liquid attachment along the screen edge while preserving the selected circle's size. Local Mac/iOS tests and release compliance passed. Localized update notes and Mac review notes are saved in the App Store Connect draft; exact-source hosted CI, archive, upload, and review submission remain pending. iOS remains 0.2.1 (17). See the [0.2.3 Mac release record](../releases/0.2.3-macos.md) for current evidence and remaining steps.
+
+## Historical macOS 0.2.2 submission
+
+App Store Connect showed **macOS 0.2.2 (15) Ready for Distribution on 2026-11-24**, with no pending Mac draft before 0.2.3 preparation. The previous submission succeeded on November 21 at 18:22 JST with automatic release after approval. The approval date and public-store propagation time were not separately established. See the [0.2.2 Mac release record](../releases/0.2.2-macos.md) for its source, checks, limitations, and receipt.
 
 ## Historical 0.2.1 submission
 
-The November 11 submissions contained iOS / iPadOS 0.2.1 (17) and macOS 0.2.1 (14), with automatic release after approval. App Store Connect subsequently showed both 0.2.1 versions Ready for Distribution on 2026-11-21. The earlier CI billing restriction is historical; hosted CI passed for the current Mac candidate. See the [0.2.1 release record](../releases/0.2.1.md) for the original checks and submission evidence.
+The November 11 submissions contained iOS / iPadOS 0.2.1 (17) and macOS 0.2.1 (14), with automatic release after approval. App Store Connect subsequently showed both 0.2.1 versions Ready for Distribution on 2026-11-21. The earlier CI billing restriction is historical; hosted CI passed for the 0.2.2 Mac candidate. See the [0.2.1 release record](../releases/0.2.1.md) for the original checks and submission evidence.
 
 ## Historical 0.2.0 submission
 

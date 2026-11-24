@@ -117,8 +117,13 @@ final class MacWidgetHandoffTests: XCTestCase {
                 index: 1, scale: 1, metricCount: 3, topInfo: MacTopNotchInfo())
             let dropFocus = MacWidgetDragGeometry.focusFrame(in: drop.frame, edge: .bottom,
                 index: 1, scale: 1, metricCount: 3, topInfo: MacTopNotchInfo())
-            XCTAssertEqual(panelFocus, dropFocus,
-                "The live circle must occupy the committed destination, including inside a larger hover canvas.")
+            // Recomputing the saved normalized position may differ by a single
+            // floating-point bit; still require far less than a physical pixel.
+            for (actual, expected) in [(panelFocus.minX, dropFocus.minX), (panelFocus.minY, dropFocus.minY),
+                                       (panelFocus.width, dropFocus.width), (panelFocus.height, dropFocus.height)] {
+                XCTAssertEqual(actual, expected, accuracy: 0.000001,
+                    "The live circle must occupy the committed destination, including inside a larger hover canvas.")
+            }
             XCTAssertTrue(overlay.isVisible)
             XCTAssertEqual(host.alphaValue, 0)
             let finished = try await eventually { controller.dragVisual == nil }
